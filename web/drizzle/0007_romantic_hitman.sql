@@ -1,0 +1,1 @@
+ALTER TABLE "playlist_tracks" ADD COLUMN "video_id" varchar(11) NOT NULL;

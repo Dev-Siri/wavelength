@@ -1,0 +1,1 @@
+ALTER TABLE "playlist_tracks" ADD COLUMN "author" varchar(255) NOT NULL;

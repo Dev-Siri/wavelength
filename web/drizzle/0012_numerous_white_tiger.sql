@@ -1,0 +1,1 @@
+ALTER TABLE "playlist_tracks" ALTER COLUMN "video_type" DROP DEFAULT;
