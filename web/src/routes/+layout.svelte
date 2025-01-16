@@ -85,7 +85,7 @@
     <Pane class="bg-primary-foreground rounded-tr-md rounded-br-md" {minSize} {maxSize}>
       <Sidebar />
     </Pane>
-    <Pane class="h-[80%] w-full bg-primary-foreground" size={content}>
+    <Pane class="h-full w-full bg-primary-foreground" size={content}>
       <TopBar {region} />
       <main
         class="pt-[3.5%] mt-[8%] min-[923px]:mt-[4.5%] lg:mt-[3%] bg-primary-foreground h-screen rounded-tl-md z-30"
