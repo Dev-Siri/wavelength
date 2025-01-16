@@ -1,6 +1,10 @@
 <script lang="ts">
   import { dev } from "$app/environment";
-  import { injectAnalytics } from "@vercel/analytics/dist/sveltekit";
+
+  // Idk what's happening with this module's types but something def. ain't right
+  // @ts-expect-error
+  import { injectAnalytics } from "@vercel/analytics/sveltekit";
+
   import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit";
   import { onMount } from "svelte";
   import { Toaster } from "svelte-french-toast";
