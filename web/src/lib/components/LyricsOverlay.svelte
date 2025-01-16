@@ -9,14 +9,14 @@
   import queryClient from "$lib/utils/query-client";
 
   let lyricsList: HTMLDivElement;
-  let lyrics: LyricsResponse = [];
+  let lyrics: LyricsResponse | null = [];
   let duration = 0;
   let isLoading = false;
   let hasErrored = false;
 
   $: playerProgress = ($musicPlayerProgress / 100) * duration;
   $: playerProgressMs = playerProgress * 1000;
-  $: currentLyricMs = lyrics.find(lyric => lyric.startMs > playerProgressMs);
+  $: currentLyricMs = lyrics?.find(lyric => lyric.startMs > playerProgressMs) ?? [];
 
   onMount(() => {
     async function fetchLyrics() {
@@ -68,7 +68,12 @@
   });
 
   $: {
-    if (typeof window !== "undefined" && lyricsList && currentLyricMs) {
+    if (
+      typeof window !== "undefined" &&
+      lyricsList &&
+      currentLyricMs &&
+      "startMs" in currentLyricMs
+    ) {
       const lyricElement = document.getElementById(`lyric-${currentLyricMs.startMs}`);
       if (lyricElement)
         requestAnimationFrame(() => {
@@ -87,7 +92,7 @@
     <div class="flex flex-col items-center justify-center pt-52 pl-4">
       <p class="text-5xl font-bold">Loading Lyrics...</p>
     </div>
-  {:else if hasErrored}
+  {:else if hasErrored || !lyrics}
     <div class="flex flex-col items-center justify-center pt-52 pl-4">
       <p class="text-5xl font-bold text-center text-balance text-red-500">
         No lyrics available for this track.
