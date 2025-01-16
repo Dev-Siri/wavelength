@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { dev } from "$app/environment";
+  import { injectAnalytics } from "@vercel/analytics/dist/sveltekit";
+  import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit";
   import { onMount } from "svelte";
   import { Toaster } from "svelte-french-toast";
   import { Pane, Splitpanes } from "svelte-splitpanes";
@@ -17,6 +20,9 @@
   import NowPlayingOverlay from "$lib/components/NowPlayingOverlay.svelte";
   import Sidebar from "$lib/components/Sidebar.svelte";
   import TopBar from "$lib/components/TopBar.svelte";
+
+  injectAnalytics({ mode: dev ? "development" : "production" });
+  injectSpeedInsights();
 
   interface PaneSizes {
     sidebar: {

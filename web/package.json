@@ -45,6 +45,8 @@
     "@auth/sveltekit": "^1.4.2",
     "@neondatabase/serverless": "^0.9.5",
     "@uploadthing/svelte": "^7.0.2",
+    "@vercel/analytics": "^1.4.1",
+    "@vercel/speed-insights": "^1.1.0",
     "bits-ui": "^0.21.13",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
