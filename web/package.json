@@ -38,7 +38,8 @@
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write .",
     "drizzle:generate": "drizzle-kit generate",
-    "drizzle:migrate": "drizzle-kit migrate"
+    "drizzle:migrate": "drizzle-kit migrate",
+    "drizzle:push": "drizzle-kit push"
   },
   "dependencies": {
     "@auth/sveltekit": "^1.4.2",
