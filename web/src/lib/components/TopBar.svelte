@@ -1,7 +1,7 @@
 <script lang="ts">
   import { signIn, signOut } from "@auth/sveltekit/client";
   import "flag-icons/css/flag-icons.min.css";
-  import { LogOut, User } from "lucide-svelte";
+  import { LogOut } from "lucide-svelte";
 
   import { user } from "$lib/stores/user";
   import { codeToCountryName } from "$lib/utils/countries";
@@ -52,10 +52,6 @@
           </div>
         </DropdownMenu.Trigger>
         <DropdownMenu.Content>
-          <DropdownMenu.Item class="py-3 pr-20 gap-1 items-center">
-            <User size={16} />
-            View Profile
-          </DropdownMenu.Item>
           <DropdownMenu.Item
             on:click={() => signOut()}
             class="py-3 pr-20 gap-1 items-center text-red-500"
