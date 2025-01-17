@@ -1,0 +1,43 @@
+<script lang="ts">
+  import { invalidate } from "$app/navigation";
+  import { Plus } from "lucide-svelte";
+  import toast from "svelte-french-toast";
+
+  import type { MusicTrack } from "$lib/server/api/interface/types";
+  import type { ApiResponse } from "$lib/utils/types";
+
+  import { playlists } from "$lib/stores/playlists";
+  import queryClient from "$lib/utils/query-client";
+
+  import DropdownMenuItem from "./ui/dropdown-menu/dropdown-menu-item.svelte";
+
+  export let music: MusicTrack;
+
+  async function addToPlaylist(playlistId: string) {
+    const response = await queryClient<ApiResponse<string>>(
+      location.toString(),
+      `/api/playlists/${playlistId}/tracks`,
+      {
+        method: "POST",
+        body: {
+          ...music,
+          videoType: "track",
+        },
+      },
+    );
+
+    if (response.success) {
+      toast.success(response.data);
+      invalidate(url => url.pathname.startsWith("/playlist"));
+      return;
+    }
+
+    toast.error("Failed to update playlist.");
+  }
+</script>
+
+{#each $playlists as playlist}
+  <DropdownMenuItem on:click={() => addToPlaylist(playlist.playlistId)} class="flex py-3 gap-2">
+    <Plus size={20} /> Add or Remove from Playlist "{playlist.name}"
+  </DropdownMenuItem>
+{/each}

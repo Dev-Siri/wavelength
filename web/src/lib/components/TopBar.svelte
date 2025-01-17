@@ -34,7 +34,8 @@
           <span class="select-none fi fi-{region.toLowerCase()}"></span>
         </Tooltip.Trigger>
         <Tooltip.Content>
-          <p>{codeToCountryName(region)}</p>
+          {@const countryName = codeToCountryName(region)}
+          <p>{countryName.charAt(0).toUpperCase()}{countryName.slice(1)}</p>
         </Tooltip.Content>
       </Tooltip.Root>
       <DropdownMenu.Root>
@@ -52,9 +53,16 @@
           </div>
         </DropdownMenu.Trigger>
         <DropdownMenu.Content>
+          <DropdownMenu.Label class="text-end text-xl leading-none">
+            {$user.name}
+          </DropdownMenu.Label>
+          <DropdownMenu.Label class="text-end text-sm font-normal -mt-2">
+            {$user.email ?? ""}
+          </DropdownMenu.Label>
+          <DropdownMenu.Separator />
           <DropdownMenu.Item
             on:click={() => signOut()}
-            class="py-3 pr-20 gap-1 items-center text-red-500"
+            class="py-3 pr-40 gap-1 items-center text-red-500"
           >
             <LogOut size={16} />
             Logout

@@ -1,19 +1,15 @@
 <script lang="ts">
-  import { MoreHorizontal, Play, Plus } from "lucide-svelte";
-  import toast from "svelte-french-toast";
+  import { MoreHorizontal, Play } from "lucide-svelte";
 
   import type { VideoTypeEnum } from "$lib/db/schema";
   import type { MusicTrack } from "$lib/server/api/interface/types";
-  import type { ApiResponse } from "$lib/utils/types";
 
   import { visiblePanel } from "$lib/stores/music-player";
   import { addToQueue, musicPlayingNow, type QueueableMusic } from "$lib/stores/music-queue";
   import { parseHtmlEntities } from "$lib/utils/format";
-  import queryClient from "$lib/utils/query-client";
 
-  import { invalidate } from "$app/navigation";
-  import { playlists } from "$lib/stores/playlists";
   import Image from "./Image.svelte";
+  import PlaylistToggleOptions from "./PlaylistToggleOptions.svelte";
   import { Button } from "./ui/button";
   import * as DropdownMenu from "./ui/dropdown-menu";
   import * as Tooltip from "./ui/tooltip";
@@ -29,28 +25,6 @@
     addToQueue(queueableTrack);
     musicPlayingNow.set(queueableTrack);
     $visiblePanel = "playingNow";
-  }
-
-  async function addToPlaylist(playlistId: string) {
-    const response = await queryClient<ApiResponse<string>>(
-      location.toString(),
-      `/api/playlists/${playlistId}/tracks`,
-      {
-        method: "POST",
-        body: {
-          ...music,
-          videoType: "track",
-        },
-      },
-    );
-
-    if (response.success) {
-      toast.success(response.data);
-      invalidate(url => url.pathname.startsWith("/playlist"));
-      return;
-    }
-
-    toast.error("Failed to update playlist.");
   }
 </script>
 
@@ -116,13 +90,6 @@
     {/if}
   </div>
   <DropdownMenu.Content>
-    {#each $playlists as playlist}
-      <DropdownMenu.Item
-        on:click={() => addToPlaylist(playlist.playlistId)}
-        class="flex py-3 gap-2"
-      >
-        <Plus size={20} /> Add or Remove from Playlist "{playlist.name}"
-      </DropdownMenu.Item>
-    {/each}
+    <PlaylistToggleOptions {music} />
   </DropdownMenu.Content>
 </DropdownMenu.Root>

@@ -13,11 +13,14 @@
     playMusic,
   } from "$lib/stores/music-player";
   import { musicPlayingNow, musicQueue } from "$lib/stores/music-queue";
-  import { parseHtmlEntities } from "$lib/utils/format";
+  import { durationify, parseHtmlEntities } from "$lib/utils/format";
 
+  import { MoreHorizontal } from "lucide-svelte";
   import Image from "./Image.svelte";
   import MusicPlayerControls from "./MusicPlayerControls.svelte";
   import PlaybackOptions from "./PlaybackOptions.svelte";
+  import PlaylistToggleOptions from "./PlaylistToggleOptions.svelte";
+  import * as DropdownMenu from "./ui/dropdown-menu";
 
   let musicPlayerElement: HTMLDivElement;
 
@@ -128,13 +131,37 @@
   <div class="hidden" bind:this={musicPlayerElement}></div>
   <section class="flex h-full w-1/3 items-center">
     {#if $musicPlayingNow}
-      <Image
-        src={$musicPlayingNow.thumbnail}
-        alt="Cover"
-        height={80}
-        width={80}
-        class="rounded-md object-cover aspect-square"
-      />
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger>
+          <div class="relative group h-20 w-20">
+            <MoreHorizontal
+              class="absolute bg-black bg-opacity-80 z-[99999] rounded-full p-0.5 duration-200 top-2 right-2"
+              color="white"
+              size={20}
+            />
+            <Image
+              src={$musicPlayingNow.thumbnail}
+              alt="Cover"
+              height={80}
+              width={80}
+              class="rounded-md object-cover aspect-square duration-200 group-hover:brightness-75"
+            />
+          </div>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content>
+          {#if $musicPlayer}
+            {#await $musicPlayer.getDuration() then duration}
+              <PlaylistToggleOptions
+                music={{
+                  ...$musicPlayingNow,
+                  isExplicit: false,
+                  duration: durationify(duration),
+                }}
+              />
+            {/await}
+          {/if}
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
       <div>
         <p class="text-md ml-2 text-primary">{parseHtmlEntities($musicPlayingNow.title)}</p>
         <p class="text-xs ml-2 text-muted-foreground">{$musicPlayingNow.author}</p>
