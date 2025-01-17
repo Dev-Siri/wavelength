@@ -79,7 +79,7 @@
         requestAnimationFrame(() => {
           lyricElement.scrollIntoView({
             behavior: "smooth",
-            block: "center",
+            block: "end",
             inline: "nearest",
           });
         });
@@ -103,7 +103,7 @@
       class="flex flex-col pl-4 pt-4 gap-10 h-[470px] scrollbar-hidden overflow-auto"
       bind:this={lyricsList}
     >
-      {#each lyrics as lyric}
+      {#each lyrics as lyric, i}
         <button
           type="button"
           on:click={() => $musicPlayer?.seekTo(lyric.startMs / 1000, true)}
@@ -112,13 +112,13 @@
             ? 'text-white'
             : playerProgressMs > lyric.startMs
               ? 'text-gray-300'
-              : 'text-gray-500'}"
+              : 'text-gray-500'} {i + 1 === lyrics.length ? 'mb-16' : ''}"
           id="lyric-{lyric.startMs}"
         >
           {lyric.text}
         </button>
       {/each}
-      <p class="cursor-default mb-4">Lyrics provided by Musixmatch.</p>
+      <p class="cursor-default mb-10">Lyrics provided by Musixmatch.</p>
     </div>
   {/if}
 {/if}
