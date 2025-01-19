@@ -1,4 +1,4 @@
-import { boolean, char, pgEnum, pgTable, text, varchar } from "drizzle-orm/pg-core";
+import { boolean, char, integer, pgEnum, pgTable, text, varchar } from "drizzle-orm/pg-core";
 
 import { JS_UUID_LENGTH } from "../../lib/constants/utils";
 
@@ -17,6 +17,7 @@ export const playlistTracks = pgTable("playlist_tracks", {
   playlistTrackId: char("playlist_track_id", { length: JS_UUID_LENGTH }).primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
   thumbnail: text("thumbnail").notNull(),
+  positionInPlaylist: integer("position_in_playlist").notNull(),
   isExplicit: boolean("is_explicit").notNull(),
   author: varchar("author", { length: 255 }).notNull(),
   duration: varchar("duration", { length: 10 }).notNull(),

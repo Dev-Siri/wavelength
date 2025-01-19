@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Clock, ListPlus, Play } from "lucide-svelte";
+  import { Clock, ListMusic, ListPlus, Play } from "lucide-svelte";
   import { fly } from "svelte/transition";
 
   import { playMusic } from "$lib/stores/music-player";
@@ -13,7 +13,7 @@
   import EditPlaylistDetailsDialog from "$lib/components/EditPlaylistDetailsDialog.svelte";
   import Image from "$lib/components/Image.svelte";
   import PlaylistLength from "$lib/components/PlaylistLength.svelte";
-  import TrackItem from "$lib/components/TrackItem.svelte";
+  import PlaylistTracksList from "$lib/components/PlaylistTracksList.svelte";
   import { Button } from "$lib/components/ui/button";
   import * as Dialog from "$lib/components/ui/dialog";
   import { Skeleton } from "$lib/components/ui/skeleton";
@@ -98,18 +98,16 @@
                   <header
                     class="flex justify-around items-center gap-5 pl-2 pb-2 select-none text-muted-foreground"
                   >
-                    <p>#</p>
+                    <p>
+                      <ListMusic size={18} />
+                    </p>
                     <p class="flex-[2]">Title</p>
                     <Clock size={18} class="mr-[62px]" />
                   </header>
-                  {#each playlistTracks.data as music, i}
-                    <div class="flex items-center gap-2">
-                      <p class="text-xl px-2 text-muted-foreground">
-                        {i + 1}.
-                      </p>
-                      <TrackItem {music} />
-                    </div>
-                  {/each}
+                  <PlaylistTracksList
+                    playlistTracks={playlistTracks.data}
+                    playlistId={playlistData.data.playlistId}
+                  />
                 {:else}
                   <div class="mt-10 flex gap-2 flex-col items-center justify-center">
                     <ListPlus size={40} />

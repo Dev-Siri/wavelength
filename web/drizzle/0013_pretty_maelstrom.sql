@@ -1,0 +1,1 @@
+ALTER TABLE "playlist_tracks" ADD COLUMN "position_in_playlist" integer;

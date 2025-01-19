@@ -38,6 +38,6 @@
 
 {#each $playlists as playlist}
   <DropdownMenuItem on:click={() => addToPlaylist(playlist.playlistId)} class="flex py-3 gap-2">
-    <Plus size={20} /> Add or Remove from Playlist "{playlist.name}"
+    <Plus size={20} /> Toggle from "{playlist.name}"
   </DropdownMenuItem>
 {/each}

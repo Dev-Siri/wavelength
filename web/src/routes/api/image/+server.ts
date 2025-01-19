@@ -10,7 +10,11 @@ export async function GET({ url: { searchParams }, fetch }) {
   const imageBuffer = await imageResponse.arrayBuffer();
 
   try {
-    const optimizedImage = await sharp(imageBuffer).resize(Number(height)).avif().toBuffer();
+    const numericalHeight = Number(height);
+
+    if (Number.isNaN(numericalHeight)) return new Response(imageBuffer);
+
+    const optimizedImage = await sharp(imageBuffer).resize().avif().toBuffer();
 
     return new Response(optimizedImage, {
       headers: new Headers({ "Cache-Control": "public, max-age=86400" }),

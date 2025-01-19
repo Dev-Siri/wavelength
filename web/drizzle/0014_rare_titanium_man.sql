@@ -1,0 +1,1 @@
+ALTER TABLE "playlist_tracks" ALTER COLUMN "position_in_playlist" SET NOT NULL;

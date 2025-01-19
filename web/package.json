@@ -3,6 +3,19 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "lint": "prettier --check . && eslint .",
+    "format": "prettier --write .",
+    "drizzle:generate": "drizzle-kit generate",
+    "drizzle:migrate": "drizzle-kit migrate",
+    "drizzle:push": "drizzle-kit push",
+    "drizzle:studio": "drizzle-kit studio"
+  },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.2.4",
     "@sveltejs/adapter-vercel": "^5.5.2",
@@ -29,21 +42,10 @@
     "typescript-eslint": "^8.5.0",
     "vite": "^5.4.5"
   },
-  "scripts": {
-    "dev": "vite dev",
-    "build": "vite build",
-    "preview": "vite preview",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "lint": "prettier --check . && eslint .",
-    "format": "prettier --write .",
-    "drizzle:generate": "drizzle-kit generate",
-    "drizzle:migrate": "drizzle-kit migrate",
-    "drizzle:push": "drizzle-kit push"
-  },
   "dependencies": {
     "@auth/sveltekit": "^1.4.2",
     "@neondatabase/serverless": "^0.9.5",
+    "@rodrigodagostino/svelte-sortable-list": "^0.10.13",
     "@uploadthing/svelte": "^7.0.2",
     "@vercel/analytics": "^1.4.1",
     "@vercel/speed-insights": "^1.1.0",
