@@ -30,7 +30,7 @@
 
 <Dialog.Root>
   <div
-    class="flex flex-col h-full w-full"
+    class="flex flex-col h-full w-full overflow-y-auto"
     in:fly={{ y: 20, duration: 100 }}
     out:fly={{ y: 20, duration: 100 }}
   >
@@ -47,7 +47,7 @@
         <Dialog.Content>
           <EditPlaylistDetailsDialog initialPlaylist={playlistData.data} />
         </Dialog.Content>
-        <div class="w-full p-4 bg-black h-full mt-4 sm:mt-6 lg:mt-1 rounded-2xl">
+        <div class="w-full p-4 pb-2 bg-black h-full mt-4 sm:mt-6 lg:mt-1 rounded-2xl">
           <div class="flex gap-4">
             {#if playlistData.data.coverImage}
               <Image
@@ -85,7 +85,7 @@
             </div>
           </div>
           <!-- for the music list -->
-          <div>
+          <div class="h-full">
             {#await data.pageData.playlistTracksResponse then playlistTracks}
               {#if playlistTracks.success}
                 {#if playlistTracks.data.length}
@@ -96,7 +96,7 @@
                     <Play class="text-primary-foreground" fill="black" />
                   </Button>
                   <header
-                    class="flex justify-around items-center gap-5 pl-2 pb-2 select-none text-muted-foreground"
+                    class="flex justify-around items-center gap-5 pl-2 select-none text-muted-foreground"
                   >
                     <p>
                       <ListMusic size={18} />
