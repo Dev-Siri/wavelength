@@ -10,6 +10,7 @@
     type QueueableMusic,
   } from "$lib/stores/music-queue";
 
+  import ChangePlaylistVisibilityButton from "$lib/components/ChangePlaylistVisibilityButton.svelte";
   import EditPlaylistDetailsDialog from "$lib/components/EditPlaylistDetailsDialog.svelte";
   import Image from "$lib/components/Image.svelte";
   import PlaylistLength from "$lib/components/PlaylistLength.svelte";
@@ -30,7 +31,7 @@
 
 <Dialog.Root>
   <div
-    class="flex flex-col h-full w-full overflow-y-auto"
+    class="flex flex-col h-full w-full"
     in:fly={{ y: 20, duration: 100 }}
     out:fly={{ y: 20, duration: 100 }}
   >
@@ -89,12 +90,18 @@
             {#await data.pageData.playlistTracksResponse then playlistTracks}
               {#if playlistTracks.success}
                 {#if playlistTracks.data.length}
-                  <Button
-                    class="rounded-full w-fit my-3 py-7 ml-1"
-                    on:click={() => playPlaylist(playlistTracks.data)}
-                  >
-                    <Play class="text-primary-foreground" fill="black" />
-                  </Button>
+                  <div class="flex items-center gap-2">
+                    <Button
+                      class="rounded-full w-fit my-3 py-7 ml-1"
+                      on:click={() => playPlaylist(playlistTracks.data)}
+                    >
+                      <Play class="text-primary-foreground" fill="black" />
+                    </Button>
+                    <ChangePlaylistVisibilityButton
+                      playlistId={playlistData.data.playlistId}
+                      isPublic={playlistData.data.isPublic}
+                    />
+                  </div>
                   <header
                     class="flex justify-around items-center gap-5 pl-2 select-none text-muted-foreground"
                   >
@@ -104,10 +111,12 @@
                     <p class="flex-[2]">Title</p>
                     <Clock size={18} class="mr-[62px]" />
                   </header>
-                  <PlaylistTracksList
-                    playlistTracks={playlistTracks.data}
-                    playlistId={playlistData.data.playlistId}
-                  />
+                  <div class="h-2/4 pb-[40%] min-[660px]:pb-[15%] overflow-y-auto">
+                    <PlaylistTracksList
+                      playlistTracks={playlistTracks.data}
+                      playlistId={playlistData.data.playlistId}
+                    />
+                  </div>
                 {:else}
                   <div class="mt-10 flex gap-2 flex-col items-center justify-center">
                     <ListPlus size={40} />

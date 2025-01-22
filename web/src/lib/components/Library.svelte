@@ -25,13 +25,15 @@
 
 <div class="h-full w-full">
   {#if $playlists.length}
-    {#each $playlists as playlist}
-      <PlaylistCard
-        {playlist}
-        titleClasses=""
-        wrapperClick={() => window.innerWidth <= 968 && goto(`/playlist/${playlist.playlistId}`)}
-      />
-    {/each}
+    {#key $playlists}
+      {#each $playlists as playlist}
+        <PlaylistCard
+          {playlist}
+          titleClasses=""
+          wrapperClick={() => window.innerWidth <= 968 && goto(`/playlist/${playlist.playlistId}`)}
+        />
+      {/each}
+    {/key}
   {:else}
     <p class="text-center mt-40 font-semibold text-muted-foreground cursor-default">
       Your Library is empty.

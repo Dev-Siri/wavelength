@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { MoreHorizontal, Pencil, Play, Trash2 } from "lucide-svelte";
+  import { Globe, MoreHorizontal, Pencil, Play, Trash2 } from "lucide-svelte";
   import toast from "svelte-french-toast";
 
   import type { PlayList, PlayListTrack } from "$lib/db/schema";
@@ -16,12 +16,13 @@
   import { buttonVariants } from "./ui/button";
   import * as Dialog from "./ui/dialog";
   import * as DropdownMenu from "./ui/dropdown-menu";
+  import * as Tooltip from "./ui/tooltip";
 
   export let playlist: PlayList;
   export let titleClasses: string = "";
   export let wrapperClick: () => void = () => {};
 
-  const { coverImage, name, playlistId } = playlist;
+  const { coverImage, name, playlistId, isPublic } = playlist;
 
   async function handleDeletePlaylist() {
     if (!$user) return;
@@ -97,7 +98,17 @@
   <a class="w-full {titleClasses}" href="/playlist/{playlistId}">
     <div class="text-start">
       <p class="text-md">{name}</p>
-      <p class="text-xs text-muted-foreground">Playlist</p>
+      <div class="flex">
+        {#if isPublic}
+          <Tooltip.Root>
+            <Tooltip.Trigger>
+              <Globe color="gray" size={12} />
+            </Tooltip.Trigger>
+            <Tooltip.Content>Public</Tooltip.Content>
+          </Tooltip.Root>
+        {/if}
+        <p class="text-xs text-muted-foreground {isPublic ? 'ml-1' : ''}">Playlist</p>
+      </div>
     </div>
   </a>
   <Dialog.Root>

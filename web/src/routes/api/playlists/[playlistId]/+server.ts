@@ -70,7 +70,7 @@ export async function PUT({ params: { playlistId }, request }) {
     console.log(err);
     error(500, {
       success: false,
-      message: `Updated playlist with ID ${playlistId}`,
+      message: `Failed to update playlist with ID ${playlistId}`,
     });
   }
 }

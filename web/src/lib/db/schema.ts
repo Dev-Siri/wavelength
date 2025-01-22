@@ -11,6 +11,7 @@ export const playlists = pgTable("playlists", {
   authorName: varchar("author_name", { length: 255 }).notNull(),
   authorImage: text("author_image").notNull(),
   coverImage: text("cover_image"),
+  isPublic: boolean("is_public").notNull().default(false),
 });
 
 export const playlistTracks = pgTable("playlist_tracks", {
