@@ -52,14 +52,14 @@
       <h1
         class="scroll-m-20 pb-2 {$musicPlayingNow.title.length >= 30
           ? 'text-4xl'
-          : 'text-6xl'} font-semibold tracking-tight transition-colors first:mt-0"
+          : 'text-6xl'} font-semibold tracking-tight transition-colors first:mt-0 text-balance w-full"
       >
         {parseHtmlEntities($musicPlayingNow.title)}
       </h1>
       <p class="text-muted-foreground text-2xl ml-1">
         {$musicPlayingNow.author}
       </p>
-      <div class="flex items-center mt-24 gap-2 justify-center w-fit">
+      <div class="flex items-center mt-4 lg:mt-24 gap-2 justify-center w-fit flex-col lg:flex-row">
         <Button
           class="px-2 gap-2 text-muted-foreground"
           href="https://youtube.com/watch?v={$musicPlayingNow.videoId}"
@@ -90,7 +90,7 @@
         variant="secondary"
         referrerpolicy="no-referrer"
         target="_blank"
-        class="flex justify-between items-center ml-14 w-fit gap-4 py-6 -mt-10"
+        class="flex justify-between items-center ml-14 w-fit gap-4 py-6 -mt-32 lg:-mt-10"
       >
         {#if videoStats.likeCount}
           <div class="flex items-center justify-center gap-1.5 cursor-default" aria-label="Likes">

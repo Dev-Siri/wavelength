@@ -1,8 +1,8 @@
 import type { PlayList, PlayListTrack } from "$lib/db/schema";
 import type { ApiResponse } from "$lib/utils/types";
+import type { PlaylistTracksLength } from "../../api/playlists/[playlistId]/length/types";
 
 import queryClient from "$lib/utils/query-client";
-import type { PlaylistTracksLength } from "../../api/playlists/[playlistId]/length/types";
 
 export async function load({ fetch, url, params: { playlistId } }) {
   const playlistInfoResponse = queryClient<ApiResponse<PlayList>>(

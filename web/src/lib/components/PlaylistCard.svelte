@@ -5,12 +5,12 @@
   import type { PlayList, PlayListTrack } from "$lib/db/schema";
   import type { ApiResponse } from "$lib/utils/types";
 
+  import { playMusic, visiblePanel } from "$lib/stores/music-player";
+  import { addToQueue, musicPlayingNow, musicQueue } from "$lib/stores/music-queue";
   import { playlists } from "$lib/stores/playlists";
   import { user } from "$lib/stores/user";
   import queryClient from "$lib/utils/query-client";
 
-  import { playMusic, visiblePanel } from "$lib/stores/music-player";
-  import { addToQueue, musicPlayingNow, musicQueue } from "$lib/stores/music-queue";
   import EditPlaylistDetailsDialog from "./EditPlaylistDetailsDialog.svelte";
   import Image from "./Image.svelte";
   import { buttonVariants } from "./ui/button";
@@ -20,6 +20,7 @@
 
   export let playlist: PlayList;
   export let titleClasses: string = "";
+  export let imageClasses: string = "w-14 h-10";
   export let wrapperClick: () => void = () => {};
 
   const { coverImage, name, playlistId, isPublic } = playlist;
@@ -82,7 +83,7 @@
         alt="Playlist Cover"
         height={40}
         width={40}
-        class="rounded-md w-14 h-10 group-hover:opacity-50 duration-200"
+        class="rounded-md group-hover:opacity-50 duration-200 {imageClasses}"
       />
     {:else}
       <div
@@ -95,7 +96,11 @@
       fill="white"
     />
   </button>
-  <a class="w-full {titleClasses}" href="/playlist/{playlistId}">
+  <a
+    class="w-full {titleClasses}"
+    href="/playlist/{playlistId}"
+    on:click={() => ($visiblePanel = null)}
+  >
     <div class="text-start">
       <p class="text-md">{name}</p>
       <div class="flex">

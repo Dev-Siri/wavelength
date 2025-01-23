@@ -61,6 +61,12 @@ const config: Config = {
       },
       screens: {
         "h-surface": { raw: "(min-height: 580px)" },
+        // Have to do this because otherwise min-[] / max-[] are not supported
+        // due to the "h-surface" I need.
+        "min-923": { raw: "(min-width: 923px)" },
+        "min-660": { raw: "(min-width: 660px)" },
+        "min-1035": { raw: "(min-width: 1035px)" },
+        "min-1085": { raw: "(min-width: 1085px)" },
       },
     },
   },

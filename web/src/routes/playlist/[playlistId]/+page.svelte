@@ -31,7 +31,7 @@
 
 <Dialog.Root>
   <div
-    class="flex flex-col h-full w-full"
+    class="flex flex-col h-full w-full bg-black rounded-2xl"
     in:fly={{ y: 20, duration: 100 }}
     out:fly={{ y: 20, duration: 100 }}
   >
@@ -101,6 +101,9 @@
                       playlistId={playlistData.data.playlistId}
                       isPublic={playlistData.data.isPublic}
                     />
+                    <p class="text-muted-foreground ml-auto mr-4">
+                      {playlistTracks.data.length} / 25 Tracks
+                    </p>
                   </div>
                   <header
                     class="flex justify-around items-center gap-5 pl-2 select-none text-muted-foreground"
@@ -111,7 +114,7 @@
                     <p class="flex-[2]">Title</p>
                     <Clock size={18} class="mr-[62px]" />
                   </header>
-                  <div class="h-2/4 pb-[40%] min-[660px]:pb-[15%] overflow-y-auto">
+                  <div class="h-2/4 pb-[40%] min-660:pb-[35%] overflow-y-auto overflow-x-hidden">
                     <PlaylistTracksList
                       playlistTracks={playlistTracks.data}
                       playlistId={playlistData.data.playlistId}

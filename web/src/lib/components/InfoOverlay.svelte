@@ -36,7 +36,7 @@
 </script>
 
 <article
-  class="bg-black relative h-full w-full rounded-t-2xl mt-[2%] min-[1035px]:mt-[1%] min-[1085px]:mt-[0.7%] pr-20 overflow-hidden"
+  class="bg-black relative h-full w-full rounded-t-2xl mt-[2%] min-1035:mt-[1%] min-1085:mt-[0.7%] pr-20 overflow-hidden"
 >
   {#key musicVideoId}
     <MusicVideoPreview
