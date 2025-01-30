@@ -18,6 +18,7 @@
   import { Button } from "$lib/components/ui/button";
   import * as Dialog from "$lib/components/ui/dialog";
   import { Skeleton } from "$lib/components/ui/skeleton";
+  import { user } from "$lib/stores/user";
 
   export let data;
 
@@ -63,9 +64,13 @@
             {/if}
             <div class="flex flex-col w-3/5 h-full gap-2">
               <span class="text-lg ml-0.5 select-none">Playlist</span>
-              <Dialog.Trigger class="text-start">
+              {#if $user?.email === playlistData.data.authorGoogleEmail}
+                <Dialog.Trigger class="text-start">
+                  <h1 class="text-6xl font-extrabold">{playlistData.data.name}</h1>
+                </Dialog.Trigger>
+              {:else}
                 <h1 class="text-6xl font-extrabold">{playlistData.data.name}</h1>
-              </Dialog.Trigger>
+              {/if}
               <div class="flex gap-2 items-center mt-8">
                 <Image
                   src={playlistData.data.authorImage}
