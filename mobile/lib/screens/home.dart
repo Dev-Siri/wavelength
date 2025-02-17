@@ -1,6 +1,13 @@
 import "package:flutter/material.dart";
-import "package:wavelength/widgets/shared_app_bar.dart";
-import "package:wavelength/widgets/user_info_drawer.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:wavelength/bloc/location/location_bloc.dart";
+import "package:wavelength/bloc/location/location_state.dart";
+import "package:wavelength/bloc/quick_picks/quick_picks_bloc.dart";
+import "package:wavelength/bloc/quick_picks/quick_picks_event.dart";
+import "package:wavelength/bloc/quick_picks/quick_picks_state.dart";
+import "package:wavelength/widgets/error_message_dialog.dart";
+import "package:wavelength/widgets/quick_pick_song_card.dart";
+import "package:wavelength/widgets/skeletons/quick_pick_song_card_skeleton.dart";
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,24 +17,68 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _quickPicksBloc = QuickPicksBloc();
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Scaffold(
-        appBar: SharedAppBar(),
-        drawer: UserInfoDrawer(),
-        body: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Text("Recent playlists", style: TextStyle(fontSize: 20)),
-              ),
-            ],
+      padding: const EdgeInsets.only(top: 8),
+      child: ListView(
+        children: [
+          BlocConsumer<LocationBloc, LocationState>(
+            listener: (context, state) {
+              _quickPicksBloc.add(
+                QuickPicksFetchEvent(locale: state.countryCode),
+              );
+            },
+            builder: (context, state) {
+              return BlocConsumer<QuickPicksBloc, QuickPicksState>(
+                bloc: _quickPicksBloc,
+                listener: (context, state) {},
+                builder: (context, state) {
+                  if (state is! QuickPicksSuccessState) {
+                    return Stack(
+                      children: [
+                        Wrap(
+                          children: [
+                            for (int i = 0; i < 8; i++)
+                              Padding(
+                                padding: const EdgeInsets.all(5),
+                                child: QuickPickSongCardSkeleton(),
+                              ),
+                          ],
+                        ),
+                        if (state is QuickPicksErrorState)
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height / 3,
+                              ),
+                              child: ErrorMessageDialog(
+                                message:
+                                    "Something went wrong while trying to fetch your feed.",
+                              ),
+                            ),
+                          ),
+                      ],
+                    );
+                  }
+
+                  return Wrap(
+                    children: [
+                      for (final song in state.songs)
+                        Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: QuickPickSongCard(quickPicksItem: song),
+                        ),
+                    ],
+                  );
+                },
+              );
+            },
           ),
-        ),
+          SizedBox(height: 8),
+        ],
       ),
     );
   }

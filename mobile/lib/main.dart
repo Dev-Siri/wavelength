@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
+import "package:wavelength/bloc/location/location_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_bloc.dart";
 import "package:wavelength/router.dart";
 
@@ -15,8 +16,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => MusicPlayerBloc()),
-        BlocProvider(create: (context) => AuthBloc()),
+        BlocProvider(create: (_) => MusicPlayerBloc()),
+        BlocProvider(create: (_) => AuthBloc()),
+        BlocProvider(create: (_) => LocationBloc()),
       ],
       child: MaterialApp.router(
         title: "Wavelength",
@@ -24,6 +26,7 @@ class App extends StatelessWidget {
         themeMode: ThemeMode.dark,
         theme: ThemeData(
           colorScheme: ColorScheme.dark(),
+          primaryColor: Colors.white,
           scaffoldBackgroundColor: Colors.black,
           appBarTheme: AppBarTheme(backgroundColor: Colors.black),
           fontFamily: "Geist",

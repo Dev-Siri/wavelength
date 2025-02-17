@@ -14,6 +14,13 @@ dependencies:
   shared_preferences: ^2.3.5
   go_router: ^14.6.3
   http: ^1.3.0
+  cached_network_image: ^3.4.1
+  shimmer_animation: ^2.2.2
+  flutter_svg: ^2.0.17
+  vector_graphics: ^1.1.18
+  country_flags: ^3.0.0
+  geolocator: ^11.0.0
+  geocoding: ^2.1.0
   uploadthing: ^1.0.3
   flutter_dotenv: ^5.2.1
   flutter_bloc: ^9.0.0
@@ -24,6 +31,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  vector_graphics_compiler: ^1.1.16
   flutter_lints: ^5.0.0
 
 flutter:
@@ -32,6 +40,8 @@ flutter:
   assets:
     - .env
     - assets/
+    - assets/fonts/
+    - assets/vectors/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
