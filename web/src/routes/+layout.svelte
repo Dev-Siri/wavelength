@@ -85,7 +85,7 @@
 
 <svelte:head>
   <title>WaveLength</title>
-  <meta name="description" content="Music. That's pretty much it." />
+  <meta name="description" content="Call this a glorified YouTube Music Wrapper." />
 </svelte:head>
 
 <div class="h-screen">

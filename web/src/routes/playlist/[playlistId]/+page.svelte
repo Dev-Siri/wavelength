@@ -18,9 +18,12 @@
   import { Button } from "$lib/components/ui/button";
   import * as Dialog from "$lib/components/ui/dialog";
   import { Skeleton } from "$lib/components/ui/skeleton";
+  import * as Tooltip from "$lib/components/ui/tooltip";
   import { user } from "$lib/stores/user";
 
   export let data;
+
+  let isRearrangingList = false;
 
   function playPlaylist(songs: QueueableMusic[]) {
     musicQueue.set([]);
@@ -111,11 +114,26 @@
                     </p>
                   </div>
                   <header
-                    class="flex justify-around items-center gap-5 pl-2 select-none text-muted-foreground"
+                    class="flex justify-around items-center gap-5 select-none text-muted-foreground"
                   >
-                    <p>
-                      <ListMusic size={18} />
-                    </p>
+                    <Tooltip.Root>
+                      <Tooltip.Trigger>
+                        <button
+                          type="button"
+                          class="text-white font-bold bg-muted p-1.5 rounded-full duration-200 hover:bg-secondary/90 {isRearrangingList
+                            ? 'animate-bounce'
+                            : ''}"
+                          on:click={() => (isRearrangingList = !isRearrangingList)}
+                        >
+                          <ListMusic size={18} />
+                        </button>
+                      </Tooltip.Trigger>
+                      <Tooltip.Content>
+                        <p>
+                          {isRearrangingList ? "Stop" : "Enable"} Rearranging Tracks
+                        </p>
+                      </Tooltip.Content>
+                    </Tooltip.Root>
                     <p class="flex-[2]">Title</p>
                     <Clock size={18} class="mr-[62px]" />
                   </header>
@@ -123,6 +141,7 @@
                     <PlaylistTracksList
                       playlistTracks={playlistTracks.data}
                       playlistId={playlistData.data.playlistId}
+                      {isRearrangingList}
                     />
                   </div>
                 {:else}

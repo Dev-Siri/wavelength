@@ -42,7 +42,7 @@ export default async function queryClient<T>(
       headers: requestHeaders,
     };
 
-    const response = customFetch ? await customFetch(url, opts) : await fetch(url, opts);
+    const response = await (customFetch ?? fetch)(url, opts);
 
     if (!response.ok) throw new Error(await response.text());
 

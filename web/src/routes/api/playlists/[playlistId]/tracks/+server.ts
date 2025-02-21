@@ -1,9 +1,11 @@
 import { error, json } from "@sveltejs/kit";
-import { and, count, eq, gt, gte, lt, lte, sql } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 
 import db from "$lib/db/drizzle";
 import { playlistTracks } from "$lib/db/schema";
 import { playlistTrackAdditionSchema } from "$lib/server/utils/validation/playlist-track-addition-schema.js";
+import { trackPositionUpdateSchema } from "$lib/server/utils/validation/track-position-update.js";
+import type { FullQueryResults } from "@neondatabase/serverless";
 
 export async function GET({ params: { playlistId } }) {
   try {
@@ -85,72 +87,37 @@ export async function POST({ params: { playlistId }, request }) {
 }
 
 // Rearrange playlist tracks
-export async function PUT({ params: { playlistId }, url }) {
-  const prevIndex = Number(url.searchParams.get("prevIndex"));
-  const nextIndex = Number(url.searchParams.get("nextIndex"));
-  const playlistTrackId = url.searchParams.get("playlistTrackId");
+export async function PUT({ params: { playlistId }, request }) {
+  const body = await request.json();
+  const validatedBody = trackPositionUpdateSchema.safeParse(body);
 
-  if (Number.isNaN(prevIndex) || Number.isNaN(nextIndex) || !playlistTrackId) {
+  if (!validatedBody.success)
     return error(400, {
       success: false,
-      message: "Invalid `prevIndex`, `nextIndex`, or `playlistTrackId` provided.",
+      message: "Invalid position data provided.",
     });
-  }
-
-  console.log({ prevIndex, nextIndex, playlistTrackId });
 
   try {
-    if (nextIndex < prevIndex) {
-      // Shift down for tracks in the range [nextIndex, prevIndex - 1]
-      const shiftedDown = await db
+    const dbOperations: Promise<Omit<FullQueryResults<false>, "rows"> & { rows: never[] }>[] = [];
+
+    for (const position of validatedBody.data) {
+      const operation = db
         .update(playlistTracks)
         .set({
-          positionInPlaylist: sql`${playlistTracks.positionInPlaylist} + 1`,
+          positionInPlaylist: position.newPos,
         })
         .where(
           and(
             eq(playlistTracks.playlistId, playlistId),
-            gte(playlistTracks.positionInPlaylist, nextIndex),
-            lt(playlistTracks.positionInPlaylist, prevIndex),
+            eq(playlistTracks.playlistTrackId, position.playlistTrackId),
           ),
         )
         .execute();
 
-      console.log("Shifted Down Rows:", shiftedDown);
-    } else if (nextIndex > prevIndex) {
-      // Shift up for tracks in the range [prevIndex + 1, nextIndex]
-      const shiftedUp = await db
-        .update(playlistTracks)
-        .set({
-          positionInPlaylist: sql`${playlistTracks.positionInPlaylist} - 1`,
-        })
-        .where(
-          and(
-            eq(playlistTracks.playlistId, playlistId),
-            gt(playlistTracks.positionInPlaylist, prevIndex),
-            lte(playlistTracks.positionInPlaylist, nextIndex),
-          ),
-        )
-        .execute();
-
-      console.log("Shifted Up Rows:", shiftedUp);
+      dbOperations.push(operation);
     }
 
-    // Update the specific track to its new position
-    const updatedTrack = await db
-      .update(playlistTracks)
-      .set({
-        positionInPlaylist: nextIndex,
-      })
-      .where(
-        and(
-          eq(playlistTracks.playlistId, playlistId),
-          eq(playlistTracks.playlistTrackId, playlistTrackId),
-        ),
-      )
-      .execute();
-
-    console.log("Updated Track Position:", updatedTrack);
+    await Promise.all(dbOperations);
 
     return json({
       success: true,
