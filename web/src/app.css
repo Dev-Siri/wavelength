@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @font-face {
   font-family: "Geist";
@@ -64,12 +62,12 @@ body {
 }
 
 .splitpanes .splitpanes__splitter {
-  @apply bg-primary-foreground duration-200 hover:bg-secondary-foreground !important;
+  @apply bg-primary-foreground duration-200 hover:bg-secondary-foreground;
 }
 
 .default-theme.splitpanes--vertical > .splitpanes__splitter,
 .default-theme .splitpanes--vertical > .splitpanes__splitter {
-  @apply border-none cursor-grab !important;
+  @apply border-none cursor-grab;
 }
 
 *::-webkit-scrollbar {
