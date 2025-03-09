@@ -3,7 +3,7 @@
 
   import Image from "./Image.svelte";
 
-  export let artist: Artist;
+  const { artist }: { artist: Artist } = $props();
 </script>
 
 <a

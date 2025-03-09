@@ -16,7 +16,7 @@
 <div class="flex items-center w-full gap-2 justify-center">
   <Button
     variant="ghost"
-    class="px-2.5 rounded-full select-none outline-hidden"
+    class="px-3 rounded-full select-none outline-hidden"
     onclick={() => ($isMusicMuted = !$isMusicMuted)}
   >
     {#if $isMusicMuted}

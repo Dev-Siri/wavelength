@@ -5,7 +5,6 @@ import Description from "./dialog-description.svelte";
 import Footer from "./dialog-footer.svelte";
 import Header from "./dialog-header.svelte";
 import Overlay from "./dialog-overlay.svelte";
-import Portal from "./dialog-portal.svelte";
 import Title from "./dialog-title.svelte";
 
 const Root = DialogPrimitive.Root;
@@ -23,13 +22,11 @@ export {
   Footer as DialogFooter,
   Header as DialogHeader,
   Overlay as DialogOverlay,
-  Portal as DialogPortal,
   Title as DialogTitle,
   Trigger as DialogTrigger,
   Footer,
   Header,
   Overlay,
-  Portal,
   Root,
   Title,
   Trigger,

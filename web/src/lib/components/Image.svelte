@@ -1,15 +1,24 @@
 <script lang="ts">
   import { BASE_URL } from "$lib/constants/urls";
 
-  export let src: string;
-  export let alt: string;
-  export let height: number;
-  export let width: number;
-  export let loading: "lazy" | "eager" = "lazy";
-  export let originalUri = false;
-
-  let className = "";
-  export { className as class };
+  const {
+    src,
+    alt,
+    height,
+    width,
+    loading = "lazy",
+    originalUri = false,
+    class: className = "",
+    ...restProps
+  }: {
+    src: string;
+    alt: string;
+    height: number;
+    width: number;
+    loading?: "lazy" | "eager";
+    originalUri?: boolean;
+    class?: string;
+  } & Record<string, any> = $props();
 </script>
 
 <img
@@ -19,5 +28,5 @@
   {width}
   {loading}
   class={className}
-  {...$$restProps}
+  {...restProps}
 />

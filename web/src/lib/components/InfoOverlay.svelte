@@ -2,6 +2,7 @@
   import { X } from "lucide-svelte";
 
   import type { ApiResponse } from "$lib/utils/types";
+  import type { Snippet } from "svelte";
 
   import { visiblePanel } from "$lib/stores/music-player";
   import { musicPlayingNow } from "$lib/stores/music-queue";
@@ -10,14 +11,14 @@
   import MusicVideoPreview from "./MusicVideoPreview.svelte";
   import { Button } from "./ui/button";
 
-  let musicVideoId = "";
+  const { children }: { children: Snippet } = $props();
 
-  $: {
-    $musicPlayingNow;
+  let musicVideoId = $state("");
 
+  $effect(() => {
     if ($musicPlayingNow && $musicPlayingNow.videoType !== "uvideo")
       fetchMusicVideo($musicPlayingNow);
-  }
+  });
 
   async function fetchMusicVideo(playingNow: NonNullable<typeof $musicPlayingNow>) {
     const musicVideoIdResponse = await queryClient<ApiResponse<{ videoId: string }>>(
@@ -51,7 +52,7 @@
     </Button>
   </div>
   <div class="mt-14 px-3">
-    <slot />
+    {@render children?.()}
   </div>
 </article>
 

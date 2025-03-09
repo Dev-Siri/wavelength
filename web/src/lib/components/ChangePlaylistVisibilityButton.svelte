@@ -11,12 +11,13 @@
 
   import Button from "./ui/button/button.svelte";
 
-  interface Props {
+  let {
+    isPublic,
+    playlistId,
+  }: {
     isPublic: boolean;
     playlistId: string;
-  }
-
-  let { isPublic, playlistId }: Props = $props();
+  } = $props();
 
   async function handleVisibilityChange() {
     if (!$user) return;

@@ -17,11 +17,11 @@
   import { Input } from "./ui/input";
   import { Label } from "./ui/label";
 
-  export let initialPlaylist: PlayList;
+  const { initialPlaylist }: { initialPlaylist: PlayList } = $props();
 
-  let isLoading = false;
-  let playlistTitle = initialPlaylist.name;
-  let playlistCoverImage = initialPlaylist.coverImage;
+  let isLoading = $state(false);
+  let playlistTitle = $state(initialPlaylist.name);
+  let playlistCoverImage = $state(initialPlaylist.coverImage);
 
   const uploader = createUploader("imageUploader", {
     onClientUploadComplete(res) {
@@ -68,7 +68,7 @@
 </script>
 
 <Dialog.Header>
-  <form method="POST" on:submit={handleSubmit}>
+  <form method="POST" onsubmit={handleSubmit}>
     <Dialog.Title>Edit Playlist Details</Dialog.Title>
     <div class="flex flex-col py-3 gap-3">
       <div class="flex flex-col gap-2 items-center">

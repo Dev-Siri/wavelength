@@ -102,7 +102,7 @@
                 {#if playlistTracks.data.length}
                   <div class="flex items-center gap-2">
                     <Button
-                      class="rounded-full w-fit my-3 py-7 ml-1"
+                      class="rounded-full w-fit my-3 py-6 ml-1"
                       onclick={() => playPlaylist(playlistTracks.data)}
                     >
                       <Play class="text-primary-foreground" fill="black" />

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
 
   import type { PlayList } from "$lib/db/schema";
   import type { ApiResponse } from "$lib/utils/types";
@@ -8,18 +8,21 @@
   import { user } from "$lib/stores/user";
   import queryClient from "$lib/utils/query-client";
 
-  import { goto } from "$app/navigation";
   import PlaylistCard from "./PlaylistCard.svelte";
 
-  onMount(async () => {
-    if ($user) {
-      const response = await queryClient<ApiResponse<PlayList[]>>(
-        location.toString(),
-        `/api/playlists/user/${$user.email}`,
-      );
+  $effect(() => {
+    async function fetchPlaylists() {
+      if ($user) {
+        const response = await queryClient<ApiResponse<PlayList[]>>(
+          location.toString(),
+          `/api/playlists/user/${$user.email}`,
+        );
 
-      if (response.success) $playlists = response.data;
+        if (response.success) $playlists = response.data;
+      }
     }
+
+    fetchPlaylists();
   });
 </script>
 
