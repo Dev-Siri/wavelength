@@ -67,7 +67,7 @@
         class="rounded-full h-10 w-10 p-2"
         disabled={!$musicPlayingNow}
         variant="ghost"
-        on:click={playPreviousSong}
+        onclick={playPreviousSong}
       >
         <Rewind fill="white" font-weight="normal" size={24} />
       </Button>
@@ -81,7 +81,7 @@
       <Button
         class="rounded-full h-10 w-10 p-1"
         disabled={!$musicPlayingNow}
-        on:click={$isMusicPlaying ? pauseMusic : playMusic}
+        onclick={$isMusicPlaying ? pauseMusic : playMusic}
       >
         {#if $isMusicPlaying}
           <Pause fill="black" size={20} font-weight="normal" />
@@ -100,7 +100,7 @@
         class="rounded-full h-10 w-10 p-2"
         disabled={!$musicPlayingNow}
         variant="ghost"
-        on:click={playNextSong}
+        onclick={playNextSong}
       >
         <FastForward fill="white" font-weight="normal" size={24} />
       </Button>
@@ -111,7 +111,7 @@
   </Tooltip.Root>
   <Tooltip.Root>
     <Tooltip.Trigger>
-      <Button class="rounded-full h-10 w-10 p-2" variant="ghost" on:click={changeMusicRepeatMode}>
+      <Button class="rounded-full h-10 w-10 p-2" variant="ghost" onclick={changeMusicRepeatMode}>
         {#if $musicRepeatMode === "none"}
           <div in:fade>
             <Repeat opacity={0.4} font-weight="normal" size={22} />

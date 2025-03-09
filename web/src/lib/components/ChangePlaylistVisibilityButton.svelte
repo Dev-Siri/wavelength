@@ -11,10 +11,16 @@
 
   import Button from "./ui/button/button.svelte";
 
-  export let isPublic: boolean;
-  export let playlistId: string;
+  interface Props {
+    isPublic: boolean;
+    playlistId: string;
+  }
+
+  let { isPublic, playlistId }: Props = $props();
 
   async function handleVisibilityChange() {
+    if (!$user) return;
+
     isPublic = !isPublic;
 
     const response = await queryClient<ApiResponse<string>>(
@@ -26,8 +32,6 @@
     );
 
     if (response.success) {
-      if (!$user) return;
-
       const response = await queryClient<ApiResponse<PlayList[]>>(
         location.toString(),
         `/api/playlists/user/${$user.email}`,
@@ -46,7 +50,7 @@
 <Button
   variant="secondary"
   class="flex items-center gap-1 ml-1 mt-0"
-  on:click={handleVisibilityChange}
+  onclick={handleVisibilityChange}
 >
   {#if isPublic}
     <Globe size={17} />

@@ -2,6 +2,8 @@
   import { Clock, ListMusic, ListPlus, Play } from "lucide-svelte";
   import { fly } from "svelte/transition";
 
+  import type { PageData } from "./$types";
+
   import { playMusic } from "$lib/stores/music-player";
   import {
     addToQueue,
@@ -9,6 +11,7 @@
     musicQueue,
     type QueueableMusic,
   } from "$lib/stores/music-queue";
+  import { user } from "$lib/stores/user";
 
   import ChangePlaylistVisibilityButton from "$lib/components/ChangePlaylistVisibilityButton.svelte";
   import EditPlaylistDetailsDialog from "$lib/components/EditPlaylistDetailsDialog.svelte";
@@ -19,11 +22,10 @@
   import * as Dialog from "$lib/components/ui/dialog";
   import { Skeleton } from "$lib/components/ui/skeleton";
   import * as Tooltip from "$lib/components/ui/tooltip";
-  import { user } from "$lib/stores/user";
 
-  export let data;
+  const { data }: { data: PageData } = $props();
 
-  let isRearrangingList = false;
+  let isRearrangingList = $state(false);
 
   function playPlaylist(songs: QueueableMusic[]) {
     musicQueue.set([]);
@@ -101,7 +103,7 @@
                   <div class="flex items-center gap-2">
                     <Button
                       class="rounded-full w-fit my-3 py-7 ml-1"
-                      on:click={() => playPlaylist(playlistTracks.data)}
+                      onclick={() => playPlaylist(playlistTracks.data)}
                     >
                       <Play class="text-primary-foreground" fill="black" />
                     </Button>
@@ -123,7 +125,7 @@
                           class="text-white font-bold bg-muted p-1.5 rounded-full duration-200 hover:bg-secondary/90 {isRearrangingList
                             ? 'animate-bounce'
                             : ''}"
-                          on:click={() => (isRearrangingList = !isRearrangingList)}
+                          onclick={() => (isRearrangingList = !isRearrangingList)}
                         >
                           <ListMusic size={18} />
                         </button>
@@ -134,7 +136,7 @@
                         </p>
                       </Tooltip.Content>
                     </Tooltip.Root>
-                    <p class="flex-[2]">Title</p>
+                    <p class="flex-2">Title</p>
                     <Clock size={18} class="mr-[62px]" />
                   </header>
                   <div class="h-2/4 pb-[40%] min-660:pb-[35%] overflow-y-auto overflow-x-hidden">
@@ -150,7 +152,7 @@
                     <h4 class="text-center text-2xl">Your playlist is empty</h4>
                     <Button
                       variant="secondary"
-                      on:click={() => document.getElementById("search-input")?.focus()}
+                      onclick={() => document.getElementById("search-input")?.focus()}
                     >
                       Discover new music
                     </Button>

@@ -1,6 +1,8 @@
 <script lang="ts">
   import { Skeleton } from "$lib/components/ui/skeleton";
 
+  import type { PageData } from "./$types";
+
   import ArtistLabel from "$lib/components/ArtistLabel.svelte";
   import ArtistLabelSkeleton from "$lib/components/skeletons/ArtistLabelSkeleton.svelte";
   import TrackItemSkeleton from "$lib/components/skeletons/TrackItemSkeleton.svelte";
@@ -8,7 +10,7 @@
   import TrackItem from "$lib/components/TrackItem.svelte";
   import UVideoCard from "$lib/components/UVideoCard.svelte";
 
-  export let data;
+  const { data }: { data: PageData } = $props();
 </script>
 
 <div class="h-screen py-4 px-2 overflow-auto pb-[20%]">

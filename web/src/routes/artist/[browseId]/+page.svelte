@@ -1,14 +1,9 @@
 <script lang="ts">
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import { ArrowUpRight, Play } from "lucide-svelte";
   import { fly } from "svelte/transition";
 
-  import Image from "$lib/components/Image.svelte";
-  // import LinkBeautifier from "$lib/components/LinkBeautifier.svelte";
-  import TrackItem from "$lib/components/TrackItem.svelte";
-  import { Button } from "$lib/components/ui/button";
-  import * as Dialog from "$lib/components/ui/dialog";
-  import { Skeleton } from "$lib/components/ui/skeleton";
+  import type { PageData } from "./$types";
 
   import { playMusic } from "$lib/stores/music-player";
   import {
@@ -18,7 +13,14 @@
     type QueueableMusic,
   } from "$lib/stores/music-queue";
 
-  export let data;
+  import Image from "$lib/components/Image.svelte";
+  // import LinkBeautifier from "$lib/components/LinkBeautifier.svelte";
+  import TrackItem from "$lib/components/TrackItem.svelte";
+  import { Button } from "$lib/components/ui/button";
+  import * as Dialog from "$lib/components/ui/dialog";
+  import { Skeleton } from "$lib/components/ui/skeleton";
+
+  const { data }: { data: PageData } = $props();
 
   function playArtistsSongs(songs: QueueableMusic[]) {
     musicQueue.set([]);
@@ -61,7 +63,7 @@
           </Dialog.Content>
           <div class="flex mb-4 mt-10 ml-4 select-none">
             {#if extraResponse.success}
-              <Dialog.Trigger class="outline-none">
+              <Dialog.Trigger class="outline-hidden">
                 <Image
                   src={extraResponse.data.items?.[0].snippet?.thumbnails?.high?.url ?? ""}
                   alt="Artist Image"
@@ -88,7 +90,7 @@
             {#if artistResponse.data.songs}
               <Button
                 class="rounded-full w-fit py-7"
-                on:click={() =>
+                onclick={() =>
                   artistResponse.data.songs &&
                   playArtistsSongs(
                     artistResponse.data.songs.contents.map(track => ({
@@ -101,7 +103,7 @@
               </Button>
             {/if}
             <Button
-              href="https://music.youtube.com/channel/{$page.params.browseId}"
+              href="https://music.youtube.com/channel/{page.params.browseId}"
               variant="secondary"
               target="_blank"
               referrerpolicy="no-referrer"

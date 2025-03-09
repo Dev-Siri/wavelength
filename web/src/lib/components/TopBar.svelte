@@ -13,7 +13,7 @@
   import * as Tooltip from "./ui/tooltip";
   import GoogleLogo from "./vectors/GoogleLogo.svelte";
 
-  export let region: string;
+  const { region }: { region: string } = $props();
 </script>
 
 <header
@@ -23,7 +23,7 @@
     <SearchBar />
   </div>
   {#if !$user}
-    <Button on:click={() => signIn("google")} class="gap-1">
+    <Button onclick={() => signIn("google")} class="gap-1">
       <GoogleLogo />
       Sign in with Google
     </Button>
@@ -61,7 +61,7 @@
           </DropdownMenu.Label>
           <DropdownMenu.Separator />
           <DropdownMenu.Item
-            on:click={() => signOut()}
+            onclick={() => signOut()}
             class="py-3 pr-40 gap-1 items-center text-red-500"
           >
             <LogOut size={16} />

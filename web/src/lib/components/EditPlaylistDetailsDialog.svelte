@@ -24,7 +24,9 @@
   let playlistCoverImage = initialPlaylist.coverImage;
 
   const uploader = createUploader("imageUploader", {
-    onClientUploadComplete: res => (playlistCoverImage = res[0].url),
+    onClientUploadComplete(res) {
+      playlistCoverImage = res[0].url;
+    },
   });
 
   async function handleSubmit(

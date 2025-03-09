@@ -130,7 +130,7 @@
         </Dialog.Trigger>
         <DropdownMenu.Item
           class="py-3 pr-20 gap-1 items-center text-red-500"
-          on:click={handleDeletePlaylist}
+          onclick={handleDeletePlaylist}
         >
           <Trash2 size={16} />
           Delete playlist

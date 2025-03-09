@@ -131,7 +131,7 @@
     <DropdownMenu.Content>
       {#each $playlists as playlist}
         <DropdownMenu.Item
-          on:click={() => addToPlaylist(playlist.playlistId)}
+          onclick={() => addToPlaylist(playlist.playlistId)}
           class="flex py-3 gap-2"
         >
           <Plus size={20} /> Add or Remove from Playlist "{playlist.name}"
@@ -141,11 +141,12 @@
   </DropdownMenu.Root>
 {/if}
 
-<style lang="postcss">
+<style>
   .fade-shadow {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)),
+    background:
+      linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)),
       linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
     z-index: 40;
     border-radius: inherit;

@@ -25,8 +25,8 @@
   <Tooltip.Trigger>
     <Button
       variant="ghost"
-      class="w-fit px-2.5 rounded-full"
-      on:click={() =>
+      class="w-fit px-3 rounded-full"
+      onclick={() =>
         syncUVideoToMusic(
           () => ($visiblePanel = $visiblePanel === "playingNow" ? null : "playingNow"),
         )}
@@ -45,9 +45,9 @@
   <Tooltip.Trigger>
     <Button
       variant="ghost"
-      class="w-fit px-2.5 rounded-full"
+      class="w-fit px-3 rounded-full"
       disabled={$musicPlayingNow?.videoType === "uvideo"}
-      on:click={() =>
+      onclick={() =>
         syncUVideoToMusic(() => ($visiblePanel = $visiblePanel === "lyrics" ? null : "lyrics"))}
     >
       <MicVocal

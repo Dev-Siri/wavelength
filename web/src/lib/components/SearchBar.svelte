@@ -44,7 +44,7 @@
     type="text"
     name="q"
     placeholder="Search for Songs, Albums & Artists..."
-    class="bg-transparent outline-none w-full"
+    class="bg-transparent outline-hidden w-full"
     autocomplete="off"
     id="search-input"
     value={$page.url.pathname.includes("/search") ? queryParam : ""}
@@ -55,6 +55,9 @@
 </form>
 
 <style lang="postcss">
+  @reference "tailwindcss";
+  @config "../../../tailwind.config.ts";
+
   .focused-input {
     @apply border-primary border-2;
   }

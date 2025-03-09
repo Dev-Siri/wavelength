@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import createYouTubePlayer from "youtube-player";
 
   import { musicPlayerStates } from "$lib/constants/music-player";
@@ -71,7 +70,7 @@
     }
   }
 
-  onMount(() => {
+  $effect(() => {
     const youtubePlayer = createYouTubePlayer(musicPlayerElement, {
       playerVars: {
         autoplay: 0,
@@ -104,7 +103,7 @@
     };
   });
 
-  $: {
+  $effect(() => {
     async function handleMusicPlayingNowChange() {
       if (!$musicPlayer || !$musicPlayingNow) return;
 
@@ -116,15 +115,15 @@
     }
 
     handleMusicPlayingNowChange();
-  }
+  });
 
-  $: {
+  $effect(() => {
     if ($isMusicMuted) {
       $musicPlayer?.mute();
     } else {
       $musicPlayer?.unMute();
     }
-  }
+  });
 </script>
 
 <div class="flex bg-black h-full w-full pl-3">
@@ -135,7 +134,7 @@
         <DropdownMenu.Trigger>
           <div class="relative group h-20 w-20">
             <MoreHorizontal
-              class="absolute bg-black bg-opacity-80 z-[99999] rounded-full p-0.5 duration-200 top-2 right-2"
+              class="absolute bg-black bg-opacity-80 z-99999 rounded-full p-0.5 duration-200 top-2 right-2"
               color="white"
               size={20}
             />
@@ -173,7 +172,7 @@
   <section class="flex flex-col gap-2 h-full w-1/3">
     <MusicPlayerControls />
   </section>
-  <section class="flex items-center justify-end pr-10 h-full gap-1 w-1/3">
+  <section class="flex items-center justify-end pr-10 h-full gap-1 w-1/3 md:pl-[10%]">
     <PlaybackOptions />
   </section>
 </div>

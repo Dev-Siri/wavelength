@@ -2,9 +2,11 @@
   import VideoCard from "$lib/components/MusicCard.svelte";
   import MusicCardSkeleton from "$lib/components/skeletons/MusicCardSkeleton.svelte";
 
+  import type { PageData } from "./$types";
+
   import { codeToCountryName } from "$lib/utils/countries";
 
-  export let data;
+  const { data }: { data: PageData } = $props();
 </script>
 
 <div class="p-6 h-screen w-full pb-[20%] overflow-auto">

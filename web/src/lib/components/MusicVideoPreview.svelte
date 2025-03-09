@@ -82,9 +82,9 @@
   class="absolute h-[140%] -mt-24 w-full opacity-10 pointer-events-none left-0 right-0 duration-200"
   id="preview-player"
   bind:this={musicVideoPreview}
-/>
+></div>
 
-<style lang="postcss">
+<style>
   #preview-player::after,
   #preview-player::before {
     -webkit-mask-image: linear-gradient(to bottom, transparent, black 80%);

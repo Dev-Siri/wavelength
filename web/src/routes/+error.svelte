@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import { Music } from "lucide-svelte";
 
   import errorBanner from "$lib/assets/error-banner.svg";
@@ -11,11 +11,11 @@
   <img src={errorBanner} alt="Error Banner" class="bg-cover error-banner" draggable={false} />
   <div class="flex gap-2 items-center self-start pl-[200px]">
     <Music color="red" />
-    <p class="text-2xl font-bold text-red-600">{$page.error?.message}</p>
+    <p class="text-2xl font-bold text-red-600">{page.error?.message}</p>
   </div>
 </div>
 
-<style lang="postcss">
+<style>
   .error-banner {
     box-shadow: outset 0 0 1000px #242322;
   }

@@ -6,18 +6,18 @@
   import { Button } from "./ui/button";
   import { Slider } from "./ui/slider";
 
-  let bindedVolume: number[] = [100];
+  let volume = $state(100);
 
-  $: volume = (bindedVolume ? bindedVolume[0] : 100) ?? 100;
-
-  $: $musicPlayer?.setVolume(volume);
+  $effect(() => {
+    $musicPlayer?.setVolume(volume);
+  });
 </script>
 
-<div class="flex items-center gap-2 justify-center">
+<div class="flex items-center w-full gap-2 justify-center">
   <Button
     variant="ghost"
-    class="px-2.5 rounded-full select-none outline-none"
-    on:click={() => ($isMusicMuted = !$isMusicMuted)}
+    class="px-2.5 rounded-full select-none outline-hidden"
+    onclick={() => ($isMusicMuted = !$isMusicMuted)}
   >
     {#if $isMusicMuted}
       <VolumeOff size={20} />
@@ -25,5 +25,5 @@
       <Volume2 size={20} />
     {/if}
   </Button>
-  <Slider bind:value={bindedVolume} class="h-2 w-20" />
+  <Slider type="single" bind:value={volume} class="h-2 w-20" min={0} max={100} />
 </div>

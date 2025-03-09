@@ -1,33 +1,30 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import { fly } from "svelte/transition";
 
-  import type { FormInputEvent } from "$lib/components/ui/input";
-
   import debounce from "$lib/utils/debounce";
+
+  import type { PageProps } from "./$types";
 
   import PlaylistCard from "$lib/components/PlaylistCard.svelte";
   import TrackItemSkeleton from "$lib/components/skeletons/TrackItemSkeleton.svelte";
   import Input from "$lib/components/ui/input/input.svelte";
-  import { onMount } from "svelte";
 
-  export let data;
+  const { data }: PageProps = $props();
 
-  let inputValue = $page.url.searchParams.get("q") ?? "";
-  let debouncedHandleOnInput: (e: FormInputEvent<InputEvent>) => void;
+  function handleOnInput(e: Event & { currentTarget: EventTarget & HTMLInputElement }) {
+    if (inputValue === "") return goto("/playlist");
 
-  function handleOnInput(e: FormInputEvent<InputEvent>) {
-    console.log("i run", e);
-
-    if (inputValue === "") {
-      goto("/playlist");
-    } else {
-      goto(`/playlist?q=${encodeURIComponent(inputValue)}`);
-    }
+    goto(`/playlist?q=${encodeURIComponent(inputValue)}`);
   }
 
-  onMount(() => {
+  let inputValue = $state(page.url.searchParams.get("q") ?? "");
+  let debouncedHandleOnInput: (
+    e: Event & { currentTarget: EventTarget & HTMLInputElement },
+  ) => void = $state(handleOnInput);
+
+  $effect(() => {
     debouncedHandleOnInput = debounce(handleOnInput);
   });
 </script>
@@ -43,7 +40,7 @@
       placeholder="Search for playlists..."
       class="mb-4"
       bind:value={inputValue}
-      on:input={debouncedHandleOnInput}
+      oninput={debouncedHandleOnInput}
     />
   </form>
   {#await data.pageData.publicPlaylistsResponse}
