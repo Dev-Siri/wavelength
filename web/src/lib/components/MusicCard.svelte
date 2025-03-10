@@ -11,9 +11,9 @@
   import * as Tooltip from "$lib/components/ui/tooltip";
   import Image from "./Image.svelte";
 
-  export let music: BaseMusicTrack;
+  const { music }: { music: BaseMusicTrack } = $props();
 
-  let isHoveringCard = false;
+  let isHoveringCard = $state(false);
 
   function playSong() {
     const queueableTrack = { ...music, videoType: "track" } satisfies QueueableMusic;
@@ -28,10 +28,10 @@
   class="relative flex flex-col w-52 p-2 duration-200 hover:bg-muted rounded-2xl cursor-pointer group"
   tabindex={0}
   role="button"
-  on:click={playSong}
-  on:keydown={e => (e.key === "Enter" || e.key === "Space") && playSong()}
-  on:mouseenter={() => (isHoveringCard = true)}
-  on:mouseleave={() => (isHoveringCard = false)}
+  onclick={playSong}
+  onkeydown={e => (e.key === "Enter" || e.key === "Space") && playSong()}
+  onmouseenter={() => (isHoveringCard = true)}
+  onmouseleave={() => (isHoveringCard = false)}
 >
   <div class="h-44 w-48 p-3 relative rounded-2xl">
     <div class="h-full w-full rounded-2xl relative inline-block thumbnail-cover">

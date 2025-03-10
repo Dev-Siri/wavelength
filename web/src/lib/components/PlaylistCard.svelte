@@ -18,10 +18,17 @@
   import * as DropdownMenu from "./ui/dropdown-menu";
   import * as Tooltip from "./ui/tooltip";
 
-  export let playlist: PlayList;
-  export let titleClasses: string = "";
-  export let imageClasses: string = "w-14 h-10";
-  export let wrapperClick: () => void = () => {};
+  const {
+    playlist,
+    titleClasses = "",
+    imageClasses = "w-14 h-10",
+    wrapperClick = () => {},
+  }: {
+    playlist: PlayList;
+    titleClasses?: string;
+    imageClasses?: string;
+    wrapperClick?: () => void;
+  } = $props();
 
   const { coverImage, name, playlistId, isPublic } = playlist;
 
@@ -70,13 +77,13 @@
 <div
   role="button"
   tabindex={0}
-  on:keydown={wrapperClick}
-  on:click={wrapperClick}
+  onkeydown={wrapperClick}
+  onclick={wrapperClick}
   class="{buttonVariants({
     variant: 'ghost',
   })} flex group cursor-pointer justify-start w-full gap-2 pl-1 pr-2 h-12"
 >
-  <button type="button" class="relative" on:click={playPlaylist}>
+  <button type="button" class="relative" onclick={playPlaylist}>
     {#if coverImage}
       <Image
         src={coverImage}
@@ -99,7 +106,7 @@
   <a
     class="w-full {titleClasses}"
     href="/playlist/{playlistId}"
-    on:click={() => ($visiblePanel = null)}
+    onclick={() => ($visiblePanel = null)}
   >
     <div class="text-start">
       <p class="text-md">{name}</p>

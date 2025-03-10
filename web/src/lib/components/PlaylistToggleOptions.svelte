@@ -11,7 +11,7 @@
 
   import DropdownMenuItem from "./ui/dropdown-menu/dropdown-menu-item.svelte";
 
-  export let music: MusicTrack;
+  const { music }: { music: MusicTrack } = $props();
 
   async function addToPlaylist(playlistId: string) {
     const response = await queryClient<ApiResponse<string>>(
@@ -37,7 +37,7 @@
 </script>
 
 {#each $playlists as playlist}
-  <DropdownMenuItem on:click={() => addToPlaylist(playlist.playlistId)} class="flex py-3 gap-2">
+  <DropdownMenuItem onclick={() => addToPlaylist(playlist.playlistId)} class="flex py-3 gap-2">
     <Plus size={20} /> Toggle from "{playlist.name}"
   </DropdownMenuItem>
 {/each}
