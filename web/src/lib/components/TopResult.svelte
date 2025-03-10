@@ -10,9 +10,9 @@
   import Image from "./Image.svelte";
   import { Button } from "./ui/button";
 
-  let isHoveringCard = false;
+  const { topResult }: { topResult: MusicTrack } = $props();
 
-  export let topResult: MusicTrack;
+  let isHoveringCard = $state(false);
 
   function playSong() {
     const queueableTrack = { ...topResult, videoType: "track" } satisfies QueueableMusic;
@@ -27,10 +27,10 @@
   class="relative w-full bg-muted bg-opacity-40 rounded-2xl h-fit p-5 hover:bg-muted duration-200"
   tabindex={0}
   role="button"
-  on:click={playSong}
-  on:keydown={e => (e.key === "Enter" || e.key === "Space") && playSong()}
-  on:mouseenter={() => (isHoveringCard = true)}
-  on:mouseleave={() => (isHoveringCard = false)}
+  onclick={playSong}
+  onkeydown={e => (e.key === "Enter" || e.key === "Space") && playSong()}
+  onmouseenter={() => (isHoveringCard = true)}
+  onmouseleave={() => (isHoveringCard = false)}
 >
   <Image
     src={topResult.thumbnail}

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { ArrowUpRight, MessageSquare, PlayCircle, ThumbsUp, Youtube } from "lucide-svelte";
-  import { onMount } from "svelte";
 
   import type { ApiResponse } from "$lib/utils/types";
   import type { youtube_v3 } from "googleapis";
@@ -13,13 +12,15 @@
   import { Button } from "./ui/button";
   import * as Tooltip from "./ui/tooltip";
 
-  let themeColor = "";
-  let videoStats: youtube_v3.Schema$VideoStatistics | null = null;
+  let themeColor = $state("");
+  let videoStats: youtube_v3.Schema$VideoStatistics | null = $state(null);
 
-  $: coverStyle = themeColor ? `box-shadow: 0 0px 70px 10px ${themeColor};` : "";
+  let coverStyle = $derived(themeColor ? `box-shadow: 0 0px 70px 10px ${themeColor};` : "");
 
-  onMount(async () => {
-    if ($musicPlayingNow) {
+  $effect(() => {
+    async function fetchData() {
+      if (!$musicPlayingNow) return;
+
       const [themeColorResponse, statsResponse] = await Promise.all([
         queryClient<ApiResponse<string>>(
           location.toString(),
@@ -32,9 +33,10 @@
       ]);
 
       if (themeColorResponse.success) themeColor = themeColorResponse.data;
-
       if (statsResponse.success) videoStats = statsResponse.data;
     }
+
+    fetchData();
   });
 </script>
 

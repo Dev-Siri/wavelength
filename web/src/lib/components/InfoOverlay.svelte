@@ -47,7 +47,7 @@
     />
   {/key}
   <div class="fixed w-full btn-container-gradient rounded-2xl p-3">
-    <Button class="py-6 px-2.5 rounded-full" variant="ghost" onclick={() => ($visiblePanel = null)}>
+    <Button class="px-3 rounded-full" variant="ghost" onclick={() => ($visiblePanel = null)}>
       <X size={30} />
     </Button>
   </div>

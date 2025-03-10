@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import { Search } from "lucide-svelte";
   import { onMount } from "svelte";
 
-  const queryParam = $page.url.searchParams.get("q") ?? "";
+  const queryParam = page.url.searchParams.get("q") ?? "";
 
-  let isInputFocused = false;
+  let isInputFocused = $state(false);
   let searchInput: HTMLInputElement;
 
   onMount(() => {
@@ -47,10 +47,10 @@
     class="bg-transparent outline-hidden w-full"
     autocomplete="off"
     id="search-input"
-    value={$page.url.pathname.includes("/search") ? queryParam : ""}
+    value={page.url.pathname.includes("/search") ? queryParam : ""}
     bind:this={searchInput}
-    on:focus={() => (isInputFocused = true)}
-    on:blur={() => (isInputFocused = false)}
+    onfocus={() => (isInputFocused = true)}
+    onblur={() => (isInputFocused = false)}
   />
 </form>
 

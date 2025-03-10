@@ -14,7 +14,7 @@
   import * as DropdownMenu from "./ui/dropdown-menu";
   import * as Tooltip from "./ui/tooltip";
 
-  export let music: MusicTrack & { videoType?: VideoTypeEnum };
+  const { music }: { music: MusicTrack & { videoType?: VideoTypeEnum } } = $props();
 
   function playSong() {
     const queueableTrack = {
@@ -33,8 +33,8 @@
     <div
       tabindex={0}
       role="button"
-      on:click={playSong}
-      on:keydown={e => (e.key === "Enter" || e.key === "Space") && playSong()}
+      onclick={playSong}
+      onkeydown={e => (e.key === "Enter" || e.key === "Space") && playSong()}
       class="flex gap-2 text-start w-full group"
     >
       <div

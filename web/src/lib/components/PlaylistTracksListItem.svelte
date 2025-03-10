@@ -5,9 +5,11 @@
 
   import TrackItem from "./TrackItem.svelte";
 
-  export let i: number;
-  export let isRearrangingList: boolean;
-  export let music: PlayListTrack;
+  const {
+    i,
+    isRearrangingList,
+    music,
+  }: { i: number; isRearrangingList: boolean; music: PlayListTrack } = $props();
 </script>
 
 <div class="flex items-center gap-2">

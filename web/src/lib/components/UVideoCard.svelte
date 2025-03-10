@@ -18,9 +18,9 @@
   import * as Tooltip from "$lib/components/ui/tooltip";
   import Image from "./Image.svelte";
 
-  let tempDiv: HTMLDivElement;
+  const { uvideo }: { uvideo: youtube_v3.Schema$SearchResult } = $props();
 
-  export let uvideo: youtube_v3.Schema$SearchResult;
+  let tempDiv: HTMLDivElement | null = $state(null);
 
   const coverImageUrl = `${YT_IMG_API_URL}/vi/${uvideo.id?.videoId}/maxresdefault.jpg`;
 
@@ -42,7 +42,7 @@
   }
 
   async function addToPlaylist(playlistId: string) {
-    if (!uvideo.snippet || !uvideo.id?.videoId) return;
+    if (!uvideo.snippet || !uvideo.id?.videoId || !tempDiv) return;
 
     const tempPlayerInstance = createYouTubePlayer(tempDiv, {
       videoId: uvideo.id.videoId,
@@ -85,7 +85,7 @@
   <!-- temp div to retrieve length of vid -->
   <div class="hidden" id="temp-player-{uvideo.id?.videoId}" bind:this={tempDiv}></div>
   <DropdownMenu.Root>
-    <button type="button" class="relative rounded-2xl group" on:click={playYtVideo}>
+    <button type="button" class="relative rounded-2xl group" onclick={playYtVideo}>
       <Image
         src={coverImageUrl}
         height={250}
@@ -113,7 +113,7 @@
       <div
         class="absolute flex inset-0 bottom-auto justify-between w-full left-auto z-50 pr-4 pt-2"
         role="presentation"
-        on:click={e => e.stopImmediatePropagation()}
+        onclick={e => e.stopImmediatePropagation()}
       >
         <DropdownMenu.Trigger>
           <button

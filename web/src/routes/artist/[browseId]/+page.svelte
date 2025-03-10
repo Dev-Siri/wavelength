@@ -89,7 +89,7 @@
           <div class="flex gap-2 items-center ml-4">
             {#if artistResponse.data.songs}
               <Button
-                class="rounded-full w-fit py-7"
+                class="rounded-full w-fit py-6"
                 onclick={() =>
                   artistResponse.data.songs &&
                   playArtistsSongs(

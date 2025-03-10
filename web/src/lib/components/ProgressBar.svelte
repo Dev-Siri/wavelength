@@ -4,15 +4,15 @@
 
   let progressBarElement: HTMLDivElement;
 
-  let totalDuration = 0;
-  let currentTime = 0;
+  let totalDuration = $state(0);
+  let currentTime = $state(0);
 
-  $: totalMinutes = Math.floor((totalDuration - currentTime) / 60);
-  $: totalSeconds = Math.floor((totalDuration - currentTime) % 60);
-  $: currentMinutes = Math.floor(currentTime / 60);
-  $: currentSeconds = Math.floor(currentTime % 60);
+  let totalMinutes = $derived(Math.floor((totalDuration - currentTime) / 60));
+  let totalSeconds = $derived(Math.floor((totalDuration - currentTime) % 60));
+  let currentMinutes = $derived(Math.floor(currentTime / 60));
+  let currentSeconds = $derived(Math.floor(currentTime % 60));
 
-  $: {
+  $effect(() => {
     $musicPlayerProgress;
     async function fetchDurations() {
       const fetchedTotalDuration = (await $musicPlayer?.getDuration()) ?? 0;
@@ -23,7 +23,7 @@
     }
 
     fetchDurations();
-  }
+  });
 
   async function onProgressBarClick(event: MouseEvent) {
     if (!progressBarElement || !$musicPlayer) return;
@@ -51,12 +51,12 @@
   <p class="text-sm text-muted-foreground">
     {currentMinutes}:{currentSeconds.toString().padStart(2, "0")}
   </p>
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <div
     role="progressbar"
     class="flex flex-col h-1 w-full bg-muted group rounded-full relative justify-center cursor-pointer"
-    on:click={onProgressBarClick}
+    onclick={onProgressBarClick}
     bind:this={progressBarElement}
   >
     <div
