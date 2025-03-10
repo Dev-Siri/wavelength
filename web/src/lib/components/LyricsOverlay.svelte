@@ -4,19 +4,20 @@
   import type { ApiResponse } from "$lib/utils/types";
   import type { LyricsResponse } from "../../routes/api/music/[videoId]/lyrics/types";
 
+  import { cacheKeys } from "$lib/constants/keys";
   import { musicPlayer, musicPlayerProgress } from "$lib/stores/music-player";
   import { musicPlayingNow } from "$lib/stores/music-queue";
   import queryClient from "$lib/utils/query-client";
 
-  let lyricsList: HTMLDivElement;
-  let lyrics: LyricsResponse | null = [];
-  let duration = 0;
-  let isLoading = false;
-  let hasErrored = false;
+  let lyricsList: HTMLDivElement | null = $state(null);
+  let lyrics: LyricsResponse | null = $state([]);
+  let duration = $state(0);
+  let isLoading = $state(false);
+  let hasErrored = $state(false);
 
-  $: playerProgress = ($musicPlayerProgress / 100) * duration;
-  $: playerProgressMs = playerProgress * 1000;
-  $: currentLyricMs = lyrics?.find(lyric => lyric.startMs > playerProgressMs) ?? [];
+  let playerProgress = $derived(($musicPlayerProgress / 100) * duration);
+  let playerProgressMs = $derived(playerProgress * 1000);
+  let currentLyricMs = $derived(lyrics?.find(lyric => lyric.startMs > playerProgressMs) ?? []);
 
   onMount(() => {
     async function fetchLyrics() {
@@ -26,18 +27,28 @@
 
       duration = await $musicPlayer.getDuration();
 
-      const storedLyrics = sessionStorage.getItem(`${$musicPlayingNow.videoId}-l`);
+      const fetchUrl = new URL(
+        `${location.toString()}/api/music/${$musicPlayingNow.videoId}/lyrics`,
+      );
+      const lyricsCacheStore = await caches.open(cacheKeys.lyricsCache);
+      const storedLyrics = await lyricsCacheStore.match(fetchUrl);
 
       if (storedLyrics) {
-        const parsedStoredLyrics = JSON.parse(storedLyrics);
+        const jsonCachedResponse: ApiResponse<LyricsResponse> = await storedLyrics.json();
 
-        if (!Array.isArray(parsedStoredLyrics)) {
+        if (!jsonCachedResponse.success) {
           isLoading = false;
           hasErrored = true;
           return;
         }
 
-        lyrics = parsedStoredLyrics;
+        if (!Array.isArray(jsonCachedResponse.data)) {
+          isLoading = false;
+          hasErrored = true;
+          return;
+        }
+
+        lyrics = jsonCachedResponse.data;
 
         isLoading = false;
         return;
@@ -48,11 +59,12 @@
           location.toString(),
           `/api/music/${$musicPlayingNow.videoId}/lyrics`,
         );
+
         if (lyricsResponse.success) {
           lyrics = lyricsResponse.data;
-
-          sessionStorage.setItem(`${$musicPlayingNow.videoId}-l`, JSON.stringify(lyrics));
           isLoading = false;
+
+          lyricsCacheStore.put(fetchUrl, new Response(JSON.stringify(lyricsResponse)));
           return;
         }
       } catch {
@@ -67,7 +79,7 @@
     fetchLyrics();
   });
 
-  $: {
+  $effect(() => {
     if (
       typeof window !== "undefined" &&
       lyricsList &&
@@ -84,7 +96,7 @@
           });
         });
     }
-  }
+  });
 </script>
 
 {#if $musicPlayingNow}
