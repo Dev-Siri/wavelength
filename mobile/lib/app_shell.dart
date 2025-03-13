@@ -1,8 +1,13 @@
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_svg/flutter_svg.dart";
 import "package:go_router/go_router.dart";
 import "package:vector_graphics/vector_graphics.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
+import "package:wavelength/bloc/auth/auth_bloc.dart";
+import "package:wavelength/bloc/auth/auth_event.dart";
+import "package:wavelength/bloc/location/location_bloc.dart";
+import "package:wavelength/bloc/location/location_event.dart";
 import "package:wavelength/widgets/playlist_creation_bottom_sheet.dart";
 import "package:wavelength/widgets/shared_app_bar.dart";
 import "package:wavelength/widgets/user_info_drawer.dart";
@@ -18,6 +23,13 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   int activeRouteIndex = 0;
+
+  @override
+  void initState() {
+    context.read<LocationBloc>().add(LocationFetchEvent());
+    context.read<AuthBloc>().add(AuthLocalUserFetchEvent());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

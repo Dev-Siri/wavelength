@@ -10,7 +10,7 @@ class QuickPicksBloc extends Bloc<QuickPicksEvent, QuickPicksState> {
     on<QuickPicksFetchEvent>(_fetchQuickPicks);
   }
 
-  FutureOr<void> _fetchQuickPicks(
+  Future<void> _fetchQuickPicks(
     QuickPicksFetchEvent event,
     Emitter<QuickPicksState> emit,
   ) async {

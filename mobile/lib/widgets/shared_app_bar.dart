@@ -1,3 +1,4 @@
+import "package:cached_network_image/cached_network_image.dart";
 import "package:country_flags/country_flags.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -7,25 +8,13 @@ import "package:vector_graphics/vector_graphics_compat.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
 import "package:wavelength/bloc/auth/auth_state.dart";
 import "package:wavelength/bloc/location/location_bloc.dart";
-import "package:wavelength/bloc/location/location_event.dart";
 import "package:wavelength/bloc/location/location_state.dart";
 
-class SharedAppBar extends StatefulWidget implements PreferredSizeWidget {
+class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
   const SharedAppBar({super.key});
 
   @override
   Size get preferredSize => Size.fromHeight(AppBar().preferredSize.height);
-
-  @override
-  State<SharedAppBar> createState() => _SharedAppBarState();
-}
-
-class _SharedAppBarState extends State<SharedAppBar> {
-  @override
-  void initState() {
-    context.read<LocationBloc>().add(LocationFetchEvent());
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,9 +44,13 @@ class _SharedAppBarState extends State<SharedAppBar> {
                   ),
                 ),
                 child:
-                    state.user == null
-                        ? Icon(LucideIcons.user, color: Colors.white, size: 28)
-                        : Placeholder(),
+                    state is AuthStateAuthorized
+                        ? CircleAvatar(
+                          backgroundImage: CachedNetworkImageProvider(
+                            state.user.photoUrl ?? "",
+                          ),
+                        )
+                        : Icon(LucideIcons.user, color: Colors.white, size: 28),
               ),
             );
           },
