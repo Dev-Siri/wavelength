@@ -29,13 +29,15 @@
 </script>
 
 <DropdownMenu.Root>
-  <div class="flex rounded-md items-center duration-200 p-2 gap-2 hover:bg-muted w-full pr-4">
+  <div
+    class="flex rounded-md items-center duration-200 p-2 gap-2 hover:bg-muted w-full pr-4 group cursor-pointer"
+  >
     <div
       tabindex={0}
       role="button"
       onclick={playSong}
       onkeydown={e => (e.key === "Enter" || e.key === "Space") && playSong()}
-      class="flex gap-2 text-start w-full group"
+      class="flex gap-2 text-start w-full"
     >
       <div
         class="flex flex-col aspect-square items-center justify-center relative group-hover:rounded-md h-14 w-[70px] duration-200"

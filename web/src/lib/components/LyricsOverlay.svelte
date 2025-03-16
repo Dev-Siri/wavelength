@@ -111,10 +111,7 @@
       </p>
     </div>
   {:else}
-    <div
-      class="flex flex-col pl-4 pt-4 gap-10 h-[470px] scrollbar-hidden overflow-auto"
-      bind:this={lyricsList}
-    >
+    <div class="flex flex-col pl-4 pt-4 gap-10 overflow-hidden" bind:this={lyricsList}>
       {#each lyrics as lyric, i}
         <button
           type="button"
@@ -124,13 +121,12 @@
             ? 'text-white'
             : playerProgressMs > lyric.startMs
               ? 'text-gray-300'
-              : 'text-gray-500'} {i + 1 === lyrics.length ? 'mb-16' : ''}"
+              : 'text-gray-500'} {i + 1 === lyrics.length ? 'mb-2' : ''}"
           id="lyric-{lyric.startMs}"
         >
           {lyric.text}
         </button>
       {/each}
-      <p class="cursor-default mb-10">Lyrics provided by Musixmatch.</p>
     </div>
   {/if}
 {/if}

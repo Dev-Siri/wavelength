@@ -38,7 +38,7 @@
     <Input
       name="q"
       placeholder="Search for playlists..."
-      class="mb-4"
+      class="mb-4 duration-200"
       bind:value={inputValue}
       oninput={debouncedHandleOnInput}
     />
@@ -52,7 +52,7 @@
       <div class="flex flex-col h-full items-center pb-32 rounded-2xl">
         {#if publicPlaylists.data.length}
           {#each publicPlaylists.data as playlist}
-            <PlaylistCard imageClasses="h-12 w-[52px]" {playlist} />
+            <PlaylistCard imageClasses="h-10 w-11" {playlist} />
           {/each}
         {:else}
           <span class="text-5xl text-balance font-black mt-[20%]">

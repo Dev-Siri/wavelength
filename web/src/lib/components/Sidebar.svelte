@@ -51,11 +51,11 @@
       <Compass size={20} />
       <span class="ml-1 hidden md:block">Discover Playlists</span>
     </Button>
-    <Button variant="secondary" onclick={createNewPlaylist}>
-      <Plus size={20} />
-      <span class="mr-5 hidden md:block">Add Playlist</span>
-    </Button>
     {#if $user}
+      <Button variant="secondary" onclick={createNewPlaylist}>
+        <Plus size={20} />
+        <span class="mr-5 hidden md:block">Add Playlist</span>
+      </Button>
       <section class="flex flex-col gap-2 h-[67%] w-full">
         <Library />
       </section>

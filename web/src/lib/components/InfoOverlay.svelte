@@ -46,12 +46,15 @@
         : musicVideoId}
     />
   {/key}
-  <div class="fixed w-full btn-container-gradient rounded-2xl p-3">
+  <div class="flex fixed w-full btn-container-gradient rounded-2xl p-3">
     <Button class="px-3 rounded-full" variant="ghost" onclick={() => ($visiblePanel = null)}>
       <X size={30} />
     </Button>
+    {#if $visiblePanel === "lyrics"}
+      <p class="ml-auto mr-[23%]">Lyrics provided by Musixmatch</p>
+    {/if}
   </div>
-  <div class="mt-14 px-3">
+  <div class="mt-14 px-3 overflow-y-auto h-full">
     {@render children?.()}
   </div>
 </article>
