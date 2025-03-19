@@ -1,14 +1,13 @@
 <script lang="ts">
   import { page } from "$app/state";
   import { Search } from "lucide-svelte";
-  import { onMount } from "svelte";
 
   const queryParam = page.url.searchParams.get("q") ?? "";
 
   let isInputFocused = $state(false);
   let searchInput: HTMLInputElement;
 
-  onMount(() => {
+  $effect(() => {
     function focusHandler(e: KeyboardEvent) {
       // Basically, when the search input isn't focused, it will call .focus()
       // and also, not actually type in the slash. So kinda repurposing the key

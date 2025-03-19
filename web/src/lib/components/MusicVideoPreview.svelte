@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import createYouTubePlayer from "youtube-player";
 
   import { isMusicPlaying, musicPlayer, musicPreviewPlayer } from "$lib/stores/music-player";
   import { musicPlayingNow } from "$lib/stores/music-queue";
 
-  export let musicVideoId: string;
+  const { musicVideoId }: { musicVideoId: string } = $props();
 
   let musicVideoPreview: HTMLDivElement;
 
@@ -21,7 +20,7 @@
     await $musicPreviewPlayer.playVideo();
   }
 
-  onMount(() => {
+  $effect(() => {
     const ytPlayer = createYouTubePlayer(musicVideoPreview, {
       playerVars: {
         controls: 0,
@@ -59,7 +58,7 @@
     };
   });
 
-  $: {
+  $effect(() => {
     async function controlMusicVidToSong() {
       if ($musicPlayingNow?.videoType !== "uvideo" || !$musicPreviewPlayer) return;
 
@@ -75,7 +74,7 @@
     }
 
     controlMusicVidToSong();
-  }
+  });
 </script>
 
 <div

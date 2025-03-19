@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-
   import type { ApiResponse } from "$lib/utils/types";
   import type { LyricsResponse } from "../../routes/api/music/[videoId]/lyrics/types";
 
@@ -19,7 +17,7 @@
   let playerProgressMs = $derived(playerProgress * 1000);
   let currentLyricMs = $derived(lyrics?.find(lyric => lyric.startMs > playerProgressMs) ?? []);
 
-  onMount(() => {
+  $effect(() => {
     async function fetchLyrics() {
       if (!$musicPlayingNow || !$musicPlayer) return;
 
@@ -39,6 +37,8 @@
         if (!jsonCachedResponse.success) {
           isLoading = false;
           hasErrored = true;
+          await lyricsCacheStore.delete(fetchUrl);
+
           return;
         }
 
