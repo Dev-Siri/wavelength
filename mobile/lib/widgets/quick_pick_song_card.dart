@@ -16,6 +16,7 @@ class QuickPickSongCard extends StatelessWidget {
         color: Colors.grey.shade900,
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -23,7 +24,7 @@ class QuickPickSongCard extends StatelessWidget {
               imageUrl: quickPicksItem.thumbnail,
               fit: BoxFit.cover,
               height: 130,
-              width: MediaQuery.of(context).size.width - 250,
+              width: MediaQuery.of(context).size.width / 2.8,
             ),
           ),
           SizedBox(height: 10),

@@ -20,7 +20,7 @@ class QuickPickSongCardSkeleton extends StatelessWidget {
               color: Colors.grey.shade400,
               child: SizedBox(
                 height: 130,
-                width: MediaQuery.of(context).size.width - 250,
+                width: MediaQuery.of(context).size.width / 2.8,
               ),
             ),
           ),
@@ -30,7 +30,7 @@ class QuickPickSongCardSkeleton extends StatelessWidget {
             child: Shimmer(
               child: SizedBox(
                 height: 20,
-                width: MediaQuery.of(context).size.width - 250,
+                width: MediaQuery.of(context).size.width / 2.8,
               ),
             ),
           ),

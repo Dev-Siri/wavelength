@@ -1,3 +1,6 @@
+import "dart:io";
+
+import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_svg/flutter_svg.dart";
@@ -22,13 +25,73 @@ class AppShell extends StatefulWidget {
 }
 
 class _AppShellState extends State<AppShell> {
-  int activeRouteIndex = 0;
+  int _activeRouteIndex = 0;
 
   @override
   void initState() {
     context.read<LocationBloc>().add(LocationFetchEvent());
     context.read<AuthBloc>().add(AuthLocalUserFetchEvent());
     super.initState();
+  }
+
+  List<BottomNavigationBarItem> _getBottomNavItems() => [
+    BottomNavigationBarItem(
+      icon: SvgPicture(
+        AssetBytesLoader(
+          "assets/vectors/lambda${_activeRouteIndex == 0 ? "" : "-gray"}.svg.vec",
+        ),
+        height: 45,
+        width: 45,
+      ),
+      label: "",
+      tooltip: "Home",
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(LucideIcons.compass),
+      label: "",
+      tooltip: "Discover Public Playlists",
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(LucideIcons.library),
+      label: "",
+      tooltip: "Your Library",
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(LucideIcons.search),
+      label: "",
+      tooltip: "Search",
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(LucideIcons.plus),
+      label: "",
+      tooltip: "Create",
+    ),
+  ];
+
+  void _onScreenChange(int value) {
+    if (value < 4) {
+      setState(() => _activeRouteIndex = value);
+    }
+
+    switch (value) {
+      case 0:
+        context.go("/");
+        break;
+      case 1:
+        context.go("/playlists");
+        break;
+      case 2:
+        context.go("/library");
+        break;
+      case 3:
+        context.go("/search");
+        break;
+      case 4:
+        showModalBottomSheet(
+          context: context,
+          builder: (context) => PlaylistCreationBottomSheet(),
+        );
+    }
   }
 
   @override
@@ -42,52 +105,26 @@ class _AppShellState extends State<AppShell> {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: widget.child,
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.grey.shade600,
-          currentIndex: activeRouteIndex,
-          onTap: (value) {
-            if (value < 2) {
-              setState(() => activeRouteIndex = value);
-            }
-
-            switch (value) {
-              case 0:
-                context.go("/");
-                break;
-              case 1:
-                context.go("/playlists");
-                break;
-              case 2:
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) => PlaylistCreationBottomSheet(),
-                );
-            }
-          },
-          items: [
-            BottomNavigationBarItem(
-              icon: SvgPicture(
-                AssetBytesLoader(
-                  "assets/vectors/lambda${activeRouteIndex == 0 ? "" : "-gray"}.svg.vec",
+        bottomNavigationBar:
+            Platform.isIOS
+                ? CupertinoTabBar(
+                  height: 80,
+                  activeColor: Colors.white,
+                  inactiveColor: Colors.grey.shade600,
+                  currentIndex: _activeRouteIndex,
+                  iconSize: 25,
+                  onTap: _onScreenChange,
+                  items: _getBottomNavItems(),
+                )
+                : BottomNavigationBar(
+                  showSelectedLabels: false,
+                  showUnselectedLabels: false,
+                  selectedItemColor: Colors.white,
+                  unselectedItemColor: Colors.grey.shade600,
+                  currentIndex: _activeRouteIndex,
+                  onTap: _onScreenChange,
+                  items: _getBottomNavItems(),
                 ),
-                height: 45,
-                width: 45,
-              ),
-              label: "Home",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(LucideIcons.compass),
-              label: "Discover Playlists",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(LucideIcons.plus),
-              label: "Create",
-            ),
-          ],
-        ),
       ),
     );
   }

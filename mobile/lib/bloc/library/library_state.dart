@@ -1,12 +1,8 @@
 import "package:flutter/foundation.dart";
 
 @immutable
-abstract class LibraryState {}
+class LibraryState {
+  final List playlists;
 
-class LibraryStateDefault extends LibraryState {}
-
-class LibraryStateLoading extends LibraryState {}
-
-class LibraryStateLoadError extends LibraryState {}
-
-class LibraryStateLoadSuccess extends LibraryState {}
+  const LibraryState({required this.playlists});
+}

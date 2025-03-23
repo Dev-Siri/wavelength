@@ -28,16 +28,13 @@ class UserInfoDrawer extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10),
-                              ),
-                              child: CachedNetworkImage(
-                                imageUrl: state.user.photoUrl ?? "",
-                                height: 55,
-                                width: 55,
+                            CircleAvatar(
+                              radius: 30,
+                              backgroundImage: CachedNetworkImageProvider(
+                                state.user.photoUrl ?? "",
                               ),
                             ),
                             SizedBox(width: 10),

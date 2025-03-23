@@ -10,7 +10,7 @@ class ErrorMessageDialog extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.red.shade700,
-        borderRadius: BorderRadius.all(Radius.circular(20)),
+        borderRadius: BorderRadius.circular(20),
       ),
       padding: EdgeInsets.all(20),
       width: MediaQuery.of(context).size.width - 100,

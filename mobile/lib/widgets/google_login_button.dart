@@ -1,3 +1,6 @@
+import "dart:io";
+
+import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_svg/svg.dart";
@@ -12,25 +15,47 @@ class GoogleLoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton.icon(
-        style: ButtonStyle(
-          backgroundColor: WidgetStatePropertyAll<Color>(Colors.white),
-          shape: WidgetStatePropertyAll<OutlinedBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-          ),
-        ),
-        onPressed: () => context.read<AuthBloc>().add(AuthLoginUserEvent()),
-        icon: SvgPicture(
-          AssetBytesLoader("assets/vectors/google-logo.svg.vec"),
-          height: 20,
-        ),
-        label: Text(
-          "Sign in with Google",
-          style: TextStyle(color: Colors.black),
-        ),
-      ),
+      child:
+          Platform.isIOS
+              ? CupertinoButton(
+                color: Colors.white,
+                onPressed:
+                    () => context.read<AuthBloc>().add(AuthLoginUserEvent()),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture(
+                      AssetBytesLoader("assets/vectors/google-logo.svg.vec"),
+                      height: 20,
+                    ),
+                    SizedBox(width: 6),
+                    Text(
+                      "Sign in with Google",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ],
+                ),
+              )
+              : ElevatedButton.icon(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll<Color>(Colors.white),
+                  shape: WidgetStatePropertyAll<OutlinedBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                onPressed:
+                    () => context.read<AuthBloc>().add(AuthLoginUserEvent()),
+                icon: SvgPicture(
+                  AssetBytesLoader("assets/vectors/google-logo.svg.vec"),
+                  height: 20,
+                ),
+                label: Text(
+                  "Sign in with Google",
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
     );
   }
 }
