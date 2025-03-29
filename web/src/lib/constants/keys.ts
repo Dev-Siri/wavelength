@@ -5,3 +5,7 @@ export const cookieKeys = {
 export const cacheKeys = {
   lyricsCache: "lyrics-cache",
 } as const;
+
+export const localStorageKeys = {
+  volume: "volume",
+} as const;

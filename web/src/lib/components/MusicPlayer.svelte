@@ -43,6 +43,14 @@
     const playerState = event.data;
 
     switch (playerState) {
+      // Extra handlers to make sure and sync the state with the player
+      // In case a non-application event causes the video's state to change.
+      case musicPlayerStates.playing:
+        $isMusicPlaying = true;
+        break;
+      case musicPlayerStates.paused:
+        $isMusicPlaying = false;
+        break;
       case musicPlayerStates.ended:
         if ($musicRepeatMode === "one") {
           playMusic();

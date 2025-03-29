@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Volume2, VolumeOff } from "lucide-svelte";
 
+  import { localStorageKeys } from "$lib/constants/keys";
   import { isMusicMuted, musicPlayer } from "$lib/stores/music-player";
 
   import { Button } from "./ui/button";
@@ -9,7 +10,14 @@
   let volume = $state(100);
 
   $effect(() => {
+    const storedVolume = localStorage.getItem(localStorageKeys.volume);
+
+    if (storedVolume) volume = Number(storedVolume);
+  });
+
+  $effect(() => {
     $musicPlayer?.setVolume(volume);
+    localStorage.setItem(localStorageKeys.volume, volume.toString());
   });
 </script>
 
