@@ -4,7 +4,7 @@
   import type { ApiResponse } from "$lib/utils/types";
   import type { youtube_v3 } from "googleapis";
 
-  import { musicPlayingNow } from "$lib/stores/music-queue";
+  import musicQueueStore from "$lib/stores/music-queue.svelte";
   import { compactify, parseHtmlEntities } from "$lib/utils/format";
   import queryClient from "$lib/utils/query-client";
 
@@ -19,16 +19,16 @@
 
   $effect(() => {
     async function fetchData() {
-      if (!$musicPlayingNow) return;
+      if (!musicQueueStore.musicPlayingNow) return;
 
       const [themeColorResponse, statsResponse] = await Promise.all([
         queryClient<ApiResponse<string>>(
           location.toString(),
-          `/api/music/${$musicPlayingNow.videoId}/theme-color`,
+          `/api/music/${musicQueueStore.musicPlayingNow.videoId}/theme-color`,
         ),
         queryClient<ApiResponse<youtube_v3.Schema$VideoStatistics>>(
           location.toString(),
-          `/api/music/${$musicPlayingNow.videoId}/stats`,
+          `/api/music/${musicQueueStore.musicPlayingNow.videoId}/stats`,
         ),
       ]);
 
@@ -40,10 +40,10 @@
   });
 </script>
 
-{#if $musicPlayingNow}
+{#if musicQueueStore.musicPlayingNow}
   <section class="flex h-3/5 p-14 pt-5">
     <Image
-      src={`/api/music/${$musicPlayingNow.videoId}/thumbnail`}
+      src={`/api/music/${musicQueueStore.musicPlayingNow.videoId}/thumbnail`}
       alt="Thumbnail"
       height={256}
       width={256}
@@ -52,19 +52,19 @@
     />
     <div class="ml-16 pt-2">
       <h1
-        class="scroll-m-20 pb-2 {$musicPlayingNow.title.length >= 30
+        class="scroll-m-20 pb-2 {musicQueueStore.musicPlayingNow.title.length >= 30
           ? 'text-4xl'
           : 'text-6xl'} font-semibold tracking-tight transition-colors first:mt-0 text-balance w-full"
       >
-        {parseHtmlEntities($musicPlayingNow.title)}
+        {parseHtmlEntities(musicQueueStore.musicPlayingNow.title)}
       </h1>
       <p class="text-muted-foreground text-2xl ml-1">
-        {$musicPlayingNow.author}
+        {musicQueueStore.musicPlayingNow.author}
       </p>
       <div class="flex items-center mt-4 lg:mt-24 gap-2 justify-center w-fit flex-col lg:flex-row">
         <Button
           class="px-2 gap-2 text-muted-foreground"
-          href="https://youtube.com/watch?v={$musicPlayingNow.videoId}"
+          href="https://youtube.com/watch?v={musicQueueStore.musicPlayingNow.videoId}"
           variant="secondary"
           referrerpolicy="no-referrer"
           target="_blank"
@@ -73,7 +73,7 @@
         </Button>
         <Button
           class="px-2 gap-2 text-muted-foreground"
-          href="https://music.youtube.com/watch?v={$musicPlayingNow.videoId}"
+          href="https://music.youtube.com/watch?v={musicQueueStore.musicPlayingNow.videoId}"
           variant="secondary"
           referrerpolicy="no-referrer"
           target="_blank"
@@ -88,7 +88,7 @@
   {#if videoStats}
     <section>
       <Button
-        href="https://youtube.com/watch?v={$musicPlayingNow.videoId}"
+        href="https://youtube.com/watch?v={musicQueueStore.musicPlayingNow.videoId}"
         variant="secondary"
         referrerpolicy="no-referrer"
         target="_blank"

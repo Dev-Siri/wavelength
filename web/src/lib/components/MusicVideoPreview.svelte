@@ -1,23 +1,28 @@
 <script lang="ts">
   import createYouTubePlayer from "youtube-player";
 
-  import { isMusicPlaying, musicPlayer, musicPreviewPlayer } from "$lib/stores/music-player";
-  import { musicPlayingNow } from "$lib/stores/music-queue";
+  import musicPlayerStore from "$lib/stores/music-player.svelte";
+  import musicQueueStore from "$lib/stores/music-queue.svelte";
 
   const { musicVideoId }: { musicVideoId: string } = $props();
 
   let musicVideoPreview: HTMLDivElement;
 
   async function viewRandomChunks() {
-    if ($musicPlayingNow?.videoType === "uvideo" || !$musicPreviewPlayer) return;
+    if (
+      musicQueueStore.musicPlayingNow?.videoType === "uvideo" ||
+      !musicPlayerStore.musicPreviewPlayer
+    )
+      return;
 
-    const currentTime = await $musicPreviewPlayer.getCurrentTime();
-    const duration = await $musicPreviewPlayer.getDuration();
+    const currentTime = await musicPlayerStore.musicPreviewPlayer.getCurrentTime();
+    const duration = await musicPlayerStore.musicPreviewPlayer.getDuration();
 
-    if (currentTime >= duration - 20) await $musicPreviewPlayer.loadVideoById(musicVideoId, 10);
+    if (currentTime >= duration - 20)
+      await musicPlayerStore.musicPreviewPlayer.loadVideoById(musicVideoId, 10);
 
-    await $musicPreviewPlayer.seekTo(currentTime + 10, true);
-    await $musicPreviewPlayer.playVideo();
+    await musicPlayerStore.musicPreviewPlayer.seekTo(currentTime + 10, true);
+    await musicPlayerStore.musicPreviewPlayer.playVideo();
   }
 
   $effect(() => {
@@ -34,15 +39,15 @@
       },
     });
 
-    musicPreviewPlayer.set(ytPlayer);
+    musicPlayerStore.musicPreviewPlayer = ytPlayer;
     let interval: NodeJS.Timeout;
 
     async function loadVideo() {
-      const playerDuration = (await $musicPlayer?.getCurrentTime()) ?? 0;
+      const playerDuration = (await musicPlayerStore.musicPlayer?.getCurrentTime()) ?? 0;
 
       await ytPlayer.loadVideoById(
         musicVideoId,
-        $musicPlayingNow?.videoType === "uvideo" ? playerDuration : 10,
+        musicQueueStore.musicPlayingNow?.videoType === "uvideo" ? playerDuration : 10,
       );
 
       interval = setInterval(viewRandomChunks, 5000);
@@ -60,16 +65,20 @@
 
   $effect(() => {
     async function controlMusicVidToSong() {
-      if ($musicPlayingNow?.videoType !== "uvideo" || !$musicPreviewPlayer) return;
+      if (
+        musicQueueStore.musicPlayingNow?.videoType !== "uvideo" ||
+        !musicPlayerStore.musicPreviewPlayer
+      )
+        return;
 
-      const playerDuration = (await $musicPlayer?.getCurrentTime()) ?? 0;
+      const playerDuration = (await musicPlayerStore.musicPlayer?.getCurrentTime()) ?? 0;
 
-      if ($isMusicPlaying) {
-        $musicPreviewPlayer.seekTo(playerDuration, true);
-        $musicPreviewPlayer.playVideo();
+      if (musicPlayerStore.isMusicPlaying) {
+        musicPlayerStore.musicPreviewPlayer.seekTo(playerDuration, true);
+        musicPlayerStore.musicPreviewPlayer.playVideo();
       } else {
-        $musicPreviewPlayer.seekTo(playerDuration, true);
-        $musicPreviewPlayer.pauseVideo();
+        musicPlayerStore.musicPreviewPlayer.seekTo(playerDuration, true);
+        musicPlayerStore.musicPreviewPlayer.pauseVideo();
       }
     }
 

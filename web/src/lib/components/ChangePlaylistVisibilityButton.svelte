@@ -5,8 +5,8 @@
   import type { PlayList } from "$lib/db/schema";
   import type { ApiResponse } from "$lib/utils/types";
 
-  import { playlists } from "$lib/stores/playlists";
-  import { user } from "$lib/stores/user";
+  import playlistsStore from "$lib/stores/playlists.svelte";
+  import userStore from "$lib/stores/user.svelte";
   import queryClient from "$lib/utils/query-client";
 
   import Button from "./ui/button/button.svelte";
@@ -20,7 +20,7 @@
   } = $props();
 
   async function handleVisibilityChange() {
-    if (!$user) return;
+    if (!userStore.user) return;
 
     isPublic = !isPublic;
 
@@ -35,10 +35,10 @@
     if (response.success) {
       const response = await queryClient<ApiResponse<PlayList[]>>(
         location.toString(),
-        `/api/playlists/user/${$user.email}`,
+        `/api/playlists/user/${userStore.user.email}`,
       );
 
-      if (response.success) $playlists = response.data;
+      if (response.success) playlistsStore.playlists = response.data;
 
       return;
     }

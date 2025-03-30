@@ -7,8 +7,8 @@
   import type { PlayList } from "$lib/db/schema";
   import type { ApiResponse } from "$lib/utils/types";
 
-  import { playlists } from "$lib/stores/playlists";
-  import { user } from "$lib/stores/user";
+  import playlistsStore from "$lib/stores/playlists.svelte";
+  import userStore from "$lib/stores/user.svelte";
   import { createUploader } from "$lib/utils/uploadthing";
 
   import queryClient from "$lib/utils/query-client";
@@ -56,14 +56,14 @@
 
     invalidateAll();
 
-    if (!$user) return;
+    if (!userStore.user) return;
 
     const response = await queryClient<ApiResponse<PlayList[]>>(
       location.toString(),
-      `/api/playlists/user/${$user.email}`,
+      `/api/playlists/user/${userStore.user.email}`,
     );
 
-    if (response.success) $playlists = response.data;
+    if (response.success) playlistsStore.playlists = response.data;
   }
 </script>
 

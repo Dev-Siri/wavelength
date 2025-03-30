@@ -5,19 +5,19 @@
   import type { PlayList } from "$lib/db/schema";
   import type { ApiResponse } from "$lib/utils/types";
 
-  import { playlists } from "$lib/stores/playlists";
-  import { user } from "$lib/stores/user";
+  import playlistsStore from "$lib/stores/playlists.svelte";
+  import userStore from "$lib/stores/user.svelte";
   import queryClient from "$lib/utils/query-client";
 
   import Library from "./Library.svelte";
   import Button from "./ui/button/button.svelte";
 
   async function createNewPlaylist() {
-    if (!$user) return;
+    if (!userStore.user) return;
 
     const createPlaylistResponse = await queryClient<ApiResponse<string>>(
       location.toString(),
-      `/api/playlists/user/${$user.email}`,
+      `/api/playlists/user/${userStore.user.email}`,
       { method: "POST" },
     );
 
@@ -30,10 +30,10 @@
 
     const playlistsResponse = await queryClient<ApiResponse<PlayList[]>>(
       location.toString(),
-      `/api/playlists/user/${$user.email}`,
+      `/api/playlists/user/${userStore.user.email}`,
     );
 
-    if (playlistsResponse.success) $playlists = playlistsResponse.data;
+    if (playlistsResponse.success) playlistsStore.playlists = playlistsResponse.data;
   }
 </script>
 
@@ -51,7 +51,7 @@
       <Compass size={20} />
       <span class="ml-1 hidden md:block">Discover Playlists</span>
     </Button>
-    {#if $user}
+    {#if userStore.user}
       <Button variant="secondary" onclick={createNewPlaylist}>
         <Plus size={20} />
         <span class="mr-5 hidden md:block">Add Playlist</span>

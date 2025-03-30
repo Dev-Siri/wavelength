@@ -2,7 +2,7 @@
   import { Volume2, VolumeOff } from "lucide-svelte";
 
   import { localStorageKeys } from "$lib/constants/keys";
-  import { isMusicMuted, musicPlayer } from "$lib/stores/music-player";
+  import musicPlayerStore from "$lib/stores/music-player.svelte";
 
   import { Button } from "./ui/button";
   import { Slider } from "./ui/slider";
@@ -16,7 +16,7 @@
   });
 
   $effect(() => {
-    $musicPlayer?.setVolume(volume);
+    musicPlayerStore.musicPlayer?.setVolume(volume);
     localStorage.setItem(localStorageKeys.volume, volume.toString());
   });
 </script>
@@ -25,9 +25,9 @@
   <Button
     variant="ghost"
     class="px-3 rounded-full select-none outline-hidden"
-    onclick={() => ($isMusicMuted = !$isMusicMuted)}
+    onclick={() => (musicPlayerStore.isMusicMuted = !musicPlayerStore.isMusicMuted)}
   >
-    {#if $isMusicMuted}
+    {#if musicPlayerStore.isMusicMuted}
       <VolumeOff size={20} />
     {:else}
       <Volume2 size={20} />

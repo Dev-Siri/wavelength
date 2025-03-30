@@ -3,8 +3,8 @@
   import type { LyricsResponse } from "../../routes/api/music/[videoId]/lyrics/types";
 
   import { cacheKeys } from "$lib/constants/keys";
-  import { musicPlayer, musicPlayerProgress } from "$lib/stores/music-player";
-  import { musicPlayingNow } from "$lib/stores/music-queue";
+  import musicPlayerStore from "$lib/stores/music-player.svelte";
+  import musicQueueStore from "$lib/stores/music-queue.svelte";
   import queryClient from "$lib/utils/query-client";
 
   let lyricsList: HTMLDivElement | null = $state(null);
@@ -13,20 +13,20 @@
   let isLoading = $state(false);
   let hasErrored = $state(false);
 
-  let playerProgress = $derived(($musicPlayerProgress / 100) * duration);
+  let playerProgress = $derived((musicPlayerStore.musicPlayerProgress / 100) * duration);
   let playerProgressMs = $derived(playerProgress * 1000);
   let currentLyricMs = $derived(lyrics?.find(lyric => lyric.startMs > playerProgressMs) ?? []);
 
   $effect(() => {
     async function fetchLyrics() {
-      if (!$musicPlayingNow || !$musicPlayer) return;
+      if (!musicQueueStore.musicPlayingNow || !musicPlayerStore.musicPlayer) return;
 
       isLoading = true;
 
-      duration = await $musicPlayer.getDuration();
+      duration = await musicPlayerStore.musicPlayer.getDuration();
 
       const fetchUrl = new URL(
-        `${location.toString()}/api/music/${$musicPlayingNow.videoId}/lyrics`,
+        `${location.toString()}/api/music/${musicQueueStore.musicPlayingNow.videoId}/lyrics`,
       );
       const lyricsCacheStore = await caches.open(cacheKeys.lyricsCache);
       const storedLyrics = await lyricsCacheStore.match(fetchUrl);
@@ -57,7 +57,7 @@
       try {
         const lyricsResponse = await queryClient<ApiResponse<LyricsResponse>>(
           location.toString(),
-          `/api/music/${$musicPlayingNow.videoId}/lyrics`,
+          `/api/music/${musicQueueStore.musicPlayingNow.videoId}/lyrics`,
         );
 
         if (lyricsResponse.success) {
@@ -99,7 +99,7 @@
   });
 </script>
 
-{#if $musicPlayingNow}
+{#if musicQueueStore.musicPlayingNow}
   {#if isLoading}
     <div class="flex flex-col items-center justify-center pt-52 pl-4">
       <p class="text-5xl font-bold">Loading Lyrics...</p>
@@ -115,7 +115,7 @@
       {#each lyrics as lyric, i}
         <button
           type="button"
-          onclick={() => $musicPlayer?.seekTo(lyric.startMs / 1000, true)}
+          onclick={() => musicPlayerStore.musicPlayer?.seekTo(lyric.startMs / 1000, true)}
           class="font-bold text-start text-3xl cursor-pointer duration-200 hover:text-white {playerProgressMs >
             lyric.startMs && playerProgressMs < lyric.startMs + lyric.durMs
             ? 'text-white'

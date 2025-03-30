@@ -4,14 +4,9 @@
 
   import type { PageData } from "./$types";
 
-  import { playMusic } from "$lib/stores/music-player";
-  import {
-    addToQueue,
-    musicPlayingNow,
-    musicQueue,
-    type QueueableMusic,
-  } from "$lib/stores/music-queue";
-  import { user } from "$lib/stores/user";
+  import musicPlayerStore from "$lib/stores/music-player.svelte";
+  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte";
+  import userStore from "$lib/stores/user.svelte";
 
   import ChangePlaylistVisibilityButton from "$lib/components/ChangePlaylistVisibilityButton.svelte";
   import EditPlaylistDetailsDialog from "$lib/components/EditPlaylistDetailsDialog.svelte";
@@ -28,10 +23,9 @@
   let isRearrangingList = $state(false);
 
   function playPlaylist(songs: QueueableMusic[]) {
-    musicQueue.set([]);
-    addToQueue(...songs);
-    musicPlayingNow.set(songs[0]);
-    playMusic();
+    musicQueueStore.addToQueue(...songs);
+    musicQueueStore.musicPlayingNow = songs[0];
+    musicPlayerStore.playMusic();
   }
 </script>
 
@@ -69,7 +63,7 @@
             {/if}
             <div class="flex flex-col w-3/5 h-full gap-2">
               <span class="text-lg ml-0.5 select-none">Playlist</span>
-              {#if $user?.email === playlistData.data.authorGoogleEmail}
+              {#if userStore.user?.email === playlistData.data.authorGoogleEmail}
                 <Dialog.Trigger class="text-start cursor-pointer">
                   <h1 class="text-6xl font-extrabold">{playlistData.data.name}</h1>
                 </Dialog.Trigger>

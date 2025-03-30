@@ -4,8 +4,8 @@
 
   import type { MusicTrack } from "$lib/server/api/interface/types";
 
-  import { visiblePanel } from "$lib/stores/music-player";
-  import { addToQueue, musicPlayingNow, type QueueableMusic } from "$lib/stores/music-queue";
+  import musicPlayerStore from "$lib/stores/music-player.svelte";
+  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte";
 
   import Image from "./Image.svelte";
   import { Button } from "./ui/button";
@@ -17,9 +17,9 @@
   function playSong() {
     const queueableTrack = { ...topResult, videoType: "track" } satisfies QueueableMusic;
 
-    addToQueue(queueableTrack);
-    musicPlayingNow.set(queueableTrack);
-    $visiblePanel = "playingNow";
+    musicQueueStore.addToQueue(queueableTrack);
+    musicQueueStore.musicPlayingNow = queueableTrack;
+    musicPlayerStore.visiblePanel = "playingNow";
   }
 </script>
 

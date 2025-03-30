@@ -5,10 +5,10 @@
   import type { PlayList, PlayListTrack } from "$lib/db/schema";
   import type { ApiResponse } from "$lib/utils/types";
 
-  import { playMusic, visiblePanel } from "$lib/stores/music-player";
-  import { addToQueue, musicPlayingNow, musicQueue } from "$lib/stores/music-queue";
-  import { playlists } from "$lib/stores/playlists";
-  import { user } from "$lib/stores/user";
+  import musicPlayerStore from "$lib/stores/music-player.svelte";
+  import musicQueueStore from "$lib/stores/music-queue.svelte";
+  import playlistsStore from "$lib/stores/playlists.svelte";
+  import userStore from "$lib/stores/user.svelte";
   import queryClient from "$lib/utils/query-client";
 
   import EditPlaylistDetailsDialog from "./EditPlaylistDetailsDialog.svelte";
@@ -33,7 +33,7 @@
   const { coverImage, name, playlistId, isPublic } = playlist;
 
   async function handleDeletePlaylist() {
-    if (!$user) return;
+    if (!userStore.user) return;
 
     const deletePlaylistResponse = await queryClient<ApiResponse<string>>(
       location.toString(),
@@ -49,10 +49,10 @@
 
     const response = await queryClient<ApiResponse<PlayList[]>>(
       location.toString(),
-      `/api/playlists/user/${$user.email}`,
+      `/api/playlists/user/${userStore.user.email}`,
     );
 
-    if (response.success) $playlists = response.data;
+    if (response.success) playlistsStore.playlists = response.data;
   }
 
   async function playPlaylist() {
@@ -66,11 +66,11 @@
 
     if (!playlistTracksResponse.success) return;
 
-    musicQueue.set([]);
-    addToQueue(...playlistTracksResponse.data);
-    musicPlayingNow.set(playlistTracksResponse.data[0]);
-    playMusic();
-    $visiblePanel = "playingNow";
+    musicQueueStore.musicQueue = [];
+    musicQueueStore.addToQueue(...playlistTracksResponse.data);
+    musicQueueStore.musicPlayingNow = playlistTracksResponse.data[0];
+    musicPlayerStore.playMusic();
+    musicPlayerStore.visiblePanel = "playingNow";
   }
 </script>
 
@@ -106,7 +106,7 @@
   <a
     class="w-full {titleClasses}"
     href="/playlist/{playlistId}"
-    onclick={() => ($visiblePanel = null)}
+    onclick={() => (musicPlayerStore.visiblePanel = null)}
   >
     <div class="text-start">
       <p class="text-md">{name}</p>

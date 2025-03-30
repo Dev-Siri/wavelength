@@ -7,9 +7,9 @@
   import type { youtube_v3 } from "googleapis";
 
   import { YT_IMG_API_URL } from "$lib/constants/urls";
-  import { visiblePanel } from "$lib/stores/music-player";
-  import { addToQueue, musicPlayingNow, type QueueableMusic } from "$lib/stores/music-queue";
-  import { playlists } from "$lib/stores/playlists";
+  import musicPlayerStore from "$lib/stores/music-player.svelte";
+  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte";
+  import playlistsStore from "$lib/stores/playlists.svelte";
   import { durationify, parseHtmlEntities } from "$lib/utils/format";
   import queryClient from "$lib/utils/query-client";
   import type { ApiResponse } from "$lib/utils/types";
@@ -36,9 +36,9 @@
       videoType: "uvideo",
     } satisfies QueueableMusic;
 
-    addToQueue(queueableTrack);
-    musicPlayingNow.set(queueableTrack);
-    $visiblePanel = "playingNow";
+    musicQueueStore.addToQueue(queueableTrack);
+    musicQueueStore.musicPlayingNow = queueableTrack;
+    musicPlayerStore.visiblePanel = "playingNow";
   }
 
   async function addToPlaylist(playlistId: string) {
@@ -129,7 +129,7 @@
       </div>
     </button>
     <DropdownMenu.Content>
-      {#each $playlists as playlist}
+      {#each playlistsStore.playlists as playlist}
         <DropdownMenu.Item
           onclick={() => addToPlaylist(playlist.playlistId)}
           class="flex py-3 gap-2"

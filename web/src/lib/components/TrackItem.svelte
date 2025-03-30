@@ -4,8 +4,8 @@
   import type { VideoTypeEnum } from "$lib/db/schema";
   import type { MusicTrack } from "$lib/server/api/interface/types";
 
-  import { visiblePanel } from "$lib/stores/music-player";
-  import { addToQueue, musicPlayingNow, type QueueableMusic } from "$lib/stores/music-queue";
+  import musicPlayerStore from "$lib/stores/music-player.svelte";
+  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte";
   import { parseHtmlEntities } from "$lib/utils/format";
 
   import Image from "./Image.svelte";
@@ -22,9 +22,9 @@
       videoType: music.videoType ?? "track",
     } satisfies QueueableMusic;
 
-    addToQueue(queueableTrack);
-    musicPlayingNow.set(queueableTrack);
-    $visiblePanel = "playingNow";
+    musicQueueStore.addToQueue(queueableTrack);
+    musicQueueStore.musicPlayingNow = queueableTrack;
+    musicPlayerStore.visiblePanel = "playingNow";
   }
 </script>
 

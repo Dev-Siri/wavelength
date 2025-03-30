@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { musicPlayer, musicPlayerProgress, musicPreviewPlayer } from "$lib/stores/music-player";
-  import { musicPlayingNow } from "$lib/stores/music-queue";
+  import musicPlayerStore from "$lib/stores/music-player.svelte";
+  import musicQueueStore from "$lib/stores/music-queue.svelte";
 
   let progressBarElement: HTMLDivElement;
 
@@ -13,10 +13,10 @@
   let currentSeconds = $derived(Math.floor(currentTime % 60));
 
   $effect(() => {
-    $musicPlayerProgress;
+    musicPlayerStore.musicPlayerProgress;
     async function fetchDurations() {
-      const fetchedTotalDuration = (await $musicPlayer?.getDuration()) ?? 0;
-      const fetchedCurrentTime = (await $musicPlayer?.getCurrentTime()) ?? 0;
+      const fetchedTotalDuration = (await musicPlayerStore.musicPlayer?.getDuration()) ?? 0;
+      const fetchedCurrentTime = (await musicPlayerStore.musicPlayer?.getCurrentTime()) ?? 0;
 
       totalDuration = Math.round(fetchedTotalDuration);
       currentTime = Math.round(fetchedCurrentTime);
@@ -26,24 +26,25 @@
   });
 
   async function onProgressBarClick(event: MouseEvent) {
-    if (!progressBarElement || !$musicPlayer) return;
+    if (!progressBarElement || !musicPlayerStore.musicPlayer) return;
 
     const { left, width } = progressBarElement.getBoundingClientRect();
 
     const clickPositionX = event.clientX - left;
     const clickPercentage = (clickPositionX / width) * 100;
 
-    const duration = await $musicPlayer.getDuration();
+    const duration = await musicPlayerStore.musicPlayer.getDuration();
 
     const newTime = (clickPercentage / 100) * duration;
 
     currentTime = Math.round(newTime);
 
-    await $musicPlayer.seekTo(newTime, true);
+    await musicPlayerStore.musicPlayer.seekTo(newTime, true);
 
-    if ($musicPlayingNow?.videoType === "uvideo") await $musicPreviewPlayer?.seekTo(newTime, true);
+    if (musicQueueStore.musicPlayingNow?.videoType === "uvideo")
+      await musicPlayerStore.musicPreviewPlayer?.seekTo(newTime, true);
 
-    $musicPlayerProgress = (newTime / duration) * 100;
+    musicPlayerStore.musicPlayerProgress = (newTime / duration) * 100;
   }
 </script>
 
@@ -61,11 +62,11 @@
   >
     <div
       class="h-1 bg-primary rounded-full duration-200"
-      style="width: {$musicPlayerProgress}%;"
+      style="width: {musicPlayerStore.musicPlayerProgress}%;"
     ></div>
     <div
       class="absolute h-4 w-4 rounded-full bg-muted-foreground hidden duration-200 border border-muted group-hover:inline"
-      style="margin-left: {$musicPlayerProgress - 3}%;"
+      style="margin-left: {musicPlayerStore.musicPlayerProgress - 3}%;"
     ></div>
   </div>
   <p class="text-sm text-muted-foreground">

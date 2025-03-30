@@ -4,8 +4,8 @@
   import type { ApiResponse } from "$lib/utils/types";
   import type { Snippet } from "svelte";
 
-  import { visiblePanel } from "$lib/stores/music-player";
-  import { musicPlayingNow } from "$lib/stores/music-queue";
+  import musicPlayerStore from "$lib/stores/music-player.svelte";
+  import musicQueueStore from "$lib/stores/music-queue.svelte";
   import queryClient from "$lib/utils/query-client";
 
   import MusicVideoPreview from "./MusicVideoPreview.svelte";
@@ -16,11 +16,11 @@
   let musicVideoId = $state("");
 
   $effect(() => {
-    if ($musicPlayingNow && $musicPlayingNow.videoType !== "uvideo")
-      fetchMusicVideo($musicPlayingNow);
+    if (musicQueueStore.musicPlayingNow && musicQueueStore.musicPlayingNow.videoType !== "uvideo")
+      fetchMusicVideo(musicQueueStore.musicPlayingNow);
   });
 
-  async function fetchMusicVideo(playingNow: NonNullable<typeof $musicPlayingNow>) {
+  async function fetchMusicVideo(playingNow: NonNullable<typeof musicQueueStore.musicPlayingNow>) {
     const musicVideoIdResponse = await queryClient<ApiResponse<{ videoId: string }>>(
       location.toString(),
       `/api/music/${playingNow.videoId}/music-video-preview`,
@@ -41,16 +41,20 @@
 >
   {#key musicVideoId}
     <MusicVideoPreview
-      musicVideoId={$musicPlayingNow?.videoType === "uvideo"
-        ? $musicPlayingNow.videoId
+      musicVideoId={musicQueueStore.musicPlayingNow?.videoType === "uvideo"
+        ? musicQueueStore.musicPlayingNow.videoId
         : musicVideoId}
     />
   {/key}
   <div class="flex fixed w-full btn-container-gradient rounded-2xl p-3">
-    <Button class="px-3 rounded-full" variant="ghost" onclick={() => ($visiblePanel = null)}>
+    <Button
+      class="px-3 rounded-full"
+      variant="ghost"
+      onclick={() => (musicPlayerStore.visiblePanel = null)}
+    >
       <X size={30} />
     </Button>
-    {#if $visiblePanel === "lyrics"}
+    {#if musicPlayerStore.visiblePanel === "lyrics"}
       <p class="ml-auto mr-[23%]">Lyrics provided by Musixmatch</p>
     {/if}
   </div>

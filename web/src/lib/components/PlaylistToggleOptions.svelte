@@ -6,7 +6,7 @@
   import type { MusicTrack } from "$lib/server/api/interface/types";
   import type { ApiResponse } from "$lib/utils/types";
 
-  import { playlists } from "$lib/stores/playlists";
+  import playlistsStore from "$lib/stores/playlists.svelte";
   import queryClient from "$lib/utils/query-client";
 
   import DropdownMenuItem from "./ui/dropdown-menu/dropdown-menu-item.svelte";
@@ -36,7 +36,7 @@
   }
 </script>
 
-{#each $playlists as playlist}
+{#each playlistsStore.playlists as playlist}
   <DropdownMenuItem onclick={() => addToPlaylist(playlist.playlistId)} class="flex py-3 gap-2">
     <Plus size={20} /> Toggle from "{playlist.name}"
   </DropdownMenuItem>

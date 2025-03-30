@@ -2,61 +2,62 @@
   import { FastForward, Pause, Play, Repeat, Repeat1, Rewind } from "lucide-svelte";
   import { fade } from "svelte/transition";
 
-  import { isMusicPlaying, musicRepeatMode, pauseMusic, playMusic } from "$lib/stores/music-player";
-  import { musicPlayingNow, musicQueue } from "$lib/stores/music-queue";
+  import musicPlayerStore from "$lib/stores/music-player.svelte";
+  import musicQueueStore from "$lib/stores/music-queue.svelte";
 
   import ProgressBar from "./ProgressBar.svelte";
   import { Button } from "./ui/button";
   import * as Tooltip from "./ui/tooltip";
 
   function changeMusicRepeatMode() {
-    if ($musicRepeatMode === "none") {
-      $musicRepeatMode = "all";
-    } else if ($musicRepeatMode === "all") {
-      $musicRepeatMode = "one";
+    if (musicPlayerStore.musicRepeatMode === "none") {
+      musicPlayerStore.musicRepeatMode = "all";
+    } else if (musicPlayerStore.musicRepeatMode === "all") {
+      musicPlayerStore.musicRepeatMode = "one";
     } else {
-      $musicRepeatMode = "none";
+      musicPlayerStore.musicRepeatMode = "none";
     }
   }
 
   function playNextSong() {
-    if (!$musicPlayingNow) return;
+    if (!musicQueueStore.musicPlayingNow) return;
 
-    const songThatWasPlayedIndex = $musicQueue.findIndex(
-      track => $musicPlayingNow.title === track.title,
+    const songThatWasPlayedIndex = musicQueueStore.musicQueue.findIndex(
+      track => musicQueueStore.musicPlayingNow?.title === track.title,
     );
 
     let nextIndex = 0;
 
-    if ($musicQueue.length - 1 === songThatWasPlayedIndex) {
-      if ($musicRepeatMode === "all") nextIndex = 0;
+    if (musicQueueStore.musicQueue.length - 1 === songThatWasPlayedIndex) {
+      if (musicPlayerStore.musicRepeatMode === "all") nextIndex = 0;
       else return;
     } else {
       nextIndex = songThatWasPlayedIndex + 1;
     }
 
-    musicPlayingNow.set($musicQueue[nextIndex]);
-    playMusic();
+    musicQueueStore.musicPlayingNow = musicQueueStore.musicQueue[nextIndex];
+    musicPlayerStore.playMusic();
   }
 
   function playPreviousSong() {
-    if (!$musicPlayingNow) return;
+    if (!musicQueueStore.musicPlayingNow) return;
 
-    const songThatWasPlayedIndex = $musicQueue.findIndex(
-      track => $musicPlayingNow.title === track.title,
+    const songThatWasPlayedIndex = musicQueueStore.musicQueue.findIndex(
+      track => musicQueueStore.musicPlayingNow?.title === track.title,
     );
 
     let prevIndex = 0;
 
     if (songThatWasPlayedIndex === 0) {
-      if ($musicRepeatMode === "all") prevIndex = $musicQueue.length - 1;
+      if (musicPlayerStore.musicRepeatMode === "all")
+        prevIndex = musicQueueStore.musicQueue.length - 1;
       else return;
     } else {
       prevIndex = songThatWasPlayedIndex - 1;
     }
 
-    musicPlayingNow.set($musicQueue[prevIndex]);
-    playMusic();
+    musicQueueStore.musicPlayingNow = musicQueueStore.musicQueue[prevIndex];
+    musicPlayerStore.playMusic();
   }
 </script>
 
@@ -65,7 +66,7 @@
     <Tooltip.Trigger>
       <Button
         class="rounded-full h-10 w-10 p-2"
-        disabled={!$musicPlayingNow}
+        disabled={!musicQueueStore.musicPlayingNow}
         variant="ghost"
         onclick={playPreviousSong}
       >
@@ -80,10 +81,12 @@
     <Tooltip.Trigger>
       <Button
         class="rounded-full h-10 w-10 p-1"
-        disabled={!$musicPlayingNow}
-        onclick={$isMusicPlaying ? pauseMusic : playMusic}
+        disabled={!musicQueueStore.musicPlayingNow}
+        onclick={musicPlayerStore.isMusicPlaying
+          ? musicPlayerStore.pauseMusic
+          : musicPlayerStore.playMusic}
       >
-        {#if $isMusicPlaying}
+        {#if musicPlayerStore.isMusicPlaying}
           <Pause fill="black" size={20} font-weight="normal" />
         {:else}
           <Play fill="black" size={20} font-weight="normal" />
@@ -91,14 +94,14 @@
       </Button>
     </Tooltip.Trigger>
     <Tooltip.Content>
-      <p>{$isMusicPlaying ? "Pause" : "Play"}</p>
+      <p>{musicPlayerStore.isMusicPlaying ? "Pause" : "Play"}</p>
     </Tooltip.Content>
   </Tooltip.Root>
   <Tooltip.Root>
     <Tooltip.Trigger>
       <Button
         class="rounded-full h-10 w-10 p-2"
-        disabled={!$musicPlayingNow}
+        disabled={!musicQueueStore.musicPlayingNow}
         variant="ghost"
         onclick={playNextSong}
       >
@@ -112,11 +115,11 @@
   <Tooltip.Root>
     <Tooltip.Trigger>
       <Button class="rounded-full h-10 w-10 p-2" variant="ghost" onclick={changeMusicRepeatMode}>
-        {#if $musicRepeatMode === "none"}
+        {#if musicPlayerStore.musicRepeatMode === "none"}
           <div in:fade>
             <Repeat opacity={0.4} font-weight="normal" size={22} />
           </div>
-        {:else if $musicRepeatMode === "all"}
+        {:else if musicPlayerStore.musicRepeatMode === "all"}
           <div in:fade>
             <Repeat fill="white" font-weight="normal" size={22} />
           </div>
@@ -128,9 +131,9 @@
       </Button>
     </Tooltip.Trigger>
     <Tooltip.Content>
-      {#if $musicRepeatMode === "none"}
+      {#if musicPlayerStore.musicRepeatMode === "none"}
         <p>Enable Repeat All</p>
-      {:else if $musicRepeatMode === "all"}
+      {:else if musicPlayerStore.musicRepeatMode === "all"}
         <p>Enable Repeat One</p>
       {:else}
         <p>Disable Repeat</p>

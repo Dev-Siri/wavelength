@@ -1,22 +1,22 @@
 <script lang="ts">
   import { MicVocal, PlaySquare } from "lucide-svelte";
 
-  import { musicPlayer, musicPreviewPlayer, visiblePanel } from "$lib/stores/music-player";
-  import { musicPlayingNow } from "$lib/stores/music-queue";
+  import musicPlayerStore from "$lib/stores/music-player.svelte";
+  import musicQueueStore from "$lib/stores/music-queue.svelte";
 
   import { Button } from "./ui/button";
   import * as Tooltip from "./ui/tooltip";
   import VolumeSlider from "./VolumeSlider.svelte";
 
   function syncUVideoToMusic(fn: () => void) {
-    if ($musicPlayingNow?.videoType !== "uvideo") return fn();
+    if (musicQueueStore.musicPlayingNow?.videoType !== "uvideo") return fn();
 
     fn();
 
     setTimeout(async () => {
-      const currentTime = (await $musicPlayer?.getCurrentTime()) ?? 0;
+      const currentTime = (await musicPlayerStore.musicPlayer?.getCurrentTime()) ?? 0;
 
-      $musicPreviewPlayer?.seekTo(currentTime, true);
+      musicPlayerStore.musicPreviewPlayer?.seekTo(currentTime, true);
     }, 1500);
   }
 </script>
@@ -28,12 +28,16 @@
       class="w-fit px-3 rounded-full"
       onclick={() =>
         syncUVideoToMusic(
-          () => ($visiblePanel = $visiblePanel === "playingNow" ? null : "playingNow"),
+          () =>
+            (musicPlayerStore.visiblePanel =
+              musicPlayerStore.visiblePanel === "playingNow" ? null : "playingNow"),
         )}
     >
       <PlaySquare
         size={20}
-        class={$visiblePanel === "playingNow" ? "text-primary" : "text-muted-foreground"}
+        class={musicPlayerStore.visiblePanel === "playingNow"
+          ? "text-primary"
+          : "text-muted-foreground"}
       />
     </Button>
   </Tooltip.Trigger>
@@ -46,13 +50,19 @@
     <Button
       variant="ghost"
       class="w-fit px-3 rounded-full"
-      disabled={$musicPlayingNow?.videoType === "uvideo"}
+      disabled={musicQueueStore.musicPlayingNow?.videoType === "uvideo"}
       onclick={() =>
-        syncUVideoToMusic(() => ($visiblePanel = $visiblePanel === "lyrics" ? null : "lyrics"))}
+        syncUVideoToMusic(
+          () =>
+            (musicPlayerStore.visiblePanel =
+              musicPlayerStore.visiblePanel === "lyrics" ? null : "lyrics"),
+        )}
     >
       <MicVocal
         size={20}
-        class={$visiblePanel === "lyrics" ? "text-primary" : "text-muted-foreground"}
+        class={musicPlayerStore.visiblePanel === "lyrics"
+          ? "text-primary"
+          : "text-muted-foreground"}
       />
     </Button>
   </Tooltip.Trigger>

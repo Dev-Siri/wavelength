@@ -3,7 +3,7 @@
   import "flag-icons/css/flag-icons.min.css";
   import { LogOut } from "lucide-svelte";
 
-  import { user } from "$lib/stores/user";
+  import userStore from "$lib/stores/user.svelte";
   import { codeToCountryName } from "$lib/utils/countries";
 
   import Image from "./Image.svelte";
@@ -22,7 +22,7 @@
   <div class="w-1/2 pl-2">
     <SearchBar />
   </div>
-  {#if !$user}
+  {#if !userStore.user}
     <Button onclick={() => signIn("google")} class="gap-1">
       <GoogleLogo />
       Sign in with Google
@@ -41,10 +41,10 @@
       <DropdownMenu.Root>
         <DropdownMenu.Trigger>
           <div class="flex items-center gap-2">
-            {#if $user.image}
+            {#if userStore.user.image}
               <Image
-                src={$user.image}
-                alt="{$user.name}'s Avatar'"
+                src={userStore.user.image}
+                alt="{userStore.user.name}'s Avatar'"
                 height={40}
                 width={40}
                 class="rounded-full"
@@ -54,10 +54,10 @@
         </DropdownMenu.Trigger>
         <DropdownMenu.Content>
           <DropdownMenu.Label class="text-end text-xl leading-none">
-            {$user.name}
+            {userStore.user.name}
           </DropdownMenu.Label>
           <DropdownMenu.Label class="text-end text-sm font-normal -mt-2">
-            {$user.email ?? ""}
+            {userStore.user.email ?? ""}
           </DropdownMenu.Label>
           <DropdownMenu.Separator />
           <DropdownMenu.Item

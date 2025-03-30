@@ -5,13 +5,8 @@
 
   import type { PageData } from "./$types";
 
-  import { playMusic } from "$lib/stores/music-player";
-  import {
-    addToQueue,
-    musicPlayingNow,
-    musicQueue,
-    type QueueableMusic,
-  } from "$lib/stores/music-queue";
+  import musicPlayerStore from "$lib/stores/music-player.svelte";
+  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte";
 
   import Image from "$lib/components/Image.svelte";
   // import LinkBeautifier from "$lib/components/LinkBeautifier.svelte";
@@ -23,10 +18,9 @@
   const { data }: { data: PageData } = $props();
 
   function playArtistsSongs(songs: QueueableMusic[]) {
-    musicQueue.set([]);
-    addToQueue(...songs);
-    musicPlayingNow.set(songs[0]);
-    playMusic();
+    musicQueueStore.addToQueue(...songs);
+    musicQueueStore.musicPlayingNow = songs[0];
+    musicPlayerStore.playMusic();
   }
 </script>
 

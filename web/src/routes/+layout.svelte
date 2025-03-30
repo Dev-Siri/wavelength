@@ -11,9 +11,9 @@
   import type { Snippet } from "svelte";
   import type { LayoutData } from "./$types";
 
-  import { visiblePanel } from "$lib/stores/music-player";
-  import { musicPlayingNow } from "$lib/stores/music-queue";
-  import { user } from "$lib/stores/user";
+  import musicPlayerStore from "$lib/stores/music-player.svelte";
+  import musicQueueStore from "$lib/stores/music-queue.svelte";
+  import userStore from "$lib/stores/user.svelte";
 
   import InfoOverlay from "$lib/components/InfoOverlay.svelte";
   import LyricsOverlay from "$lib/components/LyricsOverlay.svelte";
@@ -74,7 +74,7 @@
   const { region, session } = data;
 
   $effect(() => {
-    user.set(session?.user as User | null);
+    userStore.user = session?.user as User | null;
   });
 </script>
 
@@ -94,18 +94,18 @@
         <main
           class="pt-[3.5%] mt-[8%] min-923:mt-[4.5%] lg:mt-[3%] bg-primary-foreground h-screen rounded-tl-md z-30"
         >
-          {#if $musicPlayingNow && $visiblePanel}
+          {#if musicQueueStore.musicPlayingNow && musicPlayerStore.visiblePanel}
             <div
               class="absolute h-[76%] bg-primary-foreground w-[80%] z-100 rounded-2xl"
               in:fly={{ y: 20, duration: 100 }}
               out:fly={{ y: 20, duration: 100 }}
             >
               <InfoOverlay>
-                {#if $visiblePanel === "playingNow"}
+                {#if musicPlayerStore.visiblePanel === "playingNow"}
                   <div in:fly={{ x: -200, y: 0 }} out:fly={{ x: -200, y: 0 }}>
                     <NowPlayingOverlay />
                   </div>
-                {:else if $visiblePanel === "lyrics"}
+                {:else if musicPlayerStore.visiblePanel === "lyrics"}
                   <div in:fly={{ x: -200, y: 0 }} out:fly={{ x: 400, y: 0 }}>
                     <LyricsOverlay />
                   </div>
