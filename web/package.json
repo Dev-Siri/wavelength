@@ -63,7 +63,7 @@
     "svelte-splitpanes": "^8.0.9",
     "tailwind-merge": "^3.0.2",
     "tailwind-variants": "^0.3.1",
-    "uploadthing": "^7.5.2",
+    "uploadthing": "^7.6.0",
     "youtube-player": "^5.6.0",
     "zod": "^3.24.2"
   }
