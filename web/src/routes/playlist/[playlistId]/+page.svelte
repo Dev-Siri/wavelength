@@ -70,7 +70,7 @@
             <div class="flex flex-col w-3/5 h-full gap-2">
               <span class="text-lg ml-0.5 select-none">Playlist</span>
               {#if $user?.email === playlistData.data.authorGoogleEmail}
-                <Dialog.Trigger class="text-start">
+                <Dialog.Trigger class="text-start cursor-pointer">
                   <h1 class="text-6xl font-extrabold">{playlistData.data.name}</h1>
                 </Dialog.Trigger>
               {:else}
