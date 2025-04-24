@@ -1,11 +1,16 @@
 <script lang="ts">
   import { page } from "$app/state";
+  import { localStorageKeys } from "$lib/constants/keys";
+  import { isRecentSearchesArray } from "$lib/utils/validation/recent-searches-schema";
   import { Search } from "lucide-svelte";
+  import SearchSuggestions from "./SearchSuggestions.svelte";
 
   const queryParam = page.url.searchParams.get("q") ?? "";
 
   let isInputFocused = $state(false);
+  let isHoveringOverSuggestions = $state(false);
   let searchInput: HTMLInputElement;
+  let q = $state(page.url.pathname.includes("/search") ? queryParam : "");
 
   $effect(() => {
     function focusHandler(e: KeyboardEvent) {
@@ -30,13 +35,26 @@
 
     return () => document.removeEventListener("keydown", focusHandler);
   });
+
+  function handleStoringSearchTerms() {
+    const storedSearches = localStorage.getItem(localStorageKeys.recentSearches);
+    const parsedSearches = JSON.parse(storedSearches || "[]");
+
+    if (!isRecentSearchesArray(parsedSearches)) return;
+
+    if (parsedSearches.includes(q)) return;
+
+    const newSearches = [q, ...parsedSearches.slice(0, 4)];
+    localStorage.setItem(localStorageKeys.recentSearches, JSON.stringify(newSearches));
+  }
 </script>
 
 <form
   action="/search"
   method="GET"
-  class="flex p-2 duration-200 w-full rounded-full border-2 border-secondary items-center bg-secondary gap-2 pl-4"
+  class="flex relative p-2 duration-200 w-full rounded-full border-2 border-secondary items-center bg-secondary gap-2 pl-4"
   class:focused-input={isInputFocused}
+  onsubmit={handleStoringSearchTerms}
 >
   <Search size={20} />
   <input
@@ -46,11 +64,21 @@
     class="bg-transparent outline-hidden w-full"
     autocomplete="off"
     id="search-input"
-    value={page.url.pathname.includes("/search") ? queryParam : ""}
+    bind:value={q}
     bind:this={searchInput}
     onfocus={() => (isInputFocused = true)}
     onblur={() => (isInputFocused = false)}
   />
+  {#if isInputFocused || isHoveringOverSuggestions}
+    <div
+      class="absolute inset-0 top-[105%] left-[3%] w-full -ml-4"
+      role="list"
+      onmouseenter={() => (isHoveringOverSuggestions = true)}
+      onmouseleave={() => (isHoveringOverSuggestions = false)}
+    >
+      <SearchSuggestions {q} />
+    </div>
+  {/if}
 </form>
 
 <style lang="postcss">
