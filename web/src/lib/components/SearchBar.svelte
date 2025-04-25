@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state";
   import { localStorageKeys } from "$lib/constants/keys";
+  import musicPlayerStore from "$lib/stores/music-player.svelte";
   import { isRecentSearchesArray } from "$lib/utils/validation/recent-searches-schema";
   import { Search } from "lucide-svelte";
   import SearchSuggestions from "./SearchSuggestions.svelte";
@@ -49,6 +50,16 @@
   }
 </script>
 
+{#if (isInputFocused || isHoveringOverSuggestions) && !musicPlayerStore.visiblePanel}
+  <div
+    class="absolute inset-0 top-full left-[3%] w-2/5 -ml-14 z-9999"
+    role="list"
+    onmouseenter={() => (isHoveringOverSuggestions = true)}
+    onmouseleave={() => (isHoveringOverSuggestions = false)}
+  >
+    <SearchSuggestions {q} />
+  </div>
+{/if}
 <form
   action="/search"
   method="GET"
@@ -69,16 +80,6 @@
     onfocus={() => (isInputFocused = true)}
     onblur={() => (isInputFocused = false)}
   />
-  {#if isInputFocused || isHoveringOverSuggestions}
-    <div
-      class="absolute inset-0 top-[105%] left-[3%] w-full -ml-4"
-      role="list"
-      onmouseenter={() => (isHoveringOverSuggestions = true)}
-      onmouseleave={() => (isHoveringOverSuggestions = false)}
-    >
-      <SearchSuggestions {q} />
-    </div>
-  {/if}
 </form>
 
 <style lang="postcss">

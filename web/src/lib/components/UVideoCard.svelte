@@ -96,7 +96,7 @@
       <div class="fade-shadow"></div>
       <Tooltip.Root>
         <Tooltip.Trigger
-          class="absolute bottom-0 w-full right-0 p-4 text-xl text-left font-semibold opacity-100 z-50"
+          class="absolute bottom-0 w-full right-0 p-4 text-xl text-left font-semibold opacity-100 z-40"
         >
           <p class="text-start">
             {parseHtmlEntities(
@@ -111,7 +111,7 @@
         </Tooltip.Content>
       </Tooltip.Root>
       <div
-        class="absolute flex inset-0 bottom-auto justify-between w-full left-auto z-50 pr-4 pt-2"
+        class="absolute flex inset-0 bottom-auto justify-between w-full left-auto z-40 pr-4 pt-2"
         role="presentation"
         onclick={e => e.stopImmediatePropagation()}
       >
@@ -123,7 +123,7 @@
             <MoreHorizontal />
           </button>
         </DropdownMenu.Trigger>
-        <p class=" font-bold">
+        <p class="font-bold">
           {uvideo.snippet.channelTitle}
         </p>
       </div>

@@ -33,11 +33,11 @@
   }
 </script>
 
-<div class="bg-black rounded-2xl w-full overflow-hidden">
+<div class="bg-black rounded-2xl w-full overflow-hidden shadow-2xl">
   {#if filteredSearchTerms.length}
     <ul>
       {#each filteredSearchTerms as searchTerm}
-        <li class="flex justify-center items-center h-full w-full backdrop-opacity-20">
+        <li class="flex justify-center items-center h-full w-full backdrop-opacity-20 z-9999">
           <a
             href="/search?q={encodeURIComponent(searchTerm)}"
             class="h-full w-full p-4 hover:bg-secondary duration-200"
