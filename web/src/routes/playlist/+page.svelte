@@ -30,7 +30,7 @@
 </script>
 
 <div
-  class="h-full w-full p-4 bg-black rounded-2xl"
+  class="h-full w-full p-4 bg-black rounded-2xl pt-10"
   in:fly={{ y: 20, duration: 100 }}
   out:fly={{ y: 20, duration: 100 }}
 >

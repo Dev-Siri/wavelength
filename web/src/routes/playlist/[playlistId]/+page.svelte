@@ -31,7 +31,7 @@
 
 <Dialog.Root>
   <div
-    class="flex flex-col h-full w-full bg-black rounded-2xl"
+    class="flex flex-col h-full w-full bg-black rounded-2xl mt-8"
     in:fly={{ y: 20, duration: 100 }}
     out:fly={{ y: 20, duration: 100 }}
   >

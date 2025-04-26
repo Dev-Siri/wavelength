@@ -84,7 +84,7 @@
 </svelte:head>
 
 <Tooltip.Provider>
-  <div class="h-screen">
+  <div class="h-screen bg-primary-foreground">
     <Splitpanes class="h-[86vh]">
       <Pane class="bg-primary-foreground rounded-tr-md rounded-br-md" {...sizes.sidebar}>
         <Sidebar />
@@ -92,7 +92,7 @@
       <Pane class="h-full w-full bg-primary-foreground" size={sizes.content}>
         <TopBar {region} />
         <main
-          class="pt-[3.5%] mt-[8%] min-923:mt-[4.5%] lg:mt-[3%] bg-primary-foreground h-screen rounded-tl-md z-30"
+          class="mt-[8%] min-923:mt-[4.5%] lg:mt-[3%] bg-primary-foreground h-screen rounded-tl-md z-30"
         >
           {#if musicQueueStore.musicPlayingNow && musicPlayerStore.visiblePanel}
             <div

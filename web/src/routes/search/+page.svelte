@@ -14,7 +14,7 @@
 </script>
 
 <div class="h-screen py-4 px-2 overflow-auto pb-[20%]">
-  <div class="flex w-full gap-5">
+  <div class="flex w-full gap-5 mt-8">
     {#await data.pageData.songResponse}
       <div class="w-2/3">
         <h2 class="text-3xl mb-3 font-bold">Top Result</h2>
