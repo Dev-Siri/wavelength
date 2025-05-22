@@ -13,7 +13,7 @@
   <h3 class="scroll-m-20 text-3xl tracking-tight my-4">
     Popular Music in {codeToCountryName(data.region)}
   </h3>
-  <div class="flex flex-wrap w-full gap-5">
+  <div class="flex flex-wrap w-full justify-between">
     {#await data.pageData}
       {#each new Array(10) as _}
         <MusicCardSkeleton />

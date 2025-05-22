@@ -25,7 +25,7 @@
 </script>
 
 <div
-  class="relative flex flex-col w-52 p-2 duration-200 hover:bg-muted rounded-2xl cursor-pointer group"
+  class="relative flex flex-col p-2 duration-200 hover:bg-muted rounded-2xl cursor-pointer group"
   tabindex={0}
   role="button"
   onclick={playSong}
@@ -33,7 +33,7 @@
   onmouseenter={() => (isHoveringCard = true)}
   onmouseleave={() => (isHoveringCard = false)}
 >
-  <div class="h-44 w-48 p-3 relative rounded-2xl">
+  <div class="h-3/4 w-full p-3 relative rounded-2xl">
     <div class="h-full w-full rounded-2xl relative inline-block thumbnail-cover">
       <Image
         src={music.thumbnail}
@@ -56,7 +56,7 @@
   {#if music.title}
     <Tooltip.Root>
       <Tooltip.Trigger>
-        <p class="w-full text-ellipsis mt-2 text-secondary-foreground text-sm text-balance">
+        <p class="text-ellipsis mt-2 text-secondary-foreground text-sm text-balance w-52">
           {music.title} - {music.author}
         </p>
       </Tooltip.Trigger>

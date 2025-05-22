@@ -43,7 +43,7 @@
     "vite": "^6.2.0"
   },
   "dependencies": {
-    "@auth/sveltekit": "^1.7.4",
+    "@auth/sveltekit": "^1.9.2",
     "@neondatabase/serverless": "^0.10.4",
     "@rodrigodagostino/svelte-sortable-list": "^0.10.16",
     "@uploadthing/svelte": "^7.3.0",
