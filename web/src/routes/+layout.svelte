@@ -62,12 +62,26 @@
     const preventRightClick = (e: MouseEvent) => e.preventDefault();
     const recalculateScreenSize = () => (screenSize = window.innerWidth);
 
+    function handleMusicPlayerSwitchState(e: KeyboardEvent) {
+      if (
+        e.key === "space" &&
+        document.activeElement instanceof HTMLElement &&
+        !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName) &&
+        !document.activeElement.isContentEditable
+      ) {
+        e.preventDefault();
+        musicPlayerStore.playMusic();
+      }
+    }
+
+    document.addEventListener("keydown", handleMusicPlayerSwitchState);
     document.addEventListener("contextmenu", preventRightClick);
     document.addEventListener("resize", recalculateScreenSize);
 
     return () => {
       document.removeEventListener("contextmenu", preventRightClick);
       document.removeEventListener("resize", recalculateScreenSize);
+      document.removeEventListener("keydown", handleMusicPlayerSwitchState);
     };
   });
 
