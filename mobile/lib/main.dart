@@ -4,6 +4,7 @@ import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:google_sign_in/google_sign_in.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
+import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/location/location_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_bloc.dart";
 import "package:wavelength/bloc/quick_picks/quick_picks_bloc.dart";
@@ -25,6 +26,7 @@ class App extends StatelessWidget {
         BlocProvider(create: (_) => MusicPlayerBloc()),
         BlocProvider(create: (_) => QuickPicksBloc()),
         BlocProvider(create: (_) => LocationBloc()),
+        BlocProvider(create: (_) => LibraryBloc()),
         BlocProvider(
           create:
               (_) => AuthBloc(
@@ -46,6 +48,7 @@ class App extends StatelessWidget {
           scaffoldBackgroundColor: Colors.black,
           appBarTheme: AppBarTheme(backgroundColor: Colors.black),
           fontFamily: "Geist",
+          fontFamilyFallback: ["AppleColorEmoji", "NotoColorEmoji"],
         ),
       ),
     );

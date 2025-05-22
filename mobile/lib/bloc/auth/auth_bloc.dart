@@ -16,6 +16,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(this.googleSignin, this.securedStorage) : super(AuthStateInitial()) {
     on<AuthLocalUserFetchEvent>(_fetchLocalUser);
     on<AuthLoginUserEvent>(_login);
+    on<AuthLogoutUserEvent>(_logout);
   }
 
   Future<void> _fetchLocalUser(
@@ -48,6 +49,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       emit(AuthStateAuthorized(user: localUser));
     } catch (err) {
+      emit(AuthStateUnauthorized());
+    }
+  }
+
+  Future<void> _logout(
+    AuthLogoutUserEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    try {
+      await googleSignin.signOut();
+      await securedStorage.delete(key: userKey);
+    } finally {
       emit(AuthStateUnauthorized());
     }
   }

@@ -7,6 +7,32 @@ import "package:wavelength/api/models/playlist.dart";
 import "package:wavelength/constants.dart";
 
 class PlaylistsRepo {
+  static Future<ApiResponse> fetchUserPlaylists({required String email}) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$backendUrl/playlists/user/$email"),
+      );
+      final decodedResponse = await compute((stringResponse) {
+        final decodedJson = jsonDecode(stringResponse);
+        final decodedData = ApiResponse.fromJson(decodedJson, (playlists) {
+          final listOfItems = playlists as List?;
+
+          if (listOfItems == null) return [];
+
+          return listOfItems
+              .map((final playlist) => Playlist.fromJson(playlist))
+              .toList();
+        });
+
+        return decodedData;
+      }, response.body);
+
+      return decodedResponse;
+    } catch (_) {
+      return ApiResponse(success: false, data: null);
+    }
+  }
+
   static Future<ApiResponse> fetchPublicPlaylists({required String? q}) async {
     try {
       final response = await http.get(
@@ -26,8 +52,6 @@ class PlaylistsRepo {
 
         return decodedData;
       }, response.body);
-
-      print(decodedResponse);
 
       return decodedResponse;
     } catch (_) {

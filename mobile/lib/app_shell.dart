@@ -9,6 +9,9 @@ import "package:vector_graphics/vector_graphics.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
 import "package:wavelength/bloc/auth/auth_event.dart";
+import "package:wavelength/bloc/auth/auth_state.dart";
+import "package:wavelength/bloc/library/library_bloc.dart";
+import "package:wavelength/bloc/library/library_event.dart";
 import "package:wavelength/bloc/location/location_bloc.dart";
 import "package:wavelength/bloc/location/location_event.dart";
 import "package:wavelength/widgets/playlist_creation_bottom_sheet.dart";
@@ -31,6 +34,7 @@ class _AppShellState extends State<AppShell> {
   void initState() {
     context.read<LocationBloc>().add(LocationFetchEvent());
     context.read<AuthBloc>().add(AuthLocalUserFetchEvent());
+
     super.initState();
   }
 
@@ -49,17 +53,12 @@ class _AppShellState extends State<AppShell> {
     BottomNavigationBarItem(
       icon: Icon(LucideIcons.compass),
       label: "",
-      tooltip: "Discover Public Playlists",
+      tooltip: "Explore",
     ),
     BottomNavigationBarItem(
       icon: Icon(LucideIcons.library),
       label: "",
       tooltip: "Your Library",
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(LucideIcons.search),
-      label: "",
-      tooltip: "Search",
     ),
     BottomNavigationBarItem(
       icon: Icon(LucideIcons.plus),
@@ -78,15 +77,12 @@ class _AppShellState extends State<AppShell> {
         context.go("/");
         break;
       case 1:
-        context.go("/playlists");
+        context.go("/explore");
         break;
       case 2:
         context.go("/library");
         break;
       case 3:
-        context.go("/search");
-        break;
-      case 4:
         showModalBottomSheet(
           context: context,
           builder: (context) => PlaylistCreationBottomSheet(),
@@ -103,7 +99,16 @@ class _AppShellState extends State<AppShell> {
         drawer: UserInfoDrawer(),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: widget.child,
+          child: BlocConsumer<AuthBloc, AuthState>(
+            listener: (context, state) {
+              if (state is AuthStateAuthorized) {
+                context.read<LibraryBloc>().add(
+                  LibraryPlaylistsFetchEvent(email: state.user.email),
+                );
+              }
+            },
+            builder: (_, __) => widget.child,
+          ),
         ),
         bottomNavigationBar:
             Platform.isIOS

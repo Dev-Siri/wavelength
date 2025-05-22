@@ -23,6 +23,8 @@ class PlaylistTile extends StatelessWidget {
               child: CachedNetworkImage(
                 imageUrl: playlist.coverImage!,
                 height: 50,
+                width: 50,
+                fit: BoxFit.cover,
               ),
             )
           else

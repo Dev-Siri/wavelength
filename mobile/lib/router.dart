@@ -1,18 +1,29 @@
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 import "package:wavelength/app_shell.dart";
+import "package:wavelength/bloc/public_playlists/public_playlists_bloc.dart";
+import "package:wavelength/bloc/search/tracks/tracks_bloc.dart";
 import "package:wavelength/screens/home.dart";
 import "package:wavelength/screens/library.dart";
-import "package:wavelength/screens/playlists.dart";
-import "package:wavelength/screens/search.dart";
+import "package:wavelength/screens/explore.dart";
 
 final router = GoRouter(
   routes: [
     ShellRoute(
       routes: [
         GoRoute(path: "/", builder: (_, __) => HomeScreen()),
-        GoRoute(path: "/playlists", builder: (_, __) => PlaylistsScreen()),
+        GoRoute(
+          path: "/explore",
+          builder:
+              (_, __) => MultiBlocProvider(
+                providers: [
+                  BlocProvider(create: (_) => PublicPlaylistsBloc()),
+                  BlocProvider(create: (_) => TracksBloc()),
+                ],
+                child: ExploreScreen(),
+              ),
+        ),
         GoRoute(path: "/library", builder: (_, __) => LibraryScreen()),
-        GoRoute(path: "/search", builder: (_, __) => SearchScreen()),
       ],
       builder: (_, __, child) {
         return AppShell(child: child);
