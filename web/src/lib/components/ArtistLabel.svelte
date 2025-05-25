@@ -7,7 +7,7 @@
 </script>
 
 <a
-  href="/artist/{artist.browseId}"
+  href="/app/artist/{artist.browseId}"
   class="flex flex-col justify-center hover:bg-muted p-4 rounded-2xl duration-200"
 >
   <Image

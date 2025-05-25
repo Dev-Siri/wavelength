@@ -39,7 +39,7 @@
       {#each filteredSearchTerms as searchTerm}
         <li class="flex justify-center items-center h-full w-full backdrop-opacity-20 z-9999">
           <a
-            href="/search?q={encodeURIComponent(searchTerm)}"
+            href="/app/search?q={encodeURIComponent(searchTerm)}"
             class="h-full w-full p-4 hover:bg-secondary duration-200"
           >
             {#each searchTerm.split("") as char, i}

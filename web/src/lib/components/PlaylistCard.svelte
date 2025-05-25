@@ -105,7 +105,7 @@
   </button>
   <a
     class="w-full {titleClasses}"
-    href="/playlist/{playlistId}"
+    href="/app/playlist/{playlistId}"
     onclick={() => (musicPlayerStore.visiblePanel = null)}
   >
     <div class="text-start">
