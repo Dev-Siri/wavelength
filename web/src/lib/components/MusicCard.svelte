@@ -25,7 +25,7 @@
 </script>
 
 <div
-  class="relative flex flex-col p-2 duration-200 hover:bg-muted rounded-2xl cursor-pointer group"
+  class="relative flex flex-col p-2 items-center duration-200 hover:bg-muted rounded-2xl cursor-pointer group"
   tabindex={0}
   role="button"
   onclick={playSong}
