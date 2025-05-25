@@ -34,7 +34,7 @@
   in:fly={{ y: 20, duration: 100 }}
   out:fly={{ y: 20, duration: 100 }}
 >
-  <form action="/playlist" method="GET" class="w-full">
+  <form action="/app/playlist" method="GET" class="w-full">
     <Input
       name="q"
       placeholder="Search for playlists..."

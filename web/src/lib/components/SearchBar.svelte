@@ -61,7 +61,7 @@
   </div>
 {/if}
 <form
-  action="/search"
+  action="/app/search"
   method="GET"
   class="flex relative p-2 duration-200 w-full rounded-full border-2 border-secondary items-center bg-secondary gap-2 pl-4"
   class:focused-input={isInputFocused}
