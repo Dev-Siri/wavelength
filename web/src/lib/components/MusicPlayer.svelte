@@ -163,7 +163,7 @@
           {/if}
         </DropdownMenu.Content>
       </DropdownMenu.Root>
-      <div>
+      <div class="hidden sm:block">
         <p class="text-md ml-2 text-primary">
           {parseHtmlEntities(musicQueueStore.musicPlayingNow.title)}
         </p>

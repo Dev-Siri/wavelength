@@ -41,7 +41,9 @@
 </script>
 
 {#if musicQueueStore.musicPlayingNow}
-  <section class="flex h-3/5 p-14 pt-5">
+  <section
+    class="flex flex-col min-[800px]:flex-row justify-center min-[800px]:justify-start text-center min-[800px]:text-start items-center h-3/5 p-9 min-[800px]:p-14 pt-5"
+  >
     <Image
       src={`/api/music/${musicQueueStore.musicPlayingNow.videoId}/thumbnail`}
       alt="Thumbnail"
@@ -50,7 +52,7 @@
       class="rounded-2xl h-64 w-64 duration-200"
       style={coverStyle}
     />
-    <div class="ml-16 pt-2">
+    <div class="min-[800px]:ml-16 mt-4 min-[800px]:mt-0 pt-2">
       <h1
         class="scroll-m-20 pb-2 {musicQueueStore.musicPlayingNow.title.length >= 30
           ? 'text-4xl'
@@ -63,7 +65,7 @@
       </p>
       <div class="flex items-center mt-4 lg:mt-24 gap-2 justify-center w-fit flex-col lg:flex-row">
         <Button
-          class="px-2 gap-2 text-muted-foreground"
+          class="px-4 gap-2 text-muted-foreground hidden min-[800px]:flex"
           href="https://youtube.com/watch?v={musicQueueStore.musicPlayingNow.videoId}"
           variant="secondary"
           referrerpolicy="no-referrer"
@@ -92,7 +94,7 @@
         variant="secondary"
         referrerpolicy="no-referrer"
         target="_blank"
-        class="flex justify-between items-center ml-14 w-fit gap-4 py-6 -mt-32 lg:-mt-10"
+        class="flex justify-between items-center min-[800px]:ml-14 w-fit gap-4 py-6 min-[800px]:-mt-32 lg:-mt-10"
       >
         {#if videoStats.likeCount}
           <div class="flex items-center justify-center gap-1.5 cursor-default" aria-label="Likes">

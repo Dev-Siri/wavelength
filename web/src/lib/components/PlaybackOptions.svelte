@@ -25,7 +25,7 @@
   <Tooltip.Trigger>
     <Button
       variant="ghost"
-      class="w-fit px-3 rounded-full"
+      class="w-fit px-3 rounded-full hidden sm:flex"
       onclick={() =>
         syncUVideoToMusic(
           () =>

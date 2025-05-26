@@ -21,7 +21,7 @@
   });
 </script>
 
-<div class="flex items-center w-full gap-2 justify-center">
+<div class="items-center w-fit md:w-full gap-2 justify-center hidden sm:flex">
   <Button
     variant="ghost"
     class="px-3 rounded-full select-none outline-hidden"
@@ -33,5 +33,5 @@
       <Volume2 size={20} />
     {/if}
   </Button>
-  <Slider type="single" bind:value={volume} class="h-2 w-20" min={0} max={100} />
+  <Slider type="single" bind:value={volume} class="h-2 w-20 hidden md:flex" min={0} max={100} />
 </div>

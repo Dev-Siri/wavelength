@@ -90,7 +90,7 @@
         >
           {#if musicQueueStore.musicPlayingNow && musicPlayerStore.visiblePanel}
             <div
-              class="absolute h-[76%] bg-primary-foreground mt-[10%]] min-1085:mt-[3%] w-[80%] z-80 rounded-2xl"
+              class="absolute h-[76%] bottom-[13%] w-[80%] z-80 rounded-2xl"
               in:fly={{ y: 20, duration: 100 }}
               out:fly={{ y: 20, duration: 100 }}
             >

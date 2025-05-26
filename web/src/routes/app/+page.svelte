@@ -10,7 +10,7 @@
 </script>
 
 <div class="p-6 h-screen w-full pb-[20%] overflow-auto">
-  <h3 class="scroll-m-20 text-3xl tracking-tight my-4">
+  <h3 class="scroll-m-20 text-3xl tracking-tight my-4 text-balance">
     Popular Music in {codeToCountryName(data.region)}
   </h3>
   <div class="flex flex-wrap w-full justify-between">
