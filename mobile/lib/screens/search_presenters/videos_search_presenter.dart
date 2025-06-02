@@ -1,22 +1,21 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:wavelength/bloc/search/tracks/tracks_bloc.dart";
-import "package:wavelength/bloc/search/tracks/tracks_state.dart";
+import "package:wavelength/bloc/search/videos/videos_bloc.dart";
+import "package:wavelength/bloc/search/videos/videos_state.dart";
 import "package:wavelength/widgets/error_message_dialog.dart";
 import "package:wavelength/widgets/skeletons/playlist_tile_skeleton.dart";
-import "package:wavelength/widgets/top_track_result.dart";
-import "package:wavelength/widgets/track_tile.dart";
+import "package:wavelength/widgets/video_card.dart";
 
-class TracksSearchPresenter extends StatelessWidget {
-  const TracksSearchPresenter({super.key});
+class VideosSearchPresenter extends StatelessWidget {
+  const VideosSearchPresenter({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TracksBloc, TracksState>(
+    return BlocBuilder<VideosBloc, VideosState>(
       builder: (context, state) {
-        if (state is TracksDefaultState) return SizedBox();
+        if (state is VideosDefaultState) return SizedBox();
 
-        if (state is! TracksFetchSuccessState) {
+        if (state is! VideosFetchSuccessState) {
           return Stack(
             children: [
               Column(
@@ -28,7 +27,7 @@ class TracksSearchPresenter extends StatelessWidget {
                     ),
                 ],
               ),
-              if (state is TracksFetchErrorState)
+              if (state is VideosFetchErrorState)
                 Center(
                   child: Padding(
                     padding: EdgeInsets.only(
@@ -36,7 +35,7 @@ class TracksSearchPresenter extends StatelessWidget {
                     ),
                     child: ErrorMessageDialog(
                       message:
-                          "Something went wrong while trying to get songs.",
+                          "Something went wrong while trying to get YouTube videos.",
                     ),
                   ),
                 ),
@@ -44,14 +43,14 @@ class TracksSearchPresenter extends StatelessWidget {
           );
         }
 
-        if (state.tracks.isEmpty) {
+        if (state.videos.isEmpty) {
           return Padding(
             padding: EdgeInsets.only(
               top: MediaQuery.of(context).size.height / 4,
             ),
             child: Center(
               child: Text(
-                "No match found for that query.",
+                "No YouTube videos found for that query.",
                 style: TextStyle(fontSize: 20),
               ),
             ),
@@ -61,22 +60,10 @@ class TracksSearchPresenter extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10, left: 2),
-              child: Text(
-                "Top Result",
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900),
-              ),
-            ),
-            TopTrackResult(track: state.tracks[0]),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10, left: 2),
-              child: Text("More Tracks", style: TextStyle(fontSize: 14)),
-            ),
-            for (final track in state.tracks.skip(1))
+            for (final video in state.videos)
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
-                child: TrackTile(track: track),
+                child: VideoCard(video: video),
               ),
           ],
         );

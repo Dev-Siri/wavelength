@@ -21,6 +21,7 @@ dependencies:
   flutter_svg: ^2.0.17
   vector_graphics: ^1.1.18
   country_flags: ^3.0.0
+  html_unescape: ^2.0.0
   geolocator: ^11.0.0
   geocoding: ^2.1.0
   uploadthing: ^1.0.3

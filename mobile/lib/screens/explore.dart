@@ -6,9 +6,12 @@ import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:wavelength/bloc/public_playlists/public_playlists_bloc.dart";
 import "package:wavelength/bloc/search/tracks/tracks_bloc.dart";
 import "package:wavelength/bloc/search/tracks/tracks_event.dart";
+import "package:wavelength/bloc/search/videos/videos_bloc.dart";
+import "package:wavelength/bloc/search/videos/videos_event.dart";
 import "package:wavelength/screens/search_presenters/playlists_search_presenter.dart";
 import "package:wavelength/screens/search_presenters/tracks_search_presenter.dart";
 import "package:wavelength/bloc/public_playlists/public_playlists_event.dart";
+import "package:wavelength/screens/search_presenters/videos_search_presenter.dart";
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -54,6 +57,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
         case SearchType.tracks:
           if (query != "") {
             context.read<TracksBloc>().add(TracksFetchEvent(query: query));
+          }
+          break;
+        case SearchType.videos:
+          if (query != "") {
+            context.read<VideosBloc>().add(VideosFetchEvent(query: query));
           }
           break;
         default:
@@ -127,6 +135,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
           SizedBox(height: 10),
           if (_searchType == SearchType.playlists) PlaylistsSearchPresenter(),
           if (_searchType == SearchType.tracks) TracksSearchPresenter(),
+          if (_searchType == SearchType.videos) VideosSearchPresenter(),
         ],
       ),
     );

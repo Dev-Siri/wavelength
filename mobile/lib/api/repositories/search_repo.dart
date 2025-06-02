@@ -4,6 +4,7 @@ import "package:http/http.dart" as http;
 import "package:flutter/foundation.dart";
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/track.dart";
+import "package:wavelength/api/models/video.dart";
 import "package:wavelength/constants.dart";
 
 class SearchRepo {
@@ -23,6 +24,34 @@ class SearchRepo {
 
           return listOfItems
               .map((final track) => Track.fromJson(track))
+              .toList();
+        });
+
+        return decodedData;
+      }, response.body);
+
+      return decodedResponse;
+    } catch (_) {
+      return ApiResponse(success: false, data: null);
+    }
+  }
+
+  static Future<ApiResponse> fetchVideosByQuery({required String query}) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$backendUrl/music/search/uvideos?q=$query"),
+      );
+
+      final decodedResponse = await compute((stringResponse) {
+        final decodedJson = jsonDecode(stringResponse);
+
+        final decodedData = ApiResponse.fromJson(decodedJson, (data) {
+          final listOfItems = data as List?;
+
+          if (listOfItems == null) return [];
+
+          return listOfItems
+              .map((final video) => Video.fromJson(video))
               .toList();
         });
 
