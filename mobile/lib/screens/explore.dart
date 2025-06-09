@@ -4,10 +4,13 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:wavelength/bloc/public_playlists/public_playlists_bloc.dart";
+import "package:wavelength/bloc/search/artists/artists_bloc.dart";
+import "package:wavelength/bloc/search/artists/artists_event.dart";
 import "package:wavelength/bloc/search/tracks/tracks_bloc.dart";
 import "package:wavelength/bloc/search/tracks/tracks_event.dart";
 import "package:wavelength/bloc/search/videos/videos_bloc.dart";
 import "package:wavelength/bloc/search/videos/videos_event.dart";
+import "package:wavelength/screens/search_presenters/artists_search_presenter.dart";
 import "package:wavelength/screens/search_presenters/playlists_search_presenter.dart";
 import "package:wavelength/screens/search_presenters/tracks_search_presenter.dart";
 import "package:wavelength/bloc/public_playlists/public_playlists_event.dart";
@@ -64,7 +67,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
             context.read<VideosBloc>().add(VideosFetchEvent(query: query));
           }
           break;
-        default:
+        case SearchType.artists:
+          if (query != "") {
+            context.read<ArtistsBloc>().add(ArtistsFetchEvent(query: query));
+          }
           break;
       }
     });
@@ -136,6 +142,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
           if (_searchType == SearchType.playlists) PlaylistsSearchPresenter(),
           if (_searchType == SearchType.tracks) TracksSearchPresenter(),
           if (_searchType == SearchType.videos) VideosSearchPresenter(),
+          if (_searchType == SearchType.artists) ArtistsSearchPresenter(),
         ],
       ),
     );

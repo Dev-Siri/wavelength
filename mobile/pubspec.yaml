@@ -26,6 +26,7 @@ dependencies:
   geocoding: ^2.1.0
   uploadthing: ^1.0.3
   flutter_dotenv: ^5.2.1
+  fluttertoast: ^8.2.12
   flutter_bloc: ^9.0.0
   lucide_icons_flutter: ^1.2.7
   cupertino_icons: ^1.0.8
