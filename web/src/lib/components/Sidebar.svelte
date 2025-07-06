@@ -47,7 +47,7 @@
     </a>
   </div>
   <div class="flex flex-col h-full w-full px-3 mt-2 gap-2">
-    <Button variant="secondary" href="/playlist">
+    <Button variant="secondary" href="/app/playlist">
       <Compass size={20} />
       <span class="ml-1 hidden md:block">Discover Playlists</span>
     </Button>
