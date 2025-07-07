@@ -89,7 +89,7 @@
         <main class="bg-primary-foreground mt-12 h-screen z-30">
           {#if musicQueueStore.musicPlayingNow && musicPlayerStore.visiblePanel}
             <div
-              class="absolute inset-0 top-[10.5%] h-full w-full z-80 rounded-2xl"
+              class="absolute inset-x-0 top-[10.5%] bottom-0 z-80 rounded-2xl flex flex-col overflow-hidden"
               in:fly={{ y: 20, duration: 100 }}
               out:fly={{ y: 20, duration: 100 }}
             >

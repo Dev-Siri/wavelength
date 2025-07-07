@@ -53,7 +53,7 @@
       <X size={30} />
     </Button>
     {#if musicPlayerStore.visiblePanel === "lyrics"}
-      <p class="ml-auto mr-[23%]">Lyrics provided by Musixmatch</p>
+      <p class="ml-auto mr-[21%]">Lyrics provided by Musixmatch</p>
     {/if}
   </div>
   <div class="mt-14 px-3 overflow-y-auto h-full">

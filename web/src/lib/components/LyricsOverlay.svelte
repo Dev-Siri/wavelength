@@ -111,7 +111,7 @@
       </p>
     </div>
   {:else}
-    <div class="flex flex-col pl-4 pt-4 gap-10 overflow-hidden" bind:this={lyricsList}>
+    <div class="flex flex-col pl-4 pt-4 gap-10 overflow-auto" bind:this={lyricsList}>
       {#each lyrics as lyric, i}
         <button
           type="button"
