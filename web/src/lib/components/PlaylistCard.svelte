@@ -22,11 +22,13 @@
     playlist,
     titleClasses = "",
     imageClasses = "w-14 h-10",
+    wrapperClasses = "",
     wrapperClick = () => {},
   }: {
     playlist: PlayList;
     titleClasses?: string;
     imageClasses?: string;
+    wrapperClasses?: string;
     wrapperClick?: () => void;
   } = $props();
 
@@ -81,7 +83,7 @@
   onclick={wrapperClick}
   class="{buttonVariants({
     variant: 'ghost',
-  })} flex group cursor-pointer justify-start w-full gap-2 pl-1 pr-2 h-12"
+  })} flex group cursor-pointer justify-start w-full gap-2 pl-1 pr-2 h-12 {wrapperClasses}"
 >
   <button type="button" class="relative" onclick={playPlaylist}>
     {#if coverImage}
@@ -98,7 +100,7 @@
       ></div>
     {/if}
     <Play
-      class="absolute group-hover:opacity-100 opacity-0 inset-0 top-[34%] left-1/3"
+      class="absolute cursor-pointer group-hover:opacity-100 opacity-0 inset-0 top-[34%] left-1/3"
       size={14}
       fill="white"
     />
@@ -125,7 +127,7 @@
   </a>
   <Dialog.Root>
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger class="ml-auto {titleClasses}">
+      <DropdownMenu.Trigger class="ml-auto cursor-pointer {titleClasses}">
         <MoreHorizontal class="text-muted-foreground" size={18} />
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>

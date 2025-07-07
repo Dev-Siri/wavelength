@@ -13,7 +13,7 @@
 </script>
 
 <header
-  class="flex items-center z-50 justify-between py-3 bg-black fixed w-full pr-[23.5%] rounded-bl-2xl"
+  class="flex items-center z-50 justify-between py-3 bg-black absolute right-0 left-0 pr-4 rounded-bl-2xl"
 >
   <div class="w-1/2 pl-2">
     <SearchBar />
@@ -21,7 +21,7 @@
   {#if !userStore.user}
     <GoogleLoginButton />
   {:else}
-    <div class="flex items-center gap-2">
+    <div class="flex items-center self-end gap-2">
       <Tooltip.Root>
         <Tooltip.Trigger>
           <span class="select-none fi fi-{region.toLowerCase()}"></span>

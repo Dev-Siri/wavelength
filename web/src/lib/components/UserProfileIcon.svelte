@@ -10,7 +10,7 @@
 
 {#if userStore.user}
   <DropdownMenu.Root>
-    <DropdownMenu.Trigger>
+    <DropdownMenu.Trigger class="cursor-pointer hover:opacity-80 duration-200">
       <div class="flex items-center gap-2">
         {#if userStore.user.image}
           <Image

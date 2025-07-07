@@ -10,6 +10,8 @@
 
   import PlaylistCard from "./PlaylistCard.svelte";
 
+  const { paneWidth }: { paneWidth: number } = $props();
+
   $effect(() => {
     async function fetchPlaylists() {
       if (!userStore.user) return;
@@ -32,7 +34,8 @@
       {#each playlistsStore.playlists as playlist}
         <PlaylistCard
           {playlist}
-          titleClasses=""
+          titleClasses={paneWidth < 11 ? "hidden" : "w-10 overflow-hidden"}
+          imageClasses={paneWidth < 11 ? "h-10 w-10" : "h-full w-14"}
           wrapperClick={() => window.innerWidth <= 968 && goto(`/playlist/${playlist.playlistId}`)}
         />
       {/each}

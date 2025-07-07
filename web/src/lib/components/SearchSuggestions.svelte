@@ -8,7 +8,7 @@
 
   let searchTerms = $state<string[]>([]);
   let filteredSearchTerms = $derived(
-    q ? searchTerms.filter(term => term.includes(q)) : searchTerms,
+    q ? searchTerms.filter(term => term.includes(q.toLowerCase())) : searchTerms,
   );
 
   $effect(() => {
@@ -26,40 +26,51 @@
     fetchRecentSearches();
   });
 
-  function removeTermFromRecents(searchTerm: string) {
+  function handleRemoveTermFromRecents(
+    e: MouseEvent & {
+      currentTarget: EventTarget & HTMLButtonElement;
+    },
+    searchTerm: string,
+  ) {
+    e.stopPropagation();
     searchTerms = searchTerms.filter(term => term !== searchTerm);
 
     localStorage.setItem(localStorageKeys.recentSearches, JSON.stringify(searchTerms));
   }
 </script>
 
-<div class="bg-black rounded-2xl w-full overflow-hidden shadow-2xl">
+<div class="bg-black border-2 border-secondary rounded-xl w-full overflow-hidden shadow-2xl">
   {#if filteredSearchTerms.length}
-    <ul>
-      {#each filteredSearchTerms as searchTerm}
-        <li class="flex justify-center items-center h-full w-full backdrop-opacity-20 z-9999">
-          <a
-            href="/app/search?q={encodeURIComponent(searchTerm)}"
-            class="h-full w-full p-4 hover:bg-secondary duration-200"
+    <div class="py-4">
+      <p class="px-4 text-xl font-semibold mb-4">Recent Searches</p>
+      <ul class="flex flex-col items-center">
+        {#each filteredSearchTerms as searchTerm}
+          <li
+            class="flex justify-center relative items-center h-full w-full backdrop-opacity-20 z-9999"
           >
-            {#each searchTerm.split("") as char, i}
-              {#if char === q[i]}
-                <span class="font-semibold">{char}</span>
-              {:else}
-                {char}
-              {/if}
-            {/each}
-          </a>
-          <button
-            type="button"
-            class="h-fit cursor-pointer p-4 hover:bg-red-500 duration-200"
-            onclick={() => removeTermFromRecents(searchTerm)}
-          >
-            <X size={20} />
-          </button>
-        </li>
-      {/each}
-    </ul>
+            <a
+              href="/app/search?q={encodeURIComponent(searchTerm)}"
+              class="h-full w-full p-4 hover:bg-secondary duration-200"
+            >
+              {#each searchTerm.split("") as char, i}
+                {#if char === q[i]}
+                  <span class="font-semibold">{char}</span>
+                {:else}
+                  {char}
+                {/if}
+              {/each}
+              <button
+                type="button"
+                class="absolute inset-0 top-1/6 left-[92%] h-fit w-fit rounded-full p-2 cursor-pointer hover:bg-red-500 duration-200"
+                onclick={e => handleRemoveTermFromRecents(e, searchTerm)}
+              >
+                <X size={20} />
+              </button>
+            </a>
+          </li>
+        {/each}
+      </ul>
+    </div>
   {:else}
     <p class="text-center text-gray-400 p-4">Try searching for songs, artists and videos...</p>
   {/if}

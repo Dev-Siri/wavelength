@@ -52,7 +52,7 @@
 
 {#if (isInputFocused || isHoveringOverSuggestions) && !musicPlayerStore.visiblePanel}
   <div
-    class="absolute inset-0 top-full left-[3%] w-2/5 -ml-14 z-9999"
+    class="absolute inset-0 top-full left-[5%] w-1/2 -ml-14 z-9999"
     role="list"
     onmouseenter={() => (isHoveringOverSuggestions = true)}
     onmouseleave={() => (isHoveringOverSuggestions = false)}

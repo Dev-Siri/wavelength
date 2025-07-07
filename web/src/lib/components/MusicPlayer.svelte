@@ -149,7 +149,7 @@
             />
           </div>
         </DropdownMenu.Trigger>
-        <DropdownMenu.Content class="z-9999" hidden={!!playlistsStore.playlists.length}>
+        <DropdownMenu.Content class="z-9999" hidden={!playlistsStore.playlists.length}>
           {#if musicPlayerStore.musicPlayer}
             {#await musicPlayerStore.musicPlayer.getDuration() then duration}
               <PlaylistToggleOptions

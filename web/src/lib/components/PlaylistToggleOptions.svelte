@@ -37,7 +37,10 @@
 </script>
 
 {#each playlistsStore.playlists as playlist}
-  <DropdownMenuItem onclick={() => addToPlaylist(playlist.playlistId)} class="flex py-3 gap-2">
+  <DropdownMenuItem
+    onclick={() => addToPlaylist(playlist.playlistId)}
+    class="flex py-3 gap-2 cursor-pointer"
+  >
     <Plus size={20} /> Toggle from "{playlist.name}"
   </DropdownMenuItem>
 {/each}

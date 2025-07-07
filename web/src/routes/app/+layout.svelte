@@ -28,10 +28,11 @@
   const { children, data }: { data: LayoutData; children?: Snippet } = $props();
 
   let screenSize: number | null = $state(null);
+  let paneWidth: number = $state(20);
 
   const defaultSizes: PaneSizes = {
     sidebar: {
-      minSize: 23,
+      minSize: 6.5,
       maxSize: 28,
     },
     content: 80,
@@ -40,7 +41,7 @@
   function calculateSidebarSize(availableScreenSize: number): PaneSizes {
     if (availableScreenSize <= 968)
       return {
-        sidebar: { minSize: 5, maxSize: 5 },
+        sidebar: { minSize: 6.5, maxSize: 6.5 },
         content: 95,
       };
 
@@ -78,19 +79,17 @@
 </script>
 
 <Tooltip.Provider>
-  <div class="h-screen bg-primary-foreground">
-    <Splitpanes class="h-[86vh]">
+  <div class="h-screen flex flex-col bg-primary-foreground">
+    <Splitpanes class="flex-1 overflow-hidden" on:resize={e => (paneWidth = e.detail[0].size)}>
       <Pane class="bg-primary-foreground rounded-tr-md rounded-br-md" {...sizes.sidebar}>
-        <Sidebar />
+        <Sidebar {paneWidth} />
       </Pane>
-      <Pane class="h-full w-full bg-primary-foreground" size={sizes.content}>
+      <Pane class="h-full w-full bg-primary-foreground relative" size={sizes.content}>
         <TopBar region={data.region} />
-        <main
-          class="mt-[8%] min-923:mt-[4.5%] lg:mt-[3%] bg-primary-foreground h-screen rounded-tl-md z-30"
-        >
+        <main class="bg-primary-foreground mt-12 h-screen z-30">
           {#if musicQueueStore.musicPlayingNow && musicPlayerStore.visiblePanel}
             <div
-              class="absolute h-[76%] bottom-[13%] w-[80%] z-80 rounded-2xl"
+              class="absolute h-[78%] bottom-[13%] w-[80%] z-80 rounded-2xl"
               in:fly={{ y: 20, duration: 100 }}
               out:fly={{ y: 20, duration: 100 }}
             >
@@ -111,7 +110,7 @@
         </main>
       </Pane>
     </Splitpanes>
-    <div class="absolute inset-0 z-150 h-[14vh] self-end w-full">
+    <div class="h-[14%] self-end w-full">
       <MusicPlayer />
     </div>
   </div>

@@ -12,6 +12,8 @@
   import Library from "./Library.svelte";
   import Button from "./ui/button/button.svelte";
 
+  const { paneWidth }: { paneWidth: number } = $props();
+
   async function createNewPlaylist() {
     if (!userStore.user) return;
 
@@ -49,15 +51,19 @@
   <div class="flex flex-col h-full w-full px-3 mt-2 gap-2">
     <Button variant="secondary" href="/app/playlist">
       <Compass size={20} />
-      <span class="ml-1 hidden md:block">Discover Playlists</span>
+      {#if paneWidth > 17}
+        <span class="ml-1 hidden md:block">Discover Playlists</span>
+      {/if}
     </Button>
     {#if userStore.user}
       <Button variant="secondary" onclick={createNewPlaylist}>
         <Plus size={20} />
-        <span class="mr-5 hidden md:block">Add Playlist</span>
+        {#if paneWidth > 17}
+          <span class="mr-5 hidden md:block">Add Playlist</span>
+        {/if}
       </Button>
       <section class="flex flex-col gap-2 h-[67%] w-full">
-        <Library />
+        <Library {paneWidth} />
       </section>
     {/if}
   </div>
