@@ -1,4 +1,4 @@
-interface Lyric {
+export interface Lyric {
   text: string;
   startMs: number;
   durMs: number;

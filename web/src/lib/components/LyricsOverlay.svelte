@@ -2,7 +2,7 @@
   import type { ApiResponse } from "$lib/utils/types";
   import type { LyricsResponse } from "../../routes/api/music/[videoId]/lyrics/types";
 
-  import { cacheKeys } from "$lib/constants/keys";
+  import getClientDB from "$lib/db/client-indexed-db";
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
   import queryClient from "$lib/utils/query-client";
@@ -22,34 +22,17 @@
       if (!musicQueueStore.musicPlayingNow || !musicPlayerStore.musicPlayer) return;
 
       isLoading = true;
-
       duration = await musicPlayerStore.musicPlayer.getDuration();
 
-      const fetchUrl = new URL(
-        `${location.toString()}/api/music/${musicQueueStore.musicPlayingNow.videoId}/lyrics`,
+      const db = await getClientDB();
+      const storedLyrics = await db.getAllFromIndex(
+        "lyrics",
+        "by_videoId",
+        musicQueueStore.musicPlayingNow.videoId,
       );
-      const lyricsCacheStore = await caches.open(cacheKeys.lyricsCache);
-      const storedLyrics = await lyricsCacheStore.match(fetchUrl);
 
-      if (storedLyrics) {
-        const jsonCachedResponse: ApiResponse<LyricsResponse> = await storedLyrics.json();
-
-        if (!jsonCachedResponse.success) {
-          isLoading = false;
-          hasErrored = true;
-          await lyricsCacheStore.delete(fetchUrl);
-
-          return;
-        }
-
-        if (!Array.isArray(jsonCachedResponse.data)) {
-          isLoading = false;
-          hasErrored = true;
-          return;
-        }
-
-        lyrics = jsonCachedResponse.data;
-
+      if (storedLyrics.length) {
+        lyrics = storedLyrics.toSorted((a, b) => a.order - b.order);
         isLoading = false;
         return;
       }
@@ -62,9 +45,26 @@
 
         if (lyricsResponse.success) {
           lyrics = lyricsResponse.data;
-          isLoading = false;
 
-          lyricsCacheStore.put(fetchUrl, new Response(JSON.stringify(lyricsResponse)));
+          const tx = db.transaction("lyrics", "readwrite");
+          const store = tx.objectStore("lyrics");
+
+          for (const [index, lyric] of lyrics.entries()) {
+            const { durMs, startMs, text } = lyric;
+
+            await store.put({
+              durMs,
+              startMs,
+              text,
+              videoId: musicQueueStore.musicPlayingNow.videoId,
+              lyricId: `l-${musicQueueStore.musicPlayingNow.videoId}-${index}`,
+              order: index,
+            });
+          }
+
+          await tx.done;
+
+          isLoading = false;
           return;
         }
       } catch {
@@ -73,7 +73,7 @@
       }
 
       isLoading = false;
-      hasErrored = true;
+      hasErrored = false;
     }
 
     fetchLyrics();
@@ -111,7 +111,7 @@
       </p>
     </div>
   {:else}
-    <div class="flex flex-col pl-4 pt-4 gap-10 overflow-auto" bind:this={lyricsList}>
+    <div class="flex flex-col pl-4 pt-4 pb-20 gap-10 overflow-auto" bind:this={lyricsList}>
       {#each lyrics as lyric, i}
         <button
           type="button"

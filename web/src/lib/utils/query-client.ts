@@ -27,7 +27,6 @@ export default async function queryClient<T>(
     "Content-Type": "application/json",
     ...headers,
   };
-
   if (searchParams)
     Object.keys(searchParams).forEach(
       searchParamKey =>

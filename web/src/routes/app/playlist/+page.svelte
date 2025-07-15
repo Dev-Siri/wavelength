@@ -14,9 +14,9 @@
   const { data }: PageProps = $props();
 
   function handleOnInput(e: Event & { currentTarget: EventTarget & HTMLInputElement }) {
-    if (inputValue === "") return goto("/playlist");
+    if (inputValue === "") return goto("/app/playlist");
 
-    goto(`/playlist?q=${encodeURIComponent(inputValue)}`);
+    goto(`/app/playlist?q=${encodeURIComponent(inputValue)}`);
   }
 
   let inputValue = $state(page.url.searchParams.get("q") ?? "");
@@ -28,6 +28,10 @@
     debouncedHandleOnInput = debounce(handleOnInput);
   });
 </script>
+
+<svelte:head>
+  <title>Discover Playlists Made by Others.</title>
+</svelte:head>
 
 <div
   class="h-full w-full p-4 bg-black rounded-2xl pt-10"

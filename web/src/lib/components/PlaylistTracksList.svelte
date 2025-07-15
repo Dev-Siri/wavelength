@@ -11,14 +11,22 @@
   import queryClient from "$lib/utils/query-client";
   import PlaylistTracksListItem from "./PlaylistTracksListItem.svelte";
 
-  export let playlistId: string;
-  export let playlistTracks: PlayListTrack[];
-  export let isRearrangingList: boolean;
+  const {
+    playlistId,
+    playlistTracks,
+    isRearrangingList,
+  }: {
+    playlistId: string;
+    playlistTracks: PlayListTrack[];
+    isRearrangingList: boolean;
+  } = $props();
 
-  let items = playlistTracks.sort(
-    (track, nextTrack) => track.positionInPlaylist - nextTrack.positionInPlaylist,
+  let items = $state(
+    playlistTracks.toSorted(
+      (track, nextTrack) => track.positionInPlaylist - nextTrack.positionInPlaylist,
+    ),
   );
-  $: prevItems = structuredClone(items);
+  let prevItems = $derived([...items]);
 
   function handleSort(event: CustomEvent<SortEventDetail>) {
     const { prevItemIndex, nextItemIndex } = event.detail;
@@ -26,7 +34,7 @@
     items = sortItems(items, prevItemIndex, nextItemIndex);
   }
 
-  $: {
+  $effect(() => {
     async function rearrangeItems() {
       await queryClient(location.toString(), `/api/playlists/${playlistId}/tracks`, {
         method: "PUT",
@@ -38,7 +46,7 @@
     }
 
     if (!isRearrangingList) rearrangeItems();
-  }
+  });
 </script>
 
 {#if isRearrangingList}

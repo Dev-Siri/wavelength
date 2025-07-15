@@ -1,18 +1,18 @@
 import type { QuickPicksResponse } from "$lib/server/api/interface/home/quick-picks";
 import type { ApiResponse } from "$lib/utils/types";
 
-import configureRegion from "$lib/server/utils/configure-region";
+import { DEFAULT_REGION } from "$lib/constants/countries";
 import queryClient from "$lib/utils/query-client";
 
-export function load({ url, cookies, getClientAddress }) {
-  const region = configureRegion(cookies, getClientAddress());
+export async function load({ url }) {
+  const regionResponse = await queryClient<ApiResponse<string>>(url.toString(), "/api/region");
 
   const response = queryClient<ApiResponse<QuickPicksResponse["results"]>>(
     url.toString(),
     "/api/music/quick-picks",
     {
       searchParams: {
-        regionCode: region,
+        regionCode: regionResponse.success ? regionResponse.data : DEFAULT_REGION,
       },
     },
   );

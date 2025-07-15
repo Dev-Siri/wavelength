@@ -14,7 +14,7 @@
 
 <div class="flex items-center gap-2">
   <p
-    class="text-lg px-2 text-muted-foreground hover:bg-gray-900 duration-200 rounded-full h-7 w-7 text-center {isRearrangingList
+    class="text-lg px-2 text-muted-foreground select-none hover:bg-secondary duration-200 rounded-full flex flex-col items-center justify-center h-8 w-8 text-center {isRearrangingList
       ? 'animate-bounce'
       : ''}"
     in:fade

@@ -57,6 +57,7 @@
     "geoip-lite": "^1.4.10",
     "get-image-colors": "^4.0.1",
     "googleapis": "^144.0.0",
+    "idb": "^8.0.3",
     "lucide-svelte": "^0.476.0",
     "sharp": "^0.33.5",
     "svelte-french-toast": "^1.2.0",

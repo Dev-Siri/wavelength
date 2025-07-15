@@ -45,7 +45,7 @@
       href="/app"
       class="flex items-center w-fit p-4 py-2 duration-200 rounded-full hover:bg-primary-foreground"
     >
-      <span class="font-black text-5xl">λ</span>
+      <span class="font-black text-5xl select-none">λ</span>
     </a>
   </div>
   <div class="flex flex-col h-full w-full px-3 mt-2 gap-2">

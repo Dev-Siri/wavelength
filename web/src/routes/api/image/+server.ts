@@ -19,8 +19,8 @@ export async function GET({ url: { searchParams }, fetch }) {
     return new Response(optimizedImage, {
       headers: new Headers({ "Cache-Control": "public, max-age=86400" }),
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     // Return the original image as-is instead of silently erroring in the server console
     // So the user gets an actual (Although unoptimized) image
     return new Response(imageBuffer);
