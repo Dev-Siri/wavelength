@@ -30,8 +30,8 @@ export async function load({ fetch, url, params: { playlistId } }) {
         playlistPlaylengthResponse,
       },
     };
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return {
       success: false,
       pageData: {
