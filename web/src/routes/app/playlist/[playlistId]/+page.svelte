@@ -30,8 +30,6 @@
   let isRearrangingList = $state(false);
   let pageTitle = $state("Playlist - Wavelength");
 
-  const { playlistId } = page.params;
-
   function playPlaylist(songs: QueueableMusic[]) {
     musicQueueStore.addToQueue(...songs);
     musicQueueStore.musicPlayingNow = songs[0];
@@ -45,13 +43,16 @@
 
   $effect(() => {
     async function fetchPlaylistData() {
-      if (!playlistId) return;
+      if (!page.params.playlistId) return;
 
       const [playlistInfoResponse, playlistTracksResponse] = await Promise.all([
-        queryClient<ApiResponse<PlayList>>(location.origin, `/api/playlists/${playlistId}`),
+        queryClient<ApiResponse<PlayList>>(
+          location.origin,
+          `/api/playlists/${page.params.playlistId}`,
+        ),
         queryClient<ApiResponse<PlayListTrack[]>>(
           location.origin,
-          `/api/playlists/${playlistId}/tracks`,
+          `/api/playlists/${page.params.playlistId}/tracks`,
         ),
       ]);
 
