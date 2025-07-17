@@ -6,6 +6,7 @@
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
   import queryClient from "$lib/utils/query-client";
+  import LoadingSpinner from "./LoadingSpinner.svelte";
 
   let lyricsList: HTMLDivElement | null = $state(null);
   let lyrics: LyricsResponse | null = $state([]);
@@ -43,7 +44,11 @@
           `/api/music/${musicQueueStore.musicPlayingNow.videoId}/lyrics`,
         );
 
-        if (lyricsResponse.success) {
+        if (
+          lyricsResponse.success &&
+          Array.isArray(lyricsResponse.data.length) &&
+          lyricsResponse.data.length
+        ) {
           lyrics = lyricsResponse.data;
 
           const tx = db.transaction("lyrics", "readwrite");
@@ -65,6 +70,10 @@
           await tx.done;
 
           isLoading = false;
+          return;
+        } else {
+          isLoading = false;
+          hasErrored = true;
           return;
         }
       } catch {
@@ -101,8 +110,8 @@
 
 {#if musicQueueStore.musicPlayingNow}
   {#if isLoading}
-    <div class="flex flex-col items-center justify-center pt-52 pl-4">
-      <p class="text-5xl font-bold">Loading Lyrics...</p>
+    <div class="flex flex-col items-center justify-center pt-40 pl-4">
+      <LoadingSpinner />
     </div>
   {:else if hasErrored || !lyrics}
     <div class="flex flex-col items-center justify-center pt-52 pl-4">
