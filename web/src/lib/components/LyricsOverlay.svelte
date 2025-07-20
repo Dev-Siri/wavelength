@@ -44,11 +44,7 @@
           `/api/music/${musicQueueStore.musicPlayingNow.videoId}/lyrics`,
         );
 
-        if (
-          lyricsResponse.success &&
-          Array.isArray(lyricsResponse.data.length) &&
-          lyricsResponse.data.length
-        ) {
+        if (lyricsResponse.success) {
           lyrics = lyricsResponse.data;
 
           const tx = db.transaction("lyrics", "readwrite");
