@@ -8,6 +8,7 @@ export interface QueueableMusic extends BaseMusicTrack {
 class MusicQueueStore {
   musicQueue = $state<QueueableMusic[]>([]);
   musicPlayingNow = $state<QueueableMusic | null>(null);
+  isMusicQueueVisible = $state(false);
 
   playNext = (...tracks: QueueableMusic[]) => {
     this.musicQueue = [...tracks, ...this.musicQueue];

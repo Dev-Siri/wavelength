@@ -1,9 +1,9 @@
 <script lang="ts">
   import { Toaster } from "svelte-french-toast";
   import { Pane, Splitpanes } from "svelte-splitpanes";
-  import { fly } from "svelte/transition";
+  import { fly, slide } from "svelte/transition";
 
-  import type { Snippet } from "svelte";
+  import { type Snippet } from "svelte";
   import type { LayoutData } from "./$types";
 
   import musicPlayerStore from "$lib/stores/music-player.svelte";
@@ -12,16 +12,20 @@
   import InfoOverlay from "$lib/components/InfoOverlay.svelte";
   import LyricsOverlay from "$lib/components/LyricsOverlay.svelte";
   import MusicPlayer from "$lib/components/MusicPlayer.svelte";
+  import MusicQueueDisplay from "$lib/components/MusicQueueDisplay.svelte";
   import NowPlayingOverlay from "$lib/components/NowPlayingOverlay.svelte";
   import Sidebar from "$lib/components/Sidebar.svelte";
   import TopBar from "$lib/components/TopBar.svelte";
   import * as Tooltip from "$lib/components/ui/tooltip";
 
+  interface PaneLimit {
+    minSize: number;
+    maxSize: number;
+  }
+
   interface PaneSizes {
-    sidebar: {
-      minSize: number;
-      maxSize: number;
-    };
+    sidebar: PaneLimit;
+    queue: PaneLimit;
     content: number;
   }
 
@@ -35,6 +39,10 @@
       minSize: 6.5,
       maxSize: 28,
     },
+    queue: {
+      maxSize: 25,
+      minSize: 20,
+    },
     content: 80,
   };
 
@@ -42,6 +50,7 @@
     if (availableScreenSize <= 968)
       return {
         sidebar: { minSize: 6.5, maxSize: 6.5 },
+        queue: { minSize: 0, maxSize: 0 },
         content: 95,
       };
 
@@ -76,6 +85,14 @@
       document.removeEventListener("keydown", handleMusicPlayerSwitchState);
     };
   });
+
+  $effect(() => {
+    if (musicQueueStore.isMusicQueueVisible) {
+      paneWidth = sizes.sidebar.minSize;
+    } else {
+      paneWidth = sizes.sidebar.maxSize;
+    }
+  });
 </script>
 
 <Tooltip.Provider>
@@ -109,6 +126,13 @@
           {@render children?.()}
         </main>
       </Pane>
+      {#if musicQueueStore.isMusicQueueVisible}
+        <Pane {...sizes.queue} class="z-9999">
+          <div in:slide={{ duration: 100 }} out:slide={{ duration: 100 }} class="h-full w-full">
+            <MusicQueueDisplay />
+          </div>
+        </Pane>
+      {/if}
     </Splitpanes>
     <div class="h-[14%] self-end w-full">
       <MusicPlayer />

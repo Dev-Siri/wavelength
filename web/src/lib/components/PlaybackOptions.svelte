@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { MicVocal, PlaySquare } from "lucide-svelte";
+  import { Columns3, MicVocal, PlaySquare } from "lucide-svelte";
 
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
@@ -43,6 +43,27 @@
   </Tooltip.Trigger>
   <Tooltip.Content>
     <p>Now playing view</p>
+  </Tooltip.Content>
+</Tooltip.Root>
+<Tooltip.Root>
+  <Tooltip.Trigger>
+    <Button
+      variant="ghost"
+      class="w-fit px-3 rounded-full"
+      disabled={musicQueueStore.musicPlayingNow?.videoType === "uvideo"}
+      onclick={() =>
+        syncUVideoToMusic(
+          () => (musicQueueStore.isMusicQueueVisible = !musicQueueStore.isMusicQueueVisible),
+        )}
+    >
+      <Columns3
+        size={20}
+        class={musicQueueStore.isMusicQueueVisible ? "text-primary" : "text-muted-foreground"}
+      />
+    </Button>
+  </Tooltip.Trigger>
+  <Tooltip.Content>
+    <p>Queue</p>
   </Tooltip.Content>
 </Tooltip.Root>
 <Tooltip.Root>

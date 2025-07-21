@@ -36,7 +36,7 @@
   }
 </script>
 
-<article class="bg-black relative h-full w-full rounded-t-2xl pr-20 overflow-hidden">
+<article class="bg-black relative h-[104%] w-full rounded-t-2xl pr-20 overflow-hidden">
   {#key musicVideoId}
     <MusicVideoPreview
       musicVideoId={musicQueueStore.musicPlayingNow?.videoType === "uvideo"
@@ -44,7 +44,7 @@
         : musicVideoId}
     />
   {/key}
-  <div class="flex fixed w-full btn-container-gradient rounded-2xl p-3">
+  <div class="flex absolute w-full btn-container-gradient rounded-2xl p-3">
     <Button
       class="px-3 rounded-full"
       variant="ghost"
@@ -53,7 +53,7 @@
       <X size={30} />
     </Button>
     {#if musicPlayerStore.visiblePanel === "lyrics"}
-      <p class="ml-auto mr-[21%]">Lyrics provided by Musixmatch</p>
+      <p class="ml-auto">Lyrics provided by Musixmatch</p>
     {/if}
   </div>
   <div class="mt-14 px-3 overflow-y-auto h-full">
