@@ -15,17 +15,17 @@ export async function GET({ url }) {
 
   try {
     const resizedCover = await getColors(Buffer.from(arrayBuffer), { type: "image/jpeg" });
-    const dominantColor = resizedCover[0].hex();
+    const [r, g, b] = resizedCover[0].rgb();
 
     return json({
       success: true,
-      data: dominantColor,
+      data: { r, g, b },
     });
   } catch (err) {
     console.log(err);
     error(500, {
       success: false,
-      message: "Failed to get dominant (theme) color of cover image",
+      message: "Failed to get dominant (theme) color of cover image.",
     });
   }
 }

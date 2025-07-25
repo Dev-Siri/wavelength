@@ -9,7 +9,7 @@ export async function GET({ params: { videoId } }) {
 
   try {
     const resizedCover = await getColors(Buffer.from(arrayBuffer), { type: "image/jpeg" });
-    const dominantColor = resizedCover[0].hex();
+    const dominantColor = resizedCover[0].rgb();
 
     return json({
       success: true,
@@ -19,7 +19,7 @@ export async function GET({ params: { videoId } }) {
     console.log(err);
     error(500, {
       success: false,
-      message: "Failed to get dominant (theme) color of cover image",
+      message: "Failed to get dominant (theme) color of cover image.",
     });
   }
 }

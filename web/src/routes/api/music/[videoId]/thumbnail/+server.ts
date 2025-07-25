@@ -15,7 +15,7 @@ export async function GET({ params: { videoId } }) {
     console.log(err);
     error(500, {
       success: false,
-      message: "Failed to fetch higher quality cover image",
+      message: "Failed to fetch higher quality cover image.",
     });
   }
 }
