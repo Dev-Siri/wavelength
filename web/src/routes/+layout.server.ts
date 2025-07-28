@@ -1,7 +1,14 @@
+import { redirect } from "@sveltejs/kit";
+
 import configureRegion from "$lib/server/utils/configure-region";
 
-export async function load({ locals, cookies, getClientAddress }) {
+export async function load({ locals, cookies, getClientAddress, url }) {
   const session = await locals.auth();
+
+  // Allow the user to access /app even when not logged in.
+  // Just by default, redirect them to / from the start.
+  // If the user is logged in, then don't even let them get back to /.
+  if (session && !url.pathname.startsWith("/app")) redirect(307, "/app");
 
   const region = configureRegion(cookies, getClientAddress());
 
