@@ -28,7 +28,7 @@
   let playlist = $state(data.pageData.cachedPlaylist);
   let playlistTracks = $state(data.pageData.cachedPlaylistTracks);
   let isRearrangingList = $state(false);
-  let pageTitle = $state("Playlist - Wavelength");
+  let pageTitle = $state("Playlist");
 
   function playPlaylist(songs: QueueableMusic[]) {
     musicQueueStore.addToQueue(...songs);
@@ -60,7 +60,7 @@
 
       if (playlistInfoResponse.success) {
         playlist = playlistInfoResponse.data;
-        pageTitle = `${playlist.name} - Wavelength`;
+        pageTitle = `${playlist.name}`;
 
         db.put("playlists", playlistInfoResponse.data);
       } else return (pageTitle = "An Error Occurred While Retrieving Playlist.");
