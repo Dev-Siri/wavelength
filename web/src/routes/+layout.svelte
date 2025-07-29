@@ -21,8 +21,7 @@
 </script>
 
 <svelte:head>
-  <title>WaveLength</title>
-  <meta name="description" content="Call this a glorified YouTube Music Wrapper." />
+  <title>Wavelength</title>
 </svelte:head>
 
 {@render children?.()}
