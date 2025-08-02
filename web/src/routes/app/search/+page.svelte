@@ -47,7 +47,7 @@
       {/if}
     {/await}
   </div>
-  <h2 class="text-3xl my-4 font-bold">YouTube Videos</h2>
+  <h2 class="text-2xl my-4 font-semibold">YouTube Videos</h2>
   {#await data.pageData.uvideosResponse then uvideosResponse}
     {#if uvideosResponse.success}
       <div class="flex flex-wrap w-full gap-4">
@@ -57,7 +57,7 @@
       </div>
     {/if}
   {/await}
-  <h2 class="text-3xl my-4 font-bold">Artists</h2>
+  <h2 class="text-2xl my-4 font-semibold">Artists</h2>
   {#await data.pageData.artistResponse}
     <div class="flex flex-wrap w-full gap-4">
       <ArtistLabelSkeleton />
