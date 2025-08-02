@@ -74,13 +74,13 @@ class _AppShellState extends State<AppShell> {
 
     switch (value) {
       case 0:
-        context.go("/");
+        context.push("/");
         break;
       case 1:
-        context.go("/explore");
+        context.push("/explore");
         break;
       case 2:
-        context.go("/library");
+        context.push("/library");
         break;
       case 3:
         showModalBottomSheet(

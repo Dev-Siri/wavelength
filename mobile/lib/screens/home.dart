@@ -1,5 +1,8 @@
+import "dart:math" as math;
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:flutter_svg/flutter_svg.dart";
+import "package:vector_graphics/vector_graphics.dart";
 import "package:wavelength/bloc/location/location_bloc.dart";
 import "package:wavelength/bloc/location/location_state.dart";
 import "package:wavelength/bloc/quick_picks/quick_picks_bloc.dart";
@@ -63,6 +66,52 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                         ],
+                      );
+                    }
+
+                    if (state.songs.isEmpty) {
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height / 2,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                SvgPicture(
+                                  AssetBytesLoader(
+                                    "assets/vectors/lambda.svg.vec",
+                                  ),
+                                  height: 200,
+                                  width: 200,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 70,
+                                    bottom: 100,
+                                  ),
+                                  child: Transform.rotate(
+                                    angle: math.pi / 12,
+                                    child: Text(
+                                      "?",
+                                      style: TextStyle(
+                                        fontSize: 34,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Transform.translate(
+                              offset: Offset(0, -20),
+                              child: Text(
+                                "Swipe down on the screen.",
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ),
+                          ],
+                        ),
                       );
                     }
 

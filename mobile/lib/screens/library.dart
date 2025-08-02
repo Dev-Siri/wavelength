@@ -44,7 +44,7 @@ class LibraryScreen extends StatelessWidget {
                         children: [
                           for (int i = 0; i < 10; i++)
                             Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
+                              padding: const EdgeInsets.only(bottom: 5),
                               child: PlaylistTileSkeleton(),
                             ),
                         ],
@@ -55,7 +55,7 @@ class LibraryScreen extends StatelessWidget {
                       children: [
                         for (final playlist in state.playlists)
                           Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
+                            padding: const EdgeInsets.only(bottom: 5),
                             child: PlaylistTile(playlist: playlist),
                           ),
                       ],

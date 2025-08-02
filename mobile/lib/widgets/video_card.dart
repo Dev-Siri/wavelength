@@ -25,7 +25,7 @@ class VideoCard extends StatelessWidget {
       fit: BoxFit.cover,
     );
 
-    final title = decodeHtmlSpecialChars(video.snippet.title);
+    final title = decodeHtmlSpecialChars(video.snippet.title ?? "");
 
     return Stack(
       children: [

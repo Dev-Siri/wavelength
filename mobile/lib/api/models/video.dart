@@ -31,14 +31,14 @@ class VideoThumbnailTypes {
 }
 
 class VideoSnippet {
-  final String publishedAt;
-  final String channelId;
-  final String title;
-  final String description;
+  final String? publishedAt;
+  final String? channelId;
+  final String? title;
+  final String? description;
   final VideoThumbnailTypes thumbnails;
-  final String channelTitle;
-  final String liveBroadcastContent;
-  final String publishTime;
+  final String? channelTitle;
+  final String? liveBroadcastContent;
+  final String? publishTime;
 
   const VideoSnippet({
     required this.publishedAt,
@@ -53,8 +53,8 @@ class VideoSnippet {
 }
 
 class Video {
-  final String kind;
-  final String etag;
+  final String? kind;
+  final String? etag;
   final VideoId id;
   final VideoSnippet snippet;
 
@@ -67,14 +67,14 @@ class Video {
 
   factory Video.fromJson(Map<String, dynamic> json) {
     return Video(
-      kind: json["kind"] as String,
-      etag: json["etag"] as String,
+      kind: json["kind"] as String?,
+      etag: json["etag"] as String?,
       id: VideoId(kind: json["id"]["kind"], videoId: json["id"]["videoId"]),
       snippet: VideoSnippet(
-        publishedAt: json["snippet"]["publishedAt"] as String,
-        channelId: json["snippet"]["channelId"] as String,
-        title: json["snippet"]["title"] as String,
-        description: json["snippet"]["description"] as String,
+        publishedAt: json["snippet"]["publishedAt"] as String?,
+        channelId: json["snippet"]["channelId"] as String?,
+        title: json["snippet"]["title"] as String?,
+        description: json["snippet"]["description"] as String?,
         thumbnails: VideoThumbnailTypes(
           normal: VideoThumbnail(
             url: json["snippet"]["thumbnails"]["default"]["url"] as String?,
@@ -92,9 +92,10 @@ class Video {
             height: json["snippet"]["thumbnails"]["high"]["height"] as int?,
           ),
         ),
-        channelTitle: json["snippet"]["channelTitle"] as String,
-        liveBroadcastContent: json["snippet"]["liveBroadcastContent"] as String,
-        publishTime: json["snippet"]["publishTime"] as String,
+        channelTitle: json["snippet"]["channelTitle"] as String?,
+        liveBroadcastContent:
+            json["snippet"]["liveBroadcastContent"] as String?,
+        publishTime: json["snippet"]["publishTime"] as String?,
       ),
     );
   }

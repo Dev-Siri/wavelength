@@ -12,6 +12,7 @@ class QuickPicksRepo {
       final response = await http.get(
         Uri.parse("$backendUrl/music/quick-picks?regionCode=$locale"),
       );
+      final utf8BodyDecoded = utf8.decode(response.bodyBytes);
       final decodedResponse = await compute((stringResponse) {
         final decodedJson = jsonDecode(stringResponse);
         final decodedData = ApiResponse.fromJson(decodedJson, (quickPicks) {
@@ -25,7 +26,7 @@ class QuickPicksRepo {
         });
 
         return decodedData;
-      }, response.body);
+      }, utf8BodyDecoded);
 
       return decodedResponse;
     } catch (_) {

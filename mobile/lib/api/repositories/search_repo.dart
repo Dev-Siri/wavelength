@@ -14,7 +14,7 @@ class SearchRepo {
       final response = await http.get(
         Uri.parse("$backendUrl/music/search?q=$query"),
       );
-
+      final utf8BodyDecoded = utf8.decode(response.bodyBytes);
       final decodedResponse = await compute((stringResponse) {
         final decodedJson = jsonDecode(stringResponse);
 
@@ -29,7 +29,7 @@ class SearchRepo {
         });
 
         return decodedData;
-      }, response.body);
+      }, utf8BodyDecoded);
 
       return decodedResponse;
     } catch (_) {
@@ -42,10 +42,9 @@ class SearchRepo {
       final response = await http.get(
         Uri.parse("$backendUrl/music/search/uvideos?q=$query"),
       );
-
+      final utf8BodyDecoded = utf8.decode(response.bodyBytes);
       final decodedResponse = await compute((stringResponse) {
         final decodedJson = jsonDecode(stringResponse);
-
         final decodedData = ApiResponse.fromJson(decodedJson, (data) {
           final listOfItems = data as List?;
 
@@ -57,7 +56,7 @@ class SearchRepo {
         });
 
         return decodedData;
-      }, response.body);
+      }, utf8BodyDecoded);
 
       return decodedResponse;
     } catch (_) {
@@ -72,7 +71,7 @@ class SearchRepo {
       final response = await http.get(
         Uri.parse("$backendUrl/music/search?q=$query&searchType=artists"),
       );
-
+      final utf8BodyDecoded = utf8.decode(response.bodyBytes);
       final decodedResponse = await compute((stringResponse) {
         final decodedJson = jsonDecode(stringResponse);
 
@@ -87,7 +86,7 @@ class SearchRepo {
         });
 
         return decodedData;
-      }, response.body);
+      }, utf8BodyDecoded);
 
       return decodedResponse;
     } catch (_) {

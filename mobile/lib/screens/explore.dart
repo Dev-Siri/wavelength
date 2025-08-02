@@ -87,6 +87,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
             onChanged: _onSearchChanged,
             style: TextStyle(color: Colors.black),
             cursorColor: Colors.blue,
+            autocorrect: false,
+            autofocus: true,
             decoration: InputDecoration(
               filled: true,
               fillColor: Colors.white,

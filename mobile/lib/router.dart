@@ -1,3 +1,4 @@
+import "package:flutter/cupertino.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 import "package:wavelength/app_shell.dart";
@@ -8,6 +9,7 @@ import "package:wavelength/bloc/search/videos/videos_bloc.dart";
 import "package:wavelength/screens/home.dart";
 import "package:wavelength/screens/library.dart";
 import "package:wavelength/screens/explore.dart";
+import "package:wavelength/screens/playlist.dart";
 
 final router = GoRouter(
   routes: [
@@ -31,6 +33,28 @@ final router = GoRouter(
       ],
       builder: (_, __, child) {
         return AppShell(child: child);
+      },
+    ),
+    GoRoute(
+      path: "/playlist/:id",
+      pageBuilder: (_, state) {
+        final id = state.pathParameters["id"]!;
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: PlaylistScreen(playlistId: id),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: animation.drive(
+                // make it slide up the screen
+                Tween<Offset>(
+                  begin: const Offset(0, 1),
+                  end: Offset.zero,
+                ).chain(CurveTween(curve: Curves.easeInOut)),
+              ),
+              child: child,
+            );
+          },
+        );
       },
     ),
   ],
