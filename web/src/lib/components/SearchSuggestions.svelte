@@ -33,6 +33,8 @@
     searchTerm: string,
   ) {
     e.stopPropagation();
+    e.preventDefault();
+
     searchTerms = searchTerms.filter(term => term !== searchTerm);
 
     localStorage.setItem(localStorageKeys.recentSearches, JSON.stringify(searchTerms));

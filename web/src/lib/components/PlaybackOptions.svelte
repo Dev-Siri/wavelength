@@ -50,7 +50,6 @@
     <Button
       variant="ghost"
       class="w-fit px-3 rounded-full"
-      disabled={musicQueueStore.musicPlayingNow?.videoType === "uvideo"}
       onclick={() =>
         syncUVideoToMusic(
           () => (musicQueueStore.isMusicQueueVisible = !musicQueueStore.isMusicQueueVisible),
