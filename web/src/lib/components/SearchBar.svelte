@@ -1,9 +1,11 @@
 <script lang="ts">
   import { page } from "$app/state";
+  import { SearchIcon } from "@lucide/svelte";
+
   import { localStorageKeys } from "$lib/constants/keys";
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import { isRecentSearchesArray } from "$lib/utils/validation/recent-searches-schema";
-  import { Search } from "lucide-svelte";
+
   import SearchSuggestions from "./SearchSuggestions.svelte";
 
   const queryParam = page.url.searchParams.get("q") ?? "";
@@ -67,7 +69,7 @@
   class:focused-input={isInputFocused}
   onsubmit={handleStoringSearchTerms}
 >
-  <Search size={20} />
+  <SearchIcon size={20} />
   <input
     type="text"
     name="q"

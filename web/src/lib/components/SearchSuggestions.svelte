@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { X } from "lucide-svelte";
+  import { XIcon } from "@lucide/svelte";
 
   import { localStorageKeys } from "$lib/constants/keys";
   import { isRecentSearchesArray } from "$lib/utils/validation/recent-searches-schema";
@@ -66,7 +66,7 @@
                 class="absolute inset-0 top-1/6 left-[92%] h-fit w-fit rounded-full p-2 cursor-pointer hover:bg-red-500 duration-200"
                 onclick={e => handleRemoveTermFromRecents(e, searchTerm)}
               >
-                <X size={20} />
+                <XIcon size={20} />
               </button>
             </a>
           </li>

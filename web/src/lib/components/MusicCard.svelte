@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Play } from "lucide-svelte";
+  import { PlayIcon } from "@lucide/svelte";
   import { fly } from "svelte/transition";
 
   import type { BaseMusicTrack } from "$lib/server/api/interface/types";
@@ -47,7 +47,7 @@
       <div class="right-5 top-[70%] absolute">
         <div in:fly={{ y: 10, x: 0 }}>
           <Button class="rounded-full h-14 w-14">
-            <Play class="text-primary-foreground" fill="black" />
+            <PlayIcon class="text-primary-foreground" fill="black" />
           </Button>
         </div>
       </div>

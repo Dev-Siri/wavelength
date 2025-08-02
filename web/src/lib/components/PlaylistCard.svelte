@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Globe, MoreHorizontal, Pencil, Play, Trash2 } from "lucide-svelte";
+  import { EllipsisIcon, GlobeIcon, PencilIcon, PlayIcon, Trash2Icon } from "@lucide/svelte";
   import toast from "svelte-french-toast";
 
   import type { PlayList, PlayListTrack } from "$lib/db/schema";
@@ -99,7 +99,7 @@
         class="bg-primary-foreground rounded-md h-10 group-hover:opacity-50 duration-200 w-[40px]"
       ></div>
     {/if}
-    <Play
+    <PlayIcon
       class="absolute cursor-pointer group-hover:opacity-100 opacity-0 inset-0 top-[34%] left-1/3"
       size={14}
       fill="white"
@@ -116,7 +116,7 @@
         {#if isPublic}
           <Tooltip.Root>
             <Tooltip.Trigger>
-              <Globe color="gray" size={12} />
+              <GlobeIcon color="gray" size={12} />
             </Tooltip.Trigger>
             <Tooltip.Content>Public</Tooltip.Content>
           </Tooltip.Root>
@@ -128,12 +128,12 @@
   <Dialog.Root>
     <DropdownMenu.Root>
       <DropdownMenu.Trigger class="ml-auto cursor-pointer {titleClasses}">
-        <MoreHorizontal class="text-muted-foreground" size={18} />
+        <EllipsisIcon class="text-muted-foreground" size={18} />
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
         <Dialog.Trigger class="w-full">
           <DropdownMenu.Item class="py-3 w-full gap-1 items-center">
-            <Pencil size={16} />
+            <PencilIcon size={16} />
             Edit details
           </DropdownMenu.Item>
         </Dialog.Trigger>
@@ -141,7 +141,7 @@
           class="py-3 pr-20 gap-1 items-center text-red-500"
           onclick={handleDeletePlaylist}
         >
-          <Trash2 size={16} />
+          <Trash2Icon size={16} />
           Delete playlist
         </DropdownMenu.Item>
       </DropdownMenu.Content>

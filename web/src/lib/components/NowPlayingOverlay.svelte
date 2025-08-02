@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { ArrowUpRight, MessageSquare, PlayCircle, ThumbsUp, Youtube } from "lucide-svelte";
+  import {
+    ArrowUpRightIcon,
+    CirclePlayIcon,
+    MessageSquareIcon,
+    ThumbsUpIcon,
+    YoutubeIcon,
+  } from "@lucide/svelte";
 
   import type { ApiResponse } from "$lib/utils/types";
   import type { youtube_v3 } from "googleapis";
@@ -71,7 +77,8 @@
           referrerpolicy="no-referrer"
           target="_blank"
         >
-          <Youtube class="text-red-500 stroke-1" size={35} /> Open on YouTube <ArrowUpRight />
+          <YoutubeIcon class="text-red-500 stroke-1" size={35} /> Open on YouTube <ArrowUpRightIcon
+          />
         </Button>
         <Button
           class="px-2 gap-2 text-muted-foreground"
@@ -80,9 +87,9 @@
           referrerpolicy="no-referrer"
           target="_blank"
         >
-          <PlayCircle class="text-red-500 stroke-1" size={29} />
+          <CirclePlayIcon class="text-red-500 stroke-1" size={29} />
           Open on YouTube Music
-          <ArrowUpRight />
+          <ArrowUpRightIcon />
         </Button>
       </div>
     </div>
@@ -100,7 +107,7 @@
           <div class="flex items-center justify-center gap-1.5 cursor-default" aria-label="Likes">
             <Tooltip.Root>
               <Tooltip.Trigger>
-                <ThumbsUp />
+                <ThumbsUpIcon />
               </Tooltip.Trigger>
               <Tooltip.Content>
                 <p>{videoStats.likeCount} Likes</p>
@@ -116,7 +123,7 @@
           >
             <Tooltip.Root>
               <Tooltip.Trigger>
-                <MessageSquare />
+                <MessageSquareIcon />
               </Tooltip.Trigger>
               <Tooltip.Content>
                 <p>{videoStats.commentCount} Comments</p>
@@ -129,7 +136,7 @@
           <div class="flex items-center justify-center gap-1.5 cursor-default" aria-label="Streams">
             <Tooltip.Root>
               <Tooltip.Trigger>
-                <PlayCircle />
+                <CirclePlayIcon />
               </Tooltip.Trigger>
               <Tooltip.Content>
                 <p>{videoStats.viewCount} Streams</p>

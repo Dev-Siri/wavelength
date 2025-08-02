@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Play } from "lucide-svelte";
+  import { PlayIcon } from "@lucide/svelte";
   import { fly } from "svelte/transition";
 
   import type { MusicTrack } from "$lib/server/api/interface/types";
@@ -24,7 +24,7 @@
 </script>
 
 <div
-  class="relative w-full bg-muted bg-opacity-40 rounded-2xl h-fit p-5 hover:bg-muted duration-200"
+  class="relative w-full bg-muted bg-opacity-40 rounded-2xl h-full p-5 hover:bg-muted duration-200"
   tabindex={0}
   role="button"
   onclick={playSong}
@@ -35,9 +35,9 @@
   <Image
     src={topResult.thumbnail}
     alt="Top Result Thumbnail"
-    height={112}
-    width={112}
-    class="rounded-lg h-28 w-28"
+    height={144}
+    width={144}
+    class="rounded-lg h-36 w-36"
   />
   <h2
     class="scroll-m-20 pb-2 mt-4 text-3xl font-semibold tracking-tight leading-none transition-colors first:mt-0"
@@ -49,7 +49,7 @@
     <div class="right-5 top-[70%] absolute">
       <div in:fly={{ y: 10, x: 0 }}>
         <Button class="rounded-full h-14 w-14">
-          <Play class="text-primary-foreground" fill="black" />
+          <PlayIcon class="text-primary-foreground" fill="black" />
         </Button>
       </div>
     </div>

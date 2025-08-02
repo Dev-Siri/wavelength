@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Globe, Lock } from "lucide-svelte";
+  import { GlobeIcon, LockIcon } from "@lucide/svelte";
   import toast from "svelte-french-toast";
 
   import type { PlayList } from "$lib/db/schema";
@@ -54,10 +54,10 @@
   onclick={handleVisibilityChange}
 >
   {#if isPublic}
-    <Globe size={17} />
+    <GlobeIcon size={17} />
     <span>Public</span>
   {:else}
-    <Lock size={17} />
+    <LockIcon size={17} />
     <span>Private</span>
   {/if}
 </Button>

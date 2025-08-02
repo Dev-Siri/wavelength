@@ -96,14 +96,14 @@
 </script>
 
 <Tooltip.Provider>
-  <div class="h-screen flex flex-col bg-primary-foreground">
+  <div class="h-screen flex flex-col bg-extra-dark">
     <Splitpanes class="flex-1 overflow-hidden" on:resize={e => (paneWidth = e.detail[0].size)}>
-      <Pane class="bg-primary-foreground rounded-tr-md rounded-br-md" {...sizes.sidebar}>
+      <Pane class="bg-extra-dark rounded-tr-md rounded-br-md" {...sizes.sidebar}>
         <Sidebar {paneWidth} />
       </Pane>
-      <Pane class="h-full w-full bg-primary-foreground relative" size={sizes.content}>
+      <Pane class="h-full w-full bg-extra-dark relative" size={sizes.content}>
         <TopBar region={data.region} />
-        <main class="bg-primary-foreground mt-12 h-screen z-30">
+        <main class="bg-extra-dark mt-12 h-screen z-30">
           {#if musicQueueStore.musicPlayingNow && musicPlayerStore.visiblePanel}
             <div
               class="absolute inset-x-0 top-[10.5%] bottom-0 z-80 rounded-2xl flex flex-col overflow-hidden"

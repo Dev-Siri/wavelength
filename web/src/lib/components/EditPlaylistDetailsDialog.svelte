@@ -1,7 +1,7 @@
 <script lang="ts">
   import { invalidateAll } from "$app/navigation";
+  import { LoaderCircleIcon } from "@lucide/svelte";
   import { UploadButton } from "@uploadthing/svelte";
-  import { LoaderCircle } from "lucide-svelte";
   import toast from "svelte-french-toast";
 
   import type { PlayList } from "$lib/db/schema";
@@ -91,7 +91,7 @@
     <Dialog.Footer>
       <Button type="submit" disabled={isLoading}>
         {#if isLoading}
-          <LoaderCircle class="mr-2 h-4 w-4 animate-spin" />
+          <LoaderCircleIcon class="mr-2 h-4 w-4 animate-spin" />
         {/if}
         Save changes
       </Button>

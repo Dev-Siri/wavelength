@@ -1,6 +1,6 @@
 <script lang="ts">
   import { signOut } from "@auth/sveltekit/client";
-  import { LogOut } from "lucide-svelte";
+  import { LogOutIcon } from "@lucide/svelte";
 
   import userStore from "$lib/stores/user.svelte";
 
@@ -35,7 +35,7 @@
         onclick={() => signOut()}
         class="py-3 pr-40 gap-1 items-center text-red-500"
       >
-        <LogOut size={16} />
+        <LogOutIcon size={16} />
         Logout
       </DropdownMenu.Item>
     </DropdownMenu.Content>

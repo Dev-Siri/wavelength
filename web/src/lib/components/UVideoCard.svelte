@@ -1,9 +1,10 @@
 <script lang="ts">
   import { invalidate } from "$app/navigation";
-  import { MoreHorizontal, Plus } from "lucide-svelte";
+  import { EllipsisIcon, PlusIcon } from "@lucide/svelte";
   import toast from "svelte-french-toast";
   import createYouTubePlayer from "youtube-player";
 
+  import type { ApiResponse } from "$lib/utils/types";
   import type { youtube_v3 } from "googleapis";
 
   import { YT_IMG_API_URL } from "$lib/constants/urls";
@@ -12,7 +13,6 @@
   import playlistsStore from "$lib/stores/playlists.svelte";
   import { durationify, parseHtmlEntities } from "$lib/utils/format";
   import queryClient from "$lib/utils/query-client";
-  import type { ApiResponse } from "$lib/utils/types";
 
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import * as Tooltip from "$lib/components/ui/tooltip";
@@ -120,7 +120,7 @@
             type="button"
             class="flex items-center ml-2 hover:text-white duration-200 justify-center px-1 text-muted-foreground"
           >
-            <MoreHorizontal />
+            <EllipsisIcon />
           </button>
         </DropdownMenu.Trigger>
         <p class="font-bold">
@@ -134,7 +134,7 @@
           onclick={() => addToPlaylist(playlist.playlistId)}
           class="flex py-3 gap-2"
         >
-          <Plus size={20} /> Add or Remove from Playlist "{playlist.name}"
+          <PlusIcon size={20} /> Add or Remove from Playlist "{playlist.name}"
         </DropdownMenu.Item>
       {/each}
     </DropdownMenu.Content>

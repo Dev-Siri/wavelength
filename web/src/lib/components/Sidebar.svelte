@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Compass, Plus } from "lucide-svelte";
+  import { CompassIcon, PlusIcon } from "@lucide/svelte";
   import toast from "svelte-french-toast";
 
   import type { PlayList } from "$lib/db/schema";
@@ -50,14 +50,14 @@
   </div>
   <div class="flex flex-col h-full w-full px-3 mt-2 gap-2">
     <Button variant="secondary" href="/app/playlist">
-      <Compass size={20} />
+      <CompassIcon size={20} />
       {#if paneWidth > 17}
         <span class="ml-1 hidden md:block">Discover Playlists</span>
       {/if}
     </Button>
     {#if userStore.user}
       <Button variant="secondary" onclick={createNewPlaylist}>
-        <Plus size={20} />
+        <PlusIcon size={20} />
         {#if paneWidth > 17}
           <span class="mr-5 hidden md:block">Add Playlist</span>
         {/if}

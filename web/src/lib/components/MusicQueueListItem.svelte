@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ListMinus } from "lucide-svelte";
+  import { ListMinusIcon } from "@lucide/svelte";
   import { fly } from "svelte/transition";
 
   import type { QueueableMusic } from "$lib/stores/music-queue.svelte";
@@ -45,6 +45,6 @@
     onclick={removeMusicFromQueue}
     onkeydown={removeMusicFromQueue}
   >
-    <ListMinus size={15} color="red" />
+    <ListMinusIcon size={15} color="red" />
   </div>
 </button>

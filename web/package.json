@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "@auth/sveltekit": "^1.9.2",
+    "@lucide/svelte": "^0.536.0",
     "@neondatabase/serverless": "^0.10.4",
     "@rodrigodagostino/svelte-sortable-list": "^0.10.16",
     "@uploadthing/svelte": "^7.3.0",
@@ -58,7 +59,6 @@
     "get-image-colors": "^4.0.1",
     "googleapis": "^144.0.0",
     "idb": "^8.0.3",
-    "lucide-svelte": "^0.476.0",
     "sharp": "^0.33.5",
     "svelte-french-toast": "^1.2.0",
     "svelte-splitpanes": "^8.0.9",

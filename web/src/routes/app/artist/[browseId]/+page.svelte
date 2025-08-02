@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from "$app/state";
-  import { ArrowUpRight, Play } from "lucide-svelte";
+  import { ArrowUpRightIcon, PlayIcon } from "@lucide/svelte";
   import { fly } from "svelte/transition";
 
   import type { PageData } from "./$types";
@@ -93,7 +93,7 @@
                     })),
                   )}
               >
-                <Play class="text-primary-foreground" fill="black" />
+                <PlayIcon class="text-primary-foreground" fill="black" />
               </Button>
             {/if}
             <Button
@@ -104,7 +104,7 @@
               class="inline-flex gap-1 px-2 items-center"
             >
               View artist on YouTube Music
-              <ArrowUpRight />
+              <ArrowUpRightIcon />
             </Button>
           </div>
           {#if artistResponse.data?.songs?.titleHeader}

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { X } from "lucide-svelte";
+  import { XIcon } from "@lucide/svelte";
 
   import type { ApiResponse } from "$lib/utils/types";
   import type { Snippet } from "svelte";
@@ -50,7 +50,7 @@
       variant="ghost"
       onclick={() => (musicPlayerStore.visiblePanel = null)}
     >
-      <X size={30} />
+      <XIcon size={30} />
     </Button>
     {#if musicPlayerStore.visiblePanel === "lyrics"}
       <p class="ml-auto">Lyrics provided by Musixmatch</p>

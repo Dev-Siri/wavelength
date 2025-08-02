@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Volume2, VolumeOff } from "lucide-svelte";
+  import { Volume2Icon, VolumeOffIcon } from "@lucide/svelte";
 
   import { localStorageKeys } from "$lib/constants/keys";
   import musicPlayerStore from "$lib/stores/music-player.svelte";
@@ -28,9 +28,9 @@
     onclick={() => (musicPlayerStore.isMusicMuted = !musicPlayerStore.isMusicMuted)}
   >
     {#if musicPlayerStore.isMusicMuted}
-      <VolumeOff size={20} />
+      <VolumeOffIcon size={20} />
     {:else}
-      <Volume2 size={20} />
+      <Volume2Icon size={20} />
     {/if}
   </Button>
   <Slider type="single" bind:value={volume} class="h-2 w-20 hidden md:flex" min={0} max={100} />

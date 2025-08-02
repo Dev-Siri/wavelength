@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { MoreHorizontal, Play } from "lucide-svelte";
+  import { EllipsisIcon, PlayIcon } from "@lucide/svelte";
 
   import type { VideoTypeEnum } from "$lib/db/schema";
   import type { MusicTrack } from "$lib/server/api/interface/types";
@@ -42,7 +42,7 @@
       <div
         class="flex flex-col aspect-square items-center justify-center relative group-hover:rounded-md h-14 w-[70px] duration-200"
       >
-        <Play class="absolute hidden group-hover:block z-50" size={18} fill="white" />
+        <PlayIcon class="absolute hidden group-hover:block z-50" size={18} fill="white" />
         <Image
           src={music.thumbnail}
           alt="Thumbnail"
@@ -86,7 +86,7 @@
     {#if music.duration !== ""}
       <DropdownMenu.Trigger class="h-full">
         <Button variant="ghost" class="flex items-center justify-center px-1 text-muted-foreground">
-          <MoreHorizontal />
+          <EllipsisIcon />
         </Button>
       </DropdownMenu.Trigger>
     {/if}

@@ -13,11 +13,11 @@
   const { data }: { data: PageData } = $props();
 </script>
 
-<div class="h-screen py-4 px-2 overflow-auto pb-[20%]">
-  <div class="flex w-full gap-5 mt-8">
+<div class="h-screen p-4 overflow-auto pb-[20%]">
+  <div class="flex h-[272px] w-full gap-5 mt-8 mb-16">
     {#await data.pageData.songResponse}
       <div class="w-2/3">
-        <h2 class="text-3xl mb-3 font-bold">Top Result</h2>
+        <h2 class="text-2xl mb-3 font-semibold">Top Result</h2>
         <div class="w-full bg-muted bg-opacity-40 rounded-2xl pt-4 pb-6 pl-4">
           <Skeleton class="rounded-lg h-28 w-28" />
           <Skeleton class="w-4/5 h-4 mt-8" />
@@ -25,7 +25,7 @@
         </div>
       </div>
       <div class="w-2/3">
-        <h2 class="text-3xl mb-3 font-bold">Songs</h2>
+        <h2 class="text-2xl mb-3 font-semibold">Songs</h2>
         <TrackItemSkeleton />
         <TrackItemSkeleton />
         <TrackItemSkeleton />
@@ -34,12 +34,12 @@
     {:then songResponse}
       {#if songResponse.success}
         {@const topResult = songResponse.data.result[0]}
-        <div class="w-2/4">
-          <h2 class="text-3xl mb-3 font-bold">Top Result</h2>
+        <div class="h-full w-1/2">
+          <h2 class="text-2xl mb-3 font-semibold">Top Result</h2>
           <TopResult {topResult} />
         </div>
-        <div class="w-2/4">
-          <h2 class="text-3xl mb-3 font-bold">Songs</h2>
+        <div class="h-full w-1/2">
+          <h2 class="text-2xl mb-3 font-semibold">Songs</h2>
           {#each songResponse.data.result.slice(0, 4) as music}
             <TrackItem {music} />
           {/each}

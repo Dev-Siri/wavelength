@@ -1,5 +1,12 @@
 <script lang="ts">
-  import { FastForward, Pause, Play, Repeat, Repeat1, Rewind } from "lucide-svelte";
+  import {
+    FastForwardIcon,
+    PauseIcon,
+    PlayIcon,
+    Repeat1Icon,
+    RepeatIcon,
+    RewindIcon,
+  } from "@lucide/svelte";
   import { fade } from "svelte/transition";
 
   import musicPlayerStore from "$lib/stores/music-player.svelte";
@@ -70,7 +77,7 @@
         variant="ghost"
         onclick={playPreviousSong}
       >
-        <Rewind fill="white" font-weight="normal" size={24} />
+        <RewindIcon fill="white" font-weight="normal" size={24} />
       </Button>
     </Tooltip.Trigger>
     <Tooltip.Content>
@@ -87,9 +94,9 @@
           : musicPlayerStore.playMusic}
       >
         {#if musicPlayerStore.isMusicPlaying}
-          <Pause fill="black" size={20} font-weight="normal" />
+          <PauseIcon fill="black" size={20} font-weight="normal" />
         {:else}
-          <Play fill="black" size={20} font-weight="normal" />
+          <PlayIcon fill="black" size={20} font-weight="normal" />
         {/if}
       </Button>
     </Tooltip.Trigger>
@@ -105,7 +112,7 @@
         variant="ghost"
         onclick={playNextSong}
       >
-        <FastForward fill="white" font-weight="normal" size={24} />
+        <FastForwardIcon fill="white" font-weight="normal" size={24} />
       </Button>
     </Tooltip.Trigger>
     <Tooltip.Content>
@@ -117,15 +124,15 @@
       <Button class="rounded-full h-10 w-10 p-2" variant="ghost" onclick={changeMusicRepeatMode}>
         {#if musicPlayerStore.musicRepeatMode === "none"}
           <div in:fade>
-            <Repeat opacity={0.4} font-weight="normal" size={22} />
+            <RepeatIcon opacity={0.4} font-weight="normal" size={22} />
           </div>
         {:else if musicPlayerStore.musicRepeatMode === "all"}
           <div in:fade>
-            <Repeat fill="white" font-weight="normal" size={22} />
+            <RepeatIcon fill="white" font-weight="normal" size={22} />
           </div>
         {:else}
           <div in:fade>
-            <Repeat1 fill="white" font-weight="normal" size={22} />
+            <Repeat1Icon fill="white" font-weight="normal" size={22} />
           </div>
         {/if}
       </Button>

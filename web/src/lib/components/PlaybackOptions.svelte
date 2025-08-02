@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Columns3, MicVocal, PlaySquare } from "lucide-svelte";
+  import { Columns3Icon, MicVocalIcon, SquarePlayIcon } from "@lucide/svelte";
 
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
@@ -33,7 +33,7 @@
               musicPlayerStore.visiblePanel === "playingNow" ? null : "playingNow"),
         )}
     >
-      <PlaySquare
+      <SquarePlayIcon
         size={20}
         class={musicPlayerStore.visiblePanel === "playingNow"
           ? "text-primary"
@@ -55,7 +55,7 @@
           () => (musicQueueStore.isMusicQueueVisible = !musicQueueStore.isMusicQueueVisible),
         )}
     >
-      <Columns3
+      <Columns3Icon
         size={20}
         class={musicQueueStore.isMusicQueueVisible ? "text-primary" : "text-muted-foreground"}
       />
@@ -78,7 +78,7 @@
               musicPlayerStore.visiblePanel === "lyrics" ? null : "lyrics"),
         )}
     >
-      <MicVocal
+      <MicVocalIcon
         size={20}
         class={musicPlayerStore.visiblePanel === "lyrics"
           ? "text-primary"

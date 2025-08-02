@@ -1,6 +1,6 @@
 <script lang="ts">
   import { invalidate } from "$app/navigation";
-  import { Plus } from "lucide-svelte";
+  import { PlusIcon } from "@lucide/svelte";
   import toast from "svelte-french-toast";
 
   import type { MusicTrack } from "$lib/server/api/interface/types";
@@ -41,6 +41,6 @@
     onclick={() => addToPlaylist(playlist.playlistId)}
     class="flex py-3 gap-2 cursor-pointer"
   >
-    <Plus size={20} /> Toggle from "{playlist.name}"
+    <PlusIcon size={20} /> Toggle from "{playlist.name}"
   </DropdownMenuItem>
 {/each}

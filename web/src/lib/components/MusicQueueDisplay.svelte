@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ChevronDown, Rows4, X } from "lucide-svelte";
+  import { ChevronDownIcon, Rows4Icon, XIcon } from "@lucide/svelte";
   import { slide } from "svelte/transition";
 
   import musicQueueStore from "$lib/stores/music-queue.svelte";
@@ -29,7 +29,7 @@
           variant="ghost"
           onclick={() => (musicQueueStore.isMusicQueueVisible = false)}
         >
-          <X size={3} />
+          <XIcon size={3} />
         </Button>
       </header>
       <ul class="h-full w-full border-b border-b-border overflow-auto">
@@ -38,7 +38,7 @@
             <MusicQueueListItem {musicQueueItem} />
             {#if i !== musicQueueStore.musicQueue.length - 1}
               <span class="my-0.5">
-                <ChevronDown class="text-gray-500/80" size={20} />
+                <ChevronDownIcon class="text-gray-500/80" size={20} />
               </span>
             {/if}
           </li>
@@ -55,7 +55,7 @@
     </div>
   {:else}
     <div class="flex flex-col gap-2 items-center justify-center h-full">
-      <Rows4 size={44} class="text-gray-400" />
+      <Rows4Icon size={44} class="text-gray-400" />
       <p class="text-sm text-gray-400 select-none">Music Queue is Empty.</p>
     </div>
   {/if}

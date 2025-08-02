@@ -1,17 +1,18 @@
 <script lang="ts">
-  import { Clock, ListMusic, ListPlus, Play } from "lucide-svelte";
+  import { page } from "$app/state";
+  import { ClockIcon, ListMusicIcon, ListPlusIcon, PlayIcon } from "@lucide/svelte";
   import { fly } from "svelte/transition";
 
   import type { PlayList, PlayListTrack } from "$lib/db/schema";
   import type { ApiResponse } from "$lib/utils/types";
   import type { PageData } from "./$types";
 
+  import getClientDB from "$lib/db/client-indexed-db";
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte";
   import userStore from "$lib/stores/user.svelte";
   import queryClient from "$lib/utils/query-client";
 
-  import { page } from "$app/state";
   import ChangePlaylistVisibilityButton from "$lib/components/ChangePlaylistVisibilityButton.svelte";
   import EditPlaylistDetailsDialog from "$lib/components/EditPlaylistDetailsDialog.svelte";
   import Image from "$lib/components/Image.svelte";
@@ -21,7 +22,6 @@
   import { Button } from "$lib/components/ui/button";
   import * as Dialog from "$lib/components/ui/dialog";
   import * as Tooltip from "$lib/components/ui/tooltip";
-  import getClientDB from "$lib/db/client-indexed-db";
 
   const { data }: { data: PageData } = $props();
 
@@ -177,7 +177,7 @@
                     class="rounded-full w-fit my-3 py-6 ml-1"
                     onclick={() => playPlaylist(playlistTracks ?? [])}
                   >
-                    <Play class="text-primary-foreground" fill="black" />
+                    <PlayIcon class="text-primary-foreground" fill="black" />
                   </Button>
                   <ChangePlaylistVisibilityButton
                     playlistId={playlist.playlistId}
@@ -199,7 +199,7 @@
                           : ''}"
                         onclick={() => (isRearrangingList = !isRearrangingList)}
                       >
-                        <ListMusic size={18} />
+                        <ListMusicIcon size={18} />
                       </button>
                     </Tooltip.Trigger>
                     <Tooltip.Content>
@@ -209,7 +209,7 @@
                     </Tooltip.Content>
                   </Tooltip.Root>
                   <p class="flex-2">Title</p>
-                  <Clock size={18} class="mr-[62px]" />
+                  <ClockIcon size={18} class="mr-[62px]" />
                 </header>
                 <div class="h-2/4 pb-[40%] min-660:pb-[35%] overflow-y-auto overflow-x-hidden">
                   {#key playlistTracks}
@@ -222,7 +222,7 @@
                 </div>
               {:else}
                 <div class="mt-10 flex gap-2 flex-col items-center justify-center">
-                  <ListPlus size={40} />
+                  <ListPlusIcon size={40} />
                   <h4 class="text-center text-2xl">Your playlist is empty</h4>
                   <Button
                     variant="secondary"

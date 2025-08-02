@@ -7,7 +7,7 @@
   import playlistsStore from "$lib/stores/playlists.svelte";
   import { durationify, parseHtmlEntities } from "$lib/utils/format";
 
-  import { MoreHorizontal } from "lucide-svelte";
+  import { EllipsisIcon } from "@lucide/svelte";
   import Image from "./Image.svelte";
   import MusicPlayerControls from "./MusicPlayerControls.svelte";
   import PlaybackOptions from "./PlaybackOptions.svelte";
@@ -135,7 +135,7 @@
       <DropdownMenu.Root>
         <DropdownMenu.Trigger>
           <div class="relative group h-20 w-20 cursor-pointer">
-            <MoreHorizontal
+            <EllipsisIcon
               class="absolute bg-black bg-opacity-80 z-99999 rounded-full p-0.5 duration-200 top-2 right-2"
               color="white"
               size={20}
