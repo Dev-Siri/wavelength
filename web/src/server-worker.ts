@@ -3,7 +3,7 @@
 import { clientsClaim } from "workbox-core";
 import { cleanupOutdatedCaches, precacheAndRoute } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
-import { StaleWhileRevalidate } from "workbox-strategies";
+import { NetworkFirst, StaleWhileRevalidate } from "workbox-strategies";
 
 declare let self: ServiceWorkerGlobalScope;
 
@@ -15,6 +15,13 @@ registerRoute(
   ({ request }) => request.destination === "image",
   new StaleWhileRevalidate({
     cacheName: "images-cache",
+  }),
+);
+
+registerRoute(
+  ({ request }) => request.mode === "navigate",
+  new NetworkFirst({
+    cacheName: "pages-cache",
   }),
 );
 
