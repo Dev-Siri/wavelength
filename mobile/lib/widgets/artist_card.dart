@@ -1,6 +1,7 @@
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
+import "package:go_router/go_router.dart";
 import "package:wavelength/api/models/artist.dart";
 
 class ArtistCard extends StatelessWidget {
@@ -12,7 +13,7 @@ class ArtistCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoButton(
       padding: EdgeInsets.zero,
-      onPressed: () => 1,
+      onPressed: () => context.push("/artist/${artist.browseId}"),
       child: Row(
         children: [
           CircleAvatar(
