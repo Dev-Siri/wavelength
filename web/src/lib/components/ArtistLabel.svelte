@@ -8,7 +8,7 @@
 
 <a
   href="/app/artist/{artist.browseId}"
-  class="flex flex-col justify-center hover:bg-muted p-4 rounded-2xl duration-200"
+  class="flex flex-col justify-center bg-muted/50 items-center p-4 rounded-2xl hover:bg-muted duration-200"
 >
   <Image
     src={artist.thumbnail}

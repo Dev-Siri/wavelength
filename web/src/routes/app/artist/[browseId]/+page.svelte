@@ -25,15 +25,17 @@
 </script>
 
 <div
-  class="h-full w-full bg-black mt-2 rounded-2xl"
+  class="h-full w-full bg-black rounded-2xl"
   in:fly={{ y: 20, duration: 100 }}
   out:fly={{ y: 20, duration: 100 }}
 >
   {#await Promise.all([data.pageData.defaultResponse, data.pageData.extraResponse])}
-    <div class="flex flex-col gap-2 h-full">
-      <Skeleton class="h-72 w-full rounded-t-2xl" />
-      <Skeleton class="w-4/5 h-5 rounded-full mt-2 mx-4" />
-      <Skeleton class="w-2/5 h-5 rounded-full mt-2 mx-4" />
+    <div class="h-full pt-[4%] px-5 flex w-full center">
+      <Skeleton class="w-48 h-40 rounded-full" />
+      <div class="flex flex-col mt-4 w-full gap-2">
+        <Skeleton class="w-4/5 h-5 rounded-full mt-2 mx-4" />
+        <Skeleton class="w-2/5 h-5 rounded-full mt-2 mx-4" />
+      </div>
     </div>
   {:then [artistResponse, extraResponse]}
     {#if artistResponse.success}
@@ -101,7 +103,7 @@
               variant="secondary"
               target="_blank"
               referrerpolicy="no-referrer"
-              class="inline-flex gap-1 px-2 items-center"
+              class="inline-flex gap-1 px-3 items-center"
             >
               View artist on YouTube Music
               <ArrowUpRightIcon />

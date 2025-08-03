@@ -47,7 +47,7 @@
 
     if (parsedSearches.includes(q)) return;
 
-    const newSearches = [q, ...parsedSearches.slice(0, 4)];
+    const newSearches = [q, ...parsedSearches.slice(0, 20)];
     localStorage.setItem(localStorageKeys.recentSearches, JSON.stringify(newSearches));
   }
 </script>
