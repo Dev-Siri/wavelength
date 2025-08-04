@@ -155,7 +155,27 @@ class PlaylistsRepo {
         ),
       );
 
-      print(response.body);
+      final decodedResponse = await compute((stringResponse) {
+        final decodedJson = jsonDecode(stringResponse);
+        final decodedData = ApiResponse<String>.fromJson(decodedJson, null);
+
+        return decodedData;
+      }, response.body);
+
+      return decodedResponse;
+    } catch (_) {
+      return ApiResponse(success: false, data: null);
+    }
+  }
+
+  static Future<ApiResponse> deletePlaylist({
+    required String playlistId,
+  }) async {
+    try {
+      final response = await http.delete(
+        Uri.parse("$backendUrl/playlists/$playlistId"),
+      );
+
       final decodedResponse = await compute((stringResponse) {
         final decodedJson = jsonDecode(stringResponse);
         final decodedData = ApiResponse<String>.fromJson(decodedJson, null);
