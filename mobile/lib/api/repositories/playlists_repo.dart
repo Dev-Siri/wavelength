@@ -142,4 +142,30 @@ class PlaylistsRepo {
       return ApiResponse(success: false, data: null);
     }
   }
+
+  static Future<ApiResponse> createPlaylist({
+    required String email,
+    required String username,
+    required String image,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+          "$backendUrl/playlists/user/$email?authorName=$username&authorImage=$image",
+        ),
+      );
+
+      print(response.body);
+      final decodedResponse = await compute((stringResponse) {
+        final decodedJson = jsonDecode(stringResponse);
+        final decodedData = ApiResponse<String>.fromJson(decodedJson, null);
+
+        return decodedData;
+      }, response.body);
+
+      return decodedResponse;
+    } catch (_) {
+      return ApiResponse(success: false, data: null);
+    }
+  }
 }

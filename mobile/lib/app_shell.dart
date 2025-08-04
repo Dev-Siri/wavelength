@@ -68,7 +68,7 @@ class _AppShellState extends State<AppShell> {
   ];
 
   void _onScreenChange(int value) {
-    if (value < 4) {
+    if (value < 3) {
       setState(() => _activeRouteIndex = value);
     }
 
