@@ -24,22 +24,35 @@ export async function GET({ params: { email } }) {
   }
 }
 
-export async function POST({ params: { email }, locals }) {
+export async function POST({ params: { email }, locals, url }) {
   const session = await locals.auth();
 
-  if (!session || !session?.user?.name || !session?.user?.image)
+  const authorName = url.searchParams.get("authorName");
+  const authorImage = url.searchParams.get("authorImage");
+
+  if ((!session?.user?.name && !authorName) || (!session?.user?.image && !authorImage))
     error(401, {
       success: false,
       message: "Unauthorized",
     });
 
   try {
+    const authName = session?.user?.name ?? authorName;
+    const authImage = session?.user?.image ?? authorImage;
+
+    if (!authName || !authImage) {
+      return error(400, {
+        success: false,
+        message: "Author name or image is required.",
+      });
+    }
+
     await db.insert(playlists).values({
       name: "New Playlist",
       playlistId: crypto.randomUUID(),
       authorGoogleEmail: email,
-      authorName: session.user.name,
-      authorImage: session.user.image,
+      authorName: authName,
+      authorImage: authImage,
       coverImage: null,
     });
 
