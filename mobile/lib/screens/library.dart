@@ -13,59 +13,59 @@ class LibraryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 16),
-            Text("Your Library", style: TextStyle(fontSize: 30)),
-            SizedBox(height: 10),
-            BlocBuilder<AuthBloc, AuthState>(
-              builder: (context, state) {
-                if (state is AuthStateUnauthorized) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Please login to view your library and create playlists.",
-                      ),
-                      SizedBox(height: 15),
-                      GoogleLoginButton(),
-                    ],
-                  );
-                }
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Text("Your Library", style: TextStyle(fontSize: 30)),
+          ),
+          SizedBox(height: 10),
+          BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              if (state is AuthStateUnauthorized) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Please login to view your library and create playlists.",
+                    ),
+                    SizedBox(height: 15),
+                    GoogleLoginButton(),
+                  ],
+                );
+              }
 
-                return BlocBuilder<LibraryBloc, LibraryState>(
-                  builder: (context, state) {
-                    if (state is! LibraryFetchSuccessState) {
-                      return Column(
-                        children: [
-                          for (int i = 0; i < 10; i++)
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 5),
-                              child: PlaylistTileSkeleton(),
-                            ),
-                        ],
-                      );
-                    }
-
+              return BlocBuilder<LibraryBloc, LibraryState>(
+                builder: (context, state) {
+                  if (state is! LibraryFetchSuccessState) {
                     return Column(
                       children: [
-                        for (final playlist in state.playlists)
+                        for (int i = 0; i < 10; i++)
                           Padding(
                             padding: const EdgeInsets.only(bottom: 5),
-                            child: PlaylistTile(playlist: playlist),
+                            child: PlaylistTileSkeleton(),
                           ),
                       ],
                     );
-                  },
-                );
-              },
-            ),
-          ],
-        ),
+                  }
+
+                  return Column(
+                    children: [
+                      for (final playlist in state.playlists)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 5),
+                          child: PlaylistTile(playlist: playlist),
+                        ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
     );
   }

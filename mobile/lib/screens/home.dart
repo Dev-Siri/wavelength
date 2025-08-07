@@ -38,8 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
             child: ListView(
               children: [
-                BlocConsumer<QuickPicksBloc, QuickPicksState>(
-                  listener: (context, state) {},
+                BlocBuilder<QuickPicksBloc, QuickPicksState>(
                   builder: (context, state) {
                     if (state is! QuickPicksSuccessState) {
                       return Stack(
@@ -47,9 +46,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           Wrap(
                             children: [
                               for (int i = 0; i < 8; i++)
-                                Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: QuickPickSongCardSkeleton(),
+                                SizedBox(
+                                  width:
+                                      (MediaQuery.of(context).size.width - 20) /
+                                      2,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(5),
+                                    child: QuickPickSongCardSkeleton(),
+                                  ),
                                 ),
                             ],
                           ),
@@ -118,9 +122,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     return Wrap(
                       children: [
                         for (final song in state.songs)
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: QuickPickSongCard(quickPicksItem: song),
+                          SizedBox(
+                            width: (MediaQuery.of(context).size.width - 20) / 2,
+                            child: Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: QuickPickSongCard(quickPicksItem: song),
+                            ),
                           ),
                       ],
                     );

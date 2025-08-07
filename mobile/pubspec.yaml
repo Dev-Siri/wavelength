@@ -25,7 +25,11 @@ dependencies:
   geolocator: ^11.0.0
   geocoding: ^2.1.0
   uploadthing: ^1.0.3
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  connectivity_plus: ^6.1.4
   flutter_dotenv: ^5.2.1
+  mini_music_visualizer: ^1.1.4
   url_launcher: ^6.3.2
   flutter_bloc: ^9.0.0
   lucide_icons_flutter: ^1.2.7
@@ -36,6 +40,8 @@ dev_dependencies:
     sdk: flutter
 
   vector_graphics_compiler: ^1.1.16
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.6
   flutter_lints: ^5.0.0
 
 flutter:

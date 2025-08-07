@@ -212,17 +212,14 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                         a.positionInPlaylist.compareTo(b.positionInPlaylist),
                   );
 
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Column(
-                      children: [
-                        for (final song in orderedSongs)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: PlaylistTrackTile(playlistTrack: song),
-                          ),
-                      ],
-                    ),
+                  return Column(
+                    children: [
+                      for (final song in orderedSongs)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: PlaylistTrackTile(playlistTrack: song),
+                        ),
+                    ],
                   );
                 },
               ),

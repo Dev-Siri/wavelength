@@ -24,7 +24,7 @@ class QuickPickSongCard extends StatelessWidget {
               imageUrl: quickPicksItem.thumbnail,
               fit: BoxFit.cover,
               height: 130,
-              width: MediaQuery.of(context).size.width / 2.8,
+              width: (MediaQuery.of(context).size.width / 2) - 50,
             ),
           ),
           SizedBox(height: 10),

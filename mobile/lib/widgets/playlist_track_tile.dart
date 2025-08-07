@@ -3,8 +3,11 @@ import "dart:io";
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
+// import "package:mini_music_visualizer/mini_music_visualizer.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/utils/parse.dart";
+
+// MiniMusicVisualizer(color: Colors.blue, width: 4, height: 15),
 
 class PlaylistTrackTile extends StatelessWidget {
   final PlaylistTrack playlistTrack;
@@ -21,7 +24,7 @@ class PlaylistTrackTile extends StatelessWidget {
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
       padding: EdgeInsets.all(5),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
@@ -54,6 +57,11 @@ class PlaylistTrackTile extends StatelessWidget {
                 style: TextStyle(color: Colors.grey, fontSize: 14),
               ),
             ],
+          ),
+          Spacer(),
+          Text(
+            playlistTrack.duration.toString(),
+            style: TextStyle(color: Colors.grey, fontSize: 14),
           ),
         ],
       ),

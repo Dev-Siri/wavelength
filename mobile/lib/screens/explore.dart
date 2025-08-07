@@ -88,7 +88,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
             style: TextStyle(color: Colors.black),
             cursorColor: Colors.blue,
             autocorrect: false,
-            autofocus: true,
             decoration: InputDecoration(
               filled: true,
               fillColor: Colors.white,
@@ -132,7 +131,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     (_) => setState(() => _searchType = SearchType.videos),
               ),
               ChoiceChip(
-                label: const Text("Artists"),
+                label: const Text("Artist"),
                 selectedColor: Colors.white,
                 selected: _searchType == SearchType.artists,
                 onSelected:
