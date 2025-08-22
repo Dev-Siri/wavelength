@@ -34,19 +34,23 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
     if (permission == LocationPermission.deniedForever) return;
 
-    Position position = await Geolocator.getCurrentPosition(
+    final position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
 
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-      position.latitude,
-      position.longitude,
-    );
+    try {
+      final placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
 
-    final countryCode = placemarks.first.isoCountryCode ?? "US";
+      final countryCode = placemarks.first.isoCountryCode ?? defaultLocale;
 
-    emit(LocationState(countryCode: countryCode));
+      emit(LocationState(countryCode: countryCode));
 
-    if (countryCode != locale) sharedPrefs.setString("user_cc", countryCode);
+      if (countryCode != locale) sharedPrefs.setString("user_cc", countryCode);
+    } catch (_) {
+      emit(LocationState(countryCode: defaultLocale));
+    }
   }
 }

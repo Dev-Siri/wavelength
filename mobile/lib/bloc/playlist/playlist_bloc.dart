@@ -1,4 +1,5 @@
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/repositories/playlists_repo.dart";
 import "package:wavelength/bloc/playlist/playlist_event.dart";
 import "package:wavelength/bloc/playlist/playlist_state.dart";
@@ -8,36 +9,40 @@ import "package:wavelength/constants.dart";
 
 class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
   PlaylistBloc() : super(PlaylistInitialState()) {
-    on<PlaylistFetchEvent>(_fetchPlaylistAndTracks);
+    on<PlaylistFetchEvent>(_fetchPlaylistTracks);
   }
 
-  Future<void> _fetchPlaylistAndTracks(
+  Future<void> _fetchPlaylistTracks(
     PlaylistFetchEvent event,
     Emitter<PlaylistState> emit,
   ) async {
     emit(PlaylistLoadingState());
 
     final connectivityResult = await Connectivity().checkConnectivity();
-    final box = await Hive.openBox(hivePlaylistsKey);
+
+    // TODO: Fix cache from Hive's overflow error
+    // final box = await Hive.openBox<List<PlaylistTrack>>(hivePlaylistsTracksKey);
+    // final cachedPlaylistTracks = box.get(event.playlistId);
+
+    // print(cachedPlaylistTracks);
+
+    // if (cachedPlaylistTracks != null) {
+    //   emit(PlaylistSuccessState(songs: cachedPlaylistTracks));
+    // }
 
     if (connectivityResult.contains(ConnectivityResult.wifi) ||
         connectivityResult.contains(ConnectivityResult.mobile)) {
-      if (box.containsKey(event.playlistId)) {
-        final cachedTracks = box.get(event.playlistId);
-        emit(PlaylistSuccessState(songs: cachedTracks));
-      }
-
       final response = await PlaylistsRepo.fetchPlaylistTracks(
         playlistId: event.playlistId,
       );
 
       if (response.success) {
-        await box.put(event.playlistId, response.data);
-        emit(PlaylistSuccessState(songs: response.data));
+        // await box.put(event.playlistId, response.data);
+
+        return emit(PlaylistSuccessState(songs: response.data));
       }
-    } else if (box.containsKey(event.playlistId)) {
-      final cachedTracks = box.get(event.playlistId);
-      emit(PlaylistSuccessState(songs: cachedTracks));
     }
+
+    emit(PlaylistErrorState());
   }
 }

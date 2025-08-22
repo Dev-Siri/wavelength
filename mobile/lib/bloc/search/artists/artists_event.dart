@@ -1,7 +1,7 @@
 import "package:flutter/foundation.dart";
 
 @immutable
-class ArtistsEvent {}
+abstract class ArtistsEvent {}
 
 class ArtistsFetchEvent extends ArtistsEvent {
   final String query;

@@ -14,6 +14,8 @@ import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/library/library_event.dart";
 import "package:wavelength/bloc/location/location_bloc.dart";
 import "package:wavelength/bloc/location/location_event.dart";
+import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
+import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
 import "package:wavelength/widgets/playlist_creation_bottom_sheet.dart";
 import "package:wavelength/widgets/shared_app_bar.dart";
 import "package:wavelength/widgets/user_info_drawer.dart";
@@ -96,45 +98,53 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: Scaffold(
-        appBar: SharedAppBar(),
-        drawer: UserInfoDrawer(),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: BlocConsumer<AuthBloc, AuthState>(
-            listener: (context, state) {
-              if (state is AuthStateAuthorized) {
-                context.read<LibraryBloc>().add(
-                  LibraryPlaylistsFetchEvent(email: state.user.email),
-                );
-              }
-            },
-            builder: (_, __) => widget.child,
+    return BlocBuilder<MusicPlayerTrackBloc, MusicPlayerTrackState>(
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Scaffold(
+            appBar: SharedAppBar(),
+            drawer: UserInfoDrawer(),
+            body: Padding(
+              padding: EdgeInsets.only(
+                left: 8,
+                right: 8,
+                bottom: state is MusicPlayerTrackPlayingNowState ? 80 : 0,
+              ),
+              child: BlocConsumer<AuthBloc, AuthState>(
+                listener: (context, state) {
+                  if (state is AuthStateAuthorized) {
+                    context.read<LibraryBloc>().add(
+                      LibraryPlaylistsFetchEvent(email: state.user.email),
+                    );
+                  }
+                },
+                builder: (_, __) => widget.child,
+              ),
+            ),
+            bottomNavigationBar:
+                Platform.isIOS
+                    ? CupertinoTabBar(
+                      height: 80,
+                      activeColor: Colors.white,
+                      inactiveColor: Colors.grey.shade600,
+                      currentIndex: _activeRouteIndex,
+                      iconSize: 25,
+                      onTap: _onScreenChange,
+                      items: _getBottomNavItems(),
+                    )
+                    : BottomNavigationBar(
+                      showSelectedLabels: false,
+                      showUnselectedLabels: false,
+                      selectedItemColor: Colors.white,
+                      unselectedItemColor: Colors.grey.shade600,
+                      currentIndex: _activeRouteIndex,
+                      onTap: _onScreenChange,
+                      items: _getBottomNavItems(),
+                    ),
           ),
-        ),
-        bottomNavigationBar:
-            Platform.isIOS
-                ? CupertinoTabBar(
-                  height: 80,
-                  activeColor: Colors.white,
-                  inactiveColor: Colors.grey.shade600,
-                  currentIndex: _activeRouteIndex,
-                  iconSize: 25,
-                  onTap: _onScreenChange,
-                  items: _getBottomNavItems(),
-                )
-                : BottomNavigationBar(
-                  showSelectedLabels: false,
-                  showUnselectedLabels: false,
-                  selectedItemColor: Colors.white,
-                  unselectedItemColor: Colors.grey.shade600,
-                  currentIndex: _activeRouteIndex,
-                  onTap: _onScreenChange,
-                  items: _getBottomNavItems(),
-                ),
-      ),
+        );
+      },
     );
   }
 }
