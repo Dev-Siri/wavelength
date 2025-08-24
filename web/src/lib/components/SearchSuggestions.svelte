@@ -46,7 +46,7 @@
     <div class="py-4">
       <p class="px-4 text-xl font-semibold mb-4">Recent Searches</p>
       <ul class="flex flex-col items-center">
-        {#each filteredSearchTerms as searchTerm}
+        {#each filteredSearchTerms.slice(0, 5) as searchTerm}
           <li
             class="flex justify-center relative items-center h-full w-full backdrop-opacity-20 z-9999"
           >

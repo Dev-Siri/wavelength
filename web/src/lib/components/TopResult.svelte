@@ -40,9 +40,12 @@
     class="rounded-lg h-36 w-36"
   />
   <h2
-    class="scroll-m-20 pb-2 mt-4 text-3xl font-semibold tracking-tight leading-none transition-colors first:mt-0"
+    class="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight leading-none transition-colors {topResult
+      .title.length > 30
+      ? 'mt-2'
+      : 'mt-4'}"
   >
-    {topResult.title}
+    {topResult.title.length > 65 ? `${topResult.title.slice(0, 65)}...` : topResult.title}
   </h2>
   <p class="text-muted-foreground text-md">{topResult.author}</p>
   {#if isHoveringCard}

@@ -11,11 +11,19 @@ class MusicQueueStore {
   isMusicQueueVisible = $state(false);
 
   playNext = (...tracks: QueueableMusic[]) => {
-    this.musicQueue = [...tracks, ...this.musicQueue];
+    const uniqueTracks = tracks.filter(
+      newTrack => !this.musicQueue.some(queuedTrack => queuedTrack.videoId === newTrack.videoId),
+    );
+
+    this.musicQueue = [...uniqueTracks, ...this.musicQueue];
   };
 
   addToQueue = (...tracks: QueueableMusic[]) => {
-    this.musicQueue = [...this.musicQueue, ...tracks];
+    const uniqueTracks = tracks.filter(
+      newTrack => !this.musicQueue.some(queuedTrack => queuedTrack.videoId === newTrack.videoId),
+    );
+
+    this.musicQueue = [...this.musicQueue, ...uniqueTracks];
   };
 }
 
