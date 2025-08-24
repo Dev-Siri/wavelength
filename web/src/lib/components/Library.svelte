@@ -35,7 +35,7 @@
         <PlaylistCard
           {playlist}
           titleClasses={paneWidth < 11 ? "hidden" : "w-10 overflow-hidden"}
-          imageClasses={paneWidth < 11 ? "h-10 w-10" : "h-full w-14"}
+          imageClasses={paneWidth < 11 ? "h-10 w-10" : "h-9.5 w-14"}
           wrapperClick={() => window.innerWidth <= 968 && goto(`/playlist/${playlist.playlistId}`)}
         />
       {/each}

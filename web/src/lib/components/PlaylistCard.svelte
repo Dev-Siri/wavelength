@@ -85,14 +85,14 @@
     variant: 'ghost',
   })} flex group cursor-pointer justify-start w-full gap-2 pl-1 pr-2 h-12 {wrapperClasses}"
 >
-  <button type="button" class="relative" onclick={playPlaylist}>
+  <button type="button" class="relative {imageClasses}" onclick={playPlaylist}>
     {#if coverImage}
       <Image
         src={coverImage}
         alt="Playlist Cover"
         height={40}
         width={40}
-        class="rounded-md group-hover:opacity-50 duration-200 {imageClasses}"
+        class="rounded-md h-full w-full object-cover group-hover:opacity-50 duration-200"
       />
     {:else}
       <div
