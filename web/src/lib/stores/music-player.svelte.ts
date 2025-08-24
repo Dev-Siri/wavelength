@@ -1,4 +1,4 @@
-import type { YouTubePlayer } from "youtube-player/dist/types";
+import type { YouTubePlayer } from "youtube-player/dist/types.js";
 
 type MusicInfoPanels = "playingNow" | "lyrics";
 type MusicRepeatMode = "none" | "all" | "one";

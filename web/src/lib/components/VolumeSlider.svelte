@@ -1,8 +1,8 @@
 <script lang="ts">
   import { Volume2Icon, VolumeOffIcon } from "@lucide/svelte";
 
-  import { localStorageKeys } from "$lib/constants/keys";
-  import musicPlayerStore from "$lib/stores/music-player.svelte";
+  import { localStorageKeys } from "$lib/constants/keys.js";
+  import musicPlayerStore from "$lib/stores/music-player.svelte.js";
 
   import { Button } from "./ui/button";
   import { Slider } from "./ui/slider";

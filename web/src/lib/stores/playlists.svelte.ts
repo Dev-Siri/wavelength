@@ -1,4 +1,4 @@
-import type { PlayList } from "$lib/db/schema";
+import type { PlayList } from "$lib/db/schema.js";
 
 class PlaylistsStore {
   playlists = $state<PlayList[]>([]);

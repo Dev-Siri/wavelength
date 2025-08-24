@@ -2,9 +2,9 @@
   import { page } from "$app/state";
   import { SearchIcon } from "@lucide/svelte";
 
-  import { localStorageKeys } from "$lib/constants/keys";
-  import musicPlayerStore from "$lib/stores/music-player.svelte";
-  import { isRecentSearchesArray } from "$lib/utils/validation/recent-searches-schema";
+  import { localStorageKeys } from "$lib/constants/keys.js";
+  import musicPlayerStore from "$lib/stores/music-player.svelte.js";
+  import { isRecentSearchesArray } from "$lib/utils/validation/recent-searches-schema.js";
 
   import SearchSuggestions from "./SearchSuggestions.svelte";
 

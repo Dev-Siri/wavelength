@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Artist } from "$lib/server/api/interface/types";
+  import type { Artist } from "$lib/server/api/interface/types.js";
 
   import Image from "./Image.svelte";
 

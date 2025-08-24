@@ -3,10 +3,10 @@
   import { ArrowUpRightIcon, PlayIcon } from "@lucide/svelte";
   import { fly } from "svelte/transition";
 
-  import type { PageData } from "./$types";
+  import type { PageData } from "./$types.js";
 
-  import musicPlayerStore from "$lib/stores/music-player.svelte";
-  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte";
+  import musicPlayerStore from "$lib/stores/music-player.svelte.js";
+  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
 
   import Image from "$lib/components/Image.svelte";
   // import LinkBeautifier from "$lib/components/LinkBeautifier.svelte";

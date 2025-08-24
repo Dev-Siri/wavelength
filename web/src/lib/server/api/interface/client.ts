@@ -1,7 +1,7 @@
-import getArtistDetails from "./artists/get-artist-details";
-import getQuickPicks from "./home/quick-picks";
-import getMatch from "./root/get-match";
-import searchMusic from "./search/search-music";
+import getArtistDetails from "./artists/get-artist-details.js";
+import getQuickPicks from "./home/quick-picks.js";
+import getMatch from "./root/get-match.js";
+import searchMusic from "./search/search-music.js";
 
 export default function createYoutubeClient() {
   return {

@@ -1,13 +1,13 @@
 <script lang="ts">
+  import { EllipsisIcon } from "@lucide/svelte";
   import createYouTubePlayer from "youtube-player";
 
   import { musicPlayerStates } from "$lib/constants/music-player";
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
   import playlistsStore from "$lib/stores/playlists.svelte";
-  import { durationify, parseHtmlEntities } from "$lib/utils/format";
+  import { durationify, parseHtmlEntities } from "$lib/utils/format.js";
 
-  import { EllipsisIcon } from "@lucide/svelte";
   import Image from "./Image.svelte";
   import MusicPlayerControls from "./MusicPlayerControls.svelte";
   import PlaybackOptions from "./PlaybackOptions.svelte";

@@ -1,11 +1,12 @@
 import { error, json } from "@sveltejs/kit";
 import { and, count, eq } from "drizzle-orm";
 
-import db from "$lib/db/drizzle";
-import { playlistTracks } from "$lib/db/schema";
+import type { FullQueryResults } from "@neondatabase/serverless";
+
+import db from "$lib/db/drizzle.js";
+import { playlistTracks } from "$lib/db/schema.js";
 import { playlistTrackAdditionSchema } from "$lib/server/utils/validation/playlist-track-addition-schema.js";
 import { trackPositionUpdateSchema } from "$lib/server/utils/validation/track-position-update.js";
-import type { FullQueryResults } from "@neondatabase/serverless";
 
 export async function GET({ params: { playlistId } }) {
   try {

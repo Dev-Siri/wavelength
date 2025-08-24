@@ -1,6 +1,6 @@
 import { error, json } from "@sveltejs/kit";
 
-import { youtubeV3Api } from "$lib/server/api/youtube";
+import { youtubeV3Api } from "$lib/server/api/youtube.js";
 
 export async function GET({ params: { id } }) {
   try {

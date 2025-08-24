@@ -2,8 +2,8 @@
   import { EllipsisIcon, GlobeIcon, PencilIcon, PlayIcon, Trash2Icon } from "@lucide/svelte";
   import toast from "svelte-french-toast";
 
-  import type { PlayList, PlayListTrack } from "$lib/db/schema";
-  import type { ApiResponse } from "$lib/utils/types";
+  import type { PlayList, PlayListTrack } from "$lib/db/schema.js";
+  import type { ApiResponse } from "$lib/utils/types.js";
 
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";

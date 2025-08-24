@@ -1,10 +1,10 @@
 <script lang="ts">
+  import type { PageData } from "./$types.js";
+
+  import { codeToCountryName } from "$lib/utils/countries.js";
+
   import VideoCard from "$lib/components/MusicCard.svelte";
   import MusicCardSkeleton from "$lib/components/skeletons/MusicCardSkeleton.svelte";
-
-  import type { PageData } from "./$types";
-
-  import { codeToCountryName } from "$lib/utils/countries";
 
   const { data }: { data: PageData } = $props();
 </script>

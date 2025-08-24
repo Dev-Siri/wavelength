@@ -3,9 +3,9 @@
   import { page } from "$app/state";
   import { fly } from "svelte/transition";
 
-  import debounce from "$lib/utils/debounce";
+  import type { PageProps } from "./$types.js";
 
-  import type { PageProps } from "./$types";
+  import debounce from "$lib/utils/debounce.js";
 
   import PlaylistCard from "$lib/components/PlaylistCard.svelte";
   import TrackItemSkeleton from "$lib/components/skeletons/TrackItemSkeleton.svelte";

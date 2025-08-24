@@ -1,7 +1,7 @@
 import { PRIVATE_RAPID_API_HOST, PRIVATE_RAPID_API_KEY } from "$env/static/private";
 
-import { RAPID_API_URL } from "$lib/constants/urls";
-import queryClient from "$lib/utils/query-client";
+import { RAPID_API_URL } from "$lib/constants/urls.js";
+import queryClient from "$lib/utils/query-client.js";
 
 interface Options {
   searchParams?: Record<string, unknown>;

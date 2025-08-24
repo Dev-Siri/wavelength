@@ -1,7 +1,7 @@
 import { error, json } from "@sveltejs/kit";
 import Fuse from "fuse.js";
 
-import { youtubeV3Api } from "$lib/server/api/youtube";
+import { youtubeV3Api } from "$lib/server/api/youtube.js";
 
 // NOTE:
 /*

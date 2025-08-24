@@ -1,5 +1,5 @@
 import { PRIVATE_UPLOADTHING_TOKEN } from "$env/static/private";
-import { ourFileRouter } from "$lib/server/uploadthing";
+import { ourFileRouter } from "$lib/server/uploadthing.js";
 
 import { createRouteHandler } from "uploadthing/server";
 

@@ -1,8 +1,8 @@
 <script lang="ts">
   import { XIcon } from "@lucide/svelte";
 
-  import { localStorageKeys } from "$lib/constants/keys";
-  import { isRecentSearchesArray } from "$lib/utils/validation/recent-searches-schema";
+  import { localStorageKeys } from "$lib/constants/keys.js";
+  import { isRecentSearchesArray } from "$lib/utils/validation/recent-searches-schema.js";
 
   let { q }: { q: string } = $props();
 

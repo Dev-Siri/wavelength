@@ -1,8 +1,8 @@
 <script lang="ts">
   import "flag-icons/css/flag-icons.min.css";
 
-  import userStore from "$lib/stores/user.svelte";
-  import { codeToCountryName } from "$lib/utils/countries";
+  import userStore from "$lib/stores/user.svelte.js";
+  import { codeToCountryName } from "$lib/utils/countries.js";
 
   import GoogleLoginButton from "./GoogleLoginButton.svelte";
   import SearchBar from "./SearchBar.svelte";

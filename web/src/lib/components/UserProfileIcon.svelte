@@ -2,7 +2,7 @@
   import { signOut } from "@auth/sveltekit/client";
   import { LogOutIcon } from "@lucide/svelte";
 
-  import userStore from "$lib/stores/user.svelte";
+  import userStore from "$lib/stores/user.svelte.js";
 
   import Image from "./Image.svelte";
   import * as DropdownMenu from "./ui/dropdown-menu";

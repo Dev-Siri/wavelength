@@ -4,11 +4,11 @@
   import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit";
   import "../app.css";
 
-  import userStore from "$lib/stores/user.svelte";
+  import userStore from "$lib/stores/user.svelte.js";
 
   import type { User } from "@auth/sveltekit";
   import type { Snippet } from "svelte";
-  import type { LayoutData } from "./$types";
+  import type { LayoutData } from "./$types.js";
 
   injectAnalytics({ mode: dev ? "development" : "production" });
   injectSpeedInsights();

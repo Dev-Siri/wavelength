@@ -1,8 +1,8 @@
-import type { MusicSearchResponse } from "$lib/server/api/interface/search/search-music";
-import type { ApiResponse } from "$lib/utils/types";
+import type { MusicSearchResponse } from "$lib/server/api/interface/search/search-music.js";
+import type { ApiResponse } from "$lib/utils/types.js";
 import type { youtube_v3 } from "googleapis";
 
-import queryClient from "$lib/utils/query-client";
+import queryClient from "$lib/utils/query-client.js";
 
 export function load({ url, fetch }) {
   const q = url.searchParams.get("q");

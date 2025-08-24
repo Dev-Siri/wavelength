@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { BASE_URL } from "$lib/constants/urls";
+  import { BASE_URL } from "$lib/constants/urls.js";
 
   const {
     src,

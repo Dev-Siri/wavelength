@@ -1,6 +1,6 @@
 import { redirect } from "@sveltejs/kit";
 
-import configureRegion from "$lib/server/utils/configure-region";
+import configureRegion from "$lib/server/utils/configure-region.js";
 
 export async function load({ locals, cookies, getClientAddress, url }) {
   const session = await locals.auth();

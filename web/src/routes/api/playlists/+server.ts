@@ -1,8 +1,8 @@
 import { error, json } from "@sveltejs/kit";
 import { and, eq, ilike } from "drizzle-orm";
 
-import db from "$lib/db/drizzle";
-import { playlists } from "$lib/db/schema";
+import db from "$lib/db/drizzle.js";
+import { playlists } from "$lib/db/schema.js";
 
 export async function GET({ url }) {
   const query = url.searchParams.get("q");

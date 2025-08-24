@@ -3,11 +3,11 @@
   import { PlusIcon } from "@lucide/svelte";
   import toast from "svelte-french-toast";
 
-  import type { MusicTrack } from "$lib/server/api/interface/types";
-  import type { ApiResponse } from "$lib/utils/types";
+  import type { MusicTrack } from "$lib/server/api/interface/types.js";
+  import type { ApiResponse } from "$lib/utils/types.js";
 
   import playlistsStore from "$lib/stores/playlists.svelte";
-  import queryClient from "$lib/utils/query-client";
+  import queryClient from "$lib/utils/query-client.js";
 
   import DropdownMenuItem from "./ui/dropdown-menu/dropdown-menu-item.svelte";
 
@@ -37,10 +37,7 @@
 </script>
 
 {#each playlistsStore.playlists as playlist}
-  <DropdownMenuItem
-    onclick={() => addToPlaylist(playlist.playlistId)}
-    class="flex py-3 gap-2 cursor-pointer"
-  >
+  <DropdownMenuItem onclick={() => addToPlaylist(playlist.playlistId)} class="flex py-3 gap-2">
     <PlusIcon size={20} /> Toggle from "{playlist.name}"
   </DropdownMenuItem>
 {/each}

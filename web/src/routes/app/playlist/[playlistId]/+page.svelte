@@ -3,15 +3,15 @@
   import { ClockIcon, ListMusicIcon, ListPlusIcon, PlayIcon } from "@lucide/svelte";
   import { fly } from "svelte/transition";
 
-  import type { PlayList, PlayListTrack } from "$lib/db/schema";
-  import type { ApiResponse } from "$lib/utils/types";
-  import type { PageData } from "./$types";
+  import type { PlayList, PlayListTrack } from "$lib/db/schema.js";
+  import type { ApiResponse } from "$lib/utils/types.js";
+  import type { PageData } from "./$types.js";
 
-  import getClientDB from "$lib/db/client-indexed-db";
-  import musicPlayerStore from "$lib/stores/music-player.svelte";
-  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte";
-  import userStore from "$lib/stores/user.svelte";
-  import queryClient from "$lib/utils/query-client";
+  import getClientDB from "$lib/db/client-indexed-db.js";
+  import musicPlayerStore from "$lib/stores/music-player.svelte.js";
+  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
+  import userStore from "$lib/stores/user.svelte.js";
+  import queryClient from "$lib/utils/query-client.js";
 
   import ChangePlaylistVisibilityButton from "$lib/components/ChangePlaylistVisibilityButton.svelte";
   import EditPlaylistDetailsDialog from "$lib/components/EditPlaylistDetailsDialog.svelte";

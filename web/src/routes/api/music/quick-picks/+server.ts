@@ -2,7 +2,7 @@ import { error, json } from "@sveltejs/kit";
 
 import type { CountryCode } from "$lib/constants/countries.js";
 
-import { youtubeClient } from "$lib/server/api/youtube";
+import { youtubeClient } from "$lib/server/api/youtube.js";
 
 export async function GET({ url }) {
   const regionCode = url.searchParams.get("regionCode") as CountryCode | undefined;

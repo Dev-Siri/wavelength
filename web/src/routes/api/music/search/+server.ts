@@ -1,8 +1,8 @@
 import { error, json } from "@sveltejs/kit";
 
-import { searchTypes } from "$lib/server/api/interface/search/search-music";
-import { youtubeClient } from "$lib/server/api/youtube";
-import { isValidMusicSearchType } from "$lib/utils/validation/search";
+import { searchTypes } from "$lib/server/api/interface/search/search-music.js";
+import { youtubeClient } from "$lib/server/api/youtube.js";
+import { isValidMusicSearchType } from "$lib/utils/validation/search.js";
 
 export async function GET({ url }) {
   const query = url.searchParams.get("q");

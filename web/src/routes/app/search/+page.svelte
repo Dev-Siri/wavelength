@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Skeleton } from "$lib/components/ui/skeleton";
 
-  import type { PageData } from "./$types";
+  import type { PageData } from "./$types.js";
 
   import ArtistLabel from "$lib/components/ArtistLabel.svelte";
   import ArtistLabelSkeleton from "$lib/components/skeletons/ArtistLabelSkeleton.svelte";

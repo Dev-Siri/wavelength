@@ -1,12 +1,12 @@
 <script lang="ts">
   import { EllipsisIcon, PlayIcon } from "@lucide/svelte";
 
-  import type { VideoTypeEnum } from "$lib/db/schema";
-  import type { MusicTrack } from "$lib/server/api/interface/types";
+  import type { VideoTypeEnum } from "$lib/db/schema.js";
+  import type { MusicTrack } from "$lib/server/api/interface/types.js";
 
-  import musicPlayerStore from "$lib/stores/music-player.svelte";
-  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte";
-  import { parseHtmlEntities } from "$lib/utils/format";
+  import musicPlayerStore from "$lib/stores/music-player.svelte.js";
+  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
+  import { parseHtmlEntities } from "$lib/utils/format.js";
 
   import Image from "./Image.svelte";
   import PlaylistToggleOptions from "./PlaylistToggleOptions.svelte";

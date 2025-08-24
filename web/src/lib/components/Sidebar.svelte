@@ -2,12 +2,12 @@
   import { CompassIcon, PlusIcon } from "@lucide/svelte";
   import toast from "svelte-french-toast";
 
-  import type { PlayList } from "$lib/db/schema";
-  import type { ApiResponse } from "$lib/utils/types";
+  import type { PlayList } from "$lib/db/schema.js";
+  import type { ApiResponse } from "$lib/utils/types.js";
 
-  import playlistsStore from "$lib/stores/playlists.svelte";
-  import userStore from "$lib/stores/user.svelte";
-  import queryClient from "$lib/utils/query-client";
+  import playlistsStore from "$lib/stores/playlists.svelte.js";
+  import userStore from "$lib/stores/user.svelte.js";
+  import queryClient from "$lib/utils/query-client.js";
 
   import Library from "./Library.svelte";
   import Button from "./ui/button/button.svelte";

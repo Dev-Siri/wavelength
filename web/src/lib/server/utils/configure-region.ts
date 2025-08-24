@@ -1,8 +1,8 @@
 import geoip from "geoip-lite";
 
-import { cookieKeys } from "$lib/constants/keys";
-
 import type { Cookies } from "@sveltejs/kit";
+
+import { cookieKeys } from "$lib/constants/keys.js";
 
 export default function configureRegion(cookies: Cookies, clientAddress: string) {
   let region = cookies.get(cookieKeys.region);

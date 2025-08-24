@@ -1,8 +1,8 @@
-import { DEFAULT_REGION } from "$lib/constants/countries";
-import fetchFromRapidApi from "../rapid-api-fetcher";
+import type { QuickPickMusic } from "../types.js";
+import type { CommonOptions } from "./types.js";
 
-import type { QuickPickMusic } from "../types";
-import type { CommonOptions } from "./types";
+import { DEFAULT_REGION } from "$lib/constants/countries.js";
+import fetchFromRapidApi from "../rapid-api-fetcher.js";
 
 export interface QuickPicksResponse {
   error: boolean;

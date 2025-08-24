@@ -1,6 +1,6 @@
-import fetchFromRapidApi from "../rapid-api-fetcher";
+import fetchFromRapidApi from "../rapid-api-fetcher.js";
 
-import type { Artist, MusicTrack } from "../types";
+import type { Artist, MusicTrack } from "../types.js";
 
 export const searchTypes = [
   "song",

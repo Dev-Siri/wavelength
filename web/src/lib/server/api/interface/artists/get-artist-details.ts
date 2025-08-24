@@ -1,6 +1,6 @@
-import fetchFromRapidApi from "../rapid-api-fetcher";
+import type { ArtistSong } from "../types.js";
 
-import type { ArtistSong } from "../types";
+import fetchFromRapidApi from "../rapid-api-fetcher.js";
 
 interface Options {
   id: string;

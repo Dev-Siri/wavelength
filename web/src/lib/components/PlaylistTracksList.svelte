@@ -6,9 +6,9 @@
     type SortEventDetail,
   } from "@rodrigodagostino/svelte-sortable-list";
 
-  import type { PlayListTrack } from "$lib/db/schema";
+  import type { PlayListTrack } from "$lib/db/schema.js";
 
-  import queryClient from "$lib/utils/query-client";
+  import queryClient from "$lib/utils/query-client.js";
   import PlaylistTracksListItem from "./PlaylistTracksListItem.svelte";
 
   const {

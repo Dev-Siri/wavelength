@@ -4,14 +4,14 @@
   import { UploadButton } from "@uploadthing/svelte";
   import toast from "svelte-french-toast";
 
-  import type { PlayList } from "$lib/db/schema";
-  import type { ApiResponse } from "$lib/utils/types";
+  import type { PlayList } from "$lib/db/schema.js";
+  import type { ApiResponse } from "$lib/utils/types.js";
 
   import playlistsStore from "$lib/stores/playlists.svelte";
   import userStore from "$lib/stores/user.svelte";
-  import { createUploader } from "$lib/utils/uploadthing";
+  import { createUploader } from "$lib/utils/uploadthing.js";
 
-  import queryClient from "$lib/utils/query-client";
+  import queryClient from "$lib/utils/query-client.js";
   import { Button } from "./ui/button";
   import * as Dialog from "./ui/dialog";
   import { Input } from "./ui/input";

@@ -1,9 +1,9 @@
 import { error, json } from "@sveltejs/kit";
 import { count, eq } from "drizzle-orm";
 
-import db from "$lib/db/drizzle";
-import { playlistTracks } from "$lib/db/schema";
-import { parseDurationToSeconds } from "$lib/utils/format";
+import db from "$lib/db/drizzle.js";
+import { playlistTracks } from "$lib/db/schema.js";
+import { parseDurationToSeconds } from "$lib/utils/format.js";
 
 export async function GET({ params: { playlistId } }) {
   try {

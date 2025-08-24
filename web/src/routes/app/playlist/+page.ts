@@ -1,7 +1,7 @@
-import type { PlayList } from "$lib/db/schema";
-import type { ApiResponse } from "$lib/utils/types";
+import type { PlayList } from "$lib/db/schema.js";
+import type { ApiResponse } from "$lib/utils/types.js";
 
-import queryClient from "$lib/utils/query-client";
+import queryClient from "$lib/utils/query-client.js";
 
 export async function load({ url, fetch }) {
   const publicPlaylistsResponse = queryClient<ApiResponse<PlayList[]>>(

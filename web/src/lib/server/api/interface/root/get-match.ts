@@ -1,4 +1,4 @@
-import fetchFromRapidApi from "../rapid-api-fetcher";
+import fetchFromRapidApi from "../rapid-api-fetcher.js";
 
 type DisplayName =
   | "YouTube"

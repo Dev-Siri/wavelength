@@ -1,7 +1,7 @@
 <script lang="ts">
   import { XIcon } from "@lucide/svelte";
 
-  import type { ApiResponse } from "$lib/utils/types";
+  import type { ApiResponse } from "$lib/utils/types.js";
   import type { Snippet } from "svelte";
 
   import musicPlayerStore from "$lib/stores/music-player.svelte";

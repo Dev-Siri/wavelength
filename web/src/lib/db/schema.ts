@@ -1,6 +1,6 @@
 import { boolean, char, integer, pgEnum, pgTable, text, varchar } from "drizzle-orm/pg-core";
 
-import { JS_UUID_LENGTH } from "../../lib/constants/utils";
+import { JS_UUID_LENGTH } from "../../lib/constants/utils.js";
 
 export const videoTypeEnum = pgEnum("video_type", ["track", "uvideo"]);
 

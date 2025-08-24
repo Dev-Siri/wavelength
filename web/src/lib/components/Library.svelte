@@ -1,12 +1,12 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
 
-  import type { PlayList } from "$lib/db/schema";
-  import type { ApiResponse } from "$lib/utils/types";
+  import type { PlayList } from "$lib/db/schema.js";
+  import type { ApiResponse } from "$lib/utils/types.js";
 
   import playlistsStore from "$lib/stores/playlists.svelte";
   import userStore from "$lib/stores/user.svelte";
-  import queryClient from "$lib/utils/query-client";
+  import queryClient from "$lib/utils/query-client.js";
 
   import PlaylistCard from "./PlaylistCard.svelte";
 

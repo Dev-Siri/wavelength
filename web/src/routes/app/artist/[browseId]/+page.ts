@@ -1,8 +1,8 @@
-import type { ArtistResponse } from "$lib/server/api/interface/artists/get-artist-details";
-import type { ApiResponse } from "$lib/utils/types";
+import type { ArtistResponse } from "$lib/server/api/interface/artists/get-artist-details.js";
+import type { ApiResponse } from "$lib/utils/types.js";
 import type { youtube_v3 } from "googleapis";
 
-import queryClient from "$lib/utils/query-client";
+import queryClient from "$lib/utils/query-client.js";
 
 export async function load({ fetch, url, params: { browseId } }) {
   const defaultResponse = queryClient<ApiResponse<ArtistResponse>>(

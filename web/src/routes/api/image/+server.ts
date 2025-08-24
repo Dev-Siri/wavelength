@@ -15,8 +15,9 @@ export async function GET({ url: { searchParams }, fetch }) {
     if (Number.isNaN(numericalHeight)) return new Response(imageBuffer);
 
     const optimizedImage = await sharp(imageBuffer).resize().avif().toBuffer();
+    const distributableImage = new Uint8Array(optimizedImage);
 
-    return new Response(optimizedImage, {
+    return new Response(distributableImage, {
       headers: new Headers({ "Cache-Control": "public, max-age=86400" }),
     });
   } catch (err) {

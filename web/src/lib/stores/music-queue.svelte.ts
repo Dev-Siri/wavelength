@@ -1,5 +1,5 @@
-import type { VideoTypeEnum } from "$lib/db/schema";
-import type { BaseMusicTrack } from "$lib/server/api/interface/types";
+import type { VideoTypeEnum } from "$lib/db/schema.js";
+import type { BaseMusicTrack } from "$lib/server/api/interface/types.js";
 
 export interface QueueableMusic extends BaseMusicTrack {
   videoType: VideoTypeEnum;

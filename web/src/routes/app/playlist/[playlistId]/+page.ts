@@ -1,9 +1,9 @@
-import type { ApiResponse } from "$lib/utils/types";
-import type { PlaylistTracksLength } from "../../../api/playlists/[playlistId]/length/types";
+import type { ApiResponse } from "$lib/utils/types.js";
+import type { PlaylistTracksLength } from "../../../api/playlists/[playlistId]/length/types.js";
 
-import { DB_PLAYLISTS_STORE_NAME, DB_TRACKS_STORE_NAME } from "$lib/constants/db";
-import getClientDB from "$lib/db/client-indexed-db";
-import queryClient from "$lib/utils/query-client";
+import { DB_PLAYLISTS_STORE_NAME, DB_TRACKS_STORE_NAME } from "$lib/constants/db.js";
+import getClientDB from "$lib/db/client-indexed-db.js";
+import queryClient from "$lib/utils/query-client.js";
 
 export async function load({ fetch, url, params: { playlistId } }) {
   try {

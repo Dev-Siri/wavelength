@@ -1,11 +1,11 @@
 import { PRIVATE_LYRICS_RAPID_API_HOST, PRIVATE_RAPID_API_KEY } from "$env/static/private";
 import { error, json } from "@sveltejs/kit";
 
-import type { LyricsResponse } from "./types";
+import type { LyricsResponse } from "./types.js";
 
-import { LYRICS_RAPID_API_URL } from "$lib/constants/urls";
-import { youtubeClient } from "$lib/server/api/youtube";
-import queryClient from "$lib/utils/query-client";
+import { LYRICS_RAPID_API_URL } from "$lib/constants/urls.js";
+import { youtubeClient } from "$lib/server/api/youtube.js";
+import queryClient from "$lib/utils/query-client.js";
 
 export async function GET({ params: { videoId } }) {
   try {

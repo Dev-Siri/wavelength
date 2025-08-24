@@ -7,12 +7,12 @@
     YoutubeIcon,
   } from "@lucide/svelte";
 
-  import type { ApiResponse } from "$lib/utils/types";
+  import type { ApiResponse } from "$lib/utils/types.js";
   import type { youtube_v3 } from "googleapis";
 
   import musicQueueStore from "$lib/stores/music-queue.svelte";
-  import { compactify, parseHtmlEntities } from "$lib/utils/format";
-  import queryClient from "$lib/utils/query-client";
+  import { compactify, parseHtmlEntities } from "$lib/utils/format.js";
+  import queryClient from "$lib/utils/query-client.js";
 
   import Image from "./Image.svelte";
   import { Button } from "./ui/button";

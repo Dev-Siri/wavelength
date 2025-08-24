@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { ApiResponse } from "$lib/utils/types";
-  import type { LyricsResponse } from "../../routes/api/music/[videoId]/lyrics/types";
+  import type { ApiResponse } from "$lib/utils/types.js";
+  import type { LyricsResponse } from "../../routes/api/music/[videoId]/lyrics/types.js";
 
-  import getClientDB from "$lib/db/client-indexed-db";
+  import getClientDB from "$lib/db/client-indexed-db.js";
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
-  import queryClient from "$lib/utils/query-client";
+  import queryClient from "$lib/utils/query-client.js";
   import LoadingSpinner from "./LoadingSpinner.svelte";
 
   let lyricsList: HTMLDivElement | null = $state(null);

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
 
-  import type { PlayListTrack } from "$lib/db/schema";
+  import type { PlayListTrack } from "$lib/db/schema.js";
 
   import TrackItem from "./TrackItem.svelte";
 

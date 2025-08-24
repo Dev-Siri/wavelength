@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { PlaylistTracksLength } from "../../routes/api/playlists/[playlistId]/length/types";
+  import type { PlaylistTracksLength } from "../../routes/api/playlists/[playlistId]/length/types.js";
 
   export let playlistTrackLength: PlaylistTracksLength;
 

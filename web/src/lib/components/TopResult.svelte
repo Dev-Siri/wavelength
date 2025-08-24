@@ -2,10 +2,10 @@
   import { PlayIcon } from "@lucide/svelte";
   import { fly } from "svelte/transition";
 
-  import type { MusicTrack } from "$lib/server/api/interface/types";
+  import type { MusicTrack } from "$lib/server/api/interface/types.js";
 
-  import musicPlayerStore from "$lib/stores/music-player.svelte";
-  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte";
+  import musicPlayerStore from "$lib/stores/music-player.svelte.js";
+  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
 
   import Image from "./Image.svelte";
   import { Button } from "./ui/button";

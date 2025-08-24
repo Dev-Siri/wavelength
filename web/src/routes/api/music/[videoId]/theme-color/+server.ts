@@ -1,7 +1,7 @@
 import { error, json } from "@sveltejs/kit";
 import getColors from "get-image-colors";
 
-import { YT_IMG_API_URL } from "$lib/constants/urls";
+import { YT_IMG_API_URL } from "$lib/constants/urls.js";
 
 export async function GET({ params: { videoId } }) {
   const response = await fetch(`${YT_IMG_API_URL}/vi/${videoId}/maxresdefault.jpg`);

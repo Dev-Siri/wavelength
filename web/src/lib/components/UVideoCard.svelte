@@ -4,15 +4,15 @@
   import toast from "svelte-french-toast";
   import createYouTubePlayer from "youtube-player";
 
-  import type { ApiResponse } from "$lib/utils/types";
+  import type { ApiResponse } from "$lib/utils/types.js";
   import type { youtube_v3 } from "googleapis";
 
-  import { YT_IMG_API_URL } from "$lib/constants/urls";
-  import musicPlayerStore from "$lib/stores/music-player.svelte";
-  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte";
-  import playlistsStore from "$lib/stores/playlists.svelte";
-  import { durationify, parseHtmlEntities } from "$lib/utils/format";
-  import queryClient from "$lib/utils/query-client";
+  import { YT_IMG_API_URL } from "$lib/constants/urls.js";
+  import musicPlayerStore from "$lib/stores/music-player.svelte.js";
+  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
+  import playlistsStore from "$lib/stores/playlists.svelte.js";
+  import { durationify, parseHtmlEntities } from "$lib/utils/format.js";
+  import queryClient from "$lib/utils/query-client.js";
 
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import * as Tooltip from "$lib/components/ui/tooltip";

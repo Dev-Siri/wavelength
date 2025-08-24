@@ -3,11 +3,11 @@
   import { Pane, Splitpanes } from "svelte-splitpanes";
   import { fly, slide } from "svelte/transition";
 
-  import { type Snippet } from "svelte";
-  import type { LayoutData } from "./$types";
+  import type { Snippet } from "svelte";
+  import type { LayoutData } from "./$types.js";
 
-  import musicPlayerStore from "$lib/stores/music-player.svelte";
-  import musicQueueStore from "$lib/stores/music-queue.svelte";
+  import musicPlayerStore from "$lib/stores/music-player.svelte.js";
+  import musicQueueStore from "$lib/stores/music-queue.svelte.js";
 
   import InfoOverlay from "$lib/components/InfoOverlay.svelte";
   import LyricsOverlay from "$lib/components/LyricsOverlay.svelte";
