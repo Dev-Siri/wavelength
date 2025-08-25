@@ -7,6 +7,9 @@ import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_event.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_state.dart";
+import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_bloc.dart";
+import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_event.dart";
+import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_state.dart";
 
 class MusicPlayerPlayOptions extends StatefulWidget {
   const MusicPlayerPlayOptions({super.key});
@@ -48,9 +51,22 @@ class _MusicPlayerPlayOptionsState extends State<MusicPlayerPlayOptions> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          GestureDetector(
-            onTap: () => print(""),
-            child: Icon(LucideIcons.volume2),
+          BlocBuilder<MusicPlayerVolumeBloc, MusicPlayerVolumeState>(
+            builder: (context, state) {
+              final isMuted = state is MusicPlayerVolumeMutedState;
+
+              return GestureDetector(
+                onTap:
+                    () => context.read<MusicPlayerVolumeBloc>().add(
+                      isMuted
+                          ? MusicPlayerVolumeUnmuteEvent()
+                          : MusicPlayerVolumeMuteEvent(),
+                    ),
+                child: Icon(
+                  isMuted ? LucideIcons.volumeX : LucideIcons.volume2,
+                ),
+              );
+            },
           ),
           Spacer(),
           if (Platform.isAndroid)
