@@ -4,14 +4,13 @@ import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-// import "package:mini_music_visualizer/mini_music_visualizer.dart";
+import "package:mini_music_visualizer/mini_music_visualizer.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/representations/queueable_music.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
+import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
 import "package:wavelength/utils/parse.dart";
-
-// MiniMusicVisualizer(color: Colors.blue, width: 4, height: 15),
 
 class PlaylistTrackTile extends StatelessWidget {
   final PlaylistTrack playlistTrack;
@@ -42,14 +41,37 @@ class PlaylistTrackTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: CachedNetworkImage(
-              imageUrl: playlistTrack.thumbnail,
-              fit: BoxFit.cover,
-              height: 50,
-              width: 50,
-            ),
+          BlocBuilder<MusicPlayerTrackBloc, MusicPlayerTrackState>(
+            builder: (context, state) {
+              final isThisTrackPlaying =
+                  state is MusicPlayerTrackPlayingNowState &&
+                  state.playingNowTrack.videoId == playlistTrack.videoId;
+
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  Opacity(
+                    opacity: isThisTrackPlaying ? 0.2 : 1,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                        imageUrl: playlistTrack.thumbnail,
+                        fit: BoxFit.cover,
+                        height: 50,
+                        width: 50,
+                      ),
+                    ),
+                  ),
+                  if (isThisTrackPlaying)
+                    MiniMusicVisualizer(
+                      color: Colors.white,
+                      animate: true,
+                      width: 4,
+                      height: 15,
+                    ),
+                ],
+              );
+            },
           ),
           SizedBox(width: 10),
           Column(

@@ -11,7 +11,7 @@ class PlaylistThemeColorLoadingState extends PlaylistThemeColorState {}
 class PlaylistThemeColorErrorState extends PlaylistThemeColorState {}
 
 class PlaylistThemeColorSuccessState extends PlaylistThemeColorState {
-  final PlaylistThemeColor playlistThemeColor;
+  final ThemeColor playlistThemeColor;
 
   PlaylistThemeColorSuccessState({required this.playlistThemeColor});
 }

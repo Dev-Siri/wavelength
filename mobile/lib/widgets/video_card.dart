@@ -3,14 +3,37 @@ import "dart:io";
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
+import "package:wavelength/api/models/playlist_track.dart";
+import "package:wavelength/api/models/representations/queueable_music.dart";
 import "package:wavelength/api/models/video.dart";
+import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
+import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
+import "package:wavelength/constants.dart";
 import "package:wavelength/utils/parse.dart";
 
 class VideoCard extends StatelessWidget {
   final Video video;
 
   const VideoCard({super.key, required this.video});
+
+  void _playYouTubeVideo(BuildContext context) {
+    final coverImageUrl =
+        "$ytImgApiUrl/vi/${video.id.videoId}/maxresdefault.jpg";
+
+    context.read<MusicPlayerTrackBloc>().add(
+      MusicPlayerTrackLoadEvent(
+        queueableMusic: QueueableMusic(
+          videoId: video.id.videoId,
+          title: video.snippet.title ?? "",
+          thumbnail: coverImageUrl,
+          author: video.snippet.channelTitle ?? "",
+          videoType: VideoType.uvideo,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +60,12 @@ class VideoCard extends StatelessWidget {
               child:
                   Platform.isAndroid
                       ? MaterialButton(
-                        onPressed: () => print("play ${video.id.videoId}"),
+                        onPressed: () => _playYouTubeVideo(context),
                         padding: EdgeInsets.zero,
                         child: thumbnail,
                       )
                       : CupertinoButton(
-                        onPressed: () => print("play ${video.id.videoId}"),
+                        onPressed: () => _playYouTubeVideo(context),
                         padding: EdgeInsets.zero,
                         child: thumbnail,
                       ),

@@ -1,4 +1,5 @@
 const backendUrl = "https://mavelength.vercel.app/api";
+const ytImgApiUrl = "https://img.youtube.com";
 const defaultLocale = "US";
 const envFile = ".env";
 

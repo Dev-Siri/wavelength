@@ -130,8 +130,7 @@ class PlaylistsRepo {
         final decodedJson = jsonDecode(stringResponse);
         final decodedData = ApiResponse.fromJson(
           decodedJson,
-          (playlistThemeColor) =>
-              PlaylistThemeColor.fromJson(playlistThemeColor),
+          (playlistThemeColor) => ThemeColor.fromJson(playlistThemeColor),
         );
 
         return decodedData;

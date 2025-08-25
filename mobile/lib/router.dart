@@ -10,7 +10,9 @@ import "package:wavelength/screens/artist.dart";
 import "package:wavelength/screens/home.dart";
 import "package:wavelength/screens/library.dart";
 import "package:wavelength/screens/explore.dart";
+import "package:wavelength/screens/playing_now.dart";
 import "package:wavelength/screens/playlist.dart";
+import "package:wavelength/transitions.dart";
 import "package:wavelength/widgets/floating_music_player_preview.dart";
 import "package:wavelength/widgets/music_player_internals.dart";
 
@@ -47,23 +49,7 @@ final router = GoRouter(
             return CustomTransitionPage(
               key: state.pageKey,
               child: PlaylistScreen(playlistId: id),
-              transitionsBuilder: (
-                context,
-                animation,
-                secondaryAnimation,
-                child,
-              ) {
-                return SlideTransition(
-                  position: animation.drive(
-                    // make it slide up the screen
-                    Tween<Offset>(
-                      begin: const Offset(0, 1),
-                      end: Offset.zero,
-                    ).chain(CurveTween(curve: Curves.easeInOut)),
-                  ),
-                  child: child,
-                );
-              },
+              transitionsBuilder: pageSlideUpTransition,
             );
           },
         ),
@@ -74,22 +60,17 @@ final router = GoRouter(
             return CustomTransitionPage(
               key: state.pageKey,
               child: ArtistScreen(browseId: id),
-              transitionsBuilder: (
-                context,
-                animation,
-                secondaryAnimation,
-                child,
-              ) {
-                return SlideTransition(
-                  position: animation.drive(
-                    Tween<Offset>(
-                      begin: const Offset(0, 1),
-                      end: Offset.zero,
-                    ).chain(CurveTween(curve: Curves.easeInOut)),
-                  ),
-                  child: child,
-                );
-              },
+              transitionsBuilder: pageSlideUpTransition,
+            );
+          },
+        ),
+        GoRoute(
+          path: "/playing-now",
+          pageBuilder: (_, state) {
+            return CustomTransitionPage(
+              key: state.pageKey,
+              child: PlayingNowScreen(),
+              transitionsBuilder: pageSlideUpTransition,
             );
           },
         ),
@@ -99,6 +80,7 @@ final router = GoRouter(
         final isOutsideAppShell =
             stringUri.startsWith("/artist") ||
             stringUri.startsWith("/playlist");
+        final isOnPlayingNowScreen = stringUri.startsWith("/playing-now");
 
         return Scaffold(
           body: Stack(
@@ -115,7 +97,10 @@ final router = GoRouter(
                               ? MediaQuery.of(context).size.height * 0.05
                               : MediaQuery.of(context).size.height * 0.125,
                     ),
-                    child: FloatingMusicPlayerPreview(),
+                    child:
+                        !isOnPlayingNowScreen
+                            ? FloatingMusicPlayerPreview()
+                            : SizedBox.shrink(),
                   ),
                 ),
               ),

@@ -64,6 +64,9 @@ class _MusicPlayerInternalsState extends State<MusicPlayerInternals> {
     return Offstage(
       offstage: false,
       child: YoutubePlayer(
+        // This is totally a hack to get the player invisible while still retaining playback from the iframe.
+        // Changing opacity / Offstage(offstage: true) causes the player to stop due to no visibility.
+        width: 1,
         controller: _musicPlayerController,
         showVideoProgressIndicator: false,
       ),

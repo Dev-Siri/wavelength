@@ -1,6 +1,5 @@
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
-import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:wavelength/api/models/playlist_tracks_length.dart";
 
 class PlaylistLengthText extends StatelessWidget {
@@ -22,14 +21,8 @@ class PlaylistLengthText extends StatelessWidget {
 
     if (playlistTracksLength.songCount > 0 &&
         playlistTracksLength.songDurationSecond > 0) {
-      return Row(
-        children: [
-          Icon(LucideIcons.music4, size: 18, color: Colors.blue),
-          SizedBox(width: 5),
-          Text(
-            "${playlistTracksLength.songCount} $songText, $greaterUnitValue $greaterUnitText $lesserUnitValue $lesserUnitText",
-          ),
-        ],
+      return Text(
+        "${playlistTracksLength.songCount} $songText, $greaterUnitValue $greaterUnitText $lesserUnitValue $lesserUnitText",
       );
     }
 

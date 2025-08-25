@@ -12,6 +12,7 @@ import "package:wavelength/bloc/artist/artist_event.dart";
 import "package:wavelength/bloc/artist/artist_state.dart";
 import "package:wavelength/widgets/error_message_dialog.dart";
 import "package:wavelength/widgets/loading_indicator.dart";
+import "package:wavelength/widgets/music_player_presence_adjuster.dart";
 
 class ArtistScreen extends StatefulWidget {
   final String browseId;
@@ -47,117 +48,119 @@ class _ArtistScreenState extends State<ArtistScreen> {
         leading: BackButton(onPressed: () => context.pop()),
         backgroundColor: Colors.transparent,
       ),
-      body: BlocBuilder<ArtistBloc, ArtistState>(
-        bloc: _artistBloc,
-        builder: (context, state) {
-          if (state is! ArtistSuccessState) {
-            if (state is ArtistErrorState) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Transform.translate(
-                    offset: Offset(0, -100),
-                    child: Center(
-                      child: ErrorMessageDialog(
-                        message: "Failed to get artist details from YouTube.",
-                        onRetry:
-                            () => _artistBloc.add(
-                              ArtistFetchEvent(browseId: widget.browseId),
-                            ),
+      body: MusicPlayerPresenceAdjuster(
+        child: BlocBuilder<ArtistBloc, ArtistState>(
+          bloc: _artistBloc,
+          builder: (context, state) {
+            if (state is! ArtistSuccessState) {
+              if (state is ArtistErrorState) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Transform.translate(
+                      offset: Offset(0, -100),
+                      child: Center(
+                        child: ErrorMessageDialog(
+                          message: "Failed to get artist details from YouTube.",
+                          onRetry:
+                              () => _artistBloc.add(
+                                ArtistFetchEvent(browseId: widget.browseId),
+                              ),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                );
+              }
+
+              return Transform.translate(
+                offset: Offset(0, -100),
+                child: Center(child: LoadingIndicator()),
               );
             }
 
-            return Transform.translate(
-              offset: Offset(0, -100),
-              child: Center(child: LoadingIndicator()),
-            );
-          }
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Center(
-                child: CircleAvatar(
-                  radius: 100,
-                  foregroundImage: CachedNetworkImageProvider(
-                    state.artistExtra.items[0].snippet.thumbnails.high.url ??
-                        "",
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Center(
+                  child: CircleAvatar(
+                    radius: 100,
+                    foregroundImage: CachedNetworkImageProvider(
+                      state.artistExtra.items[0].snippet.thumbnails.high.url ??
+                          "",
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Text(
-                  state.artist.title,
-                  style: TextStyle(fontSize: 44, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Text(
+                    state.artist.title,
+                    style: TextStyle(fontSize: 44, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Text(
-                  "${state.artist.subscriberCount} subscribers",
-                  style: TextStyle(fontSize: 18, color: Colors.grey),
-                  textAlign: TextAlign.center,
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Text(
+                    "${state.artist.subscriberCount} subscribers",
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 35,
-                  vertical: 5,
-                ),
-                child:
-                    Platform.isIOS
-                        ? CupertinoButton(
-                          onPressed: _openArtistOnYouTube,
-                          color: Colors.red,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(LucideIcons.youtube, color: Colors.white),
-                              SizedBox(width: 10),
-                              Text(
-                                "View artist on YouTube.",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        )
-                        : MaterialButton(
-                          onPressed: _openArtistOnYouTube,
-                          color: Colors.red,
-                          padding: EdgeInsets.all(12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(
-                                LucideIcons.youtube,
-                                color: Colors.white,
-                                size: 25,
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                "View artist on YouTube.",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 35,
+                    vertical: 5,
+                  ),
+                  child:
+                      Platform.isIOS
+                          ? CupertinoButton(
+                            onPressed: _openArtistOnYouTube,
+                            color: Colors.red,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(LucideIcons.youtube, color: Colors.white),
+                                SizedBox(width: 10),
+                                Text(
+                                  "View artist on YouTube.",
+                                  style: TextStyle(color: Colors.white),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
+                          )
+                          : MaterialButton(
+                            onPressed: _openArtistOnYouTube,
+                            color: Colors.red,
+                            padding: EdgeInsets.all(12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  LucideIcons.youtube,
+                                  color: Colors.white,
+                                  size: 25,
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  "View artist on YouTube.",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-              ),
-            ],
-          );
-        },
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

@@ -80,7 +80,7 @@ class _FloatingMusicPlayerPreviewState
         if (state is! MusicPlayerTrackPlayingNowState) return SizedBox.shrink();
 
         return GestureDetector(
-          onTap: () => context.go("/playing-now"),
+          onTap: () => context.push("/playing-now"),
           onLongPressStart:
               (details) => setState(() {
                 context.read<MusicPlayerPlaystateBloc>().add(

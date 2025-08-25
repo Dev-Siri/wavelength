@@ -8,6 +8,9 @@ import "package:wavelength/api/models/representations/queueable_music.dart";
 import "package:wavelength/api/models/track.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
+import "package:mini_music_visualizer/mini_music_visualizer.dart";
+import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
+import "package:wavelength/utils/parse.dart";
 
 class TopTrackResult extends StatelessWidget {
   final Track track;
@@ -43,12 +46,21 @@ class TopTrackResult extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  track.title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
+                  decodeHtmlSpecialChars(track.title),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 26,
+                    height: 1.1,
+                  ),
                 ),
+                SizedBox(height: 8),
                 Text(
                   track.author,
-                  style: TextStyle(fontSize: 18, color: Colors.grey),
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                    height: 1.1,
+                  ),
                 ),
                 SizedBox(height: 10),
                 Row(
@@ -62,7 +74,24 @@ class TopTrackResult extends StatelessWidget {
                               queueableMusic: queueableMusic,
                             ),
                           ),
-                      child: Icon(LucideIcons.play, color: Colors.white),
+                      child: BlocBuilder<
+                        MusicPlayerTrackBloc,
+                        MusicPlayerTrackState
+                      >(
+                        builder: (context, state) {
+                          if (state is MusicPlayerTrackPlayingNowState &&
+                              state.playingNowTrack.videoId == track.videoId) {
+                            return MiniMusicVisualizer(
+                              color: Colors.white,
+                              animate: true,
+                              width: 4,
+                              height: 15,
+                            );
+                          }
+
+                          return Icon(LucideIcons.play, color: Colors.white);
+                        },
+                      ),
                     ),
                     CupertinoButton(
                       padding: EdgeInsets.zero,
