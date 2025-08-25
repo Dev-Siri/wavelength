@@ -7,6 +7,9 @@ import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_event.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_state.dart";
+import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_bloc.dart";
+import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_event.dart";
+import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_state.dart";
 import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_event.dart";
 import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_state.dart";
@@ -139,8 +142,34 @@ class _MusicPlayerPlayOptionsState extends State<MusicPlayerPlayOptions> {
             ),
           Spacer(),
           GestureDetector(
-            onTap: () => print(""),
-            child: Icon(LucideIcons.repeat),
+            onTap:
+                () => context.read<MusicPlayerRepeatModeBloc>().add(
+                  MusicPlayerRepeatModeChangeRepeatModeEvent(),
+                ),
+            child: BlocBuilder<
+              MusicPlayerRepeatModeBloc,
+              MusicPlayerRepeatModeState
+            >(
+              builder: (context, state) {
+                return AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  transitionBuilder:
+                      (child, animation) =>
+                          ScaleTransition(scale: animation, child: child),
+                  child: Opacity(
+                    key: ValueKey(state),
+                    opacity:
+                        state is MusicPlayerRepeatModeRepeatOffState ? 0.5 : 1,
+                    child: Icon(
+                      state is! MusicPlayerRepeatModeRepeatOneState
+                          ? LucideIcons.repeat
+                          : LucideIcons.repeat1,
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),

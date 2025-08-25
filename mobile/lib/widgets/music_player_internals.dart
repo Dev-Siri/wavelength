@@ -4,6 +4,8 @@ import "package:wavelength/bloc/music_player/music_player_duration/music_player_
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_event.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_event.dart";
+import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_bloc.dart";
+import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_state.dart";
 import "package:wavelength/bloc/music_player/music_player_singleton.dart";
 import "package:youtube_player_flutter/youtube_player_flutter.dart";
 
@@ -51,6 +53,15 @@ class _MusicPlayerInternalsState extends State<MusicPlayerInternals> {
     );
   }
 
+  void _handlePlayerPlayingEnd(YoutubeMetaData _) {
+    final playerRepeatModeState =
+        context.read<MusicPlayerRepeatModeBloc>().state;
+
+    if (playerRepeatModeState is MusicPlayerRepeatModeRepeatOneState) {
+      _musicPlayerController.seekTo(Duration(seconds: 0));
+    }
+  }
+
   @override
   void dispose() {
     _musicPlayerController.removeListener(_playerStateChangeListener);
@@ -69,6 +80,7 @@ class _MusicPlayerInternalsState extends State<MusicPlayerInternals> {
         width: 1,
         controller: _musicPlayerController,
         showVideoProgressIndicator: false,
+        onEnded: _handlePlayerPlayingEnd,
       ),
     );
   }
