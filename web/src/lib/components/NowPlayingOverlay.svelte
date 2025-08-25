@@ -14,21 +14,26 @@
   import { compactify, parseHtmlEntities } from "$lib/utils/format.js";
   import queryClient from "$lib/utils/query-client.js";
 
+  import type { ThemeColor } from "../../routes/api/music/[videoId]/theme-color/+server";
   import Image from "./Image.svelte";
   import { Button } from "./ui/button";
   import * as Tooltip from "./ui/tooltip";
 
-  let themeColor = $state("");
+  let themeColor = $state({ r: 0, g: 0, b: 0 });
   let videoStats: youtube_v3.Schema$VideoStatistics | null = $state(null);
 
-  let coverStyle = $derived(themeColor ? `box-shadow: 0 0px 70px 10px ${themeColor};` : "");
+  let coverStyle = $derived(
+    themeColor
+      ? `box-shadow: 0 0px 70px 10px rgb(${themeColor.r}, ${themeColor.g}, ${themeColor.b});`
+      : "",
+  );
 
   $effect(() => {
     async function fetchData() {
       if (!musicQueueStore.musicPlayingNow) return;
 
       const [themeColorResponse, statsResponse] = await Promise.all([
-        queryClient<ApiResponse<string>>(
+        queryClient<ApiResponse<ThemeColor>>(
           location.toString(),
           `/api/music/${musicQueueStore.musicPlayingNow.videoId}/theme-color`,
         ),
