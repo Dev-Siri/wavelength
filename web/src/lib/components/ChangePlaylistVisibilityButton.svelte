@@ -5,8 +5,8 @@
   import type { PlayList } from "$lib/db/schema.js";
   import type { ApiResponse } from "$lib/utils/types.js";
 
-  import playlistsStore from "$lib/stores/playlists.svelte";
-  import userStore from "$lib/stores/user.svelte";
+  import playlistsStore from "$lib/stores/playlists.svelte.js";
+  import userStore from "$lib/stores/user.svelte.js";
   import queryClient from "$lib/utils/query-client.js";
 
   import Button from "./ui/button/button.svelte";
