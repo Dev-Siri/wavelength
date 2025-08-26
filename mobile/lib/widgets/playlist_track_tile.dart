@@ -7,6 +7,8 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:mini_music_visualizer/mini_music_visualizer.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/representations/queueable_music.dart";
+import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_bloc.dart";
+import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
@@ -17,20 +19,22 @@ class PlaylistTrackTile extends StatelessWidget {
 
   const PlaylistTrackTile({super.key, required this.playlistTrack});
 
-  Future<void> _playSong(BuildContext context) {
-    context.read<MusicPlayerTrackBloc>().add(
-      MusicPlayerTrackLoadEvent(
-        queueableMusic: QueueableMusic(
-          videoId: playlistTrack.videoId,
-          title: playlistTrack.title,
-          thumbnail: playlistTrack.thumbnail,
-          author: playlistTrack.author,
-          videoType: playlistTrack.videoType,
-        ),
-      ),
+  void _playSong(BuildContext context) {
+    final queueableMusic = QueueableMusic(
+      videoId: playlistTrack.videoId,
+      title: playlistTrack.title,
+      thumbnail: playlistTrack.thumbnail,
+      author: playlistTrack.author,
+      videoType: playlistTrack.videoType,
     );
 
-    return Future.value();
+    context.read<MusicPlayerQueueBloc>().add(
+      MusicPlayerQueueAddToQueueEvent(queueableMusic: queueableMusic),
+    );
+
+    context.read<MusicPlayerTrackBloc>().add(
+      MusicPlayerTrackLoadEvent(queueableMusic: queueableMusic),
+    );
   }
 
   @override

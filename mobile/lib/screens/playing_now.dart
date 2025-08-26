@@ -152,6 +152,7 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
               children: [
                 if (_musicVideoId != null && track.videoType == VideoType.track)
                   TrackMusicVideoPreview(
+                    key: ValueKey(_musicVideoId),
                     musicVideoId:
                         track.videoType == VideoType.track
                             ? (_musicVideoId ?? "")

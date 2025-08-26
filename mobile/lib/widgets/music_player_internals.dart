@@ -4,9 +4,13 @@ import "package:wavelength/bloc/music_player/music_player_duration/music_player_
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_event.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_event.dart";
+import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_state.dart";
 import "package:wavelength/bloc/music_player/music_player_singleton.dart";
+import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
+import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
+import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
 import "package:youtube_player_flutter/youtube_player_flutter.dart";
 
 class MusicPlayerInternals extends StatefulWidget {
@@ -57,8 +61,34 @@ class _MusicPlayerInternalsState extends State<MusicPlayerInternals> {
     final playerRepeatModeState =
         context.read<MusicPlayerRepeatModeBloc>().state;
 
-    if (playerRepeatModeState is MusicPlayerRepeatModeRepeatOneState) {
-      _musicPlayerController.seekTo(Duration(seconds: 0));
+    switch (playerRepeatModeState) {
+      case MusicPlayerRepeatModeRepeatAllState _:
+        final musicQueue = context.read<MusicPlayerQueueBloc>().state;
+        final currentTrackState = context.read<MusicPlayerTrackBloc>().state;
+
+        if (currentTrackState is! MusicPlayerTrackPlayingNowState) break;
+
+        final currentTrackIndexInQueue = musicQueue.tracksInQueue.indexOf(
+          currentTrackState.playingNowTrack,
+        );
+
+        if (currentTrackIndexInQueue == -1) break;
+
+        final currentTrackPos = currentTrackIndexInQueue + 1;
+
+        context.read<MusicPlayerTrackBloc>().add(
+          MusicPlayerTrackLoadEvent(
+            queueableMusic:
+                musicQueue.tracksInQueue[currentTrackPos ==
+                        musicQueue.tracksInQueue.length
+                    ? 0
+                    : currentTrackPos],
+          ),
+        );
+
+        break;
+      case MusicPlayerRepeatModeRepeatOneState _:
+        _musicPlayerController.seekTo(Duration(seconds: 0));
     }
   }
 

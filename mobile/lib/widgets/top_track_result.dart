@@ -6,6 +6,8 @@ import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/representations/queueable_music.dart";
 import "package:wavelength/api/models/track.dart";
+import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_bloc.dart";
+import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:mini_music_visualizer/mini_music_visualizer.dart";
@@ -17,8 +19,7 @@ class TopTrackResult extends StatelessWidget {
 
   const TopTrackResult({super.key, required this.track});
 
-  @override
-  Widget build(BuildContext context) {
+  void _playTrack(BuildContext context) {
     final queueableMusic = QueueableMusic(
       videoId: track.videoId,
       title: track.title,
@@ -27,6 +28,16 @@ class TopTrackResult extends StatelessWidget {
       videoType: VideoType.track,
     );
 
+    context.read<MusicPlayerQueueBloc>().add(
+      MusicPlayerQueueAddToQueueEvent(queueableMusic: queueableMusic),
+    );
+    context.read<MusicPlayerTrackBloc>().add(
+      MusicPlayerTrackLoadEvent(queueableMusic: queueableMusic),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(15),
       decoration: BoxDecoration(
@@ -68,12 +79,7 @@ class TopTrackResult extends StatelessWidget {
                   children: [
                     CupertinoButton(
                       padding: EdgeInsets.zero,
-                      onPressed:
-                          () => context.read<MusicPlayerTrackBloc>().add(
-                            MusicPlayerTrackLoadEvent(
-                              queueableMusic: queueableMusic,
-                            ),
-                          ),
+                      onPressed: () => _playTrack(context),
                       child: BlocBuilder<
                         MusicPlayerTrackBloc,
                         MusicPlayerTrackState
@@ -95,12 +101,7 @@ class TopTrackResult extends StatelessWidget {
                     ),
                     CupertinoButton(
                       padding: EdgeInsets.zero,
-                      onPressed:
-                          () => context.read<MusicPlayerTrackBloc>().add(
-                            MusicPlayerTrackLoadEvent(
-                              queueableMusic: queueableMusic,
-                            ),
-                          ),
+                      onPressed: () => _playTrack(context),
                       child: Icon(LucideIcons.circlePlus, color: Colors.white),
                     ),
                   ],
