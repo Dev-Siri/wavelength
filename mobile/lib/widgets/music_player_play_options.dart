@@ -74,6 +74,8 @@ class _MusicPlayerPlayOptionsState extends State<MusicPlayerPlayOptions> {
           Spacer(),
           if (Platform.isAndroid)
             MaterialButton(
+              minWidth: 0,
+              height: 0,
               color: Colors.white.withAlpha(200),
               shape: CircleBorder(side: BorderSide()),
               padding: EdgeInsets.all(14),
@@ -97,6 +99,8 @@ class _MusicPlayerPlayOptionsState extends State<MusicPlayerPlayOptions> {
           SizedBox(width: 15),
           if (Platform.isAndroid)
             MaterialButton(
+              minWidth: 0,
+              height: 0,
               color: Colors.white,
               shape: CircleBorder(side: BorderSide()),
               padding: EdgeInsets.all(18),
@@ -120,6 +124,8 @@ class _MusicPlayerPlayOptionsState extends State<MusicPlayerPlayOptions> {
           SizedBox(width: 15),
           if (Platform.isAndroid)
             MaterialButton(
+              minWidth: 0,
+              height: 0,
               color: Colors.white.withAlpha(200),
               shape: CircleBorder(side: BorderSide()),
               padding: EdgeInsets.all(14),
