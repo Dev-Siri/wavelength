@@ -39,13 +39,13 @@ class _MusicPlayerPlayOptionsState extends State<MusicPlayerPlayOptions> {
 
     final previousButtonInnerUi = Icon(
       LucideIcons.skipBack,
-      color: Colors.black,
+      color: Colors.white,
       size: 22,
     );
 
     final nextButtonInnerUi = Icon(
       LucideIcons.skipForward,
-      color: Colors.black,
+      color: Colors.white,
       size: 22,
     );
 
@@ -76,7 +76,6 @@ class _MusicPlayerPlayOptionsState extends State<MusicPlayerPlayOptions> {
             MaterialButton(
               minWidth: 0,
               height: 0,
-              color: Colors.white.withAlpha(200),
               shape: CircleBorder(side: BorderSide()),
               padding: EdgeInsets.all(14),
               onPressed:
@@ -87,7 +86,6 @@ class _MusicPlayerPlayOptionsState extends State<MusicPlayerPlayOptions> {
             )
           else
             CupertinoButton(
-              color: Colors.white.withAlpha(200),
               borderRadius: BorderRadius.circular(100),
               padding: EdgeInsets.all(14),
               onPressed:
@@ -126,7 +124,6 @@ class _MusicPlayerPlayOptionsState extends State<MusicPlayerPlayOptions> {
             MaterialButton(
               minWidth: 0,
               height: 0,
-              color: Colors.white.withAlpha(200),
               shape: CircleBorder(side: BorderSide()),
               padding: EdgeInsets.all(14),
               onPressed:
@@ -137,7 +134,6 @@ class _MusicPlayerPlayOptionsState extends State<MusicPlayerPlayOptions> {
             )
           else
             CupertinoButton(
-              color: Colors.white.withAlpha(200),
               borderRadius: BorderRadius.circular(100),
               padding: EdgeInsets.all(14),
               onPressed:

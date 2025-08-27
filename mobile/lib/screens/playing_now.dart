@@ -147,16 +147,17 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
                     : Colors.black;
 
             final trackTitle = decodeHtmlSpecialChars(track.title);
+            final videoPreviewId =
+                track.videoType == VideoType.track
+                    ? _musicVideoId
+                    : track.videoId;
 
             return Stack(
               children: [
-                if (_musicVideoId != null && track.videoType == VideoType.track)
+                if (videoPreviewId != null)
                   TrackMusicVideoPreview(
-                    key: ValueKey(_musicVideoId),
-                    musicVideoId:
-                        track.videoType == VideoType.track
-                            ? (_musicVideoId ?? "")
-                            : track.videoId,
+                    key: ValueKey(videoPreviewId),
+                    musicVideoId: videoPreviewId,
                   ),
                 Center(
                   child: Padding(
@@ -188,13 +189,18 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      trackTitle,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        height: 1.1,
-                                        color: textColor,
-                                        overflow: TextOverflow.ellipsis,
+                                    SizedBox(
+                                      width:
+                                          MediaQuery.of(context).size.width /
+                                          1.5,
+                                      child: Text(
+                                        trackTitle,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          height: 1.1,
+                                          color: textColor,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
                                     ),
                                     Text(
