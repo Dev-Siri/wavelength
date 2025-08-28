@@ -9,6 +9,10 @@ async function headersHandle({ event, resolve }: Parameters<Handle>[0]) {
     filterSerializedResponseHeaders: () => true,
   });
 
+  responseAllHeaders.headers.set("Access-Control-Allow-Origin", "*");
+  responseAllHeaders.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  responseAllHeaders.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
   return responseAllHeaders;
 }
 
