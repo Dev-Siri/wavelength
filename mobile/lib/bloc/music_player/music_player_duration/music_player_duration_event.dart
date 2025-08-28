@@ -1,7 +1,7 @@
 import "package:flutter/foundation.dart";
 
 @immutable
-abstract class MusicPlayerDurationEvent {}
+sealed class MusicPlayerDurationEvent {}
 
 class MusicPlayerDurationSeekToEvent extends MusicPlayerDurationEvent {
   final Duration totalDuration;

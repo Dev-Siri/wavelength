@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:wavelength/api/models/quick_picks_item.dart";
 
 @immutable
-abstract class QuickPicksState {}
+sealed class QuickPicksState {}
 
 class QuickPicksDefaultState extends QuickPicksState {}
 

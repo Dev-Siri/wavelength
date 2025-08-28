@@ -1,7 +1,7 @@
 import "package:flutter/foundation.dart";
 
 @immutable
-abstract class ArtistEvent {}
+sealed class ArtistEvent {}
 
 class ArtistFetchEvent extends ArtistEvent {
   final String browseId;

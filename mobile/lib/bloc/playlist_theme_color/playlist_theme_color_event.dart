@@ -1,7 +1,7 @@
 import "package:flutter/foundation.dart";
 
 @immutable
-abstract class PlaylistThemeColorEvent {}
+sealed class PlaylistThemeColorEvent {}
 
 class PlaylistThemeColorFetchEvent extends PlaylistThemeColorEvent {
   final String playlistId;

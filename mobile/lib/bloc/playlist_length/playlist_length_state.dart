@@ -2,7 +2,7 @@ import "package:flutter/foundation.dart";
 import "package:wavelength/api/models/playlist_tracks_length.dart";
 
 @immutable
-abstract class PlaylistLengthState {}
+sealed class PlaylistLengthState {}
 
 class PlaylistLengthInitialState extends PlaylistLengthState {}
 

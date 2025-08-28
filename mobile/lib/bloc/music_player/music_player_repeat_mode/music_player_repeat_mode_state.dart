@@ -1,7 +1,7 @@
 import "package:flutter/foundation.dart";
 
 @immutable
-abstract class MusicPlayerRepeatModeState {}
+sealed class MusicPlayerRepeatModeState {}
 
 class MusicPlayerRepeatModeRepeatOffState extends MusicPlayerRepeatModeState {}
 

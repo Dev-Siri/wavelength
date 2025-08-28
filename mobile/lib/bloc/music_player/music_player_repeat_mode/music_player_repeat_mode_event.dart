@@ -1,7 +1,7 @@
 import "package:flutter/foundation.dart";
 
 @immutable
-abstract class MusicPlayerRepeatModeEvent {}
+sealed class MusicPlayerRepeatModeEvent {}
 
 class MusicPlayerRepeatModeChangeRepeatModeEvent
     extends MusicPlayerRepeatModeEvent {}

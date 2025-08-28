@@ -2,7 +2,7 @@ import "package:flutter/cupertino.dart";
 import "package:wavelength/api/models/playlist.dart";
 
 @immutable
-abstract class PublicPlaylistsState {}
+sealed class PublicPlaylistsState {}
 
 class PublicPlaylistsDefaultState extends PublicPlaylistsState {}
 

@@ -2,7 +2,7 @@ import "package:flutter/foundation.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 
 @immutable
-abstract class PlaylistState {}
+sealed class PlaylistState {}
 
 class PlaylistInitialState extends PlaylistState {}
 

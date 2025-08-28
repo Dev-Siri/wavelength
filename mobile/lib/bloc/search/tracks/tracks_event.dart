@@ -1,7 +1,7 @@
 import "package:flutter/foundation.dart";
 
 @immutable
-abstract class TracksEvent {}
+sealed class TracksEvent {}
 
 class TracksFetchEvent extends TracksEvent {
   final String query;

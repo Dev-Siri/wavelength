@@ -1,6 +1,6 @@
 import "package:flutter/foundation.dart";
 
 @immutable
-abstract class LocationEvent {}
+sealed class LocationEvent {}
 
 class LocationFetchEvent extends LocationEvent {}

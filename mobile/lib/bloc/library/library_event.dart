@@ -1,7 +1,7 @@
 import "package:flutter/foundation.dart";
 
 @immutable
-abstract class LibraryEvent {}
+sealed class LibraryEvent {}
 
 class LibraryPlaylistsFetchEvent extends LibraryEvent {
   final String email;

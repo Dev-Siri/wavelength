@@ -2,7 +2,7 @@ import "package:flutter/foundation.dart";
 import "package:wavelength/api/models/video.dart";
 
 @immutable
-abstract class VideosState {}
+sealed class VideosState {}
 
 class VideosDefaultState extends VideosState {}
 

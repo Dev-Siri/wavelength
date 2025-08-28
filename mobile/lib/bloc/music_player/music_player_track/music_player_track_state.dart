@@ -2,7 +2,7 @@ import "package:flutter/foundation.dart";
 import "package:wavelength/api/models/representations/queueable_music.dart";
 
 @immutable
-abstract class MusicPlayerTrackState {}
+sealed class MusicPlayerTrackState {}
 
 class MusicPlayerTrackEmptyState extends MusicPlayerTrackState {}
 

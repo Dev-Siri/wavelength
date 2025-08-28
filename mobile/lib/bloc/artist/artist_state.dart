@@ -3,7 +3,7 @@ import "package:wavelength/api/models/artist_extra.dart";
 import "package:wavelength/api/models/individual_artist.dart";
 
 @immutable
-abstract class ArtistState {}
+sealed class ArtistState {}
 
 class ArtistInitialState extends ArtistState {}
 

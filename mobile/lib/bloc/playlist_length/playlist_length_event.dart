@@ -1,7 +1,7 @@
 import "package:flutter/foundation.dart";
 
 @immutable
-abstract class PlaylistLengthEvent {}
+sealed class PlaylistLengthEvent {}
 
 class PlaylistLengthFetchEvent extends PlaylistLengthEvent {
   final String playlistId;

@@ -2,7 +2,7 @@ import "package:flutter/foundation.dart";
 import "package:wavelength/api/models/playlist_theme_color.dart";
 
 @immutable
-abstract class PlaylistThemeColorState {}
+sealed class PlaylistThemeColorState {}
 
 class PlaylistThemeColorInitialState extends PlaylistThemeColorState {}
 

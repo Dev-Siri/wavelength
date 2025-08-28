@@ -1,7 +1,7 @@
 import "package:flutter/foundation.dart";
 
 @immutable
-abstract class AuthEvent {}
+sealed class AuthEvent {}
 
 class AuthLocalUserFetchEvent extends AuthEvent {}
 

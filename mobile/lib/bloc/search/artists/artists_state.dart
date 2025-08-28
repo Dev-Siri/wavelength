@@ -2,7 +2,7 @@ import "package:flutter/foundation.dart";
 import "package:wavelength/api/models/artist.dart";
 
 @immutable
-abstract class ArtistsState {}
+sealed class ArtistsState {}
 
 class ArtistsDefaultState extends ArtistsState {}
 

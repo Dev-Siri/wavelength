@@ -1,7 +1,7 @@
 import "package:flutter/foundation.dart";
 
 @immutable
-abstract class VideosEvent {}
+sealed class VideosEvent {}
 
 class VideosFetchEvent extends VideosEvent {
   final String query;

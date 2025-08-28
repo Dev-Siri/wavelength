@@ -58,37 +58,35 @@ class _MusicPlayerInternalsState extends State<MusicPlayerInternals> {
   }
 
   void _handlePlayerPlayingEnd(YoutubeMetaData _) {
-    final playerRepeatModeState =
-        context.read<MusicPlayerRepeatModeBloc>().state;
+    final playerRepeatModeState = context
+        .read<MusicPlayerRepeatModeBloc>()
+        .state;
 
-    switch (playerRepeatModeState) {
-      case MusicPlayerRepeatModeRepeatAllState _:
-        final musicQueue = context.read<MusicPlayerQueueBloc>().state;
-        final currentTrackState = context.read<MusicPlayerTrackBloc>().state;
+    if (playerRepeatModeState is MusicPlayerRepeatModeRepeatAllState) {
+      final musicQueue = context.read<MusicPlayerQueueBloc>().state;
+      final currentTrackState = context.read<MusicPlayerTrackBloc>().state;
 
-        if (currentTrackState is! MusicPlayerTrackPlayingNowState) break;
+      if (currentTrackState is! MusicPlayerTrackPlayingNowState) return;
 
-        final currentTrackIndexInQueue = musicQueue.tracksInQueue.indexOf(
-          currentTrackState.playingNowTrack,
-        );
+      final currentTrackIndexInQueue = musicQueue.tracksInQueue.indexOf(
+        currentTrackState.playingNowTrack,
+      );
 
-        if (currentTrackIndexInQueue == -1) break;
+      if (currentTrackIndexInQueue == -1) return;
 
-        final currentTrackPos = currentTrackIndexInQueue + 1;
+      final currentTrackPos = currentTrackIndexInQueue + 1;
 
-        context.read<MusicPlayerTrackBloc>().add(
-          MusicPlayerTrackLoadEvent(
-            queueableMusic:
-                musicQueue.tracksInQueue[currentTrackPos ==
-                        musicQueue.tracksInQueue.length
-                    ? 0
-                    : currentTrackPos],
-          ),
-        );
-
-        break;
-      case MusicPlayerRepeatModeRepeatOneState _:
-        _musicPlayerController.seekTo(Duration(seconds: 0));
+      context.read<MusicPlayerTrackBloc>().add(
+        MusicPlayerTrackLoadEvent(
+          queueableMusic:
+              musicQueue.tracksInQueue[currentTrackPos ==
+                      musicQueue.tracksInQueue.length
+                  ? 0
+                  : currentTrackPos],
+        ),
+      );
+    } else if (playerRepeatModeState is MusicPlayerRepeatModeRepeatOneState) {
+      _musicPlayerController.seekTo(Duration(seconds: 0));
     }
   }
 

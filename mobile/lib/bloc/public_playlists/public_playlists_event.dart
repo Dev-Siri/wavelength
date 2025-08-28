@@ -1,7 +1,7 @@
 import "package:flutter/foundation.dart";
 
 @immutable
-abstract class PublicPlaylistsEvent {}
+sealed class PublicPlaylistsEvent {}
 
 class PublicPlaylistsFetchEvent extends PublicPlaylistsEvent {
   final String? query;

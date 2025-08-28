@@ -2,7 +2,7 @@ import "package:flutter/foundation.dart";
 import "package:wavelength/api/models/track.dart";
 
 @immutable
-abstract class TracksState {}
+sealed class TracksState {}
 
 class TracksDefaultState extends TracksState {}
 
