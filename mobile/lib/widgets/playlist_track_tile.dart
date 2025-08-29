@@ -136,19 +136,11 @@ class PlaylistTrackTile extends StatelessWidget {
             playlistTrack.duration.toString(),
             style: TextStyle(color: Colors.grey, fontSize: 14),
           ),
-          SizedBox(width: 10),
-          if (Platform.isIOS)
-            CupertinoButton(
-              padding: EdgeInsets.zero,
-              onPressed: () => _showPlaylistTrackOptions(context),
-              child: Icon(LucideIcons.ellipsis, color: Colors.grey),
-            )
-          else
-            MaterialButton(
-              padding: EdgeInsets.zero,
-              onPressed: () => _showPlaylistTrackOptions(context),
-              child: Icon(LucideIcons.ellipsis, color: Colors.grey),
-            ),
+          SizedBox(width: 4),
+          GestureDetector(
+            onTap: () => _showPlaylistTrackOptions(context),
+            child: Icon(LucideIcons.ellipsis, color: Colors.grey),
+          ),
         ],
       ),
     );
