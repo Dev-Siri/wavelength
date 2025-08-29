@@ -142,6 +142,12 @@ class PlaylistTrackTile extends StatelessWidget {
               padding: EdgeInsets.zero,
               onPressed: () => _showPlaylistTrackOptions(context),
               child: Icon(LucideIcons.ellipsis, color: Colors.grey),
+            )
+          else
+            MaterialButton(
+              padding: EdgeInsets.zero,
+              onPressed: () => _showPlaylistTrackOptions(context),
+              child: Icon(LucideIcons.ellipsis, color: Colors.grey),
             ),
         ],
       ),
