@@ -25,12 +25,15 @@ class PlaylistTile extends StatefulWidget {
 
 class _PlaylistTileState extends State<PlaylistTile> {
   Future<void> _deletePlaylist({required String userEmail}) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final libraryBloc = context.read<LibraryBloc>();
+
     final response = await PlaylistsRepo.deletePlaylist(
       playlistId: widget.playlist.playlistId,
     );
 
     if (response.success) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           backgroundColor: Colors.green,
           content: const Text(
@@ -39,20 +42,20 @@ class _PlaylistTileState extends State<PlaylistTile> {
           ),
         ),
       );
-      context.read<LibraryBloc>().add(
-        LibraryPlaylistsFetchEvent(email: userEmail),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.red,
-          content: const Text(
-            "Failed to delete playlist.",
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-      );
+
+      libraryBloc.add(LibraryPlaylistsFetchEvent(email: userEmail));
+      return;
     }
+
+    messenger.showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.red,
+        content: const Text(
+          "Failed to delete playlist.",
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
   }
 
   @override
@@ -110,22 +113,17 @@ class _PlaylistTileState extends State<PlaylistTile> {
             builder: (context, state) {
               return IconButton(
                 icon: Icon(LucideIcons.trash2, color: Colors.red),
-                onPressed:
-                    () =>
-                        state is AuthStateAuthorized
-                            ? showDialog(
-                              context: context,
-                              builder:
-                                  (_) => ConfirmationDialog(
-                                    onConfirm:
-                                        () => _deletePlaylist(
-                                          userEmail: state.user.email,
-                                        ),
-                                    title: "Delete '${widget.playlist.name}' ?",
-                                    content: "This action cannot be undone.",
-                                  ),
-                            )
-                            : null,
+                onPressed: () => state is AuthStateAuthorized
+                    ? showDialog(
+                        context: context,
+                        builder: (_) => ConfirmationDialog(
+                          onConfirm: () =>
+                              _deletePlaylist(userEmail: state.user.email),
+                          title: "Delete '${widget.playlist.name}' ?",
+                          content: "This action cannot be undone.",
+                        ),
+                      )
+                    : null,
               );
             },
           ),
@@ -136,14 +134,14 @@ class _PlaylistTileState extends State<PlaylistTile> {
     if (Platform.isIOS) {
       return CupertinoButton(
         padding: EdgeInsets.zero,
-        onPressed:
-            () => context.push("/playlist/${widget.playlist.playlistId}"),
+        onPressed: () =>
+            context.push("/playlist/${widget.playlist.playlistId}"),
         child: innerUi,
       );
     } else {
       return MaterialButton(
-        onPressed:
-            () => context.push("/playlist/${widget.playlist.playlistId}"),
+        onPressed: () =>
+            context.push("/playlist/${widget.playlist.playlistId}"),
         child: innerUi,
       );
     }

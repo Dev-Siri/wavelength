@@ -30,14 +30,14 @@ class PlaylistScreen extends StatefulWidget {
 }
 
 class _PlaylistScreenState extends State<PlaylistScreen> {
-  final _playlistBloc = PlaylistBloc();
-  final _playlistLengthBloc = PlaylistLengthBloc();
   final _playlistThemeColorBloc = PlaylistThemeColorBloc();
 
   @override
   void initState() {
-    _playlistBloc.add(PlaylistFetchEvent(playlistId: widget.playlistId));
-    _playlistLengthBloc.add(
+    context.read<PlaylistBloc>().add(
+      PlaylistFetchEvent(playlistId: widget.playlistId),
+    );
+    context.read<PlaylistLengthBloc>().add(
       PlaylistLengthFetchEvent(playlistId: widget.playlistId),
     );
     super.initState();
@@ -73,48 +73,46 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                 BlocBuilder(
                   bloc: _playlistThemeColorBloc,
                   builder: (context, state) {
-                    final shadowColor =
-                        state is PlaylistThemeColorSuccessState
-                            ? Color.fromRGBO(
-                              state.playlistThemeColor.r,
-                              state.playlistThemeColor.g,
-                              state.playlistThemeColor.b,
-                              0.8,
-                            )
-                            : Colors.transparent;
+                    final shadowColor = state is PlaylistThemeColorSuccessState
+                        ? Color.fromRGBO(
+                            state.playlistThemeColor.r,
+                            state.playlistThemeColor.g,
+                            state.playlistThemeColor.b,
+                            0.8,
+                          )
+                        : Colors.transparent;
 
                     return Center(
-                      child:
-                          playlist.coverImage != null
-                              ? Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: shadowColor,
-                                      blurRadius: 90,
-                                      spreadRadius: 1,
-                                    ),
-                                  ],
-                                ),
-                                height: 300,
-                                width: 300,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(30),
-                                  child: CachedNetworkImage(
-                                    imageUrl: playlist.coverImage ?? "",
-                                    fit: BoxFit.fill,
+                      child: playlist.coverImage != null
+                          ? Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: shadowColor,
+                                    blurRadius: 90,
+                                    spreadRadius: 1,
                                   ),
-                                ),
-                              )
-                              : Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  color: Colors.grey.shade900,
-                                ),
-                                height: 300,
-                                width: 300,
+                                ],
                               ),
+                              height: 300,
+                              width: 300,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(30),
+                                child: CachedNetworkImage(
+                                  imageUrl: playlist.coverImage ?? "",
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                            )
+                          : Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                color: Colors.grey.shade900,
+                              ),
+                              height: 300,
+                              width: 300,
+                            ),
                     );
                   },
                 ),
@@ -132,49 +130,56 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5),
-                        child: BlocBuilder<
-                          PlaylistLengthBloc,
-                          PlaylistLengthState
-                        >(
-                          bloc: _playlistLengthBloc,
-                          builder: (context, state) {
-                            if (state is! PlaylistLengthSuccessState) {
-                              if (state is PlaylistLengthErrorState) {
-                                return Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      LucideIcons.circleAlert,
-                                      color: Colors.redAccent,
-                                      size: 20,
+                        child:
+                            BlocBuilder<
+                              PlaylistLengthBloc,
+                              PlaylistLengthState
+                            >(
+                              builder: (context, state) {
+                                if (state is! PlaylistLengthSuccessState) {
+                                  if (state is PlaylistLengthErrorState) {
+                                    return Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          LucideIcons.circleAlert,
+                                          color: Colors.redAccent,
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          "An error occured.",
+                                          style: TextStyle(
+                                            color: Colors.redAccent,
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }
+
+                                  return Padding(
+                                    padding: EdgeInsets.only(
+                                      right:
+                                          (MediaQuery.of(context).size.width -
+                                              30) /
+                                          2,
                                     ),
-                                    SizedBox(width: 5),
-                                    Text(
-                                      "An error occured.",
-                                      style: TextStyle(color: Colors.redAccent),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Shimmer(
+                                        child: SizedBox(height: 10),
+                                      ),
                                     ),
-                                  ],
+                                  );
+                                }
+
+                                return PlaylistLengthText(
+                                  playlistTracksLength:
+                                      state.playlistTracksLength,
                                 );
-                              }
-
-                              return Padding(
-                                padding: EdgeInsets.only(
-                                  right:
-                                      (MediaQuery.of(context).size.width - 30) /
-                                      2,
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Shimmer(child: SizedBox(height: 10)),
-                                ),
-                              );
-                            }
-
-                            return PlaylistLengthText(
-                              playlistTracksLength: state.playlistTracksLength,
-                            );
-                          },
-                        ),
+                              },
+                            ),
                       ),
                       SizedBox(height: 5),
                       Transform.translate(
@@ -198,7 +203,6 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                   ),
                 ),
                 BlocBuilder<PlaylistBloc, PlaylistState>(
-                  bloc: _playlistBloc,
                   builder: (context, state) {
                     if (state is! PlaylistSuccessState) {
                       return Padding(

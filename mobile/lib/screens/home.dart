@@ -1,4 +1,5 @@
 import "dart:math" as math;
+import "package:connectivity_plus/connectivity_plus.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_svg/flutter_svg.dart";
@@ -12,30 +13,32 @@ import "package:wavelength/widgets/error_message_dialog.dart";
 import "package:wavelength/widgets/quick_pick_song_card.dart";
 import "package:wavelength/widgets/skeletons/quick_pick_song_card_skeleton.dart";
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
+  Future<void> _locationListener(
+    BuildContext context,
+    LocationState state,
+  ) async {
+    final quickPicksBloc = context.read<QuickPicksBloc>();
+    final connectivityStatus = await Connectivity().checkConnectivity();
 
-class _HomeScreenState extends State<HomeScreen> {
+    if (connectivityStatus.contains(ConnectivityResult.wifi)) {
+      quickPicksBloc.add(QuickPicksFetchEvent(locale: state.countryCode));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: BlocConsumer<LocationBloc, LocationState>(
-        listener: (context, state) {
-          context.read<QuickPicksBloc>().add(
-            QuickPicksFetchEvent(locale: state.countryCode),
-          );
-        },
+        listener: _locationListener,
         builder: (context, state) {
           return RefreshIndicator.adaptive(
-            onRefresh:
-                () async => context.read<QuickPicksBloc>().add(
-                  QuickPicksFetchEvent(locale: state.countryCode),
-                ),
+            onRefresh: () async => context.read<QuickPicksBloc>().add(
+              QuickPicksFetchEvent(locale: state.countryCode),
+            ),
             child: ListView(
               children: [
                 BlocBuilder<QuickPicksBloc, QuickPicksState>(

@@ -4,15 +4,19 @@ import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:mini_music_visualizer/mini_music_visualizer.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/representations/queueable_music.dart";
+import "package:wavelength/api/models/track.dart";
 import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
 import "package:wavelength/utils/parse.dart";
+import "package:wavelength/widgets/explicit_indicator.dart";
+import "package:wavelength/widgets/playlist_track_tile_options_bottom_sheet.dart";
 
 class PlaylistTrackTile extends StatelessWidget {
   final PlaylistTrack playlistTrack;
@@ -34,6 +38,24 @@ class PlaylistTrackTile extends StatelessWidget {
 
     context.read<MusicPlayerTrackBloc>().add(
       MusicPlayerTrackLoadEvent(queueableMusic: queueableMusic),
+    );
+  }
+
+  void _showPlaylistTrackOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => PlaylistTrackTileOptionsBottomSheet(
+        playlistId: playlistTrack.playlistId,
+        videoType: playlistTrack.videoType,
+        track: Track(
+          videoId: playlistTrack.videoId,
+          title: playlistTrack.title,
+          thumbnail: playlistTrack.thumbnail,
+          author: playlistTrack.author,
+          duration: playlistTrack.duration,
+          isExplicit: playlistTrack.isExplicit,
+        ),
+      ),
     );
   }
 
@@ -94,9 +116,18 @@ class PlaylistTrackTile extends StatelessWidget {
                   ),
                 ),
               ),
-              Text(
-                playlistTrack.author,
-                style: TextStyle(color: Colors.grey, fontSize: 14),
+              Row(
+                children: [
+                  if (playlistTrack.isExplicit)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: ExplicitIndicator(),
+                    ),
+                  Text(
+                    playlistTrack.author,
+                    style: TextStyle(color: Colors.grey, fontSize: 14),
+                  ),
+                ],
               ),
             ],
           ),
@@ -105,6 +136,13 @@ class PlaylistTrackTile extends StatelessWidget {
             playlistTrack.duration.toString(),
             style: TextStyle(color: Colors.grey, fontSize: 14),
           ),
+          SizedBox(width: 10),
+          if (Platform.isIOS)
+            CupertinoButton(
+              padding: EdgeInsets.zero,
+              onPressed: () => _showPlaylistTrackOptions(context),
+              child: Icon(LucideIcons.ellipsis, color: Colors.grey),
+            ),
         ],
       ),
     );

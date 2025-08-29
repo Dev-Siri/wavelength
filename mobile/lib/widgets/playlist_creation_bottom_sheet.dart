@@ -3,6 +3,7 @@ import "dart:io";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:go_router/go_router.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:wavelength/api/repositories/playlists_repo.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
@@ -25,6 +26,10 @@ class _PlaylistCreationBottomSheetState
     required String username,
     required String userImage,
   }) async {
+    final navigator = GoRouter.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final libraryBloc = context.read<LibraryBloc>();
+
     final response = await PlaylistsRepo.createPlaylist(
       email: userEmail,
       image: userImage,
@@ -32,7 +37,7 @@ class _PlaylistCreationBottomSheetState
     );
 
     if (response.success) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           backgroundColor: Colors.green,
           content: const Text(
@@ -41,11 +46,9 @@ class _PlaylistCreationBottomSheetState
           ),
         ),
       );
-      context.read<LibraryBloc>().add(
-        LibraryPlaylistsFetchEvent(email: userEmail),
-      );
+      libraryBloc.add(LibraryPlaylistsFetchEvent(email: userEmail));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           backgroundColor: Colors.red,
           content: const Text(
@@ -56,7 +59,7 @@ class _PlaylistCreationBottomSheetState
       );
     }
 
-    Navigator.of(context).pop();
+    navigator.pop();
   }
 
   @override
@@ -76,8 +79,9 @@ class _PlaylistCreationBottomSheetState
         return Container(
           height: 80,
           width: double.infinity,
-          margin:
-              Platform.isIOS ? EdgeInsets.only(bottom: 20) : EdgeInsets.zero,
+          margin: Platform.isIOS
+              ? EdgeInsets.only(bottom: 20)
+              : EdgeInsets.zero,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
@@ -85,31 +89,28 @@ class _PlaylistCreationBottomSheetState
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(20)),
-                child:
-                    Platform.isIOS
-                        ? CupertinoListTile(
-                          onTap:
-                              () => _createPlaylist(
-                                userEmail: state.user.email,
-                                username: state.user.displayName ?? "",
-                                userImage: state.user.photoUrl ?? "",
-                              ),
-                          leading: Icon(LucideIcons.listMusic),
-                          padding: EdgeInsets.all(20),
-                          title: title,
-                          subtitle: subtitle,
-                        )
-                        : ListTile(
-                          onTap:
-                              () => _createPlaylist(
-                                userEmail: state.user.email,
-                                username: state.user.displayName ?? "",
-                                userImage: state.user.photoUrl ?? "",
-                              ),
-                          leading: Icon(LucideIcons.listMusic),
-                          title: title,
-                          subtitle: subtitle,
+                child: Platform.isIOS
+                    ? CupertinoListTile(
+                        onTap: () => _createPlaylist(
+                          userEmail: state.user.email,
+                          username: state.user.displayName ?? "",
+                          userImage: state.user.photoUrl ?? "",
                         ),
+                        leading: Icon(LucideIcons.listMusic),
+                        padding: EdgeInsets.all(20),
+                        title: title,
+                        subtitle: subtitle,
+                      )
+                    : ListTile(
+                        onTap: () => _createPlaylist(
+                          userEmail: state.user.email,
+                          username: state.user.displayName ?? "",
+                          userImage: state.user.photoUrl ?? "",
+                        ),
+                        leading: Icon(LucideIcons.listMusic),
+                        title: title,
+                        subtitle: subtitle,
+                      ),
               ),
             ],
           ),

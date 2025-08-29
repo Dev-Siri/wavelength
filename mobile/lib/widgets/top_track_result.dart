@@ -13,6 +13,7 @@ import "package:wavelength/bloc/music_player/music_player_track/music_player_tra
 import "package:mini_music_visualizer/mini_music_visualizer.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
 import "package:wavelength/utils/parse.dart";
+import "package:wavelength/widgets/add_to_playlist_bottom_sheet.dart";
 
 class TopTrackResult extends StatelessWidget {
   final Track track;
@@ -80,28 +81,48 @@ class TopTrackResult extends StatelessWidget {
                     CupertinoButton(
                       padding: EdgeInsets.zero,
                       onPressed: () => _playTrack(context),
-                      child: BlocBuilder<
-                        MusicPlayerTrackBloc,
-                        MusicPlayerTrackState
-                      >(
-                        builder: (context, state) {
-                          if (state is MusicPlayerTrackPlayingNowState &&
-                              state.playingNowTrack.videoId == track.videoId) {
-                            return MiniMusicVisualizer(
-                              color: Colors.white,
-                              animate: true,
-                              width: 4,
-                              height: 15,
-                            );
-                          }
+                      child:
+                          BlocBuilder<
+                            MusicPlayerTrackBloc,
+                            MusicPlayerTrackState
+                          >(
+                            builder: (context, state) {
+                              if (state is MusicPlayerTrackPlayingNowState &&
+                                  state.playingNowTrack.videoId ==
+                                      track.videoId) {
+                                return MiniMusicVisualizer(
+                                  color: Colors.white,
+                                  animate: true,
+                                  width: 4,
+                                  height: 15,
+                                );
+                              }
 
-                          return Icon(LucideIcons.play, color: Colors.white);
-                        },
-                      ),
+                              return Icon(
+                                LucideIcons.play,
+                                color: Colors.white,
+                              );
+                            },
+                          ),
                     ),
                     CupertinoButton(
                       padding: EdgeInsets.zero,
-                      onPressed: () => _playTrack(context),
+                      onPressed: () => showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        useRootNavigator: true,
+                        builder: (context) => AddToPlaylistBottomSheet(
+                          track: Track(
+                            videoId: track.videoId,
+                            title: track.title,
+                            thumbnail: track.thumbnail,
+                            author: track.author,
+                            duration: track.duration,
+                            isExplicit: track.isExplicit,
+                          ),
+                          videoType: VideoType.track,
+                        ),
+                      ),
                       child: Icon(LucideIcons.circlePlus, color: Colors.white),
                     ),
                   ],

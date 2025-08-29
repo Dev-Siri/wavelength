@@ -12,6 +12,8 @@ import "package:wavelength/bloc/music_player/music_player_queue/music_player_que
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
+import "package:wavelength/widgets/add_to_playlist_bottom_sheet.dart";
+import "package:wavelength/widgets/explicit_indicator.dart";
 
 class TrackTile extends StatelessWidget {
   final Track track;
@@ -102,13 +104,22 @@ class TrackTile extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 3),
-                    Text(
-                      track.author,
-                      style: TextStyle(
-                        color: Colors.grey,
-                        height: 1,
-                        fontSize: 14,
-                      ),
+                    Row(
+                      children: [
+                        if (track.isExplicit)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: ExplicitIndicator(),
+                          ),
+                        Text(
+                          track.author,
+                          style: TextStyle(
+                            color: Colors.grey,
+                            height: 1,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -116,7 +127,22 @@ class TrackTile extends StatelessWidget {
             ),
           ),
           CupertinoButton(
-            onPressed: () => print("add ${track.videoId}"),
+            onPressed: () => showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              useRootNavigator: true,
+              builder: (context) => AddToPlaylistBottomSheet(
+                track: Track(
+                  videoId: track.videoId,
+                  title: track.title,
+                  thumbnail: track.thumbnail,
+                  author: track.author,
+                  duration: track.duration,
+                  isExplicit: track.isExplicit,
+                ),
+                videoType: VideoType.track,
+              ),
+            ),
             child: Icon(LucideIcons.circlePlus, color: Colors.white),
           ),
         ],

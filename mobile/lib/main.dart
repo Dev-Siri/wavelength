@@ -17,6 +17,8 @@ import "package:wavelength/bloc/music_player/music_player_queue/music_player_que
 import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_bloc.dart";
+import "package:wavelength/bloc/playlist/playlist_bloc.dart";
+import "package:wavelength/bloc/playlist_length/playlist_length_bloc.dart";
 import "package:wavelength/bloc/quick_picks/quick_picks_bloc.dart";
 import "package:wavelength/constants.dart";
 import "package:wavelength/router.dart";
@@ -47,26 +49,26 @@ class App extends StatelessWidget {
         BlocProvider(create: (_) => MusicPlayerVolumeBloc()),
         BlocProvider(create: (_) => MusicPlayerRepeatModeBloc()),
         BlocProvider(create: (_) => MusicPlayerQueueBloc()),
+        // Playlist blocs
+        BlocProvider(create: (_) => PlaylistBloc()),
+        BlocProvider(create: (_) => PlaylistLengthBloc()),
         //
         BlocProvider(create: (_) => QuickPicksBloc()),
         BlocProvider(create: (_) => LocationBloc()),
         BlocProvider(create: (_) => LibraryBloc()),
         BlocProvider(
-          create:
-              (_) => AuthBloc(
-                GoogleSignIn(
-                  serverClientId:
-                      Platform.isAndroid
-                          ? dotenv.get("ANDROID_GOOGLE_CLIENT_ID")
-                          : null,
-                  clientId:
-                      Platform.isIOS
-                          ? dotenv.get("IOS_GOOGLE_CLIENT_ID")
-                          : null,
-                  scopes: ["email", "profile"],
-                ),
-                FlutterSecureStorage(),
-              ),
+          create: (_) => AuthBloc(
+            GoogleSignIn(
+              serverClientId: Platform.isAndroid
+                  ? dotenv.get("ANDROID_GOOGLE_CLIENT_ID")
+                  : null,
+              clientId: Platform.isIOS
+                  ? dotenv.get("IOS_GOOGLE_CLIENT_ID")
+                  : null,
+              scopes: ["email", "profile"],
+            ),
+            FlutterSecureStorage(),
+          ),
         ),
       ],
       child: MaterialApp.router(

@@ -25,16 +25,15 @@ final router = GoRouter(
             GoRoute(path: "/", builder: (_, __) => HomeScreen()),
             GoRoute(
               path: "/explore",
-              builder:
-                  (_, __) => MultiBlocProvider(
-                    providers: [
-                      BlocProvider(create: (_) => PublicPlaylistsBloc()),
-                      BlocProvider(create: (_) => TracksBloc()),
-                      BlocProvider(create: (_) => VideosBloc()),
-                      BlocProvider(create: (_) => ArtistsBloc()),
-                    ],
-                    child: ExploreScreen(),
-                  ),
+              builder: (_, __) => MultiBlocProvider(
+                providers: [
+                  BlocProvider(create: (_) => PublicPlaylistsBloc()),
+                  BlocProvider(create: (_) => TracksBloc()),
+                  BlocProvider(create: (_) => VideosBloc()),
+                  BlocProvider(create: (_) => ArtistsBloc()),
+                ],
+                child: ExploreScreen(),
+              ),
             ),
             GoRoute(path: "/library", builder: (_, __) => LibraryScreen()),
           ],
@@ -92,15 +91,13 @@ final router = GoRouter(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
                     padding: EdgeInsets.only(
-                      bottom:
-                          isOutsideAppShell
-                              ? MediaQuery.of(context).size.height * 0.05
-                              : MediaQuery.of(context).size.height * 0.125,
+                      bottom: isOutsideAppShell
+                          ? MediaQuery.of(context).size.height * 0.05
+                          : MediaQuery.of(context).size.height * 0.125,
                     ),
-                    child:
-                        !isOnPlayingNowScreen
-                            ? FloatingMusicPlayerPreview()
-                            : SizedBox.shrink(),
+                    child: !isOnPlayingNowScreen
+                        ? FloatingMusicPlayerPreview()
+                        : SizedBox.shrink(),
                   ),
                 ),
               ),

@@ -5,6 +5,8 @@ import "package:flutter/foundation.dart";
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/music_video_preview.dart";
 import "package:wavelength/api/models/playlist_theme_color.dart";
+import "package:wavelength/api/models/playlist_track.dart";
+import "package:wavelength/api/models/track.dart";
 import "package:wavelength/constants.dart";
 
 class TrackRepo {
@@ -15,7 +17,6 @@ class TrackRepo {
       final response = await http.get(
         Uri.parse("$backendUrl/music/$trackId/theme-color"),
       );
-      print(response.body);
       final decodedResponse = await compute((stringResponse) {
         final decodedJson = jsonDecode(stringResponse);
         final decodedData = ApiResponse.fromJson(
@@ -59,13 +60,24 @@ class TrackRepo {
     }
   }
 
-  static Future<ApiResponse> addTrackToPlaylist({
+  static Future<ApiResponse> toggleTrackFromPlaylist({
     required String playlistId,
+    required VideoType videoType,
+    required Track track,
   }) async {
     try {
-      // TODO: Implement playlist track add.
-      final response = await http.delete(
-        Uri.parse("$backendUrl/playlists/$playlistId"),
+      final response = await http.post(
+        Uri.parse("$backendUrl/playlists/$playlistId/tracks"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "author": track.author,
+          "thumbnail": track.thumbnail,
+          "duration": track.duration,
+          "isExplicit": track.isExplicit,
+          "title": track.title,
+          "videoId": track.videoId,
+          "videoType": videoType == VideoType.track ? "track" : "uvideo",
+        }),
       );
 
       final decodedResponse = await compute((stringResponse) {
