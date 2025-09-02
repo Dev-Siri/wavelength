@@ -24,7 +24,7 @@ dependencies:
   html_unescape: ^2.0.0
   geolocator: ^11.0.0
   geocoding: ^2.1.0
-  uploadthing: ^1.0.3
+  image_picker: ^1.2.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   connectivity_plus: ^6.1.4

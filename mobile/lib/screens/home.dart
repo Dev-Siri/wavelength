@@ -36,6 +36,7 @@ class HomeScreen extends StatelessWidget {
         listener: _locationListener,
         builder: (context, state) {
           return RefreshIndicator.adaptive(
+            color: Colors.white,
             onRefresh: () async => context.read<QuickPicksBloc>().add(
               QuickPicksFetchEvent(locale: state.countryCode),
             ),

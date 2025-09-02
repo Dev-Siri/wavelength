@@ -136,10 +136,12 @@ class PlaylistTrackTile extends StatelessWidget {
             playlistTrack.duration.toString(),
             style: TextStyle(color: Colors.grey, fontSize: 14),
           ),
-          SizedBox(width: 4),
-          GestureDetector(
-            onTap: () => _showPlaylistTrackOptions(context),
-            child: Icon(LucideIcons.ellipsis, color: Colors.grey),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: GestureDetector(
+              onTap: () => _showPlaylistTrackOptions(context),
+              child: Icon(LucideIcons.ellipsis, color: Colors.grey),
+            ),
           ),
         ],
       ),
@@ -151,11 +153,12 @@ class PlaylistTrackTile extends StatelessWidget {
         onPressed: () => _playSong(context),
         child: innerUi,
       );
-    } else {
-      return MaterialButton(
-        onPressed: () => _playSong(context),
-        child: innerUi,
-      );
     }
+
+    return MaterialButton(
+      padding: EdgeInsets.zero,
+      onPressed: () => _playSong(context),
+      child: innerUi,
+    );
   }
 }

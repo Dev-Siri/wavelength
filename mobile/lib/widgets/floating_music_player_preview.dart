@@ -1,3 +1,4 @@
+import "dart:io";
 import "dart:ui";
 
 import "package:cached_network_image/cached_network_image.dart";
@@ -45,11 +46,10 @@ class _FloatingMusicPlayerPreviewState
     final percentDelta = dx / width; // -1.0 (full left) to +1.0 (full right)
 
     setState(
-      () =>
-          _trackProgress = (_trackProgressAtPressStart + percentDelta).clamp(
-            0,
-            1,
-          ),
+      () => _trackProgress = (_trackProgressAtPressStart + percentDelta).clamp(
+        0,
+        1,
+      ),
     );
   }
 
@@ -73,6 +73,10 @@ class _FloatingMusicPlayerPreviewState
     );
   }
 
+  void _playstateButtonHandler() => context
+      .read<MusicPlayerPlaystateBloc>()
+      .add(MusicPlayerPlaystateToggleEvent());
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MusicPlayerTrackBloc, MusicPlayerTrackState>(
@@ -81,15 +85,14 @@ class _FloatingMusicPlayerPreviewState
 
         return GestureDetector(
           onTap: () => context.push("/playing-now"),
-          onLongPressStart:
-              (details) => setState(() {
-                context.read<MusicPlayerPlaystateBloc>().add(
-                  MusicPlayerPlaystateToggleEvent(),
-                );
-                _isChangingTrackProgress = true;
-                _longPressStart = details.localPosition;
-                _trackProgressAtPressStart = _trackProgress;
-              }),
+          onLongPressStart: (details) => setState(() {
+            context.read<MusicPlayerPlaystateBloc>().add(
+              MusicPlayerPlaystateToggleEvent(),
+            );
+            _isChangingTrackProgress = true;
+            _longPressStart = details.localPosition;
+            _trackProgressAtPressStart = _trackProgress;
+          }),
           onLongPressMoveUpdate: _handleMusicPlayerTrackProgressUpdate,
           onLongPressEnd: _handleMusicPlayerTrackSeekToUpdate,
           child: Container(
@@ -108,16 +111,13 @@ class _FloatingMusicPlayerPreviewState
                     MusicPlayerDurationBloc,
                     MusicPlayerDurationState
                   >(
-                    listener: (context, state) {
-                      setState(
-                        () =>
-                            _trackProgress =
-                                state is MusicPlayerDurationAvailableState
-                                    ? (state.currentDuration.inSeconds /
-                                        state.totalDuration.inSeconds)
-                                    : 0.0,
-                      );
-                    },
+                    listener: (context, state) => setState(
+                      () => _trackProgress =
+                          state is MusicPlayerDurationAvailableState
+                          ? (state.currentDuration.inSeconds /
+                                state.totalDuration.inSeconds)
+                          : 0.0,
+                    ),
                     builder: (context, state) {
                       return FractionallySizedBox(
                         alignment: Alignment.centerLeft,
@@ -160,104 +160,105 @@ class _FloatingMusicPlayerPreviewState
                         ),
                       );
                     },
-                    child:
-                        _isChangingTrackProgress
-                            ? SizedBox.shrink()
-                            : Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: CachedNetworkImage(
-                                      imageUrl: state.playingNowTrack.thumbnail,
-                                      fit: BoxFit.cover,
-                                      height: 55,
-                                      width: 55,
-                                    ),
+                    child: _isChangingTrackProgress
+                        ? SizedBox.shrink()
+                        : Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: CachedNetworkImage(
+                                    imageUrl: state.playingNowTrack.thumbnail,
+                                    fit: BoxFit.cover,
+                                    height: 55,
+                                    width: 55,
                                   ),
-                                  SizedBox(width: 15),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        decodeHtmlSpecialChars(
-                                          state.playingNowTrack.title.length >
-                                                  22
-                                              ? "${state.playingNowTrack.title.substring(0, 22)}..."
-                                              : state.playingNowTrack.title,
-                                        ),
-                                        style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                ),
+                                SizedBox(width: 15),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      decodeHtmlSpecialChars(
+                                        state.playingNowTrack.title.length > 22
+                                            ? "${state.playingNowTrack.title.substring(0, 19)}..."
+                                            : state.playingNowTrack.title,
                                       ),
-                                      Text(
-                                        state.playingNowTrack.author,
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      state.playingNowTrack.author,
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.grey.shade500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Spacer(),
+                                BlocBuilder<
+                                  MusicPlayerDurationBloc,
+                                  MusicPlayerDurationState
+                                >(
+                                  builder: (context, state) {
+                                    if (state
+                                        is! MusicPlayerDurationAvailableState) {
+                                      return Text(
+                                        "00:00",
                                         style: TextStyle(
                                           fontSize: 13,
                                           color: Colors.grey.shade500,
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  Spacer(),
-                                  BlocBuilder<
-                                    MusicPlayerDurationBloc,
-                                    MusicPlayerDurationState
-                                  >(
-                                    builder: (context, state) {
-                                      if (state
-                                          is! MusicPlayerDurationAvailableState) {
-                                        return Text(
-                                          "00:00",
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            color: Colors.grey.shade500,
-                                          ),
-                                        );
-                                      }
+                                      );
+                                    }
 
-                                      return Text(
-                                        "-${durationify(state.totalDuration - state.currentDuration)}",
+                                    return Text(
+                                      "-${durationify(state.totalDuration - state.currentDuration)}",
+                                    );
+                                  },
+                                ),
+                                BlocBuilder<
+                                  MusicPlayerPlaystateBloc,
+                                  MusicPlayerPlaystateState
+                                >(
+                                  builder: (context, state) {
+                                    final isMusicPlaying =
+                                        state
+                                            is MusicPlayerPlaystatePlayingState;
+                                    final playstateButtonInnerUi = Icon(
+                                      isMusicPlaying
+                                          ? LucideIcons.pause
+                                          : LucideIcons.play,
+                                      color: Colors.white,
+                                      semanticLabel: isMusicPlaying
+                                          ? "Pause"
+                                          : "Play",
+                                    );
+
+                                    if (Platform.isAndroid) {
+                                      return IconButton(
+                                        padding: EdgeInsets.zero,
+                                        onPressed: _playstateButtonHandler,
+                                        icon: playstateButtonInnerUi,
                                       );
-                                    },
-                                  ),
-                                  BlocBuilder<
-                                    MusicPlayerPlaystateBloc,
-                                    MusicPlayerPlaystateState
-                                  >(
-                                    builder: (context, state) {
-                                      return CupertinoButton(
-                                        onPressed:
-                                            () => context
-                                                .read<
-                                                  MusicPlayerPlaystateBloc
-                                                >()
-                                                .add(
-                                                  MusicPlayerPlaystateToggleEvent(),
-                                                ),
-                                        child: Icon(
-                                          state
-                                                  is MusicPlayerPlaystatePlayingState
-                                              ? LucideIcons.pause
-                                              : LucideIcons.play,
-                                          color: Colors.white,
-                                          semanticLabel:
-                                              state
-                                                      is MusicPlayerPlaystatePlayingState
-                                                  ? "Pause"
-                                                  : "Play",
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
+                                    }
+
+                                    return CupertinoButton(
+                                      padding: EdgeInsets.zero,
+                                      onPressed: _playstateButtonHandler,
+                                      child: playstateButtonInnerUi,
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
+                          ),
                   ),
                 ],
               ),

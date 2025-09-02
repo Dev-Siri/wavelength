@@ -1,4 +1,6 @@
-import "package:cached_network_image/cached_network_image.dart";
+import "dart:io";
+
+import "package:country_flags/country_flags.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -8,6 +10,8 @@ import "package:vector_graphics/vector_graphics.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
 import "package:wavelength/bloc/auth/auth_event.dart";
 import "package:wavelength/bloc/auth/auth_state.dart";
+import "package:wavelength/bloc/location/location_bloc.dart";
+import "package:wavelength/bloc/location/location_state.dart";
 import "package:wavelength/widgets/google_login_button.dart";
 
 class UserInfoDrawer extends StatelessWidget {
@@ -21,61 +25,78 @@ class UserInfoDrawer extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SvgPicture(AssetBytesLoader("assets/vectors/lambda.svg.vec")),
+            SizedBox(height: 20),
+            Row(
+              children: [
+                SvgPicture(AssetBytesLoader("assets/vectors/lambda.svg.vec")),
+                BlocBuilder<AuthBloc, AuthState>(
+                  builder: (context, state) {
+                    if (state is! AuthStateAuthorized) return SizedBox.shrink();
+
+                    return Transform.translate(
+                      offset: Offset(-15, 0),
+                      child: Row(
+                        children: [
+                          Text("Hello, ", style: TextStyle(fontSize: 20)),
+                          Text(
+                            state.user.displayName ?? "User",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text("!", style: TextStyle(fontSize: 20)),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
             BlocBuilder<AuthBloc, AuthState>(
               builder: (context, state) {
                 if (state is AuthStateAuthorized) {
                   return Expanded(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              CircleAvatar(
-                                radius: 30,
-                                backgroundImage: CachedNetworkImageProvider(
-                                  state.user.photoUrl ?? "",
-                                ),
-                              ),
-                              SizedBox(width: 10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    state.user.displayName ?? "",
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                  Text(
-                                    state.user.email,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                        Spacer(),
                         Padding(
                           padding: const EdgeInsets.all(16),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              CupertinoButton(
-                                onPressed:
-                                    () => context.read<AuthBloc>().add(
-                                      AuthLogoutUserEvent(),
+                              BlocBuilder<LocationBloc, LocationState>(
+                                builder: (context, state) {
+                                  return ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: CountryFlag.fromCountryCode(
+                                      state.countryCode,
+                                      height: 25,
+                                      width: 25,
                                     ),
-                                child: Icon(
-                                  LucideIcons.logOut,
-                                  color: Colors.red,
-                                ),
+                                  );
+                                },
                               ),
+                              if (Platform.isIOS)
+                                CupertinoButton(
+                                  onPressed: () => context.read<AuthBloc>().add(
+                                    AuthLogoutUserEvent(),
+                                  ),
+                                  child: Icon(
+                                    LucideIcons.logOut,
+                                    color: Colors.red,
+                                  ),
+                                )
+                              else
+                                IconButton(
+                                  onPressed: () => context.read<AuthBloc>().add(
+                                    AuthLogoutUserEvent(),
+                                  ),
+                                  icon: Icon(
+                                    LucideIcons.logOut,
+                                    color: Colors.red,
+                                  ),
+                                ),
                             ],
                           ),
                         ),

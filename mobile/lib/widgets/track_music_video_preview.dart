@@ -20,6 +20,8 @@ class _TrackMusicVideoPreviewState extends State<TrackMusicVideoPreview> {
       flags: YoutubePlayerFlags(
         mute: true,
         hideControls: true,
+        controlsVisibleAtStart: false,
+        showLiveFullscreenButton: false,
         autoPlay: true,
         enableCaption: false,
         startAt: 5,
@@ -51,10 +53,8 @@ class _TrackMusicVideoPreviewState extends State<TrackMusicVideoPreview> {
                   width: MediaQuery.of(context).size.width,
                   child: YoutubePlayer(
                     controller: _youtubePlayerController,
-                    onEnded:
-                        (_) => _youtubePlayerController.seekTo(
-                          Duration(seconds: 0),
-                        ),
+                    onEnded: (_) =>
+                        _youtubePlayerController.seekTo(Duration(seconds: 0)),
                     showVideoProgressIndicator: false,
                   ),
                 ),

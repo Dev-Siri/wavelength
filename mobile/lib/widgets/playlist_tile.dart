@@ -60,12 +60,8 @@ class _PlaylistTileState extends State<PlaylistTile> {
 
   @override
   Widget build(BuildContext context) {
-    final Widget innerUi = Container(
+    final Widget innerUi = Padding(
       padding: EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade900,
-        borderRadius: BorderRadius.circular(15),
-      ),
       child: Row(
         children: [
           if (widget.playlist.coverImage != null)
@@ -134,12 +130,17 @@ class _PlaylistTileState extends State<PlaylistTile> {
     if (Platform.isIOS) {
       return CupertinoButton(
         padding: EdgeInsets.zero,
+        borderRadius: BorderRadius.circular(15),
+        color: Colors.grey.shade900,
         onPressed: () =>
             context.push("/playlist/${widget.playlist.playlistId}"),
         child: innerUi,
       );
     } else {
       return MaterialButton(
+        padding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        color: Colors.grey.shade900,
         onPressed: () =>
             context.push("/playlist/${widget.playlist.playlistId}"),
         child: innerUi,

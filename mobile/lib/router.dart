@@ -7,6 +7,7 @@ import "package:wavelength/bloc/search/artists/artists_bloc.dart";
 import "package:wavelength/bloc/search/tracks/tracks_bloc.dart";
 import "package:wavelength/bloc/search/videos/videos_bloc.dart";
 import "package:wavelength/screens/artist.dart";
+import "package:wavelength/screens/edit_playlist.dart";
 import "package:wavelength/screens/home.dart";
 import "package:wavelength/screens/library.dart";
 import "package:wavelength/screens/explore.dart";
@@ -48,6 +49,24 @@ final router = GoRouter(
             return CustomTransitionPage(
               key: state.pageKey,
               child: PlaylistScreen(playlistId: id),
+              transitionsBuilder: pageSlideUpTransition,
+            );
+          },
+        ),
+        GoRoute(
+          path: "/playlist/:id/edit",
+          pageBuilder: (_, state) {
+            final id = state.pathParameters["id"]!;
+            final isRouteDataValid = state.extra is EditPlaylistRouteData;
+
+            return CustomTransitionPage(
+              key: state.pageKey,
+              child: isRouteDataValid
+                  ? EditPlaylistScreen(
+                      playlistId: id,
+                      routeData: state.extra as EditPlaylistRouteData,
+                    )
+                  : SizedBox.shrink(),
               transitionsBuilder: pageSlideUpTransition,
             );
           },

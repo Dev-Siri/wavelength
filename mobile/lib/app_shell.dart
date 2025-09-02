@@ -121,26 +121,25 @@ class _AppShellState extends State<AppShell> {
                 ),
               ),
             ),
-            bottomNavigationBar:
-                Platform.isIOS
-                    ? CupertinoTabBar(
-                      height: 80,
-                      activeColor: Colors.white,
-                      inactiveColor: Colors.grey.shade600,
-                      currentIndex: _activeRouteIndex,
-                      iconSize: 25,
-                      onTap: _onScreenChange,
-                      items: _getBottomNavItems(),
-                    )
-                    : BottomNavigationBar(
-                      showSelectedLabels: false,
-                      showUnselectedLabels: false,
-                      selectedItemColor: Colors.white,
-                      unselectedItemColor: Colors.grey.shade600,
-                      currentIndex: _activeRouteIndex,
-                      onTap: _onScreenChange,
-                      items: _getBottomNavItems(),
-                    ),
+            bottomNavigationBar: Platform.isIOS
+                ? CupertinoTabBar(
+                    height: 80,
+                    activeColor: Colors.white,
+                    inactiveColor: Colors.grey.shade600,
+                    currentIndex: _activeRouteIndex,
+                    iconSize: 25,
+                    onTap: _onScreenChange,
+                    items: _getBottomNavItems(),
+                  )
+                : BottomNavigationBar(
+                    showSelectedLabels: false,
+                    showUnselectedLabels: false,
+                    selectedItemColor: Colors.white,
+                    unselectedItemColor: Colors.grey.shade600,
+                    currentIndex: _activeRouteIndex,
+                    onTap: _onScreenChange,
+                    items: _getBottomNavItems(),
+                  ),
           ),
         );
       },

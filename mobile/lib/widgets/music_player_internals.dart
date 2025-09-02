@@ -34,15 +34,15 @@ class _MusicPlayerInternalsState extends State<MusicPlayerInternals> {
   }
 
   void _playerStateChangeListener() {
-    if (_musicPlayerController.value.isPlaying) {
-      return context.read<MusicPlayerPlaystateBloc>().add(
+    if (_musicPlayerController.value.playerState == PlayerState.playing) {
+      context.read<MusicPlayerPlaystateBloc>().add(
         MusicPlayerPlaystatePlayEvent(),
       );
+    } else if (_musicPlayerController.value.playerState == PlayerState.paused) {
+      context.read<MusicPlayerPlaystateBloc>().add(
+        MusicPlayerPlaystatePauseEvent(),
+      );
     }
-
-    context.read<MusicPlayerPlaystateBloc>().add(
-      MusicPlayerPlaystatePauseEvent(),
-    );
   }
 
   void _playerProgressListener() {
@@ -86,7 +86,7 @@ class _MusicPlayerInternalsState extends State<MusicPlayerInternals> {
         ),
       );
     } else if (playerRepeatModeState is MusicPlayerRepeatModeRepeatOneState) {
-      _musicPlayerController.seekTo(Duration(seconds: 0));
+      _musicPlayerController.seekTo(Duration.zero);
     }
   }
 

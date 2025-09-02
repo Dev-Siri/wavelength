@@ -68,6 +68,7 @@ class PlaylistTrackTileOptionsBottomSheet extends StatelessWidget {
       "Remove from playlist.",
       style: TextStyle(color: Colors.red),
     );
+    final leading = Icon(LucideIcons.trash, color: Colors.red);
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.12, // 12% of the screen
@@ -82,13 +83,13 @@ class PlaylistTrackTileOptionsBottomSheet extends StatelessWidget {
             child: Platform.isIOS
                 ? CupertinoListTile(
                     onTap: () => _handleTileTap(context),
-                    leading: Icon(LucideIcons.trash, color: Colors.red),
+                    leading: leading,
                     padding: EdgeInsets.all(20),
                     title: title,
                   )
                 : ListTile(
                     onTap: () => _handleTileTap(context),
-                    leading: Icon(LucideIcons.listMusic),
+                    leading: leading,
                     title: title,
                   ),
           ),

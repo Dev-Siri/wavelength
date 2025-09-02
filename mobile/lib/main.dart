@@ -82,6 +82,10 @@ class App extends StatelessWidget {
           appBarTheme: AppBarTheme(backgroundColor: Colors.black),
           fontFamily: "Geist",
           fontFamilyFallback: ["AppleColorEmoji", "NotoColorEmoji"],
+          textSelectionTheme: TextSelectionThemeData(
+            selectionColor: Colors.blue.withAlpha(102),
+            selectionHandleColor: Colors.blue,
+          ),
         ),
       ),
     );

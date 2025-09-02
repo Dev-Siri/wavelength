@@ -1,4 +1,7 @@
+import "dart:io";
+
 import "package:cached_network_image/cached_network_image.dart";
+import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
@@ -15,6 +18,8 @@ import "package:wavelength/bloc/playlist_length/playlist_length_state.dart";
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_bloc.dart";
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_event.dart";
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_state.dart";
+import "package:wavelength/screens/edit_playlist.dart";
+import "package:wavelength/widgets/brand_cover_image.dart";
 import "package:wavelength/widgets/loading_indicator.dart";
 import "package:wavelength/widgets/music_player_presence_adjuster.dart";
 import "package:wavelength/widgets/playlist_length_text.dart";
@@ -64,8 +69,32 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
 
         return Scaffold(
           appBar: AppBar(
-            leading: BackButton(onPressed: () => context.pop()),
             backgroundColor: Colors.transparent,
+            leading: BackButton(onPressed: () => context.pop()),
+            actions: [
+              if (Platform.isIOS)
+                CupertinoButton(
+                  onPressed: () => context.push(
+                    "/playlist/${widget.playlistId}/edit",
+                    extra: EditPlaylistRouteData(
+                      playlistName: playlist.name,
+                      coverImage: playlist.coverImage,
+                    ),
+                  ),
+                  child: Icon(LucideIcons.pencil, color: Colors.white),
+                )
+              else
+                IconButton(
+                  onPressed: () => context.push(
+                    "/playlist/${widget.playlistId}/edit",
+                    extra: EditPlaylistRouteData(
+                      playlistName: playlist.name,
+                      coverImage: playlist.coverImage,
+                    ),
+                  ),
+                  icon: Icon(LucideIcons.pencil, color: Colors.white),
+                ),
+            ],
           ),
           body: MusicPlayerPresenceAdjuster(
             child: ListView(
@@ -83,36 +112,10 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                         : Colors.transparent;
 
                     return Center(
-                      child: playlist.coverImage != null
-                          ? Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: shadowColor,
-                                    blurRadius: 90,
-                                    spreadRadius: 1,
-                                  ),
-                                ],
-                              ),
-                              height: 300,
-                              width: 300,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(30),
-                                child: CachedNetworkImage(
-                                  imageUrl: playlist.coverImage ?? "",
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            )
-                          : Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                color: Colors.grey.shade900,
-                              ),
-                              height: 300,
-                              width: 300,
-                            ),
+                      child: BrandCoverImage(
+                        imageUrl: playlist.coverImage,
+                        shadowColor: shadowColor,
+                      ),
                     );
                   },
                 ),

@@ -187,4 +187,29 @@ class PlaylistsRepo {
       return ApiResponse(success: false, data: null);
     }
   }
+
+  static Future<ApiResponse> editPlaylist({
+    required String playlistName,
+    required String? coverImage,
+    required String playlistId,
+  }) async {
+    try {
+      final response = await http.put(
+        Uri.parse("$backendUrl/playlists/$playlistId"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"name": playlistName, "coverImage": coverImage}),
+      );
+
+      final decodedResponse = await compute((stringResponse) {
+        final decodedJson = jsonDecode(stringResponse);
+        final decodedData = ApiResponse<String>.fromJson(decodedJson, null);
+
+        return decodedData;
+      }, response.body);
+
+      return decodedResponse;
+    } catch (_) {
+      return ApiResponse(success: false, data: null);
+    }
+  }
 }
