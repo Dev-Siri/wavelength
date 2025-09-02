@@ -1,4 +1,5 @@
-import "package:youtube_player_flutter/youtube_player_flutter.dart";
+import "package:youtube_explode_dart/youtube_explode_dart.dart";
+import "package:just_audio/just_audio.dart";
 
 class MusicPlayerSingleton {
   static final MusicPlayerSingleton _instance =
@@ -6,18 +7,19 @@ class MusicPlayerSingleton {
 
   factory MusicPlayerSingleton() => _instance;
 
-  late final YoutubePlayerController _controller;
+  late final AudioPlayer _player;
+  late final YoutubeExplode _yt;
 
   MusicPlayerSingleton._internal() {
-    _controller = YoutubePlayerController(
-      initialVideoId: "",
-      flags: const YoutubePlayerFlags(autoPlay: true, mute: false),
-    );
+    _yt = YoutubeExplode();
+    _player = AudioPlayer();
   }
 
-  YoutubePlayerController get controller => _controller;
+  AudioPlayer get player => _player;
+  YoutubeExplode get yt => _yt;
 
   void destroy() {
-    _controller.dispose();
+    _yt.close();
+    _player.dispose();
   }
 }

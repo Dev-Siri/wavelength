@@ -16,7 +16,7 @@ class MusicPlayerVolumeBloc
     MusicPlayerVolumeMuteEvent event,
     Emitter<MusicPlayerVolumeState> emit,
   ) {
-    _musicPlayer.controller.mute();
+    _musicPlayer.player.setVolume(0);
 
     emit(MusicPlayerVolumeMutedState());
   }
@@ -25,7 +25,7 @@ class MusicPlayerVolumeBloc
     MusicPlayerVolumeUnmuteEvent event,
     Emitter<MusicPlayerVolumeState> emit,
   ) {
-    _musicPlayer.controller.unMute();
+    _musicPlayer.player.setVolume(1);
 
     emit(MusicPlayerVolumeUnmutedState());
   }

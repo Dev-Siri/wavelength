@@ -23,15 +23,15 @@ class MusicPlayerPlaystateBloc
     Emitter<MusicPlayerPlaystateState> emit,
   ) => emit(MusicPlayerPlaystatePausedState());
 
-  void _toggleMusicPlayerPlaystate(
+  Future<void> _toggleMusicPlayerPlaystate(
     MusicPlayerPlaystateToggleEvent event,
     Emitter<MusicPlayerPlaystateState> emit,
-  ) {
+  ) async {
     if (state is MusicPlayerPlaystatePausedState) {
-      _musicPlayer.controller.play();
+      _musicPlayer.player.play();
       emit(MusicPlayerPlaystatePlayingState());
     } else if (state is MusicPlayerPlaystatePlayingState) {
-      _musicPlayer.controller.pause();
+      _musicPlayer.player.pause();
       emit(MusicPlayerPlaystatePausedState());
     }
   }

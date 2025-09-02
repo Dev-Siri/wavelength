@@ -5,18 +5,19 @@ import "package:wavelength/bloc/music_player/music_player_singleton.dart";
 
 class MusicPlayerDurationBloc
     extends Bloc<MusicPlayerDurationEvent, MusicPlayerDurationState> {
-  final _musicPlayer = MusicPlayerSingleton().controller;
+  final _musicPlayer = MusicPlayerSingleton();
 
   MusicPlayerDurationBloc() : super(MusicPlayerDurationUnavailableState()) {
     on<MusicPlayerDurationUpdateDurationEvent>(_updateMusicPlayerDuration);
     on<MusicPlayerDurationSeekToEvent>(_musicPlayerDurationSeekTo);
   }
 
-  void _musicPlayerDurationSeekTo(
+  Future<void> _musicPlayerDurationSeekTo(
     MusicPlayerDurationSeekToEvent event,
     Emitter<MusicPlayerDurationState> emit,
-  ) {
-    _musicPlayer.seekTo(event.newDuration);
+  ) async {
+    await _musicPlayer.player.seek(event.newDuration);
+
     emit(
       MusicPlayerDurationAvailableState(
         currentDuration: event.newDuration,

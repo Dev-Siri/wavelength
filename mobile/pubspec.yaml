@@ -18,6 +18,9 @@ dependencies:
   shimmer_animation: ^2.2.2
   flutter_secure_storage: ^9.2.4
   google_sign_in: ^6.2.2
+  youtube_explode_dart: ^2.5.2
+  just_audio_background: ^0.0.1-beta.17
+  just_audio: ^0.10.4
   flutter_svg: ^2.0.17
   vector_graphics: ^1.1.18
   country_flags: ^3.0.0

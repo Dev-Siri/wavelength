@@ -18,6 +18,7 @@ import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_play
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_bloc.dart";
 import "package:wavelength/bloc/playlist/playlist_bloc.dart";
+import "package:just_audio_background/just_audio_background.dart";
 import "package:wavelength/bloc/playlist_length/playlist_length_bloc.dart";
 import "package:wavelength/bloc/quick_picks/quick_picks_bloc.dart";
 import "package:wavelength/constants.dart";
@@ -31,6 +32,12 @@ Future<void> main() async {
 
   Hive.registerAdapter(PlaylistTrackAdapter());
   Hive.registerAdapter(PlaylistAdapter());
+
+  await JustAudioBackground.init(
+    androidNotificationChannelId: "dev.siri.wavelength.channel.audio",
+    androidNotificationChannelName: "Audio Playback",
+    androidNotificationOngoing: true,
+  );
 
   runApp(const App());
 }
