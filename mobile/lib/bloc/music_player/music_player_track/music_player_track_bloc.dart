@@ -23,9 +23,7 @@ class MusicPlayerTrackBloc
 
     // Emit the state before further player changes
     // Which are irrelevent to the UI updates controlled by this bloc.
-    emit(
-      MusicPlayerTrackPlayingNowState(playingNowTrack: event.queueableMusic),
-    );
+    emit(MusicPlayerTrackLoadingState());
 
     try {
       final video = await yt.videos.get(event.queueableMusic.videoId);
@@ -35,6 +33,10 @@ class MusicPlayerTrackBloc
           .where((s) => s.container == StreamContainer.mp4)
           .withHighestBitrate();
       final url = audioStreamInfo.url.toString();
+
+      emit(
+        MusicPlayerTrackPlayingNowState(playingNowTrack: event.queueableMusic),
+      );
 
       await player.setAudioSource(
         AudioSource.uri(
@@ -50,7 +52,6 @@ class MusicPlayerTrackBloc
 
       await player.play();
     } catch (err) {
-      print(err);
       emit(MusicPlayerTrackEmptyState());
     }
   }

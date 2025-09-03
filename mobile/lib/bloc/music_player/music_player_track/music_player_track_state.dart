@@ -6,6 +6,8 @@ sealed class MusicPlayerTrackState {}
 
 class MusicPlayerTrackEmptyState extends MusicPlayerTrackState {}
 
+class MusicPlayerTrackLoadingState extends MusicPlayerTrackState {}
+
 class MusicPlayerTrackPlayingNowState extends MusicPlayerTrackState {
   final QueueableMusic playingNowTrack;
 

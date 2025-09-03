@@ -59,12 +59,11 @@ class _MusicPlayerPlayOptionsState extends State<MusicPlayerPlayOptions> {
               final isMuted = state is MusicPlayerVolumeMutedState;
 
               return GestureDetector(
-                onTap:
-                    () => context.read<MusicPlayerVolumeBloc>().add(
-                      isMuted
-                          ? MusicPlayerVolumeUnmuteEvent()
-                          : MusicPlayerVolumeMuteEvent(),
-                    ),
+                onTap: () => context.read<MusicPlayerVolumeBloc>().add(
+                  isMuted
+                      ? MusicPlayerVolumeUnmuteEvent()
+                      : MusicPlayerVolumeMuteEvent(),
+                ),
                 child: Icon(
                   isMuted ? LucideIcons.volumeX : LucideIcons.volume2,
                 ),
@@ -76,22 +75,20 @@ class _MusicPlayerPlayOptionsState extends State<MusicPlayerPlayOptions> {
             MaterialButton(
               minWidth: 0,
               height: 0,
-              shape: CircleBorder(side: BorderSide()),
+              shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
               padding: EdgeInsets.all(14),
-              onPressed:
-                  () => context.read<MusicPlayerPlaystateBloc>().add(
-                    MusicPlayerPlaystateToggleEvent(),
-                  ),
+              onPressed: () => context.read<MusicPlayerPlaystateBloc>().add(
+                MusicPlayerPlaystateToggleEvent(),
+              ),
               child: previousButtonInnerUi,
             )
           else
             CupertinoButton(
               borderRadius: BorderRadius.circular(100),
               padding: EdgeInsets.all(14),
-              onPressed:
-                  () => context.read<MusicPlayerPlaystateBloc>().add(
-                    MusicPlayerPlaystateToggleEvent(),
-                  ),
+              onPressed: () => context.read<MusicPlayerPlaystateBloc>().add(
+                MusicPlayerPlaystateToggleEvent(),
+              ),
               child: previousButtonInnerUi,
             ),
           SizedBox(width: 15),
@@ -102,10 +99,9 @@ class _MusicPlayerPlayOptionsState extends State<MusicPlayerPlayOptions> {
               color: Colors.white,
               shape: CircleBorder(side: BorderSide()),
               padding: EdgeInsets.all(18),
-              onPressed:
-                  () => context.read<MusicPlayerPlaystateBloc>().add(
-                    MusicPlayerPlaystateToggleEvent(),
-                  ),
+              onPressed: () => context.read<MusicPlayerPlaystateBloc>().add(
+                MusicPlayerPlaystateToggleEvent(),
+              ),
               child: playButtonInnerUi,
             )
           else
@@ -113,10 +109,9 @@ class _MusicPlayerPlayOptionsState extends State<MusicPlayerPlayOptions> {
               color: Colors.white,
               borderRadius: BorderRadius.circular(100),
               padding: EdgeInsets.all(18),
-              onPressed:
-                  () => context.read<MusicPlayerPlaystateBloc>().add(
-                    MusicPlayerPlaystateToggleEvent(),
-                  ),
+              onPressed: () => context.read<MusicPlayerPlaystateBloc>().add(
+                MusicPlayerPlaystateToggleEvent(),
+              ),
               child: playButtonInnerUi,
             ),
           SizedBox(width: 15),
@@ -124,54 +119,52 @@ class _MusicPlayerPlayOptionsState extends State<MusicPlayerPlayOptions> {
             MaterialButton(
               minWidth: 0,
               height: 0,
-              shape: CircleBorder(side: BorderSide()),
+              shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
               padding: EdgeInsets.all(14),
-              onPressed:
-                  () => context.read<MusicPlayerPlaystateBloc>().add(
-                    MusicPlayerPlaystateToggleEvent(),
-                  ),
+              onPressed: () => context.read<MusicPlayerPlaystateBloc>().add(
+                MusicPlayerPlaystateToggleEvent(),
+              ),
               child: nextButtonInnerUi,
             )
           else
             CupertinoButton(
               borderRadius: BorderRadius.circular(100),
               padding: EdgeInsets.all(14),
-              onPressed:
-                  () => context.read<MusicPlayerPlaystateBloc>().add(
-                    MusicPlayerPlaystateToggleEvent(),
-                  ),
+              onPressed: () => context.read<MusicPlayerPlaystateBloc>().add(
+                MusicPlayerPlaystateToggleEvent(),
+              ),
               child: nextButtonInnerUi,
             ),
           Spacer(),
           GestureDetector(
-            onTap:
-                () => context.read<MusicPlayerRepeatModeBloc>().add(
-                  MusicPlayerRepeatModeChangeRepeatModeEvent(),
-                ),
-            child: BlocBuilder<
-              MusicPlayerRepeatModeBloc,
-              MusicPlayerRepeatModeState
-            >(
-              builder: (context, state) {
-                return AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  transitionBuilder:
-                      (child, animation) =>
-                          ScaleTransition(scale: animation, child: child),
-                  child: Opacity(
-                    key: ValueKey(state),
-                    opacity:
-                        state is MusicPlayerRepeatModeRepeatOffState ? 0.5 : 1,
-                    child: Icon(
-                      state is! MusicPlayerRepeatModeRepeatOneState
-                          ? LucideIcons.repeat
-                          : LucideIcons.repeat1,
-                      color: Colors.white,
-                    ),
-                  ),
-                );
-              },
+            onTap: () => context.read<MusicPlayerRepeatModeBloc>().add(
+              MusicPlayerRepeatModeChangeRepeatModeEvent(),
             ),
+            child:
+                BlocBuilder<
+                  MusicPlayerRepeatModeBloc,
+                  MusicPlayerRepeatModeState
+                >(
+                  builder: (context, state) {
+                    return AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      transitionBuilder: (child, animation) =>
+                          ScaleTransition(scale: animation, child: child),
+                      child: Opacity(
+                        key: ValueKey(state),
+                        opacity: state is MusicPlayerRepeatModeRepeatOffState
+                            ? 0.5
+                            : 1,
+                        child: Icon(
+                          state is! MusicPlayerRepeatModeRepeatOneState
+                              ? LucideIcons.repeat
+                              : LucideIcons.repeat1,
+                          color: Colors.white,
+                        ),
+                      ),
+                    );
+                  },
+                ),
           ),
         ],
       ),

@@ -14,8 +14,8 @@ import "package:wavelength/bloc/music_player/music_player_duration/music_player_
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_state.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
-import "package:wavelength/constants.dart";
 import "package:wavelength/utils/parse.dart";
+import "package:wavelength/utils/thumbnail.dart";
 import "package:wavelength/widgets/music_player_play_options.dart";
 import "package:wavelength/widgets/music_player_progess_bar.dart";
 import "package:wavelength/widgets/track_music_video_preview.dart";
@@ -59,13 +59,12 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
       ]);
 
       setState(
-        () =>
-            _trackThemeColor = Color.fromRGBO(
-              themeRgb.r,
-              themeRgb.g,
-              themeRgb.b,
-              1,
-            ),
+        () => _trackThemeColor = Color.fromRGBO(
+          themeRgb.r,
+          themeRgb.g,
+          themeRgb.b,
+          1,
+        ),
       );
     }
   }
@@ -140,17 +139,16 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
 
             final textColor =
                 ThemeData.estimateBrightnessForColor(
-                          _trackThemeColor ?? Colors.black,
-                        ) ==
-                        Brightness.dark
-                    ? Colors.white
-                    : Colors.black;
+                      _trackThemeColor ?? Colors.black,
+                    ) ==
+                    Brightness.dark
+                ? Colors.white
+                : Colors.black;
 
             final trackTitle = decodeHtmlSpecialChars(track.title);
-            final videoPreviewId =
-                track.videoType == VideoType.track
-                    ? _musicVideoId
-                    : track.videoId;
+            final videoPreviewId = track.videoType == VideoType.track
+                ? _musicVideoId
+                : track.videoId;
 
             return Stack(
               children: [
@@ -176,8 +174,7 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: CachedNetworkImage(
-                                  imageUrl:
-                                      "$ytImgApiUrl/vi/${track.videoId}/maxresdefault.jpg",
+                                  imageUrl: getTrackThumbnail(track.videoId),
                                   fit: BoxFit.cover,
                                   height: 65,
                                   width: 65,
@@ -228,15 +225,13 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
                             return MusicPlayerProgessBar(
                               duration: state.totalDuration,
                               position: state.currentDuration,
-                              onSeek:
-                                  (value) => context
-                                      .read<MusicPlayerDurationBloc>()
-                                      .add(
-                                        MusicPlayerDurationSeekToEvent(
-                                          newDuration: value,
-                                          totalDuration: state.totalDuration,
-                                        ),
-                                      ),
+                              onSeek: (value) =>
+                                  context.read<MusicPlayerDurationBloc>().add(
+                                    MusicPlayerDurationSeekToEvent(
+                                      newDuration: value,
+                                      totalDuration: state.totalDuration,
+                                    ),
+                                  ),
                             );
                           },
                         ),

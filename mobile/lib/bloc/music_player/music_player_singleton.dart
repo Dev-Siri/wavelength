@@ -1,3 +1,5 @@
+import "dart:io";
+
 import "package:youtube_explode_dart/youtube_explode_dart.dart";
 import "package:just_audio/just_audio.dart";
 
@@ -13,12 +15,14 @@ class MusicPlayerSingleton {
   MusicPlayerSingleton._internal() {
     final customHttpClient = YoutubeHttpClient();
 
-    customHttpClient.headers.addAll({
-      "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-          "AppleWebKit/537.36 (KHTML, like Gecko) "
-          "Chrome/120.0.0.0 Safari/537.36",
-    });
+    if (Platform.isAndroid) {
+      customHttpClient.headers.addAll({
+        "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/120.0.0.0 Safari/537.36",
+      });
+    }
 
     _yt = YoutubeExplode(customHttpClient);
     _player = AudioPlayer();
