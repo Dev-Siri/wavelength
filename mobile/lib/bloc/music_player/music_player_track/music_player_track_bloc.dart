@@ -27,26 +27,31 @@ class MusicPlayerTrackBloc
       MusicPlayerTrackPlayingNowState(playingNowTrack: event.queueableMusic),
     );
 
-    final video = await yt.videos.get(event.queueableMusic.videoId);
-    final manifest = await yt.videos.streamsClient.getManifest(video.id);
+    try {
+      final video = await yt.videos.get(event.queueableMusic.videoId);
+      final manifest = await yt.videos.streamsClient.getManifest(video.id);
 
-    final audioStreamInfo = manifest.audioOnly
-        .where((s) => s.container == StreamContainer.mp4)
-        .withHighestBitrate();
-    final url = audioStreamInfo.url.toString();
+      final audioStreamInfo = manifest.audioOnly
+          .where((s) => s.container == StreamContainer.mp4)
+          .withHighestBitrate();
+      final url = audioStreamInfo.url.toString();
 
-    await player.setAudioSource(
-      AudioSource.uri(
-        Uri.parse(url),
-        tag: MediaItem(
-          id: event.queueableMusic.videoId,
-          title: event.queueableMusic.title,
-          album: event.queueableMusic.author,
-          artUri: Uri.parse(event.queueableMusic.thumbnail),
+      await player.setAudioSource(
+        AudioSource.uri(
+          Uri.parse(url),
+          tag: MediaItem(
+            id: event.queueableMusic.videoId,
+            title: event.queueableMusic.title,
+            album: event.queueableMusic.author,
+            artUri: Uri.parse(event.queueableMusic.thumbnail),
+          ),
         ),
-      ),
-    );
+      );
 
-    await player.play();
+      await player.play();
+    } catch (err) {
+      print(err);
+      emit(MusicPlayerTrackEmptyState());
+    }
   }
 }
