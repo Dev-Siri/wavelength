@@ -33,6 +33,9 @@ migrate_working_dir/
 .pub/
 /build/
 
+# Android
+/android/.kotlin
+
 # iOS
 /ios/build/
 
