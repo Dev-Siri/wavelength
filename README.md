@@ -1,6 +1,8 @@
 # WaveLength
 
-Music app. Wraps Rapid API's YT Music API and YouTube's official v3 API.
+<img src="./images/brand.png" />
+
+Wavelength is a cross-platform music app. It wraps Rapid API's YT Music API and YouTube's official v3 API.
 
 For both web (TypeScript + SvelteKit) & mobile (Dart + Flutter)
 Backend code written alongside web svelte client with SvelteKit's API routes.
