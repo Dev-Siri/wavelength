@@ -74,7 +74,9 @@ class App extends StatelessWidget {
                   : null,
               scopes: ["email", "profile"],
             ),
-            FlutterSecureStorage(),
+            FlutterSecureStorage(
+              aOptions: const AndroidOptions(encryptedSharedPreferences: true),
+            ),
           ),
         ),
       ],
