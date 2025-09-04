@@ -37,6 +37,7 @@ Future<void> main() async {
     androidNotificationChannelId: "dev.siri.wavelength.channel.audio",
     androidNotificationChannelName: "Audio Playback",
     androidNotificationOngoing: true,
+    androidNotificationIcon: "mipmap/launcher_icon",
   );
 
   runApp(const App());
