@@ -4,6 +4,8 @@ import "package:wavelength/api/models/lyric.dart";
 @immutable
 abstract class LyricsState {}
 
+class LyricsInitialState extends LyricsState {}
+
 class LyricsFetchLoadingState extends LyricsState {}
 
 class LyricsFetchErrorState extends LyricsState {}

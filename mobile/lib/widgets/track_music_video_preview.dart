@@ -31,12 +31,6 @@ class _TrackMusicVideoPreviewState extends State<TrackMusicVideoPreview> {
   }
 
   @override
-  void dispose() {
-    _youtubePlayerController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Positioned.fill(
       bottom: (MediaQuery.of(context).size.height / 10) + 30,

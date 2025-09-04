@@ -6,6 +6,7 @@ import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:google_sign_in/google_sign_in.dart";
 import "package:hive_flutter/hive_flutter.dart";
+import "package:wavelength/api/models/adapters/lyric_adapter.dart";
 import "package:wavelength/api/models/adapters/playlist_adapter.dart";
 // import "package:wavelength/api/models/adapters/playlist_track_adapter.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
@@ -31,6 +32,7 @@ Future<void> main() async {
   await Hive.initFlutter();
 
   // Hive.registerAdapter(PlaylistTrackAdapter());
+  Hive.registerAdapter(LyricAdapter());
   Hive.registerAdapter(PlaylistAdapter());
 
   await JustAudioBackground.init(
