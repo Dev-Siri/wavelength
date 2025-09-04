@@ -15,6 +15,7 @@ import "package:wavelength/bloc/music_player/music_player_track/music_player_tra
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
 import "package:wavelength/utils/parse.dart";
+import "package:wavelength/utils/thumbnail.dart";
 import "package:wavelength/widgets/explicit_indicator.dart";
 import "package:wavelength/widgets/playlist_track_tile_options_bottom_sheet.dart";
 
@@ -27,7 +28,7 @@ class PlaylistTrackTile extends StatelessWidget {
     final queueableMusic = QueueableMusic(
       videoId: playlistTrack.videoId,
       title: playlistTrack.title,
-      thumbnail: playlistTrack.thumbnail,
+      thumbnail: getTrackThumbnail(playlistTrack.videoId),
       author: playlistTrack.author,
       videoType: playlistTrack.videoType,
     );
@@ -67,6 +68,7 @@ class PlaylistTrackTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          SizedBox(width: 5),
           BlocBuilder<MusicPlayerTrackBloc, MusicPlayerTrackState>(
             builder: (context, state) {
               final isThisTrackPlaying =
@@ -123,9 +125,16 @@ class PlaylistTrackTile extends StatelessWidget {
                       padding: const EdgeInsets.only(right: 5),
                       child: ExplicitIndicator(),
                     ),
-                  Text(
-                    playlistTrack.author,
-                    style: TextStyle(color: Colors.grey, fontSize: 14),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width / 2,
+                    child: Text(
+                      playlistTrack.author,
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 14,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ),
                 ],
               ),

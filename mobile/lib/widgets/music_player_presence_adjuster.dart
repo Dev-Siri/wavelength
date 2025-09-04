@@ -14,7 +14,7 @@ class MusicPlayerPresenceAdjuster extends StatelessWidget {
       builder: (context, state) {
         return Padding(
           padding: EdgeInsets.only(
-            bottom: state is MusicPlayerTrackPlayingNowState ? 85 : 0,
+            bottom: state is! MusicPlayerTrackEmptyState ? 85 : 0,
           ),
           child: child,
         );

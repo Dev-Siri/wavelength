@@ -16,6 +16,7 @@ import "package:wavelength/bloc/music_player/music_player_track/music_player_tra
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
 import "package:wavelength/utils/parse.dart";
 import "package:wavelength/utils/thumbnail.dart";
+import "package:wavelength/widgets/loading_indicator.dart";
 import "package:wavelength/widgets/music_player_play_options.dart";
 import "package:wavelength/widgets/music_player_progess_bar.dart";
 import "package:wavelength/widgets/track_music_video_preview.dart";
@@ -132,6 +133,10 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
           listener: _blocListener,
           builder: (context, state) {
             if (state is! MusicPlayerTrackPlayingNowState) {
+              if (state is MusicPlayerTrackLoadingState) {
+                return Center(child: LoadingIndicator());
+              }
+
               return SizedBox.shrink();
             }
 

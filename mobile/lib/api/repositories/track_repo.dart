@@ -3,6 +3,7 @@ import "dart:convert";
 import "package:http/http.dart" as http;
 import "package:flutter/foundation.dart";
 import "package:wavelength/api/models/api_response.dart";
+import "package:wavelength/api/models/lyric.dart";
 import "package:wavelength/api/models/music_video_preview.dart";
 import "package:wavelength/api/models/playlist_theme_color.dart";
 import "package:wavelength/api/models/playlist_track.dart";
@@ -83,6 +84,27 @@ class TrackRepo {
       final decodedResponse = await compute((stringResponse) {
         final decodedJson = jsonDecode(stringResponse);
         final decodedData = ApiResponse<String>.fromJson(decodedJson, null);
+
+        return decodedData;
+      }, response.body);
+
+      return decodedResponse;
+    } catch (_) {
+      return ApiResponse(success: false, data: null);
+    }
+  }
+
+  static Future<ApiResponse> fetchTrackLyrics({required String trackId}) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$backendUrl/music/$trackId/lyrics"),
+      );
+      final decodedResponse = await compute((lyricsResponse) {
+        final decodedJson = jsonDecode(lyricsResponse);
+        final decodedData = ApiResponse.fromJson(
+          decodedJson,
+          (lyrics) => lyrics.map((lyric) => Lyric.fromJson(lyric)).toList(),
+        );
 
         return decodedData;
       }, response.body);

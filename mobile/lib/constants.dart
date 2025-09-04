@@ -5,3 +5,4 @@ const envFile = ".env";
 
 const hivePlaylistsTracksKey = "playlists_tracks";
 const hivePlaylistsKey = "playlists";
+const hiveStreamsKey = "yt_streams";
