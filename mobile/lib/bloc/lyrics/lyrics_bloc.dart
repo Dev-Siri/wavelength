@@ -32,9 +32,7 @@ class LyricsBloc extends Bloc<LyricsEvent, LyricsState> {
     if (response.success) {
       await box.put(event.trackId, response.data);
 
-      return emit(
-        LyricsFetchSuccessState(lyrics: response.data as List<Lyric>),
-      );
+      return emit(LyricsFetchSuccessState(lyrics: response.data.cast<Lyric>()));
     }
 
     emit(LyricsFetchErrorState());
