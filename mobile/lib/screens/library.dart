@@ -17,6 +17,7 @@ class LibraryScreen extends StatelessWidget {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         return RefreshIndicator.adaptive(
+          color: Colors.white,
           onRefresh: () async => state is AuthStateAuthorized
               ? context.read<LibraryBloc>().add(
                   LibraryPlaylistsFetchEvent(email: state.user.email),
