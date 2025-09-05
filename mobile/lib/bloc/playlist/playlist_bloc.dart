@@ -20,7 +20,7 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
 
     final connectivityResult = await Connectivity().checkConnectivity();
 
-    final box = await Hive.openBox<List<PlaylistTrack>>(hivePlaylistsTracksKey);
+    final box = await Hive.openBox(hivePlaylistsTracksKey);
 
     final cachedPlaylistTracks = box
         .get(event.playlistId)

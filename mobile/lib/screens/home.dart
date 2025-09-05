@@ -44,7 +44,8 @@ class HomeScreen extends StatelessWidget {
               children: [
                 BlocBuilder<QuickPicksBloc, QuickPicksState>(
                   builder: (context, state) {
-                    if (state is! QuickPicksSuccessState) {
+                    if (state is QuickPicksLoadingState ||
+                        state is QuickPicksErrorState) {
                       return Stack(
                         children: [
                           Wrap(
@@ -77,7 +78,9 @@ class HomeScreen extends StatelessWidget {
                       );
                     }
 
-                    if (state.songs.isEmpty) {
+                    if (state is QuickPicksDefaultState ||
+                        state is! QuickPicksSuccessState ||
+                        state.songs.isEmpty) {
                       return SizedBox(
                         height: MediaQuery.of(context).size.height / 2,
                         child: Column(
