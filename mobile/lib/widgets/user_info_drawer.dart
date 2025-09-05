@@ -35,18 +35,24 @@ class UserInfoDrawer extends StatelessWidget {
 
                     return Transform.translate(
                       offset: Offset(-15, 0),
-                      child: Row(
-                        children: [
-                          Text("Hello, ", style: TextStyle(fontSize: 20)),
-                          Text(
-                            state.user.displayName ?? "User",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width / 2.3,
+                        child: Text.rich(
+                          TextSpan(
+                            text: "Hello, ",
+                            style: TextStyle(fontSize: 18),
+                            children: [
+                              TextSpan(
+                                text: state.user.displayName ?? "User",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              TextSpan(text: "!"),
+                            ],
                           ),
-                          Text("!", style: TextStyle(fontSize: 20)),
-                        ],
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                       ),
                     );
                   },
