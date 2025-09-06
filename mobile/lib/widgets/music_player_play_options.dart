@@ -7,21 +7,82 @@ import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_event.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_state.dart";
+import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_event.dart";
 import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_state.dart";
+import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
+import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
+import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
 import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_event.dart";
 import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_state.dart";
 
-class MusicPlayerPlayOptions extends StatefulWidget {
+class MusicPlayerPlayOptions extends StatelessWidget {
   const MusicPlayerPlayOptions({super.key});
 
-  @override
-  State<MusicPlayerPlayOptions> createState() => _MusicPlayerPlayOptionsState();
-}
+  void _playPreviousTrack(BuildContext context) {
+    final musicPlayerTrackBloc = context.read<MusicPlayerTrackBloc>();
+    final musicPlayerMusicQueueBloc = context.read<MusicPlayerQueueBloc>();
 
-class _MusicPlayerPlayOptionsState extends State<MusicPlayerPlayOptions> {
+    final musicPlayerTrackState = musicPlayerTrackBloc.state;
+    final musicPlayerMusicQueueState = musicPlayerMusicQueueBloc.state;
+
+    if (musicPlayerTrackState is! MusicPlayerTrackPlayingNowState) return;
+
+    final currentTrackIndexInQueue = musicPlayerMusicQueueBloc
+        .state
+        .tracksInQueue
+        .indexOf(musicPlayerTrackState.playingNowTrack);
+
+    if (currentTrackIndexInQueue == -1 ||
+        musicPlayerMusicQueueState.tracksInQueue.isEmpty) {
+      return;
+    }
+
+    final prevTrackPos = currentTrackIndexInQueue - 1 < 0
+        ? musicPlayerMusicQueueState.tracksInQueue.length - 1
+        : currentTrackIndexInQueue - 1;
+
+    musicPlayerTrackBloc.add(
+      MusicPlayerTrackLoadEvent(
+        queueableMusic: musicPlayerMusicQueueState.tracksInQueue[prevTrackPos],
+      ),
+    );
+  }
+
+  void _playNextTrack(BuildContext context) {
+    final musicPlayerTrackBloc = context.read<MusicPlayerTrackBloc>();
+    final musicPlayerMusicQueueBloc = context.read<MusicPlayerQueueBloc>();
+
+    final musicPlayerTrackState = musicPlayerTrackBloc.state;
+    final musicPlayerMusicQueueState = musicPlayerMusicQueueBloc.state;
+
+    if (musicPlayerTrackState is! MusicPlayerTrackPlayingNowState) return;
+
+    final currentTrackIndexInQueue = musicPlayerMusicQueueBloc
+        .state
+        .tracksInQueue
+        .indexOf(musicPlayerTrackState.playingNowTrack);
+
+    if (currentTrackIndexInQueue == -1 ||
+        musicPlayerMusicQueueState.tracksInQueue.isEmpty) {
+      return;
+    }
+
+    final nextTrackPos =
+        currentTrackIndexInQueue + 1 >=
+            musicPlayerMusicQueueState.tracksInQueue.length
+        ? 0
+        : currentTrackIndexInQueue + 1;
+
+    musicPlayerTrackBloc.add(
+      MusicPlayerTrackLoadEvent(
+        queueableMusic: musicPlayerMusicQueueState.tracksInQueue[nextTrackPos],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final playButtonInnerUi =
@@ -77,18 +138,14 @@ class _MusicPlayerPlayOptionsState extends State<MusicPlayerPlayOptions> {
               height: 0,
               shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
               padding: EdgeInsets.all(14),
-              onPressed: () => context.read<MusicPlayerPlaystateBloc>().add(
-                MusicPlayerPlaystateToggleEvent(),
-              ),
+              onPressed: () => _playPreviousTrack(context),
               child: previousButtonInnerUi,
             )
           else
             CupertinoButton(
               borderRadius: BorderRadius.circular(100),
               padding: EdgeInsets.all(14),
-              onPressed: () => context.read<MusicPlayerPlaystateBloc>().add(
-                MusicPlayerPlaystateToggleEvent(),
-              ),
+              onPressed: () => _playPreviousTrack(context),
               child: previousButtonInnerUi,
             ),
           SizedBox(width: 15),
@@ -121,18 +178,14 @@ class _MusicPlayerPlayOptionsState extends State<MusicPlayerPlayOptions> {
               height: 0,
               shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
               padding: EdgeInsets.all(14),
-              onPressed: () => context.read<MusicPlayerPlaystateBloc>().add(
-                MusicPlayerPlaystateToggleEvent(),
-              ),
+              onPressed: () => _playNextTrack(context),
               child: nextButtonInnerUi,
             )
           else
             CupertinoButton(
               borderRadius: BorderRadius.circular(100),
               padding: EdgeInsets.all(14),
-              onPressed: () => context.read<MusicPlayerPlaystateBloc>().add(
-                MusicPlayerPlaystateToggleEvent(),
-              ),
+              onPressed: () => _playNextTrack(context),
               child: nextButtonInnerUi,
             ),
           Spacer(),
