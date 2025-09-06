@@ -7,7 +7,13 @@ class MusicPlayerQueueBloc
   MusicPlayerQueueBloc() : super(MusicPlayerQueueState(tracksInQueue: [])) {
     on<MusicPlayerQueueAddToQueueEvent>(_addToQueue);
     on<MusicPlayerQueuePlayNextEvent>(_playNext);
+    on<MusicPlayerReplaceQueueEvent>(_replaceQueue);
   }
+
+  void _replaceQueue(
+    MusicPlayerReplaceQueueEvent event,
+    Emitter<MusicPlayerQueueState> emit,
+  ) => emit(MusicPlayerQueueState(tracksInQueue: event.newQueue));
 
   void _addToQueue(
     MusicPlayerQueueAddToQueueEvent event,

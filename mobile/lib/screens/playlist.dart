@@ -7,8 +7,12 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:shimmer_animation/shimmer_animation.dart";
+import "package:wavelength/api/models/playlist_track.dart";
+import "package:wavelength/api/models/representations/queueable_music.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/library/library_state.dart";
+import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_bloc.dart";
+import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_event.dart";
 import "package:wavelength/bloc/playlist/playlist_bloc.dart";
 import "package:wavelength/bloc/playlist/playlist_event.dart";
 import "package:wavelength/bloc/playlist/playlist_state.dart";
@@ -24,6 +28,7 @@ import "package:wavelength/widgets/loading_indicator.dart";
 import "package:wavelength/widgets/music_player_presence_adjuster.dart";
 import "package:wavelength/widgets/playlist_length_text.dart";
 import "package:wavelength/widgets/playlist_track_tile.dart";
+import "package:wavelength/widgets/playlist_visibility_toggle.dart";
 
 class PlaylistScreen extends StatefulWidget {
   final String playlistId;
@@ -46,6 +51,24 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
       PlaylistLengthFetchEvent(playlistId: widget.playlistId),
     );
     super.initState();
+  }
+
+  void _playPlaylistTracks(List<PlaylistTrack> playlistTrack) {
+    final queueableMusic = playlistTrack
+        .map(
+          (track) => QueueableMusic(
+            videoId: track.videoId,
+            title: track.title,
+            thumbnail: track.thumbnail,
+            author: track.author,
+            videoType: track.videoType,
+          ),
+        )
+        .toList();
+
+    context.read<MusicPlayerQueueBloc>().add(
+      MusicPlayerReplaceQueueEvent(newQueue: queueableMusic),
+    );
   }
 
   @override
@@ -120,7 +143,12 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                   },
                 ),
                 Padding(
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.only(
+                    left: 20,
+                    right: 20,
+                    top: 20,
+                    bottom: 10,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -224,7 +252,33 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                     );
 
                     return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                              ),
+                              child: IconButton.filled(
+                                style: IconButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                ),
+                                onPressed: () =>
+                                    _playPlaylistTracks(orderedSongs),
+                                icon: Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: Icon(LucideIcons.play),
+                                ),
+                              ),
+                            ),
+                            PlaylistVisibilityToggle(
+                              playlistId: playlist.playlistId,
+                              isInitiallyPrivate: !playlist.isPublic,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20),
                         for (final song in orderedSongs)
                           Padding(
                             padding: const EdgeInsets.only(bottom: 10),

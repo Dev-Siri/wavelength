@@ -212,4 +212,25 @@ class PlaylistsRepo {
       return ApiResponse(success: false, data: null);
     }
   }
+
+  static Future<ApiResponse> togglePlaylistVisibility({
+    required String playlistId,
+  }) async {
+    try {
+      final response = await http.patch(
+        Uri.parse("$backendUrl/playlists/$playlistId/visibility"),
+      );
+
+      final decodedResponse = await compute((stringResponse) {
+        final decodedJson = jsonDecode(stringResponse);
+        final decodedData = ApiResponse.fromJson(decodedJson, null);
+
+        return decodedData;
+      }, response.body);
+
+      return decodedResponse;
+    } catch (er) {
+      return ApiResponse(success: false, data: null);
+    }
+  }
 }
