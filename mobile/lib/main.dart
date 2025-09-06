@@ -40,6 +40,7 @@ Future<void> main() async {
     androidNotificationChannelName: "Audio Playback",
     androidNotificationOngoing: true,
     androidNotificationIcon: "mipmap/launcher_icon",
+    preloadArtwork: true,
   );
 
   runApp(const App());
