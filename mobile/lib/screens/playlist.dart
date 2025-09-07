@@ -9,6 +9,8 @@ import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:shimmer_animation/shimmer_animation.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/representations/queueable_music.dart";
+import "package:wavelength/bloc/auth/auth_bloc.dart";
+import "package:wavelength/bloc/auth/auth_state.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/library/library_state.dart";
 import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_bloc.dart";
@@ -272,9 +274,19 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                 ),
                               ),
                             ),
-                            PlaylistVisibilityToggle(
-                              playlistId: playlist.playlistId,
-                              isInitiallyPrivate: !playlist.isPublic,
+                            BlocBuilder<AuthBloc, AuthState>(
+                              builder: (context, state) {
+                                if (state is! AuthStateAuthorized ||
+                                    state.user.email !=
+                                        playlist.authorGoogleEmail) {
+                                  return SizedBox.shrink();
+                                }
+
+                                return PlaylistVisibilityToggle(
+                                  playlistId: playlist.playlistId,
+                                  isInitiallyPrivate: !playlist.isPublic,
+                                );
+                              },
                             ),
                           ],
                         ),
