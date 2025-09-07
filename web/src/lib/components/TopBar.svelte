@@ -6,8 +6,10 @@
 
   import GoogleLoginButton from "./GoogleLoginButton.svelte";
   import SearchBar from "./SearchBar.svelte";
+  import Button from "./ui/button/button.svelte";
   import * as Tooltip from "./ui/tooltip";
   import UserProfileIcon from "./UserProfileIcon.svelte";
+  import AndroidLogo from "./vectors/AndroidLogo.svelte";
 
   const { region }: { region: string } = $props();
 </script>
@@ -31,6 +33,10 @@
           <p>{countryName.charAt(0).toUpperCase()}{countryName.slice(1)}</p>
         </Tooltip.Content>
       </Tooltip.Root>
+      <Button href="/downloads" class="flex gap-2 items-center" variant="outline">
+        <AndroidLogo />
+        <p class="text-md">Install App</p>
+      </Button>
       <UserProfileIcon />
     </div>
   {/if}

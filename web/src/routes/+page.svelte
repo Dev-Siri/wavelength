@@ -4,7 +4,7 @@
   import LandingHeader from "$lib/components/LandingHeader.svelte";
   import SineWaveAnimation from "$lib/components/SineWaveAnimation.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
-  import AppleLogo from "$lib/components/vectors/AppleLogo.svelte";
+  import AndroidLogo from "$lib/components/vectors/AndroidLogo.svelte";
   import SpotifyGlyph from "$lib/components/vectors/SpotifyGlyph.svelte";
   import YouTubeLogo from "$lib/components/vectors/YouTubeLogo.svelte";
 
@@ -55,9 +55,9 @@
     <div class="px-[5%] md:px-[10%] flex flex-col items-center z-50">
       <div class="flex flex-col gap-2 mt-2">
         <div class="flex gap-2">
-          <Button disabled class="flex gap-2 items-center" size="lg" color="green">
-            <AppleLogo />
-            <p class="text-md">Download for Mobile (Soon)</p>
+          <Button href="/downloads" class="flex gap-2 items-center" size="lg">
+            <AndroidLogo />
+            <p class="text-md">Download for Mobile</p>
           </Button>
         </div>
         <Button href="/app" class="flex gap-2 items-center" variant="secondary" size="lg">

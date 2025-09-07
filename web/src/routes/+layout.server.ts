@@ -8,7 +8,9 @@ export async function load({ locals, cookies, getClientAddress, url }) {
   // Allow the user to access /app even when not logged in.
   // Just by default, redirect them to / from the start.
   // If the user is logged in, then don't even let them get back to /.
-  if (session && !url.pathname.startsWith("/app")) redirect(307, "/app");
+  // /downloads is accessible to everyone.
+  if (session && !url.pathname.startsWith("/app") && url.pathname !== "/downloads")
+    redirect(307, "/app");
 
   const region = configureRegion(cookies, getClientAddress());
 
