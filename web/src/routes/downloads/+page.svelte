@@ -29,10 +29,11 @@
       <p class="text-md">Download APK for Android</p>
     </Button>
     <p class="py-4">
-      Click on the download button below to get the APK file for Wavelength on Android. After the
-      download completes, open the APK file to install Wavelength on your device. Please note that
-      you may need to enable installation from unknown sources in your device settings because you
-      are downloading an application from outside the Google Play Store.
+      Click on the download button below to get the APK file for Wavelength on Android. It may show
+      a message about the APK file being harmful. There's no danger in reality so you can ignore the
+      message. After the download completes, open the APK file to install Wavelength on your device.
+      Please note that you may need to enable installation from unknown sources in your device
+      settings because you are downloading an application from outside the Google Play Store.
     </p>
     <p>
       If Android asks you whether you want to send the app to Google Play Protect's security
