@@ -15,6 +15,8 @@ import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/library/library_state.dart";
 import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_event.dart";
+import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
+import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:wavelength/bloc/playlist/playlist_bloc.dart";
 import "package:wavelength/bloc/playlist/playlist_event.dart";
 import "package:wavelength/bloc/playlist/playlist_state.dart";
@@ -56,7 +58,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
   }
 
   void _playPlaylistTracks(List<PlaylistTrack> playlistTrack) {
-    final queueableMusic = playlistTrack
+    final queueableSongs = playlistTrack
         .map(
           (track) => QueueableMusic(
             videoId: track.videoId,
@@ -69,7 +71,10 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
         .toList();
 
     context.read<MusicPlayerQueueBloc>().add(
-      MusicPlayerReplaceQueueEvent(newQueue: queueableMusic),
+      MusicPlayerReplaceQueueEvent(newQueue: queueableSongs),
+    );
+    context.read<MusicPlayerTrackBloc>().add(
+      MusicPlayerTrackLoadEvent(queueableMusic: queueableSongs.first),
     );
   }
 
