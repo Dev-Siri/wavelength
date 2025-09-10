@@ -92,7 +92,6 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
 
         _playlistThemeColorBloc.add(
           PlaylistThemeColorFetchEvent(
-            playlistId: widget.playlistId,
             playlistImageUrl: playlist.coverImage ?? "",
           ),
         );

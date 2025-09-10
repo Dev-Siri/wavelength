@@ -1,5 +1,5 @@
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:wavelength/api/repositories/playlists_repo.dart";
+import "package:wavelength/api/repositories/image_repo.dart";
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_event.dart";
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_state.dart";
 
@@ -14,9 +14,8 @@ class PlaylistThemeColorBloc
     Emitter<PlaylistThemeColorState> emit,
   ) async {
     emit(PlaylistThemeColorLoadingState());
-    final response = await PlaylistsRepo.fetchPlaylistThemeColor(
-      playlistId: event.playlistId,
-      playlistImageUrl: event.playlistImageUrl,
+    final response = await ImageRepo.fetchImageThemeColor(
+      url: event.playlistImageUrl,
     );
 
     if (response.success) {

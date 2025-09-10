@@ -4,11 +4,7 @@ import "package:flutter/foundation.dart";
 sealed class PlaylistThemeColorEvent {}
 
 class PlaylistThemeColorFetchEvent extends PlaylistThemeColorEvent {
-  final String playlistId;
   final String playlistImageUrl;
 
-  PlaylistThemeColorFetchEvent({
-    required this.playlistId,
-    required this.playlistImageUrl,
-  });
+  PlaylistThemeColorFetchEvent({required this.playlistImageUrl});
 }

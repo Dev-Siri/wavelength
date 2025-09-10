@@ -41,26 +41,31 @@ class FloatingMusicPlayerPreviewBody extends StatelessWidget {
               width: 55,
             ),
           ),
-          SizedBox(width: 15),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                decodeHtmlSpecialChars(
-                  playingNowTrack.title.length > 22
-                      ? "${playingNowTrack.title.substring(0, 19)}..."
-                      : playingNowTrack.title,
+          const SizedBox(width: 15),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  decodeHtmlSpecialChars(playingNowTrack.title),
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                playingNowTrack.author,
-                style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
-              ),
-            ],
+                Text(
+                  playingNowTrack.author,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey.shade500,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
           ),
-          Spacer(),
           BlocBuilder<MusicPlayerDurationBloc, MusicPlayerDurationState>(
             builder: (context, state) {
               if (state is! MusicPlayerDurationAvailableState) {

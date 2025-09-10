@@ -5,9 +5,10 @@ import "package:flutter/material.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "package:wavelength/api/models/playlist_theme_color.dart";
-import "package:wavelength/api/repositories/track_repo.dart";
+import "package:wavelength/api/repositories/image_repo.dart";
 import "package:wavelength/screens/playing_now_presenters/lyrics_presenter.dart";
 import "package:wavelength/screens/playing_now_presenters/playing_now_preview_presenter.dart";
+import "package:wavelength/utils/thumbnail.dart";
 
 enum PlayingNowPresenter { preview, lyrics }
 
@@ -36,8 +37,8 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
       return;
     }
 
-    final colorResponse = await TrackRepo.fetchTrackThemeColor(
-      trackId: videoId,
+    final colorResponse = await ImageRepo.fetchImageThemeColor(
+      url: getTrackThumbnail(videoId),
     );
 
     if (colorResponse.success) {

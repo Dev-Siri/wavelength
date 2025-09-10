@@ -4,7 +4,6 @@ import "package:http/http.dart" as http;
 import "package:flutter/foundation.dart";
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/playlist.dart";
-import "package:wavelength/api/models/playlist_theme_color.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/playlist_tracks_length.dart";
 import "package:wavelength/constants.dart";
@@ -105,32 +104,6 @@ class PlaylistsRepo {
         final decodedData = ApiResponse.fromJson(
           decodedJson,
           (tracksLength) => PlaylistTracksLength.fromJson(tracksLength),
-        );
-
-        return decodedData;
-      }, response.body);
-
-      return decodedResponse;
-    } catch (_) {
-      return ApiResponse(success: false, data: null);
-    }
-  }
-
-  static Future<ApiResponse> fetchPlaylistThemeColor({
-    required String playlistId,
-    required String playlistImageUrl,
-  }) async {
-    try {
-      final response = await http.get(
-        Uri.parse(
-          "$backendUrl/playlists/$playlistId/theme-color?playlistImageUrl=$playlistImageUrl",
-        ),
-      );
-      final decodedResponse = await compute((stringResponse) {
-        final decodedJson = jsonDecode(stringResponse);
-        final decodedData = ApiResponse.fromJson(
-          decodedJson,
-          (playlistThemeColor) => ThemeColor.fromJson(playlistThemeColor),
         );
 
         return decodedData;

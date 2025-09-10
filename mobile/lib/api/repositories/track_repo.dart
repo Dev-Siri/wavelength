@@ -5,35 +5,11 @@ import "package:flutter/foundation.dart";
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/lyric.dart";
 import "package:wavelength/api/models/music_video_preview.dart";
-import "package:wavelength/api/models/playlist_theme_color.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/track.dart";
 import "package:wavelength/constants.dart";
 
 class TrackRepo {
-  static Future<ApiResponse> fetchTrackThemeColor({
-    required String trackId,
-  }) async {
-    try {
-      final response = await http.get(
-        Uri.parse("$backendUrl/music/$trackId/theme-color"),
-      );
-      final decodedResponse = await compute((stringResponse) {
-        final decodedJson = jsonDecode(stringResponse);
-        final decodedData = ApiResponse.fromJson(
-          decodedJson,
-          (themeColor) => ThemeColor.fromJson(themeColor),
-        );
-
-        return decodedData;
-      }, response.body);
-
-      return decodedResponse;
-    } catch (_) {
-      return ApiResponse(success: false, data: null);
-    }
-  }
-
   static Future<ApiResponse> fetchTrackMusicVideo({
     required String trackId,
     required String title,
