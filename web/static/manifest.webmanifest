@@ -1,6 +1,6 @@
 {
-  "name": "Wavelength",
-  "short_name": "WVLen",
+  "name": "WavLen",
+  "short_name": "WavLen",
   "description": "Call this a glorified YouTube Music wrapper.",
   "start_url": "/app",
   "display": "standalone",
