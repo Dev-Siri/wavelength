@@ -25,7 +25,7 @@ export async function PATCH({ params: { playlistId } }) {
 
     return json({
       success: true,
-      messsage: `Visibility of playlist with ID ${playlistId} changed to ${playlist.isPublic ? "private" : "public"}`,
+      data: `Visibility of playlist with ID ${playlistId} changed to ${playlist.isPublic ? "private" : "public"}`,
     });
   } catch (err) {
     console.log(err);

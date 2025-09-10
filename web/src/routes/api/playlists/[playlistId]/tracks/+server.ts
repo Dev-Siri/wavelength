@@ -122,7 +122,7 @@ export async function PUT({ params: { playlistId }, request }) {
 
     return json({
       success: true,
-      message: "Playlist positions updated successfully.",
+      data: "Playlist positions updated successfully.",
     });
   } catch (err) {
     console.error("Error updating playlist positions:", err);
