@@ -8,7 +8,9 @@ import "package:wavelength/api/models/uploadthing_file.dart";
 import "package:wavelength/constants.dart";
 
 class UploadThingRepo {
-  static Future<ApiResponse> uploadImage(XFile imageFile) async {
+  static Future<ApiResponse<UploadThingFile>> uploadImage(
+    XFile imageFile,
+  ) async {
     try {
       final fileBytes = await imageFile.readAsBytes();
       final response = await http.post(
@@ -19,19 +21,23 @@ class UploadThingRepo {
         },
       );
 
-      final decodedResponse = await compute((fileResponse) {
-        final decodedJson = jsonDecode(fileResponse);
-        final decodedData = ApiResponse.fromJson(
-          decodedJson,
-          (data) => UploadThingFile.fromJson(data),
-        );
+      final decodedResponse =
+          await compute<String, ApiResponse<UploadThingFile>>((fileResponse) {
+            final decodedJson = jsonDecode(fileResponse);
+            final isSuccessful = decodedJson["success"] as bool;
 
-        return decodedData;
-      }, response.body);
+            if (isSuccessful) {
+              return ApiResponseSuccess(
+                data: UploadThingFile.fromJson(decodedJson["data"]),
+              );
+            }
+
+            return ApiResponseError(message: decodedJson["message"] as String);
+          }, response.body);
 
       return decodedResponse;
-    } catch (err) {
-      return ApiResponse(success: false, data: null);
+    } catch (e) {
+      return ApiResponseError(message: e.toString());
     }
   }
 }

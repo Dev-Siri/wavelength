@@ -1,4 +1,6 @@
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:wavelength/api/models/api_response.dart";
+import "package:wavelength/api/models/playlist_theme_color.dart";
 import "package:wavelength/api/repositories/image_repo.dart";
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_event.dart";
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_state.dart";
@@ -18,7 +20,7 @@ class PlaylistThemeColorBloc
       url: event.playlistImageUrl,
     );
 
-    if (response.success) {
+    if (response is ApiResponseSuccess<ThemeColor>) {
       return emit(
         PlaylistThemeColorSuccessState(playlistThemeColor: response.data),
       );

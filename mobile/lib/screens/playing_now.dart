@@ -4,6 +4,7 @@ import "package:go_router/go_router.dart";
 import "package:flutter/material.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:shared_preferences/shared_preferences.dart";
+import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/playlist_theme_color.dart";
 import "package:wavelength/api/repositories/image_repo.dart";
 import "package:wavelength/screens/playing_now_presenters/lyrics_presenter.dart";
@@ -41,8 +42,8 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
       url: getTrackThumbnail(videoId),
     );
 
-    if (colorResponse.success) {
-      final themeRgb = colorResponse.data as ThemeColor;
+    if (colorResponse is ApiResponseSuccess<ThemeColor>) {
+      final themeRgb = colorResponse.data;
 
       await sharedPrefs.setStringList(trackThemeColorKey, [
         themeRgb.r.toString(),

@@ -10,7 +10,7 @@ import "package:wavelength/api/models/track.dart";
 import "package:wavelength/constants.dart";
 
 class TrackRepo {
-  static Future<ApiResponse> fetchTrackMusicVideo({
+  static Future<ApiResponse<MusicVideoPreview>> fetchTrackMusicVideo({
     required String trackId,
     required String title,
     required String artist,
@@ -21,23 +21,29 @@ class TrackRepo {
           "$backendUrl/music/$trackId/music-video-preview?title=$title&artist=$artist",
         ),
       );
-      final decodedResponse = await compute((stringResponse) {
-        final decodedJson = jsonDecode(stringResponse);
-        final decodedData = ApiResponse.fromJson(
-          decodedJson,
-          (musicVideoPreview) => MusicVideoPreview.fromJson(musicVideoPreview),
-        );
+      final decodedResponse =
+          await compute<String, ApiResponse<MusicVideoPreview>>((
+            stringResponse,
+          ) {
+            final decodedJson = jsonDecode(stringResponse);
+            final isSuccessful = decodedJson["success"] as bool;
 
-        return decodedData;
-      }, response.body);
+            if (isSuccessful) {
+              return ApiResponseSuccess(
+                data: MusicVideoPreview.fromJson(decodedJson["data"]),
+              );
+            }
+
+            return ApiResponseError(message: decodedJson["message"] as String);
+          }, response.body);
 
       return decodedResponse;
-    } catch (_) {
-      return ApiResponse(success: false, data: null);
+    } catch (e) {
+      return ApiResponseError(message: e.toString());
     }
   }
 
-  static Future<ApiResponse> toggleTrackFromPlaylist({
+  static Future<ApiResponse<String>> toggleTrackFromPlaylist({
     required String playlistId,
     required VideoType videoType,
     required Track track,
@@ -57,37 +63,52 @@ class TrackRepo {
         }),
       );
 
-      final decodedResponse = await compute((stringResponse) {
+      final decodedResponse = await compute<String, ApiResponse<String>>((
+        stringResponse,
+      ) {
         final decodedJson = jsonDecode(stringResponse);
-        final decodedData = ApiResponse<String>.fromJson(decodedJson, null);
+        final isSuccessful = decodedJson["success"] as bool;
 
-        return decodedData;
+        if (isSuccessful) {
+          return ApiResponseSuccess(data: decodedJson["data"] as String);
+        }
+
+        return ApiResponseError(message: decodedJson["message"] as String);
       }, response.body);
 
       return decodedResponse;
-    } catch (_) {
-      return ApiResponse(success: false, data: null);
+    } catch (e) {
+      return ApiResponseError(message: e.toString());
     }
   }
 
-  static Future<ApiResponse> fetchTrackLyrics({required String trackId}) async {
+  static Future<ApiResponse<List<Lyric>>> fetchTrackLyrics({
+    required String trackId,
+  }) async {
     try {
       final response = await http.get(
         Uri.parse("$backendUrl/music/$trackId/lyrics"),
       );
-      final decodedResponse = await compute((lyricsResponse) {
+      final decodedResponse = await compute<String, ApiResponse<List<Lyric>>>((
+        lyricsResponse,
+      ) {
         final decodedJson = jsonDecode(lyricsResponse);
-        final decodedData = ApiResponse.fromJson(
-          decodedJson,
-          (lyrics) => lyrics.map((lyric) => Lyric.fromJson(lyric)).toList(),
-        );
+        final isSuccessful = decodedJson["success"] as bool;
 
-        return decodedData;
+        if (isSuccessful) {
+          final lyrics = decodedJson["data"] as List;
+
+          return ApiResponseSuccess(
+            data: lyrics.map((lyric) => Lyric.fromJson(lyric)).toList(),
+          );
+        }
+
+        return ApiResponseError(message: decodedJson["message"] as String);
       }, response.body);
 
       return decodedResponse;
-    } catch (_) {
-      return ApiResponse(success: false, data: null);
+    } catch (e) {
+      return ApiResponseError(message: e.toString());
     }
   }
 }

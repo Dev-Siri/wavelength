@@ -5,6 +5,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
+import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/track.dart";
 import "package:wavelength/api/repositories/track_repo.dart";
@@ -33,17 +34,18 @@ class AddToPlaylistBottomSheet extends StatelessWidget {
       videoType: videoType,
       track: track,
     );
+    final isResponseSuccessful =
+        trackToggleResponse is ApiResponseSuccess<String>;
 
     navigator.pop();
 
     messenger.showSnackBar(
       SnackBar(
-        backgroundColor: trackToggleResponse.success
-            ? Colors.green
-            : Colors.red,
+        backgroundColor: isResponseSuccessful ? Colors.green : Colors.red,
         content: Text(
-          trackToggleResponse.data ??
-              "An error occured while adding track to the playlist.",
+          isResponseSuccessful
+              ? trackToggleResponse.data
+              : "An error occured while adding track to the playlist.",
           style: TextStyle(color: Colors.white),
         ),
       ),

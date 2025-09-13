@@ -2,6 +2,7 @@ import "dart:async";
 
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:hive/hive.dart";
+import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/playlist.dart";
 import "package:wavelength/api/repositories/playlists_repo.dart";
 import "package:wavelength/bloc/library/library_event.dart";
@@ -26,7 +27,7 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
 
     final response = await PlaylistsRepo.fetchUserPlaylists(email: event.email);
 
-    if (response.success) {
+    if (response is ApiResponseSuccess<List<Playlist>>) {
       await box.put(event.email, response.data);
 
       return emit(LibraryFetchSuccessState(playlists: response.data));

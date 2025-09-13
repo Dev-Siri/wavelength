@@ -1,4 +1,6 @@
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:wavelength/api/models/api_response.dart";
+import "package:wavelength/api/models/playlist.dart";
 import "package:wavelength/api/repositories/playlists_repo.dart";
 import "package:wavelength/bloc/public_playlists/public_playlists_event.dart";
 import "package:wavelength/bloc/public_playlists/public_playlists_state.dart";
@@ -16,7 +18,7 @@ class PublicPlaylistsBloc
     emit(PublicPlaylistsLoadingState());
     final response = await PlaylistsRepo.fetchPublicPlaylists(q: event.query);
 
-    if (response.success) {
+    if (response is ApiResponseSuccess<List<Playlist>>) {
       return emit(PublicPlaylistsSuccessState(publicPlaylists: response.data));
     }
 

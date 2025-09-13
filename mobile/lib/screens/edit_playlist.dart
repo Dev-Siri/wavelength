@@ -63,11 +63,11 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
       return widget.routeData.coverImage;
     }
 
-    final uploadThingResponse =
-        await UploadThingRepo.uploadImage(_pickedCoverImage!)
-            as ApiResponse<UploadThingFile>;
+    final uploadThingResponse = await UploadThingRepo.uploadImage(
+      _pickedCoverImage!,
+    );
 
-    if (uploadThingResponse.success) {
+    if (uploadThingResponse is ApiResponseSuccess<UploadThingFile>) {
       return uploadThingResponse.data.url;
     }
 
@@ -105,7 +105,8 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
       playlistId: widget.playlistId,
     );
 
-    if (response.success && authBloc.state is AuthStateAuthorized) {
+    if (response is ApiResponseSuccess &&
+        authBloc.state is AuthStateAuthorized) {
       libraryBloc.add(
         LibraryPlaylistsFetchEvent(
           email: (authBloc.state as AuthStateAuthorized).user.email,

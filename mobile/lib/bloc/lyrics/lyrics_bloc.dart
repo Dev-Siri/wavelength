@@ -2,6 +2,7 @@ import "dart:async";
 
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:hive/hive.dart";
+import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/lyric.dart";
 import "package:wavelength/api/repositories/track_repo.dart";
 import "package:wavelength/bloc/lyrics/lyrics_event.dart";
@@ -29,7 +30,7 @@ class LyricsBloc extends Bloc<LyricsEvent, LyricsState> {
 
     final response = await TrackRepo.fetchTrackLyrics(trackId: event.trackId);
 
-    if (response.success) {
+    if (response is ApiResponseSuccess<List<Lyric>>) {
       await box.put(event.trackId, response.data);
 
       return emit(LyricsFetchSuccessState(lyrics: response.data.cast<Lyric>()));

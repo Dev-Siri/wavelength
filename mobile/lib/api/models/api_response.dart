@@ -1,16 +1,13 @@
-class ApiResponse<T> {
-  final bool success;
+sealed class ApiResponse<T> {}
+
+class ApiResponseSuccess<T> extends ApiResponse<T> {
   final T data;
 
-  const ApiResponse({required this.success, required this.data});
+  ApiResponseSuccess({required this.data});
+}
 
-  factory ApiResponse.fromJson(
-    Map<String, dynamic> json,
-    T Function(dynamic)? processData,
-  ) {
-    return ApiResponse(
-      success: json["success"] as bool,
-      data: processData != null ? processData(json["data"]) : json["data"] as T,
-    );
-  }
+class ApiResponseError<T> extends ApiResponse<T> {
+  final String message;
+
+  ApiResponseError({required this.message});
 }

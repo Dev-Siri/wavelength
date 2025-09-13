@@ -6,6 +6,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
+import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/playlist.dart";
 import "package:wavelength/api/repositories/playlists_repo.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
@@ -32,7 +33,7 @@ class _PlaylistTileState extends State<PlaylistTile> {
       playlistId: widget.playlist.playlistId,
     );
 
-    if (response.success) {
+    if (response is ApiResponseSuccess) {
       messenger.showSnackBar(
         SnackBar(
           backgroundColor: Colors.green,

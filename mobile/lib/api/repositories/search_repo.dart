@@ -9,62 +9,77 @@ import "package:wavelength/api/models/video.dart";
 import "package:wavelength/constants.dart";
 
 class SearchRepo {
-  static Future<ApiResponse> fetchTracksByQuery({required String query}) async {
+  static Future<ApiResponse<List<Track>>> fetchTracksByQuery({
+    required String query,
+  }) async {
     try {
       final response = await http.get(
         Uri.parse("$backendUrl/music/search?q=$query"),
       );
       final utf8BodyDecoded = utf8.decode(response.bodyBytes);
-      final decodedResponse = await compute((stringResponse) {
+      final decodedResponse = await compute<String, ApiResponse<List<Track>>>((
+        stringResponse,
+      ) {
         final decodedJson = jsonDecode(stringResponse);
+        final isSuccessful = decodedJson["success"] as bool;
 
-        final decodedData = ApiResponse.fromJson(decodedJson, (data) {
-          final listOfItems = data["result"] as List?;
+        if (isSuccessful) {
+          final listOfItems = decodedJson["data"]["result"] as List?;
 
-          if (listOfItems == null) return [];
+          if (listOfItems == null) return ApiResponseSuccess(data: []);
 
-          return listOfItems
-              .map((final track) => Track.fromJson(track))
-              .toList();
-        });
+          return ApiResponseSuccess(
+            data: listOfItems
+                .map((final track) => Track.fromJson(track))
+                .toList(),
+          );
+        }
 
-        return decodedData;
+        return ApiResponseError(message: decodedJson["message"] as String);
       }, utf8BodyDecoded);
 
       return decodedResponse;
-    } catch (_) {
-      return ApiResponse(success: false, data: null);
+    } catch (e) {
+      return ApiResponseError(message: e.toString());
     }
   }
 
-  static Future<ApiResponse> fetchVideosByQuery({required String query}) async {
+  static Future<ApiResponse<List<Video>>> fetchVideosByQuery({
+    required String query,
+  }) async {
     try {
       final response = await http.get(
         Uri.parse("$backendUrl/music/search/uvideos?q=$query"),
       );
       final utf8BodyDecoded = utf8.decode(response.bodyBytes);
-      final decodedResponse = await compute((stringResponse) {
+      final decodedResponse = await compute<String, ApiResponse<List<Video>>>((
+        stringResponse,
+      ) {
         final decodedJson = jsonDecode(stringResponse);
-        final decodedData = ApiResponse.fromJson(decodedJson, (data) {
-          final listOfItems = data as List?;
+        final isSuccessful = decodedJson["success"] as bool;
 
-          if (listOfItems == null) return [];
+        if (isSuccessful) {
+          final listOfItems = decodedJson["data"] as List?;
 
-          return listOfItems
-              .map((final video) => Video.fromJson(video))
-              .toList();
-        });
+          if (listOfItems == null) return ApiResponseSuccess(data: []);
 
-        return decodedData;
+          return ApiResponseSuccess(
+            data: listOfItems
+                .map((final video) => Video.fromJson(video))
+                .toList(),
+          );
+        }
+
+        return ApiResponseError(message: decodedJson["message"] as String);
       }, utf8BodyDecoded);
 
       return decodedResponse;
-    } catch (_) {
-      return ApiResponse(success: false, data: null);
+    } catch (e) {
+      return ApiResponseError(message: e.toString());
     }
   }
 
-  static Future<ApiResponse> fetchArtistsByQuery({
+  static Future<ApiResponse<List<Artist>>> fetchArtistsByQuery({
     required String query,
   }) async {
     try {
@@ -72,25 +87,30 @@ class SearchRepo {
         Uri.parse("$backendUrl/music/search?q=$query&searchType=artists"),
       );
       final utf8BodyDecoded = utf8.decode(response.bodyBytes);
-      final decodedResponse = await compute((stringResponse) {
+      final decodedResponse = await compute<String, ApiResponse<List<Artist>>>((
+        stringResponse,
+      ) {
         final decodedJson = jsonDecode(stringResponse);
+        final isSuccessful = decodedJson["success"] as bool;
 
-        final decodedData = ApiResponse.fromJson(decodedJson, (data) {
-          final listOfItems = data["result"] as List?;
+        if (isSuccessful) {
+          final listOfItems = decodedJson["data"]["result"] as List?;
 
-          if (listOfItems == null) return [];
+          if (listOfItems == null) return ApiResponseSuccess(data: []);
 
-          return listOfItems
-              .map((final artist) => Artist.fromJson(artist))
-              .toList();
-        });
+          return ApiResponseSuccess(
+            data: listOfItems
+                .map((final artist) => Artist.fromJson(artist))
+                .toList(),
+          );
+        }
 
-        return decodedData;
+        return ApiResponseError(message: decodedJson["message"] as String);
       }, utf8BodyDecoded);
 
       return decodedResponse;
-    } catch (_) {
-      return ApiResponse(success: false, data: null);
+    } catch (e) {
+      return ApiResponseError(message: e.toString());
     }
   }
 }

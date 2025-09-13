@@ -3,6 +3,7 @@ import "dart:io";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
+import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/repositories/playlists_repo.dart";
 
 class PlaylistVisibilityToggle extends StatefulWidget {
@@ -39,7 +40,7 @@ class _PlaylistVisibilityToggleState extends State<PlaylistVisibilityToggle> {
       playlistId: widget.playlistId,
     );
 
-    if (response.success) {
+    if (response is ApiResponseSuccess) {
       messenger.showSnackBar(
         SnackBar(
           backgroundColor: Colors.blue,

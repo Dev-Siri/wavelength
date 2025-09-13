@@ -8,29 +8,37 @@ import "package:wavelength/api/models/individual_artist.dart";
 import "package:wavelength/constants.dart";
 
 class ArtistRepo {
-  static Future<ApiResponse> fetchArtist({required String browseId}) async {
+  static Future<ApiResponse<IndividualArtist>> fetchArtist({
+    required String browseId,
+  }) async {
     try {
       final response = await http.get(
         Uri.parse("$backendUrl/artists/$browseId"),
       );
       final utf8BodyDecoded = utf8.decode(response.bodyBytes);
-      final decodedResponse = await compute((stringResponse) {
-        final decodedJson = jsonDecode(stringResponse);
+      final decodedResponse =
+          await compute<String, ApiResponse<IndividualArtist>>((
+            stringResponse,
+          ) {
+            final decodedJson = jsonDecode(stringResponse);
+            final isSuccessful = (decodedJson["success"] as bool);
 
-        final decodedData = ApiResponse.fromJson(
-          decodedJson,
-          (artist) => IndividualArtist.fromJson(artist),
-        );
-        return decodedData;
-      }, utf8BodyDecoded);
+            if (isSuccessful) {
+              return ApiResponseSuccess(
+                data: IndividualArtist.fromJson(decodedJson["data"]),
+              );
+            }
+
+            return ApiResponseError(message: decodedJson["message"] as String);
+          }, utf8BodyDecoded);
 
       return decodedResponse;
-    } catch (_) {
-      return ApiResponse(success: false, data: null);
+    } catch (e) {
+      return ApiResponseError(message: e.toString());
     }
   }
 
-  static Future<ApiResponse> fetchArtistExtra({
+  static Future<ApiResponse<ArtistExtra>> fetchArtistExtra({
     required String browseId,
   }) async {
     try {
@@ -38,20 +46,24 @@ class ArtistRepo {
         Uri.parse("$backendUrl/artists/$browseId/extra"),
       );
 
-      final decodedResponse = await compute((stringResponse) {
+      final decodedResponse = await compute<String, ApiResponse<ArtistExtra>>((
+        stringResponse,
+      ) {
         final decodedJson = jsonDecode(stringResponse);
+        final isSuccessful = decodedJson["success"] as bool;
 
-        final decodedData = ApiResponse.fromJson(
-          decodedJson,
-          (artistExtra) => ArtistExtra.fromJson(artistExtra),
-        );
+        if (isSuccessful) {
+          return ApiResponseSuccess(
+            data: ArtistExtra.fromJson(decodedJson["data"]),
+          );
+        }
 
-        return decodedData;
+        return ApiResponseError(message: decodedJson["message"] as String);
       }, response.body);
 
       return decodedResponse;
-    } catch (_) {
-      return ApiResponse(success: false, data: null);
+    } catch (e) {
+      return ApiResponseError(message: e.toString());
     }
   }
 }

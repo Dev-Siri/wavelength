@@ -7,24 +7,31 @@ import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/constants.dart";
 
 class ImageRepo {
-  static Future<ApiResponse> fetchImageThemeColor({required String url}) async {
+  static Future<ApiResponse<ThemeColor>> fetchImageThemeColor({
+    required String url,
+  }) async {
     try {
       final response = await http.get(
         Uri.parse("$backendUrl/image/theme-color?url=$url"),
       );
-      final decodedResponse = await compute((stringResponse) {
+      final decodedResponse = await compute<String, ApiResponse<ThemeColor>>((
+        stringResponse,
+      ) {
         final decodedJson = jsonDecode(stringResponse);
-        final decodedData = ApiResponse.fromJson(
-          decodedJson,
-          (themeColor) => ThemeColor.fromJson(themeColor),
-        );
+        final isSuccessful = decodedJson["success"] as bool;
 
-        return decodedData;
+        if (isSuccessful) {
+          return ApiResponseSuccess(
+            data: ThemeColor.fromJson(decodedJson["data"]),
+          );
+        }
+
+        return ApiResponseError(message: decodedJson["message"] as String);
       }, response.body);
 
       return decodedResponse;
-    } catch (_) {
-      return ApiResponse(success: false, data: null);
+    } catch (e) {
+      return ApiResponseError(message: e.toString());
     }
   }
 }

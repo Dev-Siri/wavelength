@@ -1,4 +1,5 @@
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/repositories/playlists_repo.dart";
 import "package:wavelength/bloc/playlist/playlist_event.dart";
@@ -36,7 +37,7 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
         playlistId: event.playlistId,
       );
 
-      if (response.success) {
+      if (response is ApiResponseSuccess<List<PlaylistTrack>>) {
         await box.put(event.playlistId, response.data);
 
         return emit(PlaylistSuccessState(songs: response.data));

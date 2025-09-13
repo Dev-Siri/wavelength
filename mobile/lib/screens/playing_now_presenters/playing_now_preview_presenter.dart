@@ -1,6 +1,7 @@
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/music_video_preview.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/repositories/track_repo.dart";
@@ -42,9 +43,8 @@ class _PlayingNowPreviewPresenterState
       artist: author,
     );
 
-    if (response.success && mounted) {
-      final musicVideoPreview = response.data as MusicVideoPreview;
-      setState(() => _musicVideoId = musicVideoPreview.videoId);
+    if (response is ApiResponseSuccess<MusicVideoPreview> && mounted) {
+      setState(() => _musicVideoId = response.data.videoId);
     }
   }
 

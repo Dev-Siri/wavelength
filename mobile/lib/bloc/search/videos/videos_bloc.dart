@@ -1,4 +1,6 @@
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:wavelength/api/models/api_response.dart";
+import "package:wavelength/api/models/video.dart";
 import "package:wavelength/api/repositories/search_repo.dart";
 import "package:wavelength/bloc/search/videos/videos_event.dart";
 import "package:wavelength/bloc/search/videos/videos_state.dart";
@@ -15,7 +17,7 @@ class VideosBloc extends Bloc<VideosEvent, VideosState> {
     emit(VideosFetchLoadingState());
     final response = await SearchRepo.fetchVideosByQuery(query: event.query);
 
-    if (response.success) {
+    if (response is ApiResponseSuccess<List<Video>>) {
       return emit(VideosFetchSuccessState(videos: response.data));
     }
 

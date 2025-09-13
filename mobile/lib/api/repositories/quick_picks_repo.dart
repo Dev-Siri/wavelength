@@ -7,30 +7,41 @@ import "package:wavelength/api/models/quick_picks_item.dart";
 import "package:wavelength/constants.dart";
 
 class QuickPicksRepo {
-  static Future<ApiResponse> fetchQuickPicks({required String locale}) async {
+  static Future<ApiResponse<List<QuickPicksItem>>> fetchQuickPicks({
+    required String locale,
+  }) async {
     try {
       final response = await http.get(
         Uri.parse("$backendUrl/music/quick-picks?regionCode=$locale"),
       );
       final utf8BodyDecoded = utf8.decode(response.bodyBytes);
-      final decodedResponse = await compute((stringResponse) {
-        final decodedJson = jsonDecode(stringResponse);
-        final decodedData = ApiResponse.fromJson(decodedJson, (quickPicks) {
-          final listOfItems = quickPicks as List?;
+      final decodedResponse =
+          await compute<String, ApiResponse<List<QuickPicksItem>>>((
+            stringResponse,
+          ) {
+            final decodedJson = jsonDecode(stringResponse);
+            final isSuccessful = decodedJson["success"] as bool;
 
-          if (listOfItems == null) return [];
+            if (isSuccessful) {
+              final listOfItems = decodedJson["data"] as List?;
 
-          return listOfItems
-              .map((final quickPick) => QuickPicksItem.fromJson(quickPick))
-              .toList();
-        });
+              if (listOfItems == null) return ApiResponseSuccess(data: []);
 
-        return decodedData;
-      }, utf8BodyDecoded);
+              return ApiResponseSuccess(
+                data: listOfItems
+                    .map(
+                      (final quickPick) => QuickPicksItem.fromJson(quickPick),
+                    )
+                    .toList(),
+              );
+            }
+
+            return ApiResponseError(message: decodedJson["message"] as String);
+          }, utf8BodyDecoded);
 
       return decodedResponse;
-    } catch (_) {
-      return ApiResponse(success: false, data: null);
+    } catch (e) {
+      return ApiResponseError(message: e.toString());
     }
   }
 }
