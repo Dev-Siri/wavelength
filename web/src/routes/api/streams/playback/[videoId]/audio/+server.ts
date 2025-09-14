@@ -8,7 +8,7 @@ export async function GET({ params: { videoId } }) {
     const binaryPath = path.join(process.cwd(), "vercel", "path0", "web");
 
     console.log(await fs.readdir(binaryPath));
-    const youtubeDl = createYoutubeDl(path.join(binaryPath, "static", "bin", "yt-dlp"));
+    const youtubeDl = createYoutubeDl("");
     const response = await youtubeDl(videoId, {
       dumpSingleJson: true,
       format: "bestaudio[ext=m4a]",
