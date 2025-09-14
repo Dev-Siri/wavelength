@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
-    "api/streams/playback/[videoId]/audio/+server.ts": {
+    "src/routes/api/streams/playback/[videoId]/audio/**/*.ts": {
       "includeFiles": "bin/yt-dlp"
     }
   }
