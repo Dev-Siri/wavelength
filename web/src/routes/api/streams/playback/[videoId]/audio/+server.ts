@@ -5,7 +5,7 @@ import { create as createYoutubeDl, type RequestedDownload } from "youtube-dl-ex
 
 export async function GET({ params: { videoId } }) {
   try {
-    const binaryPath = path.join(process.cwd(), "vercel", "path0");
+    const binaryPath = path.join(process.cwd(), "vercel", "path0", "web");
 
     console.log(await fs.readdir(binaryPath));
     const youtubeDl = createYoutubeDl(path.join(binaryPath, "static", "bin", "yt-dlp"));
