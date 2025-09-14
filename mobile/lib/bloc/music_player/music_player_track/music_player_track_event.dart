@@ -4,6 +4,12 @@ import "package:wavelength/api/models/representations/queueable_music.dart";
 @immutable
 sealed class MusicPlayerTrackEvent {}
 
+class MusicPlayerTrackAutoLoadEvent extends MusicPlayerTrackEvent {
+  final QueueableMusic queueableMusic;
+
+  MusicPlayerTrackAutoLoadEvent({required this.queueableMusic});
+}
+
 class MusicPlayerTrackLoadEvent extends MusicPlayerTrackEvent {
   final QueueableMusic queueableMusic;
 

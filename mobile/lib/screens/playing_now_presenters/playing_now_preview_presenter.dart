@@ -14,7 +14,7 @@ import "package:wavelength/bloc/music_player/music_player_duration/music_player_
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_state.dart";
 import "package:wavelength/widgets/loading_indicator.dart";
 import "package:wavelength/widgets/music_player_play_options.dart";
-import "package:wavelength/widgets/music_player_progess_bar.dart";
+import "package:wavelength/widgets/music_player_progress_bar.dart";
 import "package:wavelength/widgets/track_music_video_preview.dart";
 
 class PlayingNowPreviewPresenter extends StatefulWidget {
@@ -174,7 +174,7 @@ class _PlayingNowPreviewPresenterState
                           return SizedBox.shrink();
                         }
 
-                        return MusicPlayerProgessBar(
+                        return MusicPlayerProgressBar(
                           duration: state.totalDuration,
                           position: state.currentDuration,
                           onSeek: (value) =>

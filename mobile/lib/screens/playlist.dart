@@ -298,7 +298,10 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                         for (final song in orderedSongs)
                           Padding(
                             padding: const EdgeInsets.only(bottom: 10),
-                            child: PlaylistTrackTile(playlistTrack: song),
+                            child: PlaylistTrackTile(
+                              playlistTrack: song,
+                              allPlaylistTracks: orderedSongs,
+                            ),
                           ),
                       ],
                     );

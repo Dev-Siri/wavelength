@@ -10,12 +10,6 @@ class MusicPlayerReplaceQueueEvent extends MusicPlayerQueueEvent {
   MusicPlayerReplaceQueueEvent({required this.newQueue});
 }
 
-class MusicPlayerQueuePlayNextEvent extends MusicPlayerQueueEvent {
-  final QueueableMusic queueableMusic;
-
-  MusicPlayerQueuePlayNextEvent({required this.queueableMusic});
-}
-
 class MusicPlayerQueueAddToQueueEvent extends MusicPlayerQueueEvent {
   final QueueableMusic queueableMusic;
 

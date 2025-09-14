@@ -1,37 +1,34 @@
 import "dart:async";
-import "dart:io";
 
 import "package:flutter/cupertino.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:just_audio/just_audio.dart";
+import "package:just_audio_background/just_audio_background.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_event.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_state.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_event.dart";
 import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_bloc.dart";
-import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_bloc.dart";
-import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_state.dart";
 import "package:wavelength/bloc/music_player/music_player_singleton.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
-import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
 
 class MusicPlayerInternals {
   final AudioPlayer _player;
 
   StreamSubscription? _positionSub;
   StreamSubscription? _stateSub;
+  StreamSubscription? _currentIndexSub;
   StreamSubscription? _durationSub;
 
   MusicPlayerInternals() : _player = MusicPlayerSingleton().player;
 
   void init(BuildContext context) {
-    final musicPlayerTrackBloc = context.read<MusicPlayerTrackBloc>();
+    final musicPlayerQueueBloc = context.read<MusicPlayerQueueBloc>();
     final musicPlayerDurationBloc = context.read<MusicPlayerDurationBloc>();
     final musicPlayerPlaystateBloc = context.read<MusicPlayerPlaystateBloc>();
-    final musicPlayerRepeatModeBloc = context.read<MusicPlayerRepeatModeBloc>();
-    final musicPlayerMusicQueueBloc = context.read<MusicPlayerQueueBloc>();
+    final musicPlayerTrackBloc = context.read<MusicPlayerTrackBloc>();
 
     _positionSub = _player.positionStream.listen((position) async {
       final musicPlayerDurationState = musicPlayerDurationBloc.state;
@@ -46,46 +43,29 @@ class MusicPlayerInternals {
           totalDuration: totalDuration,
         ),
       );
+    });
 
-      final isRunningOnIOS = Platform.isIOS;
-      final isDurationAboveZero = totalDuration > Duration.zero;
+    _currentIndexSub = _player.currentIndexStream.listen((index) {
+      if (index == null) return;
 
-      if ((isRunningOnIOS && isDurationAboveZero) &&
-          position >= totalDuration - const Duration(milliseconds: 10)) {
-        if (musicPlayerRepeatModeBloc.state
-            is MusicPlayerRepeatModeRepeatAllState) {
-          final musicPlayerTrackState = musicPlayerTrackBloc.state;
-          final musicPlayerMusicQueueState = musicPlayerMusicQueueBloc.state;
+      final currentSource = _player.sequence[index];
+      final tag = currentSource.tag;
 
-          if (musicPlayerTrackState is! MusicPlayerTrackPlayingNowState) return;
+      if (tag is! MediaItem) return;
 
-          final currentTrackIndexInQueue = musicPlayerMusicQueueBloc
-              .state
-              .tracksInQueue
-              .indexOf(musicPlayerTrackState.playingNowTrack);
+      final playingTrackIndex = musicPlayerQueueBloc.state.tracksInQueue
+          .indexWhere((track) => track.videoId == tag.id);
 
-          if (currentTrackIndexInQueue == -1) return;
+      print(playingTrackIndex);
 
-          final currentTrackPos = currentTrackIndexInQueue + 1;
+      if (playingTrackIndex == -1) return;
 
-          musicPlayerTrackBloc.add(
-            MusicPlayerTrackLoadEvent(
-              queueableMusic:
-                  musicPlayerMusicQueueState.tracksInQueue[currentTrackPos ==
-                          musicPlayerMusicQueueState.tracksInQueue.length
-                      ? 0
-                      : currentTrackPos],
-            ),
-          );
-        } else if (musicPlayerRepeatModeBloc.state
-            is MusicPlayerRepeatModeRepeatOneState) {
-          await _player.seek(Duration.zero);
-          _player.play();
-        } else {
-          _player.pause();
-          musicPlayerPlaystateBloc.add(MusicPlayerPlaystatePauseEvent());
-        }
-      }
+      musicPlayerTrackBloc.add(
+        MusicPlayerTrackAutoLoadEvent(
+          queueableMusic:
+              musicPlayerQueueBloc.state.tracksInQueue[playingTrackIndex],
+        ),
+      );
     });
 
     _durationSub = _player.durationStream.listen((duration) async {
@@ -100,48 +80,13 @@ class MusicPlayerInternals {
                 : Duration.zero,
             // The stream gets multiplied by 2 everytime its queried, yet that extra space is actually empty.
             // So its halved here just to account for that. Happens on all streams, so its not dangerous to do this.
-            totalDuration: Platform.isIOS
-                ? Duration(microseconds: duration.inMicroseconds ~/ 2)
-                : duration,
+            totalDuration: duration,
           ),
         );
       }
     });
 
     _stateSub = _player.playerStateStream.listen((state) async {
-      if (state.processingState == ProcessingState.completed) {
-        if (musicPlayerRepeatModeBloc.state
-            is MusicPlayerRepeatModeRepeatAllState) {
-          final musicPlayerTrackState = musicPlayerTrackBloc.state;
-          final musicPlayerMusicQueueState = musicPlayerMusicQueueBloc.state;
-
-          if (musicPlayerTrackState is! MusicPlayerTrackPlayingNowState) return;
-
-          final currentTrackIndexInQueue = musicPlayerMusicQueueBloc
-              .state
-              .tracksInQueue
-              .indexOf(musicPlayerTrackState.playingNowTrack);
-
-          if (currentTrackIndexInQueue == -1) return;
-
-          final currentTrackPos = currentTrackIndexInQueue + 1;
-
-          musicPlayerTrackBloc.add(
-            MusicPlayerTrackLoadEvent(
-              queueableMusic:
-                  musicPlayerMusicQueueState.tracksInQueue[currentTrackPos ==
-                          musicPlayerMusicQueueState.tracksInQueue.length
-                      ? 0
-                      : currentTrackPos],
-            ),
-          );
-        } else if (musicPlayerRepeatModeBloc.state
-            is MusicPlayerRepeatModeRepeatOneState) {
-          await _player.seek(Duration.zero);
-          _player.play();
-        }
-      }
-
       if (state.playing) {
         musicPlayerPlaystateBloc.add(MusicPlayerPlaystatePlayEvent());
         return;
@@ -154,6 +99,7 @@ class MusicPlayerInternals {
   void dispose() {
     _positionSub?.cancel();
     _stateSub?.cancel();
+    _currentIndexSub?.cancel();
     _durationSub?.cancel();
   }
 }

@@ -22,9 +22,14 @@ import "package:wavelength/widgets/explicit_indicator.dart";
 import "package:wavelength/widgets/playlist_track_tile_options_bottom_sheet.dart";
 
 class PlaylistTrackTile extends StatelessWidget {
+  final List<PlaylistTrack> allPlaylistTracks;
   final PlaylistTrack playlistTrack;
 
-  const PlaylistTrackTile({super.key, required this.playlistTrack});
+  const PlaylistTrackTile({
+    super.key,
+    required this.playlistTrack,
+    required this.allPlaylistTracks,
+  });
 
   void _playSong(BuildContext context) {
     final queueableMusic = QueueableMusic(
@@ -36,7 +41,19 @@ class PlaylistTrackTile extends StatelessWidget {
     );
 
     context.read<MusicPlayerQueueBloc>().add(
-      MusicPlayerQueueAddToQueueEvent(queueableMusic: queueableMusic),
+      MusicPlayerReplaceQueueEvent(
+        newQueue: allPlaylistTracks
+            .map(
+              (track) => QueueableMusic(
+                videoId: track.videoId,
+                title: track.title,
+                thumbnail: track.thumbnail,
+                author: track.author,
+                videoType: track.videoType,
+              ),
+            )
+            .toList(),
+      ),
     );
 
     context.read<MusicPlayerTrackBloc>().add(

@@ -1,12 +1,12 @@
 import "package:flutter/material.dart";
 import "package:wavelength/utils/parse.dart";
 
-class MusicPlayerProgessBar extends StatefulWidget {
+class MusicPlayerProgressBar extends StatefulWidget {
   final Duration position;
   final Duration duration;
   final ValueChanged<Duration> onSeek;
 
-  const MusicPlayerProgessBar({
+  const MusicPlayerProgressBar({
     super.key,
     required this.position,
     required this.duration,
@@ -14,10 +14,10 @@ class MusicPlayerProgessBar extends StatefulWidget {
   });
 
   @override
-  State<MusicPlayerProgessBar> createState() => _MusicPlayerProgessBarState();
+  State<MusicPlayerProgressBar> createState() => _MusicPlayerProgressBarState();
 }
 
-class _MusicPlayerProgessBarState extends State<MusicPlayerProgessBar> {
+class _MusicPlayerProgressBarState extends State<MusicPlayerProgressBar> {
   double? _dragValue;
 
   @override
