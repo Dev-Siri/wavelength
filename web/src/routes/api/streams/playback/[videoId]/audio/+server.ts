@@ -1,14 +1,9 @@
 import { error, json } from "@sveltejs/kit";
-import fs from "fs/promises";
-import path from "path";
 import { create as createYoutubeDl, type RequestedDownload } from "youtube-dl-exec";
 
 export async function GET({ params: { videoId } }) {
   try {
-    const binaryPath = path.join(process.cwd(), "vercel", "path0", "web");
-
-    console.log(await fs.readdir(binaryPath));
-    const youtubeDl = createYoutubeDl("");
+    const youtubeDl = createYoutubeDl("/opt/homebrew/bin/yt-dlp");
     const response = await youtubeDl(videoId, {
       dumpSingleJson: true,
       format: "bestaudio[ext=m4a]",
