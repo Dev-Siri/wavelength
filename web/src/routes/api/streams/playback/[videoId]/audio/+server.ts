@@ -4,7 +4,8 @@ import { create as createYoutubeDl, type RequestedDownload } from "youtube-dl-ex
 
 export async function GET({ params: { videoId } }) {
   try {
-    const youtubeDl = createYoutubeDl(path.join(process.cwd(), "bin/yt-dlp"));
+    console.log(path.join(process.cwd()));
+    const youtubeDl = createYoutubeDl(path.join(process.cwd(), "static", "bin", "yt-dlp"));
     const response = await youtubeDl(videoId, {
       dumpSingleJson: true,
       format: "bestaudio[ext=m4a]",
