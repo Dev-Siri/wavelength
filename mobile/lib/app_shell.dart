@@ -7,6 +7,8 @@ import "package:flutter_svg/flutter_svg.dart";
 import "package:go_router/go_router.dart";
 import "package:vector_graphics/vector_graphics.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
+import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
+import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
 import "package:wavelength/bloc/auth/auth_event.dart";
 import "package:wavelength/bloc/auth/auth_state.dart";
@@ -90,9 +92,11 @@ class _AppShellState extends State<AppShell> {
         context.push("/library");
         break;
       case 3:
-        showModalBottomSheet(
-          context: context,
-          builder: (context) => PlaylistCreationBottomSheet(),
+        context.read<AppBottomSheetBloc>().add(
+          AppBottomSheetOpenEvent(
+            context: context,
+            builder: (context) => PlaylistCreationBottomSheet(),
+          ),
         );
     }
   }

@@ -19,6 +19,7 @@ class MusicPlayerQueueBloc
     MusicPlayerQueueAddToQueueEvent event,
     Emitter<MusicPlayerQueueState> emit,
   ) {
+    // TODO: Use just_audio's queue and sync this queue to that.
     final trackAlreadyInQueueTest = state.tracksInQueue.where(
       (track) => track.videoId == event.queueableMusic.videoId,
     );

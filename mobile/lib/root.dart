@@ -1,4 +1,7 @@
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
+import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_state.dart";
 import "package:wavelength/bloc/music_player/music_player_internals.dart";
 import "package:wavelength/widgets/floating_music_player_preview.dart";
 
@@ -47,9 +50,16 @@ class _RootState extends State<Root> {
                       ? MediaQuery.of(context).size.height * 0.05
                       : MediaQuery.of(context).size.height * 0.125,
                 ),
-                child: !isOnPlayingNowScreen
-                    ? FloatingMusicPlayerPreview()
-                    : SizedBox.shrink(),
+                child: BlocBuilder<AppBottomSheetBloc, AppBottomSheetState>(
+                  builder: (context, state) {
+                    if (!isOnPlayingNowScreen &&
+                        state is AppBottomSheetClosedState) {
+                      return FloatingMusicPlayerPreview();
+                    }
+
+                    return SizedBox.shrink();
+                  },
+                ),
               ),
             ),
           ),

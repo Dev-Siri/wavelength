@@ -3,12 +3,13 @@ import "dart:io";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:go_router/go_router.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/track.dart";
 import "package:wavelength/api/repositories/track_repo.dart";
+import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
+import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/library/library_state.dart";
 
@@ -27,7 +28,8 @@ class AddToPlaylistBottomSheet extends StatelessWidget {
     String playlistId,
   ) async {
     final messenger = ScaffoldMessenger.of(context);
-    final navigator = GoRouter.of(context);
+    final appBottomSheet = context.read<AppBottomSheetBloc>();
+    final appBottomSheetCloseEvent = AppBottomSheetCloseEvent(context: context);
 
     final trackToggleResponse = await TrackRepo.toggleTrackFromPlaylist(
       playlistId: playlistId,
@@ -37,7 +39,7 @@ class AddToPlaylistBottomSheet extends StatelessWidget {
     final isResponseSuccessful =
         trackToggleResponse is ApiResponseSuccess<String>;
 
-    navigator.pop();
+    appBottomSheet.add(appBottomSheetCloseEvent);
 
     messenger.showSnackBar(
       SnackBar(

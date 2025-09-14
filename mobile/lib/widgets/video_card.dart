@@ -9,6 +9,8 @@ import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/representations/queueable_music.dart";
 import "package:wavelength/api/models/track.dart";
 import "package:wavelength/api/models/video.dart";
+import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
+import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:wavelength/utils/parse.dart";
@@ -74,20 +76,22 @@ class _VideoCardState extends State<VideoCard> {
 
     if (videoDuration == null) return;
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useRootNavigator: true,
-      builder: (context) => AddToPlaylistBottomSheet(
-        track: Track(
-          videoId: widget.video.id.videoId,
-          title: widget.video.snippet.title ?? "",
-          thumbnail: getTrackThumbnail(widget.video.id.videoId),
-          author: widget.video.snippet.channelId ?? "",
-          duration: durationify(videoDuration ?? Duration.zero),
-          isExplicit: false,
+    context.read<AppBottomSheetBloc>().add(
+      AppBottomSheetOpenEvent(
+        context: context,
+        isScrollControlled: true,
+        useRootNavigator: true,
+        builder: (context) => AddToPlaylistBottomSheet(
+          track: Track(
+            videoId: widget.video.id.videoId,
+            title: widget.video.snippet.title ?? "",
+            thumbnail: getTrackThumbnail(widget.video.id.videoId),
+            author: widget.video.snippet.channelId ?? "",
+            duration: durationify(videoDuration ?? Duration.zero),
+            isExplicit: false,
+          ),
+          videoType: VideoType.track,
         ),
-        videoType: VideoType.track,
       ),
     );
   }

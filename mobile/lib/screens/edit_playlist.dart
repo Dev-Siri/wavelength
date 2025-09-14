@@ -10,6 +10,8 @@ import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/uploadthing_file.dart";
 import "package:wavelength/api/repositories/playlists_repo.dart";
 import "package:wavelength/api/repositories/uploadthing_repo.dart";
+import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
+import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
 import "package:wavelength/bloc/auth/auth_state.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
@@ -79,7 +81,8 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
     setState(() => _isLoading = true);
 
     final messenger = ScaffoldMessenger.of(context);
-    final navigator = GoRouter.of(context);
+    final appBottomSheet = context.read<AppBottomSheetBloc>();
+    final appBottomSheetCloseEvent = AppBottomSheetCloseEvent(context: context);
     final authBloc = context.read<AuthBloc>();
     final libraryBloc = context.read<LibraryBloc>();
     final playlistBloc = context.read<PlaylistBloc>();
@@ -114,7 +117,7 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
       );
       playlistBloc.add(PlaylistFetchEvent(playlistId: widget.playlistId));
       setState(() => _isLoading = false);
-      navigator.pop();
+      appBottomSheet.add(appBottomSheetCloseEvent);
       return;
     }
 

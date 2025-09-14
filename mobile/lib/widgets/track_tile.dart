@@ -7,6 +7,8 @@ import "package:mini_music_visualizer/mini_music_visualizer.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/representations/queueable_music.dart";
 import "package:wavelength/api/models/track.dart";
+import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
+import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
 import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
@@ -127,20 +129,22 @@ class TrackTile extends StatelessWidget {
             ),
           ),
           CupertinoButton(
-            onPressed: () => showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              useRootNavigator: true,
-              builder: (context) => AddToPlaylistBottomSheet(
-                track: Track(
-                  videoId: track.videoId,
-                  title: track.title,
-                  thumbnail: track.thumbnail,
-                  author: track.author,
-                  duration: track.duration,
-                  isExplicit: track.isExplicit,
+            onPressed: () => context.read<AppBottomSheetBloc>().add(
+              AppBottomSheetOpenEvent(
+                context: context,
+                isScrollControlled: true,
+                useRootNavigator: true,
+                builder: (context) => AddToPlaylistBottomSheet(
+                  track: Track(
+                    videoId: track.videoId,
+                    title: track.title,
+                    thumbnail: track.thumbnail,
+                    author: track.author,
+                    duration: track.duration,
+                    isExplicit: track.isExplicit,
+                  ),
+                  videoType: VideoType.track,
                 ),
-                videoType: VideoType.track,
               ),
             ),
             child: Icon(LucideIcons.circlePlus, color: Colors.white),

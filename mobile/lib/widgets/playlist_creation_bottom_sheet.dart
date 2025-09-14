@@ -3,10 +3,11 @@ import "dart:io";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:go_router/go_router.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/repositories/playlists_repo.dart";
+import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
+import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
 import "package:wavelength/bloc/auth/auth_state.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
@@ -27,7 +28,8 @@ class _PlaylistCreationBottomSheetState
     required String username,
     required String userImage,
   }) async {
-    final navigator = GoRouter.of(context);
+    final appBottomSheet = context.read<AppBottomSheetBloc>();
+    final appBottomSheetCloseEvent = AppBottomSheetCloseEvent(context: context);
     final messenger = ScaffoldMessenger.of(context);
     final libraryBloc = context.read<LibraryBloc>();
 
@@ -60,7 +62,7 @@ class _PlaylistCreationBottomSheetState
       );
     }
 
-    navigator.pop();
+    appBottomSheet.add(appBottomSheetCloseEvent);
   }
 
   @override
