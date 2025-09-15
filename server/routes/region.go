@@ -1,7 +1,11 @@
 package routes
 
-import "github.com/gofiber/fiber/v2"
+import (
+	region_controllers "wavelength/controllers/region"
+
+	"github.com/gofiber/fiber/v2"
+)
 
 func registerRegionRoutes(app *fiber.App) {
-
+	app.Get("/region", region_controllers.GetRegion)
 }

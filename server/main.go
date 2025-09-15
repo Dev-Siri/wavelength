@@ -50,7 +50,7 @@ func main() {
 		},
 	})
 
-	api.InitializeYoutubeClient()
+	api.InitializeYouTubeClient()
 
 	addr := ":" + env.GetPORT()
 
