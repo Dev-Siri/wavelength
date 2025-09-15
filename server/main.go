@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"wavelength/api"
 	error_controllers "wavelength/controllers/errors"
 	"wavelength/db"
 	"wavelength/env"
@@ -48,6 +49,8 @@ func main() {
 			})
 		},
 	})
+
+	api.InitializeYoutubeClient()
 
 	addr := ":" + env.GetPORT()
 
