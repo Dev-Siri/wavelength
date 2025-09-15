@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"wavelength/db"
 	"wavelength/env"
 	"wavelength/logging"
 
@@ -17,6 +18,15 @@ func main() {
 
 	if err := env.InitEnv(); err != nil {
 		logging.Logger.Fatal("Failed to initialize dotenv for environment variables.")
+	}
+
+	if err := db.Connect(env.GetDBUrl()); err != nil {
+		logging.Logger.Fatal("Failed to connect to the database.")
+		return
+	}
+
+	if db.Database != nil {
+		defer db.Database.Close()
 	}
 
 	app := fiber.New()
