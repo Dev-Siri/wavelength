@@ -5,8 +5,10 @@ import (
 	"wavelength/db"
 	"wavelength/env"
 	"wavelength/logging"
+	"wavelength/middleware"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"go.uber.org/zap"
 )
 
@@ -31,6 +33,11 @@ func main() {
 
 	app := fiber.New()
 	addr := ":" + env.GetPORT()
+
+	app.Use(middleware.LogMiddleware)
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: env.GetCorsOrigin(),
+	}))
 
 	if err := app.Listen(addr); err != nil {
 		logging.Logger.Fatal("Failed to start server.", zap.String("address", addr))
