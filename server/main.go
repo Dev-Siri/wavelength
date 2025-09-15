@@ -57,7 +57,6 @@ func main() {
 	}))
 
 	routes.RegisterRoutes(app)
-	app.Get("/", func(c *fiber.Ctx) error { return nil })
 
 	if err := app.Listen(addr); err != nil {
 		logging.Logger.Fatal("Failed to start server.", zap.String("address", addr))
