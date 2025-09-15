@@ -1,3 +1,3 @@
 package api_interface
 
-type YoutubeMusicClient struct{}
+type YouTubeMusicClient struct{}

@@ -6,7 +6,7 @@ import (
 	api_models "wavelength/models/api"
 )
 
-func (*YoutubeMusicClient) GetQuickPicks(gl string) (*api_models.QuickPicksResponse, error) {
+func (*YouTubeMusicClient) GetQuickPicks(gl string) (*api_models.QuickPicksResponse, error) {
 	if gl == "" {
 		gl = constants.DefaultRegion
 	}

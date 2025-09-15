@@ -2,8 +2,8 @@ package api
 
 import api_interface "wavelength/api/interface"
 
-var YoutubeClient *api_interface.YoutubeMusicClient
+var YouTubeClient *api_interface.YouTubeMusicClient
 
-func InitializeYoutubeClient() {
-	YoutubeClient = &api_interface.YoutubeMusicClient{}
+func InitializeYouTubeClient() {
+	YouTubeClient = &api_interface.YouTubeMusicClient{}
 }
