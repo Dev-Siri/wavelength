@@ -6,6 +6,7 @@ import (
 	"wavelength/env"
 	"wavelength/logging"
 	"wavelength/middleware"
+	"wavelength/routes"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -38,6 +39,8 @@ func main() {
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: env.GetCorsOrigin(),
 	}))
+
+	routes.RegisterRoutes(app)
 
 	if err := app.Listen(addr); err != nil {
 		logging.Logger.Fatal("Failed to start server.", zap.String("address", addr))
