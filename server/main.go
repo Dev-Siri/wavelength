@@ -2,10 +2,12 @@ package main
 
 import (
 	"log"
+	error_controllers "wavelength/controllers/errors"
 	"wavelength/db"
 	"wavelength/env"
 	"wavelength/logging"
 	"wavelength/middleware"
+	"wavelength/models/responses"
 	"wavelength/routes"
 
 	"github.com/gofiber/fiber/v2"
@@ -32,7 +34,21 @@ func main() {
 		defer db.Database.Close()
 	}
 
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		ErrorHandler: func(ctx *fiber.Ctx, err error) error {
+			if e, ok := err.(*fiber.Error); ok && e.Code == fiber.StatusMethodNotAllowed {
+				return error_controllers.MethodNotAllowed(ctx)
+			} else if e.Code == fiber.StatusNotFound {
+				return error_controllers.NotFound(ctx)
+			}
+
+			return ctx.Status(fiber.StatusInternalServerError).JSON(responses.Error{
+				Success: false,
+				Message: err.Error(),
+			})
+		},
+	})
+
 	addr := ":" + env.GetPORT()
 
 	app.Use(middleware.LogMiddleware)
@@ -41,6 +57,7 @@ func main() {
 	}))
 
 	routes.RegisterRoutes(app)
+	app.Get("/", func(c *fiber.Ctx) error { return nil })
 
 	if err := app.Listen(addr); err != nil {
 		logging.Logger.Fatal("Failed to start server.", zap.String("address", addr))
