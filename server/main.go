@@ -8,7 +8,6 @@ import (
 	"wavelength/env"
 	"wavelength/logging"
 	"wavelength/middleware"
-	"wavelength/models/responses"
 	"wavelength/routes"
 
 	"github.com/gofiber/fiber/v2"
@@ -35,22 +34,11 @@ func main() {
 		defer db.Database.Close()
 	}
 
-	app := fiber.New(fiber.Config{
-		ErrorHandler: func(ctx *fiber.Ctx, err error) error {
-			if e, ok := err.(*fiber.Error); ok && e.Code == fiber.StatusMethodNotAllowed {
-				return error_controllers.MethodNotAllowed(ctx)
-			} else if e.Code == fiber.StatusNotFound {
-				return error_controllers.NotFound(ctx)
-			}
-
-			return ctx.Status(fiber.StatusInternalServerError).JSON(responses.Error{
-				Success: false,
-				Message: err.Error(),
-			})
-		},
-	})
-
 	api.InitializeYouTubeClient()
+
+	app := fiber.New(fiber.Config{
+		ErrorHandler: error_controllers.ErrorHandler,
+	})
 
 	addr := ":" + env.GetPORT()
 

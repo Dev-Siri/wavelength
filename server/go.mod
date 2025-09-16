@@ -6,6 +6,7 @@ require github.com/gofiber/fiber/v2 v2.52.9
 
 require (
 	github.com/andybalholm/brotli v1.1.0 // indirect
+	github.com/cenkalti/dominantcolor v1.0.3 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect
@@ -19,5 +20,6 @@ require (
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
+	golang.org/x/image v0.18.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect
 )
