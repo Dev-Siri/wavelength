@@ -22,7 +22,7 @@
 </script>
 
 <img
-  src={originalUri ? src : `${BASE_URL}/api/image?url=${encodeURIComponent(src)}&h={height}`}
+  src={originalUri ? src : `${BASE_URL}/api/image?url=${encodeURIComponent(src)}&h=${height}`}
   {alt}
   {height}
   {width}

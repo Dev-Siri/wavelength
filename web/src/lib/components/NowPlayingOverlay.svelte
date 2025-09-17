@@ -9,12 +9,12 @@
 
   import type { ApiResponse } from "$lib/utils/types.js";
   import type { youtube_v3 } from "googleapis";
+  import type { ThemeColor } from "../../routes/api/music/[videoId]/theme-color/+server";
 
   import musicQueueStore from "$lib/stores/music-queue.svelte";
   import { compactify, parseHtmlEntities } from "$lib/utils/format.js";
   import queryClient from "$lib/utils/query-client.js";
 
-  import type { ThemeColor } from "../../routes/api/music/[videoId]/theme-color/+server";
   import Image from "./Image.svelte";
   import { Button } from "./ui/button";
   import * as Tooltip from "./ui/tooltip";
