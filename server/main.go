@@ -18,23 +18,23 @@ import (
 func main() {
 	if err := logging.InitLogger(); err != nil {
 		log.Fatal("Failed to initialize logger.")
-		return
 	}
 
 	if err := env.InitEnv(); err != nil {
-		logging.Logger.Fatal("Failed to initialize dotenv for environment variables.")
+		logging.Logger.Fatal("Failed to initialize dotenv for environment variables.", zap.Error(err))
 	}
 
 	if err := db.Connect(env.GetDBUrl()); err != nil {
-		logging.Logger.Fatal("Failed to connect to the database.")
-		return
+		logging.Logger.Fatal("Failed to connect to the database.", zap.Error(err))
 	}
 
 	if db.Database != nil {
 		defer db.Database.Close()
 	}
 
-	api.InitializeYouTubeClient()
+	if err := api.InitializeYouTubeClients(env.GetGoogleApiKey()); err != nil {
+		logging.Logger.Fatal("Failed to initialize YouTube clients.", zap.Error(err))
+	}
 
 	app := fiber.New(fiber.Config{
 		ErrorHandler: error_controllers.ErrorHandler,
