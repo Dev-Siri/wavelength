@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"mime/multipart"
 	"net/http"
+	"path/filepath"
 	"wavelength/constants"
 	"wavelength/env"
 	"wavelength/models"
@@ -75,6 +77,46 @@ func ManualImageUpload(ctx *fiber.Ctx) error {
 	}
 
 	data := uploadThingResponse.Data[0]
+
+	// Uploading to UploadThing.
+	var formBuffer bytes.Buffer
+	writer := multipart.NewWriter(&formBuffer)
+
+	for key, value := range data.Fields {
+		_ = writer.WriteField(key, value)
+	}
+
+	fileWriter, err := writer.CreateFormFile("file", filepath.Base(generatedFileName))
+
+	if err != nil {
+		return err
+	}
+
+	if _, err = fileWriter.Write(imageBytes); err != nil {
+		return err
+	}
+
+	if err = writer.Close(); err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest("POST", data.Url, &formBuffer)
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusNoContent {
+		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while uploading the image.")
+	}
 
 	return ctx.Status(fiber.StatusCreated).JSON(responses.Success[models.UploadThingManualFileUploadResponse]{
 		Success: true,
