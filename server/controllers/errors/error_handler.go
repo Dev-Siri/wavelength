@@ -24,7 +24,7 @@ func ErrorHandler(ctx *fiber.Ctx, err error) error {
 		}
 	}
 
-	logging.Logger.Error(message, zap.Error(err))
+	go logging.Logger.Error(message, zap.Error(err))
 
 	return ctx.Status(code).JSON(responses.Error{
 		Success: false,
