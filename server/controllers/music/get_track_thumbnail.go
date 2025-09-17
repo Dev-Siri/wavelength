@@ -40,6 +40,6 @@ func GetTrackThumbnail(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get higher quality thumbnail.")
 	}
 
-	ctx.Set("Content-Type", "image/jpeg")
+	ctx.Type("jpeg")
 	return ctx.Send(resizedBodyBytes)
 }

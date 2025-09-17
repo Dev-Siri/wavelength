@@ -43,11 +43,9 @@ func GetOptimizedImage(ctx *fiber.Ctx) error {
 	}
 
 	bImage := bimg.NewImage(bodyBytes)
-	optimizedImageBytes, err := bImage.Process(bimg.Options{
+	resizedImageBytes, err := bImage.Process(bimg.Options{
 		Height: height,
-		Width:  0,
 		Type:   bimg.AVIF,
-		// Quality: 5,
 	})
 
 	if err != nil {
@@ -57,6 +55,6 @@ func GetOptimizedImage(ctx *fiber.Ctx) error {
 	}
 
 	ctx.Set("Cache-Control", "public, max-age=86400")
-	ctx.Type("image/avif")
-	return ctx.Send(optimizedImageBytes)
+	ctx.Type("avif")
+	return ctx.Send(resizedImageBytes)
 }
