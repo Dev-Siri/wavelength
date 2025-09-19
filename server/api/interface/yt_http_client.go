@@ -7,7 +7,7 @@ import (
 	"wavelength/env"
 )
 
-var httpClient = &http.Client{}
+var ytHttpClient = &http.Client{}
 
 func rapidApiFetch(path string, queryParams map[string]string) (*http.Response, error) {
 	base, err := url.Parse(constants.RapidApiUrl)
@@ -41,5 +41,5 @@ func rapidApiFetch(path string, queryParams map[string]string) (*http.Response, 
 	request.Header.Set("X-RapidAPI-Key", rapidApiKey)
 	request.Header.Set("X-RapidAPI-Host", rapidApiHost)
 
-	return httpClient.Do(request)
+	return ytHttpClient.Do(request)
 }

@@ -1,7 +1,11 @@
 package routes
 
-import "github.com/gofiber/fiber/v2"
+import (
+	artist_controllers "wavelength/controllers/artist"
+
+	"github.com/gofiber/fiber/v2"
+)
 
 func registerArtistRoutes(app *fiber.App) {
-
+	app.Get("/artists/:id", artist_controllers.GetArtistById)
 }
