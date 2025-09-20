@@ -49,7 +49,7 @@ func GetOptimizedImage(ctx *fiber.Ctx) error {
 	})
 
 	if err != nil {
-		go logging.Logger.Error("Failed to resize image.", zap.Error(err))
+		go logging.Logger.Error("Failed to optimize image.", zap.Error(err))
 		ctx.Set("Cache-Control", "public, max-age=86400")
 		return ctx.Send(bodyBytes)
 	}
