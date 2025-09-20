@@ -10,7 +10,7 @@ func GetPORT() string {
 
 	if port == "" {
 		go logging.Logger.Warn("No PORT environment variable found, defaulting to 3000")
-		return "3000"
+		return "5000"
 	}
 
 	return port
