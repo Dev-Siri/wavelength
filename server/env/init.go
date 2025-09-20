@@ -8,8 +8,8 @@ import (
 )
 
 func InitEnv() error {
-	if _, err := os.Stat(constants.EnvFile); err != nil {
-		return err
+	if _, err := os.Stat(constants.EnvFile); os.IsNotExist(err) {
+		return nil
 	}
 
 	return godotenv.Load(constants.EnvFile)

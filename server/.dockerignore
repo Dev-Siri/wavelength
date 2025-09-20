@@ -1,0 +1,16 @@
+# build artifacts
+bin/
+
+# environment files
+.env
+*.local
+
+# VCS files
+.git
+.gitignore
+
+# macOS files
+.DS_Store
+
+# etc
+.air.toml
