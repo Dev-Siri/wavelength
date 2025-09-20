@@ -7,9 +7,9 @@ import (
 
 func (*YouTubeMusicClient) SearchArtists(q string, nextPageToken string) (*api_models.ArtistSearchResponse, error) {
 	response, err := rapidApiFetch("/search", map[string]string{
-		"q":          q,
-		"searchType": "artists",
-		"nextPage":   nextPageToken,
+		"q":        q,
+		"type":     "artists",
+		"nextPage": nextPageToken,
 	})
 
 	if err != nil {

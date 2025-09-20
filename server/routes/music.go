@@ -8,6 +8,7 @@ import (
 
 func registerMusicRoutes(app *fiber.App) {
 	app.Get("/music/quick-picks", music_controllers.GetQuickPicks)
-	app.Get("/music/:videoId/thumbnail", music_controllers.GetTrackThumbnail)
 	app.Get("/music/search", music_controllers.SearchMusicTracks)
+	app.Get("/music/track/:videoId/lyrics", music_controllers.GetTrackLyrics)
+	app.Get("/music/track/:videoId/thumbnail", music_controllers.GetTrackThumbnail)
 }

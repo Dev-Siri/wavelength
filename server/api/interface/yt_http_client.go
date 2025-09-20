@@ -25,10 +25,14 @@ func rapidApiFetch(path string, queryParams map[string]string) (*http.Response, 
 	q := base.Query()
 
 	for k, v := range queryParams {
-		q.Set(k, v)
+		if v != "" {
+			q.Set(k, v)
+		}
 	}
 
 	base.RawQuery = q.Encode()
+
+	print(base.String())
 
 	request, err := http.NewRequest(http.MethodGet, base.String(), nil)
 

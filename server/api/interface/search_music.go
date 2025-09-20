@@ -7,9 +7,9 @@ import (
 
 func (*YouTubeMusicClient) SearchMusicTracks(q string, nextPageToken string) (*api_models.MusicSearchResponse, error) {
 	response, err := rapidApiFetch("/search", map[string]string{
-		"q":          q,
-		"searchType": "song",
-		"nextPage":   nextPageToken,
+		"q":        q,
+		"type":     "song",
+		"nextPage": nextPageToken,
 	})
 
 	if err != nil {
