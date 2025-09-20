@@ -14,7 +14,7 @@ func GetQuickPicks(ctx *fiber.Ctx) error {
 	quickPicks, err := api.YouTubeClient.GetQuickPicks(regionCode)
 
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while retrieving for your feed.")
+		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while retrieving for your feed: "+err.Error())
 	}
 
 	if quickPicks.Error {
