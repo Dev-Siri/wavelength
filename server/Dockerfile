@@ -1,7 +1,7 @@
 FROM golang:1.24.1-alpine AS builder
 
 # Go server uses bimg which depends on vips for image processing.
-RUN apk add --no-cache vips vips-dev gcc musl-dev
+RUN apk add --no-cache vips vips-dev libheif-dev libexif-dev gcc musl-dev
 
 WORKDIR /usr/src/app
 
@@ -16,7 +16,7 @@ RUN go build -v -trimpath -ldflags=-s -ldflags=-w -buildvcs=false -o /usr/local/
 FROM alpine:3.20
 WORKDIR /app
 
-RUN apk add --no-cache vips
+RUN apk add --no-cache vips libheif
 
 COPY --from=builder /usr/local/bin/app /usr/local/bin/app
 
