@@ -5,14 +5,17 @@ import (
 
 	api_interface "wavelength/api/interface"
 
+	yt_streams "github.com/kkdai/youtube/v2"
 	"google.golang.org/api/option"
 	"google.golang.org/api/youtube/v3"
 )
 
 var YouTubeClient *api_interface.YouTubeMusicClient
 var YouTubeV3Client *youtube.Service
+var YoutubeStreamClient *yt_streams.Client
 
 func InitializeYouTubeClients(apiKey string) error {
+	YoutubeStreamClient = &yt_streams.Client{}
 	YouTubeClient = &api_interface.YouTubeMusicClient{}
 
 	ctx := context.Background()
