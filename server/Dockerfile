@@ -19,6 +19,9 @@ WORKDIR /app
 RUN apk add --no-cache vips libheif
 
 COPY --from=builder /usr/local/bin/app /usr/local/bin/app
+COPY --from=builder /usr/src/app/static /app/static
+
+ENV STATIC_DIR=/app/static
 
 EXPOSE $PORT
 

@@ -41,7 +41,9 @@ func main() {
 	})
 
 	addr := ":" + env.GetPORT()
+	staticDir := env.GetStaticDir()
 
+	app.Static("/", staticDir)
 	app.Use(middleware.LogMiddleware)
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: env.GetCorsOrigin(),
