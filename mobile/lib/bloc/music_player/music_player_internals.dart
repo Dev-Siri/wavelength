@@ -56,8 +56,6 @@ class MusicPlayerInternals {
       final playingTrackIndex = musicPlayerQueueBloc.state.tracksInQueue
           .indexWhere((track) => track.videoId == tag.id);
 
-      print(playingTrackIndex);
-
       if (playingTrackIndex == -1) return;
 
       musicPlayerTrackBloc.add(
