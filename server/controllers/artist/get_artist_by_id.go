@@ -17,8 +17,8 @@ func GetArtistById(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get artist details from YouTube: "+err.Error())
 	}
 
-	return ctx.JSON(responses.Success[api_models.ArtistResponse]{
+	return ctx.JSON(responses.Success[*api_models.ArtistResponse]{
 		Success: true,
-		Data:    *response,
+		Data:    response,
 	})
 }

@@ -7,6 +7,7 @@ import (
 )
 
 func registerArtistRoutes(app *fiber.App) {
+	app.Get("/artists/artist/:id/extra", artist_controllers.GetArtistExtraById)
 	app.Get("/artists/artist/:id", artist_controllers.GetArtistById)
 	app.Get("/artists/search", artist_controllers.SearchArtists)
 }
