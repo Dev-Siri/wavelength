@@ -30,7 +30,7 @@ func GetPublicPlaylists(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get public playlists: "+err.Error())
 	}
 
-	var playlists []models.Playlist
+	playlists := make([]models.Playlist, 0)
 
 	for rows.Next() {
 		var playlist models.Playlist
