@@ -9,4 +9,5 @@ import (
 func registerPlaylistRoutes(app *fiber.App) {
 	app.Get("/playlists", playlist_controllers.GetPublicPlaylists)
 	app.Get("/playlists/user/:email", playlist_controllers.GetUserPlaylists)
+	app.Post("/playlists/user/:email", playlist_controllers.CreatePlaylist)
 }
