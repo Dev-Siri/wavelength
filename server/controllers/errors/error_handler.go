@@ -18,9 +18,9 @@ func ErrorHandler(ctx *fiber.Ctx, err error) error {
 
 		switch code {
 		case fiber.StatusMethodNotAllowed:
-			return MethodNotAllowed(ctx)
+			return ctx.JSON(responses.Error{Message: "Method not allowed."})
 		case fiber.StatusNotFound:
-			return NotFound(ctx)
+			return ctx.JSON(responses.Error{Message: message})
 		}
 	}
 
