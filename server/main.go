@@ -12,6 +12,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/healthcheck"
 	"go.uber.org/zap"
 )
 
@@ -45,6 +46,7 @@ func main() {
 
 	app.Static("/", staticDir)
 	app.Use(middleware.LogMiddleware)
+	app.Use(healthcheck.New())
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: env.GetCorsOrigin(),
 	}))
