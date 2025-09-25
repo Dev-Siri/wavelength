@@ -1,8 +1,10 @@
 import { redirect } from "@sveltejs/kit";
 
-import configureRegion from "$lib/server/utils/configure-region.js";
+import type { ApiResponse } from "$lib/types.js";
 
-export async function load({ locals, cookies, getClientAddress, url }) {
+import { backendClient } from "$lib/utils/query-client.js";
+
+export async function load({ locals, url }) {
   const session = await locals.auth();
 
   // Allow the user to access /app even when not logged in.
@@ -12,7 +14,7 @@ export async function load({ locals, cookies, getClientAddress, url }) {
   if (session && !url.pathname.startsWith("/app") && url.pathname !== "/downloads")
     redirect(307, "/app");
 
-  const region = configureRegion(cookies, getClientAddress());
+  const region = await backendClient<ApiResponse<string>>("/region");
 
   return { session, region };
 }

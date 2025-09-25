@@ -3,7 +3,7 @@ import sharp from "sharp";
 export async function GET({ url: { searchParams }, fetch }) {
   const imageUrl = searchParams.get("url");
 
-  if (!imageUrl) return new Response("Image URL not provided");
+  if (!imageUrl) return new Response("Image URL not provided.");
 
   const imageResponse = await fetch(imageUrl);
   const imageBuffer = await imageResponse.arrayBuffer();

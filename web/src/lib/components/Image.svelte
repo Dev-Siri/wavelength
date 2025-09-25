@@ -23,7 +23,7 @@
 
 <img
   src={imageUrl}
-  onerror={() => (imageUrl = src)}
+  onerror={() => (imageUrl = `${BASE_URL}/api/image/fallback?url=${encodeURIComponent(src)}`)}
   {alt}
   {height}
   {width}
