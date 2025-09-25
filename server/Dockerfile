@@ -19,9 +19,11 @@ WORKDIR /app
 RUN apk add --no-cache vips libheif
 
 COPY --from=builder /usr/local/bin/app /usr/local/bin/app
+COPY --from=builder /usr/src/app/lib /app/lib
 COPY --from=builder /usr/src/app/static /app/static
 
 ENV STATIC_DIR=/app/static
+ENV GEOIP_MMDB_PATH=/app/lib/GeoLite2-Country.mmdb
 
 EXPOSE $PORT
 
