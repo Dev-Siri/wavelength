@@ -2,10 +2,11 @@ package music_controllers
 
 import (
 	"wavelength/api"
+	"wavelength/models"
 	"wavelength/models/responses"
+	"wavelength/utils"
 
 	"github.com/gofiber/fiber/v2"
-	"google.golang.org/api/youtube/v3"
 )
 
 func SearchYouTubeVideos(ctx *fiber.Ctx) error {
@@ -21,14 +22,25 @@ func SearchYouTubeVideos(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while searching for YouTube videos: "+err.Error())
 	}
 
-	data := searchResults.Items
-
-	if len(data) == 0 {
+	if len(searchResults.Items) == 0 {
 		return fiber.NewError(fiber.StatusNotFound, "No search results for that query.")
 	}
 
-	return ctx.JSON(responses.Success[[]*youtube.SearchResult]{
+	var youtubeVideos []models.YouTubeVideo
+
+	for _, item := range searchResults.Items {
+		video := models.YouTubeVideo{
+			VideoId:   item.Id.VideoId,
+			Title:     item.Snippet.Title,
+			Thumbnail: utils.GetHighestPossibleThumbnailUrl(item.Snippet.Thumbnails),
+			Author:    item.Snippet.ChannelTitle,
+		}
+
+		youtubeVideos = append(youtubeVideos, video)
+	}
+
+	return ctx.JSON(responses.Success[[]models.YouTubeVideo]{
 		Success: true,
-		Data:    data,
+		Data:    youtubeVideos,
 	})
 }

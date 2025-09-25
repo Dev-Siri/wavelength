@@ -26,9 +26,9 @@ func GetMusicTrackStats(ctx *fiber.Ctx) error {
 	return ctx.JSON(responses.Success[models.MusicTrackStats]{
 		Success: true,
 		Data: models.MusicTrackStats{
-			Views:    stats.ViewCount,
-			Likes:    stats.LikeCount,
-			Comments: stats.CommentCount,
+			ViewCount:    stats.ViewCount,
+			LikeCount:    stats.LikeCount,
+			CommentCount: stats.CommentCount,
 		},
 	})
 }
