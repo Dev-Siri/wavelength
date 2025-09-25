@@ -2,10 +2,10 @@ package music_controllers
 
 import (
 	"wavelength/api"
+	"wavelength/models"
 	"wavelength/models/responses"
 
 	"github.com/gofiber/fiber/v2"
-	"google.golang.org/api/youtube/v3"
 )
 
 func GetMusicTrackStats(ctx *fiber.Ctx) error {
@@ -23,8 +23,12 @@ func GetMusicTrackStats(ctx *fiber.Ctx) error {
 
 	stats := response.Items[0].Statistics
 
-	return ctx.JSON(responses.Success[*youtube.VideoStatistics]{
+	return ctx.JSON(responses.Success[models.MusicTrackStats]{
 		Success: true,
-		Data:    stats,
+		Data: models.MusicTrackStats{
+			Views:    stats.ViewCount,
+			Likes:    stats.LikeCount,
+			Comments: stats.CommentCount,
+		},
 	})
 }
