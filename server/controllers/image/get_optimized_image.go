@@ -13,7 +13,6 @@ import (
 
 func GetOptimizedImage(ctx *fiber.Ctx) error {
 	imageUrl := ctx.Query("url")
-	height := ctx.QueryInt("h")
 
 	if imageUrl == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "Image URL not provided.")
@@ -36,17 +35,8 @@ func GetOptimizedImage(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to read image bytes: "+err.Error())
 	}
 
-	if height == 0 {
-		go logging.Logger.Error("Height not provided.")
-		ctx.Set("Cache-Control", "public, max-age=86400")
-		return ctx.Send(bodyBytes)
-	}
-
 	bImage := bimg.NewImage(bodyBytes)
-	resizedImageBytes, err := bImage.Process(bimg.Options{
-		Height: height,
-		Type:   bimg.AVIF,
-	})
+	resizedImageBytes, err := bImage.Convert(bimg.AVIF)
 
 	if err != nil {
 		go logging.Logger.Error("Failed to optimize image.", zap.Error(err))
