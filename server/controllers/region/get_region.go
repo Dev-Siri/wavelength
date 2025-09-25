@@ -1,10 +1,10 @@
 package region_controllers
 
 import (
-	"io"
-	"net/http"
+	"net/netip"
 	"time"
 	"wavelength/constants"
+	"wavelength/db"
 	"wavelength/logging"
 	"wavelength/models/responses"
 
@@ -19,7 +19,7 @@ func GetRegion(ctx *fiber.Ctx) error {
 		clientAddress := ctx.IP()
 		infiniteTime := time.Date(9999, 0, 1, 0, 0, 0, 0, time.UTC)
 
-		response, err := http.Get("https://ipapi.co/" + clientAddress + "/country")
+		netAddress, err := netip.ParseAddr(clientAddress)
 
 		if err != nil {
 			go logging.Logger.Error("Failed to get region.", zap.Error(err))
@@ -30,13 +30,18 @@ func GetRegion(ctx *fiber.Ctx) error {
 				Secure:   false,
 				Expires:  infiniteTime,
 			})
-			region = constants.DefaultRegion
+			return ctx.JSON(
+				&responses.Success[string]{
+					Success: true,
+					Data:    constants.DefaultRegion,
+				},
+			)
 		}
 
-		countryCode, err := io.ReadAll(response.Body)
+		geoIpLookup, err := db.GeoIpDb.Country(netAddress)
 
 		if err != nil {
-			go logging.Logger.Error("Failed to decipher region.", zap.Error(err))
+			go logging.Logger.Error("Failed to get region.", zap.Error(err))
 			ctx.Cookie(&fiber.Cookie{
 				Name:     constants.RegionCookieKey,
 				Value:    constants.DefaultRegion,
@@ -44,10 +49,16 @@ func GetRegion(ctx *fiber.Ctx) error {
 				Secure:   false,
 				Expires:  infiniteTime,
 			})
-			region = constants.DefaultRegion
+			return ctx.JSON(
+				&responses.Success[string]{
+					Success: true,
+					Data:    constants.DefaultRegion,
+				},
+			)
 		}
 
-		region = string(countryCode)
+		region = geoIpLookup.Country.ISOCode
+
 		ctx.Cookie(&fiber.Cookie{
 			Name:     constants.RegionCookieKey,
 			Value:    region,
