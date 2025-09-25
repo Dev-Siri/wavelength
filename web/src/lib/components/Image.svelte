@@ -7,7 +7,6 @@
     height,
     width,
     loading = "lazy",
-    originalUri = false,
     class: className = "",
     ...restProps
   }: {
@@ -16,13 +15,15 @@
     height: number;
     width: number;
     loading?: "lazy" | "eager";
-    originalUri?: boolean;
     class?: string;
   } & Record<string, any> = $props();
+
+  let imageUrl = $state(`${BASE_URL}/api/image?url=${encodeURIComponent(src)}`);
 </script>
 
 <img
-  src={originalUri ? src : `${BASE_URL}/api/image?url=${encodeURIComponent(src)}`}
+  src={imageUrl}
+  onerror={() => (imageUrl = src)}
   {alt}
   {height}
   {width}
