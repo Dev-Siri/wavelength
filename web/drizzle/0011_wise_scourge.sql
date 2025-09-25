@@ -1,1 +1,0 @@
-ALTER TABLE "playlist_tracks" ALTER COLUMN "video_type" SET DEFAULT 'track';

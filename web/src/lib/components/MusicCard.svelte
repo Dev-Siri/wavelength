@@ -2,7 +2,7 @@
   import { PlayIcon } from "@lucide/svelte";
   import { fly } from "svelte/transition";
 
-  import type { BaseMusicTrack } from "$lib/server/api/interface/types.js";
+  import type { BaseMusicTrack } from "$lib/types.js";
 
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte";

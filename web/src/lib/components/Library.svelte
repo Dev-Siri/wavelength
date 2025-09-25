@@ -1,12 +1,11 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
 
-  import type { PlayList } from "$lib/db/schema.js";
-  import type { ApiResponse } from "$lib/utils/types.js";
+  import type { ApiResponse, Playlist } from "$lib/types.js";
 
   import playlistsStore from "$lib/stores/playlists.svelte";
   import userStore from "$lib/stores/user.svelte";
-  import queryClient from "$lib/utils/query-client.js";
+  import { backendClient } from "$lib/utils/query-client.js";
 
   import PlaylistCard from "./PlaylistCard.svelte";
 
@@ -16,9 +15,8 @@
     async function fetchPlaylists() {
       if (!userStore.user) return;
 
-      const response = await queryClient<ApiResponse<PlayList[]>>(
-        location.toString(),
-        `/api/playlists/user/${userStore.user.email}`,
+      const response = await backendClient<ApiResponse<Playlist[]>>(
+        `/playlists/user/${userStore.user.email}`,
       );
 
       if (response.success) playlistsStore.playlists = response.data;

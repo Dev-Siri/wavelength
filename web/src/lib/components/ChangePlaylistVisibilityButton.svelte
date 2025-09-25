@@ -2,12 +2,11 @@
   import { GlobeIcon, LockIcon } from "@lucide/svelte";
   import toast from "svelte-french-toast";
 
-  import type { PlayList } from "$lib/db/schema.js";
-  import type { ApiResponse } from "$lib/utils/types.js";
+  import type { ApiResponse, Playlist } from "$lib/types.js";
 
   import playlistsStore from "$lib/stores/playlists.svelte.js";
   import userStore from "$lib/stores/user.svelte.js";
-  import queryClient from "$lib/utils/query-client.js";
+  import { backendClient } from "$lib/utils/query-client.js";
 
   import Button from "./ui/button/button.svelte";
 
@@ -24,18 +23,16 @@
 
     isPublic = !isPublic;
 
-    const response = await queryClient<ApiResponse<string>>(
-      location.toString(),
-      `/api/playlists/${playlistId}/visibility`,
+    const response = await backendClient<ApiResponse<string>>(
+      `/playlists/playlist/${playlistId}/visibility`,
       {
         method: "PATCH",
       },
     );
 
     if (response.success) {
-      const response = await queryClient<ApiResponse<PlayList[]>>(
-        location.toString(),
-        `/api/playlists/user/${userStore.user.email}`,
+      const response = await backendClient<ApiResponse<Playlist[]>>(
+        `/playlists/user/${userStore.user.email}`,
       );
 
       if (response.success) playlistsStore.playlists = response.data;

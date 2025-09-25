@@ -1,3 +1,5 @@
+import { PUBLIC_BACKEND_URL } from "$env/static/public";
+
 type UrlValidity =
   | {
       isValid: false;
@@ -23,4 +25,8 @@ export function checkUrlValidity(uncheckedString: string): UrlValidity {
   } catch {
     return { isValid: false };
   }
+}
+
+export function getThumbnailUrl(videoId: string) {
+  return new URL(`/music/track/${videoId}/thumbnail`, PUBLIC_BACKEND_URL).toString();
 }

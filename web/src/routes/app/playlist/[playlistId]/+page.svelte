@@ -3,15 +3,14 @@
   import { ClockIcon, ListMusicIcon, ListPlusIcon, PlayIcon } from "@lucide/svelte";
   import { fly } from "svelte/transition";
 
-  import type { PlayList, PlayListTrack } from "$lib/db/schema.js";
-  import type { ApiResponse } from "$lib/utils/types.js";
+  import type { ApiResponse, Playlist, PlaylistTrack } from "$lib/types.js";
   import type { PageData } from "./$types.js";
 
   import getClientDB from "$lib/db/client-indexed-db.js";
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
   import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
   import userStore from "$lib/stores/user.svelte.js";
-  import queryClient from "$lib/utils/query-client.js";
+  import { backendClient } from "$lib/utils/query-client.js";
 
   import ChangePlaylistVisibilityButton from "$lib/components/ChangePlaylistVisibilityButton.svelte";
   import EditPlaylistDetailsDialog from "$lib/components/EditPlaylistDetailsDialog.svelte";
@@ -46,13 +45,9 @@
       if (!page.params.playlistId) return;
 
       const [playlistInfoResponse, playlistTracksResponse] = await Promise.all([
-        queryClient<ApiResponse<PlayList>>(
-          location.origin,
-          `/api/playlists/${page.params.playlistId}`,
-        ),
-        queryClient<ApiResponse<PlayListTrack[]>>(
-          location.origin,
-          `/api/playlists/${page.params.playlistId}/tracks`,
+        backendClient<ApiResponse<Playlist>>(`/playlists/playlist/${page.params.playlistId}`),
+        backendClient<ApiResponse<PlaylistTrack[]>>(
+          `/playlists/playlist/${page.params.playlistId}/tracks`,
         ),
       ]);
 

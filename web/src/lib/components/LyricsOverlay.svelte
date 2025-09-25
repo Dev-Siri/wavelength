@@ -1,15 +1,14 @@
 <script lang="ts">
-  import type { ApiResponse } from "$lib/utils/types.js";
-  import type { LyricsResponse } from "../../routes/api/music/[videoId]/lyrics/types.js";
+  import type { ApiResponse, Lyric } from "$lib/types.js";
 
   import getClientDB from "$lib/db/client-indexed-db.js";
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
-  import queryClient from "$lib/utils/query-client.js";
+  import { backendClient } from "$lib/utils/query-client.js";
   import LoadingSpinner from "./LoadingSpinner.svelte";
 
   let lyricsList: HTMLDivElement | null = $state(null);
-  let lyrics: LyricsResponse | null = $state([]);
+  let lyrics: Lyric[] | null = $state([]);
   let duration = $state(0);
   let isLoading = $state(false);
   let hasErrored = $state(false);
@@ -39,9 +38,8 @@
       }
 
       try {
-        const lyricsResponse = await queryClient<ApiResponse<LyricsResponse>>(
-          location.toString(),
-          `/api/music/${musicQueueStore.musicPlayingNow.videoId}/lyrics`,
+        const lyricsResponse = await backendClient<ApiResponse<Lyric[]>>(
+          `/music/track/${musicQueueStore.musicPlayingNow.videoId}/lyrics`,
         );
 
         if (lyricsResponse.success) {

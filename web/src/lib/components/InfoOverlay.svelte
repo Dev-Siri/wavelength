@@ -1,12 +1,12 @@
 <script lang="ts">
   import { XIcon } from "@lucide/svelte";
 
-  import type { ApiResponse } from "$lib/utils/types.js";
+  import type { ApiResponse } from "$lib/types.js";
   import type { Snippet } from "svelte";
 
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
-  import queryClient from "$lib/utils/query-client";
+  import { backendClient } from "$lib/utils/query-client";
 
   import MusicVideoPreview from "./MusicVideoPreview.svelte";
   import { Button } from "./ui/button";
@@ -21,9 +21,8 @@
   });
 
   async function fetchMusicVideo(playingNow: NonNullable<typeof musicQueueStore.musicPlayingNow>) {
-    const musicVideoIdResponse = await queryClient<ApiResponse<{ videoId: string }>>(
-      location.toString(),
-      `/api/music/${playingNow.videoId}/music-video-preview`,
+    const musicVideoIdResponse = await backendClient<ApiResponse<{ videoId: string }>>(
+      `/music/track/${playingNow.videoId}/music-video-preview`,
       {
         searchParams: {
           title: playingNow.title,

@@ -2,12 +2,11 @@
   import { CompassIcon, PlusIcon } from "@lucide/svelte";
   import toast from "svelte-french-toast";
 
-  import type { PlayList } from "$lib/db/schema.js";
-  import type { ApiResponse } from "$lib/utils/types.js";
+  import type { ApiResponse, Playlist } from "$lib/types.js";
 
   import playlistsStore from "$lib/stores/playlists.svelte.js";
   import userStore from "$lib/stores/user.svelte.js";
-  import queryClient from "$lib/utils/query-client.js";
+  import { backendClient } from "$lib/utils/query-client.js";
 
   import Library from "./Library.svelte";
   import Button from "./ui/button/button.svelte";
@@ -17,9 +16,8 @@
   async function createNewPlaylist() {
     if (!userStore.user) return;
 
-    const createPlaylistResponse = await queryClient<ApiResponse<string>>(
-      location.toString(),
-      `/api/playlists/user/${userStore.user.email}`,
+    const createPlaylistResponse = await backendClient<ApiResponse<string>>(
+      `/playlists/user/${userStore.user.email}`,
       { method: "POST" },
     );
 
@@ -30,9 +28,8 @@
 
     toast.success("Created a new playlist.");
 
-    const playlistsResponse = await queryClient<ApiResponse<PlayList[]>>(
-      location.toString(),
-      `/api/playlists/user/${userStore.user.email}`,
+    const playlistsResponse = await backendClient<ApiResponse<Playlist[]>>(
+      `/playlists/user/${userStore.user.email}`,
     );
 
     if (playlistsResponse.success) playlistsStore.playlists = playlistsResponse.data;

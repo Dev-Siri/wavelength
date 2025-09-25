@@ -6,9 +6,10 @@
     type SortEventDetail,
   } from "@rodrigodagostino/svelte-sortable-list";
 
-  import type { PlayListTrack } from "$lib/db/schema.js";
+  import type { PlaylistTrack } from "$lib/types.js";
 
-  import queryClient from "$lib/utils/query-client.js";
+  import { backendClient } from "$lib/utils/query-client.js";
+
   import PlaylistTracksListItem from "./PlaylistTracksListItem.svelte";
 
   const {
@@ -17,7 +18,7 @@
     isRearrangingList,
   }: {
     playlistId: string;
-    playlistTracks: PlayListTrack[];
+    playlistTracks: PlaylistTrack[];
     isRearrangingList: boolean;
   } = $props();
 
@@ -36,7 +37,7 @@
 
   $effect(() => {
     async function rearrangeItems() {
-      await queryClient(location.toString(), `/api/playlists/${playlistId}/tracks`, {
+      await backendClient(`/playlists/playlist/${playlistId}/tracks`, {
         method: "PUT",
         body: items.map((_, i) => ({
           playlistTrackId: prevItems[i].playlistTrackId,

@@ -4,20 +4,19 @@
   import { UploadButton } from "@uploadthing/svelte";
   import toast from "svelte-french-toast";
 
-  import type { PlayList } from "$lib/db/schema.js";
-  import type { ApiResponse } from "$lib/utils/types.js";
+  import type { ApiResponse, Playlist } from "$lib/types.js";
 
   import playlistsStore from "$lib/stores/playlists.svelte";
   import userStore from "$lib/stores/user.svelte";
   import { createUploader } from "$lib/utils/uploadthing.js";
 
-  import queryClient from "$lib/utils/query-client.js";
+  import { backendClient } from "$lib/utils/query-client.js";
   import { Button } from "./ui/button";
   import * as Dialog from "./ui/dialog";
   import { Input } from "./ui/input";
   import { Label } from "./ui/label";
 
-  const { initialPlaylist }: { initialPlaylist: PlayList } = $props();
+  const { initialPlaylist }: { initialPlaylist: Playlist } = $props();
 
   let isLoading = $state(false);
   let playlistTitle = $state(initialPlaylist.name);
@@ -25,7 +24,7 @@
 
   const uploader = createUploader("imageUploader", {
     onClientUploadComplete(res) {
-      playlistCoverImage = res[0].url;
+      playlistCoverImage = res[0].ufsUrl;
     },
   });
 
@@ -36,9 +35,8 @@
 
     isLoading = true;
 
-    const playlistEditResponse = await queryClient<ApiResponse<string>>(
-      location.toString(),
-      `/api/playlists/${initialPlaylist.playlistId}`,
+    const playlistEditResponse = await backendClient<ApiResponse<string>>(
+      `/playlists/playlist/${initialPlaylist.playlistId}`,
       {
         method: "PUT",
         body: {
@@ -58,9 +56,8 @@
 
     if (!userStore.user) return;
 
-    const response = await queryClient<ApiResponse<PlayList[]>>(
-      location.toString(),
-      `/api/playlists/user/${userStore.user.email}`,
+    const response = await backendClient<ApiResponse<Playlist[]>>(
+      `/playlists/user/${userStore.user.email}`,
     );
 
     if (response.success) playlistsStore.playlists = response.data;

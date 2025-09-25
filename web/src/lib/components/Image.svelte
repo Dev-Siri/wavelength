@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { BASE_URL } from "$lib/constants/urls.js";
+  import { PUBLIC_BACKEND_URL } from "$env/static/public";
 
   const {
     src,
@@ -22,7 +22,7 @@
 </script>
 
 <img
-  src={originalUri ? src : `${BASE_URL}/api/image?url=${encodeURIComponent(src)}&h=${height}`}
+  src={originalUri ? src : `${PUBLIC_BACKEND_URL}/image?url=${encodeURIComponent(src)}&h=${height}`}
   {alt}
   {height}
   {width}

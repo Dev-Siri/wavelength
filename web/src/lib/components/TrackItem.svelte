@@ -2,7 +2,7 @@
   import { EllipsisIcon, PlayIcon } from "@lucide/svelte";
 
   import type { VideoTypeEnum } from "$lib/db/schema.js";
-  import type { MusicTrack } from "$lib/server/api/interface/types.js";
+  import type { MusicTrack } from "$lib/types.js";
 
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
   import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";

@@ -1,6 +1,6 @@
 import { openDB, type DBSchema } from "idb";
 
-import type { PlayList, PlayListTrack } from "./schema.js";
+import type { BaseMusicTrack, Lyric, Playlist, PlaylistTrack } from "$lib/types.js";
 
 import {
   DB_INDIVIDUAL_VERSION,
@@ -9,17 +9,14 @@ import {
   DB_TRACKS_STORE_NAME,
 } from "$lib/constants/db.js";
 
-import type { BaseMusicTrack } from "$lib/server/api/interface/types.js";
-import type { Lyric } from "../../routes/api/music/[videoId]/lyrics/types.js";
-
 export interface WavelengthDB extends DBSchema {
   playlists: {
     key: string;
-    value: PlayList;
+    value: Playlist;
   };
   tracks: {
     key: string;
-    value: PlayListTrack;
+    value: PlaylistTrack;
     indexes: {
       by_playlistId: string;
     };

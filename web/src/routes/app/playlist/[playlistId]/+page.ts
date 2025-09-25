@@ -1,11 +1,10 @@
-import type { ApiResponse } from "$lib/utils/types.js";
-import type { PlaylistTracksLength } from "../../../api/playlists/[playlistId]/length/types.js";
+import type { ApiResponse, PlaylistTracksLength } from "$lib/types.js";
 
 import { DB_PLAYLISTS_STORE_NAME, DB_TRACKS_STORE_NAME } from "$lib/constants/db.js";
 import getClientDB from "$lib/db/client-indexed-db.js";
-import queryClient from "$lib/utils/query-client.js";
+import { backendClient } from "$lib/utils/query-client.js";
 
-export async function load({ fetch, url, params: { playlistId } }) {
+export async function load({ fetch, params: { playlistId } }) {
   try {
     const db = await getClientDB();
 
@@ -14,12 +13,9 @@ export async function load({ fetch, url, params: { playlistId } }) {
       db.getAllFromIndex(DB_TRACKS_STORE_NAME, "by_playlistId", playlistId),
     ]);
 
-    const playlistPlaylengthResponse = queryClient<ApiResponse<PlaylistTracksLength>>(
-      url.toString(),
-      `/api/playlists/${playlistId}/length`,
-      {
-        customFetch: fetch,
-      },
+    const playlistPlaylengthResponse = backendClient<ApiResponse<PlaylistTracksLength>>(
+      `/playlists/playlist/${playlistId}/length`,
+      { customFetch: fetch },
     );
 
     return {

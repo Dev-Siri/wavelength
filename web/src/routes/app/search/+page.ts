@@ -1,37 +1,30 @@
-import type { MusicSearchResponse } from "$lib/server/api/interface/search/search-music.js";
-import type { ApiResponse } from "$lib/utils/types.js";
-import type { youtube_v3 } from "googleapis";
+import type {
+  ApiResponse,
+  ArtistSearchResponse,
+  MusicSearchResponse,
+  YouTubeVideo,
+} from "$lib/types.js";
 
-import queryClient from "$lib/utils/query-client.js";
+import { backendClient } from "$lib/utils/query-client.js";
 
 export function load({ url, fetch }) {
   const q = url.searchParams.get("q");
+  const searchOptions = {
+    searchParams: { q },
+    customFetch: fetch,
+  };
 
-  const songResponse = queryClient<ApiResponse<MusicSearchResponse<"song">>>(
-    url.toString(),
-    "/api/music/search",
-    {
-      searchParams: { q, searchType: "song" },
-      customFetch: fetch,
-    },
+  const songResponse = backendClient<ApiResponse<MusicSearchResponse>>(
+    "/music/search",
+    searchOptions,
   );
-
-  const artistResponse = queryClient<ApiResponse<MusicSearchResponse<"artists">>>(
-    url.toString(),
-    "/api/music/search",
-    {
-      searchParams: { q, searchType: "artists" },
-      customFetch: fetch,
-    },
+  const artistResponse = backendClient<ApiResponse<ArtistSearchResponse>>(
+    "/artists/search",
+    searchOptions,
   );
-
-  const uvideosResponse = queryClient<ApiResponse<youtube_v3.Schema$SearchResult[]>>(
-    url.toString(),
-    "/api/music/search/uvideos",
-    {
-      searchParams: { q },
-      customFetch: fetch,
-    },
+  const uvideosResponse = backendClient<ApiResponse<YouTubeVideo[]>>(
+    "/music/search/uvideos",
+    searchOptions,
   );
 
   return {

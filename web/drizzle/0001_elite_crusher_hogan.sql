@@ -1,1 +1,0 @@
-ALTER TABLE "playlist_tracks" ADD COLUMN "author_google_email" varchar(255);

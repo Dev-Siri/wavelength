@@ -1,24 +1,19 @@
-import type { QuickPicksResponse } from "$lib/server/api/interface/home/quick-picks.js";
-import type { ApiResponse } from "$lib/utils/types.js";
+import type { ApiResponse, QuickPicksResponse } from "$lib/types.js";
 
 import { DEFAULT_REGION } from "$lib/constants/countries.js";
-import queryClient from "$lib/utils/query-client.js";
+import { backendClient } from "$lib/utils/query-client.js";
 
-export async function load({ url, fetch }) {
-  const regionResponse = await queryClient<ApiResponse<string>>(url.toString(), "/api/region", {
+export async function load({ fetch }) {
+  const regionResponse = await backendClient<ApiResponse<string>>("/region", {
     customFetch: fetch,
   });
 
-  const response = queryClient<ApiResponse<QuickPicksResponse["results"]>>(
-    url.toString(),
-    "/api/music/quick-picks",
-    {
-      customFetch: fetch,
-      searchParams: {
-        regionCode: regionResponse.success ? regionResponse.data : DEFAULT_REGION,
-      },
+  const response = backendClient<ApiResponse<QuickPicksResponse["results"]>>("/music/quick-picks", {
+    customFetch: fetch,
+    searchParams: {
+      regionCode: regionResponse.success ? regionResponse.data : DEFAULT_REGION,
     },
-  );
+  });
 
   return { pageData: response };
 }

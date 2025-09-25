@@ -2,14 +2,13 @@
   import { EllipsisIcon, GlobeIcon, PencilIcon, PlayIcon, Trash2Icon } from "@lucide/svelte";
   import toast from "svelte-french-toast";
 
-  import type { PlayList, PlayListTrack } from "$lib/db/schema.js";
-  import type { ApiResponse } from "$lib/utils/types.js";
+  import type { ApiResponse, Playlist, PlaylistTrack } from "$lib/types.js";
 
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
   import playlistsStore from "$lib/stores/playlists.svelte";
   import userStore from "$lib/stores/user.svelte";
-  import queryClient from "$lib/utils/query-client";
+  import { backendClient } from "$lib/utils/query-client";
 
   import EditPlaylistDetailsDialog from "./EditPlaylistDetailsDialog.svelte";
   import Image from "./Image.svelte";
@@ -25,7 +24,7 @@
     wrapperClasses = "",
     wrapperClick = () => {},
   }: {
-    playlist: PlayList;
+    playlist: Playlist;
     titleClasses?: string;
     imageClasses?: string;
     wrapperClasses?: string;
@@ -37,9 +36,8 @@
   async function handleDeletePlaylist() {
     if (!userStore.user) return;
 
-    const deletePlaylistResponse = await queryClient<ApiResponse<string>>(
-      location.toString(),
-      `/api/playlists/${playlistId}`,
+    const deletePlaylistResponse = await backendClient<ApiResponse<string>>(
+      `/playlists/playlist/${playlistId}`,
       {
         method: "DELETE",
       },
@@ -49,18 +47,16 @@
 
     toast.success(`Deleted playlist "${name}".`);
 
-    const response = await queryClient<ApiResponse<PlayList[]>>(
-      location.toString(),
-      `/api/playlists/user/${userStore.user.email}`,
+    const response = await backendClient<ApiResponse<Playlist[]>>(
+      `/playlists/user/${userStore.user.email}`,
     );
 
     if (response.success) playlistsStore.playlists = response.data;
   }
 
   async function playPlaylist() {
-    const playlistTracksResponse = await queryClient<ApiResponse<PlayListTrack[]>>(
-      location.toString(),
-      `/api/playlists/${playlistId}/tracks`,
+    const playlistTracksResponse = await backendClient<ApiResponse<PlaylistTrack[]>>(
+      `/playlists/playlist/${playlistId}/tracks`,
       {
         customFetch: fetch,
       },

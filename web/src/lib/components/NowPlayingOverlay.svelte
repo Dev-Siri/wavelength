@@ -7,20 +7,19 @@
     YoutubeIcon,
   } from "@lucide/svelte";
 
-  import type { ApiResponse } from "$lib/utils/types.js";
-  import type { youtube_v3 } from "googleapis";
-  import type { ThemeColor } from "../../routes/api/music/[videoId]/theme-color/+server";
+  import type { ApiResponse, MusicTrackStats, ThemeColor } from "$lib/types";
 
   import musicQueueStore from "$lib/stores/music-queue.svelte";
   import { compactify, parseHtmlEntities } from "$lib/utils/format.js";
-  import queryClient from "$lib/utils/query-client.js";
+  import { backendClient } from "$lib/utils/query-client.js";
+  import { getThumbnailUrl } from "$lib/utils/url";
 
   import Image from "./Image.svelte";
   import { Button } from "./ui/button";
   import * as Tooltip from "./ui/tooltip";
 
   let themeColor = $state({ r: 0, g: 0, b: 0 });
-  let videoStats: youtube_v3.Schema$VideoStatistics | null = $state(null);
+  let videoStats: MusicTrackStats | null = $state(null);
 
   let coverStyle = $derived(
     themeColor
@@ -33,13 +32,13 @@
       if (!musicQueueStore.musicPlayingNow) return;
 
       const [themeColorResponse, statsResponse] = await Promise.all([
-        queryClient<ApiResponse<ThemeColor>>(
-          location.toString(),
-          `/api/music/${musicQueueStore.musicPlayingNow.videoId}/theme-color`,
-        ),
-        queryClient<ApiResponse<youtube_v3.Schema$VideoStatistics>>(
-          location.toString(),
-          `/api/music/${musicQueueStore.musicPlayingNow.videoId}/stats`,
+        backendClient<ApiResponse<ThemeColor>>("/image/theme-color", {
+          searchParams: {
+            imageUrl: getThumbnailUrl(musicQueueStore.musicPlayingNow.videoId),
+          },
+        }),
+        backendClient<ApiResponse<MusicTrackStats>>(
+          `/music/track/${musicQueueStore.musicPlayingNow.videoId}/stats`,
         ),
       ]);
 
@@ -56,7 +55,7 @@
     class="flex flex-col min-[800px]:flex-row justify-center min-[800px]:justify-start text-center min-[800px]:text-start items-center h-3/5 p-9 min-[800px]:p-14 pt-5"
   >
     <Image
-      src={`/api/music/${musicQueueStore.musicPlayingNow.videoId}/thumbnail`}
+      src={getThumbnailUrl(musicQueueStore.musicPlayingNow.videoId)}
       alt="Thumbnail"
       height={256}
       width={256}

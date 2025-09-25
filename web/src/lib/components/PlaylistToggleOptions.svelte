@@ -3,28 +3,23 @@
   import { PlusIcon } from "@lucide/svelte";
   import toast from "svelte-french-toast";
 
-  import type { MusicTrack } from "$lib/server/api/interface/types.js";
-  import type { ApiResponse } from "$lib/utils/types.js";
+  import type { ApiResponse, MusicTrack } from "$lib/types.js";
 
   import playlistsStore from "$lib/stores/playlists.svelte";
-  import queryClient from "$lib/utils/query-client.js";
+  import { backendClient } from "$lib/utils/query-client.js";
 
   import DropdownMenuItem from "./ui/dropdown-menu/dropdown-menu-item.svelte";
 
   const { music }: { music: MusicTrack } = $props();
 
   async function addToPlaylist(playlistId: string) {
-    const response = await queryClient<ApiResponse<string>>(
-      location.toString(),
-      `/api/playlists/${playlistId}/tracks`,
-      {
-        method: "POST",
-        body: {
-          ...music,
-          videoType: "track",
-        },
+    const response = await backendClient<ApiResponse<string>>(`/playlists/${playlistId}/tracks`, {
+      method: "POST",
+      body: {
+        ...music,
+        videoType: "track",
       },
-    );
+    });
 
     if (response.success) {
       toast.success(response.data);

@@ -1,3 +1,5 @@
+import { PUBLIC_BACKEND_URL } from "$env/static/public";
+
 type Method =
   | "GET"
   | "POST"
@@ -17,7 +19,7 @@ interface Options {
   customFetch(input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>;
 }
 
-export default async function queryClient<T>(
+async function queryClient<T>(
   baseUrl: string,
   endpoint: string,
   { method = "GET", body, searchParams, customFetch, headers }: Partial<Options> = {},
@@ -27,6 +29,7 @@ export default async function queryClient<T>(
     "Content-Type": "application/json",
     ...headers,
   };
+
   if (searchParams)
     Object.keys(searchParams).forEach(
       searchParamKey =>
@@ -50,7 +53,7 @@ export default async function queryClient<T>(
 
     return (await response.json()) as T;
   } catch (error) {
-    // Print the error message on the server, only trigger the error.tsx or +error.svelte on the client.
+    // Print the error message on the server, only trigger the +error.svelte on the client.
     // Extra validation to make sure actual error objects are never printed in the browser.
     if (typeof window !== "undefined") throw error;
 
@@ -83,3 +86,10 @@ export default async function queryClient<T>(
     return {} as T;
   }
 }
+
+function createQueryClient(baseUrl: string) {
+  return <T>(endpoint: string, options: Partial<Options> = {}) =>
+    queryClient<T>(baseUrl, endpoint, options);
+}
+
+export const backendClient = createQueryClient(PUBLIC_BACKEND_URL);
