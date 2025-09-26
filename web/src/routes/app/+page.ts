@@ -10,9 +10,7 @@ export async function load({ fetch }) {
 
   const response = backendClient<ApiResponse<QuickPicksResponse["results"]>>("/music/quick-picks", {
     customFetch: fetch,
-    searchParams: {
-      regionCode: regionResponse.success ? regionResponse.data : DEFAULT_REGION,
-    },
+    searchParams: { regionCode: regionResponse.success ? regionResponse.data : DEFAULT_REGION },
   });
 
   return { pageData: response };
