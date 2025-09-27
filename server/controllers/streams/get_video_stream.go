@@ -9,7 +9,7 @@ import (
 	yt_streams "github.com/kkdai/youtube/v2"
 )
 
-func GetAudioStream(ctx *fiber.Ctx) error {
+func GetVideoStream(ctx *fiber.Ctx) error {
 	videoId := ctx.Params("videoId")
 
 	if videoId == "" {
@@ -24,9 +24,7 @@ func GetAudioStream(ctx *fiber.Ctx) error {
 
 	var mp4Format *yt_streams.Format = nil
 
-	formats := video.Formats.WithAudioChannels()
-
-	for _, format := range formats {
+	for _, format := range video.Formats {
 		if strings.Contains(format.MimeType, constants.SupportedStreamingFormat) {
 			mp4Format = &format
 			break
