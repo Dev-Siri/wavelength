@@ -21,6 +21,11 @@ func GetVideoStream(ctx *fiber.Ctx) error {
 	}
 
 	formats := video.Formats.Type(constants.SupportedStreamingFormat)
+
+	if len(formats) == 0 {
+		fiber.NewError(fiber.StatusNotFound, "No streams of supported format found.")
+	}
+
 	requiredFormat := &formats[0]
 
 	return ctx.Redirect(requiredFormat.URL, 302)
