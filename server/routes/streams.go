@@ -7,6 +7,5 @@ import (
 )
 
 func registerStreamRoutes(app *fiber.App) {
-	app.Get("/streams/playback/:videoId/audio", stream_controllers.GetAudioStream)
-	app.Get("/streams/playback/:videoId/audio/direct", stream_controllers.GetDirectAudioStream)
+	app.Get("/stream/playback/:videoId/audio", stream_controllers.GetAudioStream)
 }
