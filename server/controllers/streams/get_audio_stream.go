@@ -23,7 +23,7 @@ func GetAudioStream(ctx *fiber.Ctx) error {
 	formats := video.Formats.WithAudioChannels().Type(constants.SupportedStreamingFormat)
 
 	if len(formats) == 0 {
-		fiber.NewError(fiber.StatusNotFound, "No streams of supported format found.")
+		return fiber.NewError(fiber.StatusNotFound, "No streams of supported format found.")
 	}
 
 	requiredFormat := &formats[0]
