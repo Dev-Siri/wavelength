@@ -41,6 +41,7 @@ func main() {
 		ErrorHandler:            error_controllers.ErrorHandler,
 		EnableTrustedProxyCheck: true,
 		TrustedProxies:          []string{"0.0.0.0/0"},
+		ProxyHeader:             "CF-Connecting-IP",
 	})
 
 	addr := ":" + env.GetPORT()
