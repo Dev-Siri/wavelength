@@ -1,8 +1,7 @@
 <script lang="ts">
   import { EllipsisIcon, PlayIcon } from "@lucide/svelte";
 
-  import type { VideoTypeEnum } from "$lib/db/schema.js";
-  import type { MusicTrack } from "$lib/types.js";
+  import type { MusicTrack, VideoType } from "$lib/types.js";
 
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
   import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
@@ -14,7 +13,7 @@
   import * as DropdownMenu from "./ui/dropdown-menu";
   import * as Tooltip from "./ui/tooltip";
 
-  const { music }: { music: MusicTrack & { videoType?: VideoTypeEnum } } = $props();
+  const { music }: { music: MusicTrack & { videoType?: VideoType } } = $props();
 
   function playSong() {
     const queueableTrack = {

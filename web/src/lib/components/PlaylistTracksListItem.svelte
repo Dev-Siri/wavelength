@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
 
-  import type { PlayListTrack } from "$lib/db/schema.js";
+  import type { PlaylistTrack } from "$lib/types";
 
   import TrackItem from "./TrackItem.svelte";
 
@@ -9,7 +9,7 @@
     i,
     isRearrangingList,
     music,
-  }: { i: number; isRearrangingList: boolean; music: PlayListTrack } = $props();
+  }: { i: number; isRearrangingList: boolean; music: PlaylistTrack } = $props();
 </script>
 
 <div class="flex items-center gap-2">

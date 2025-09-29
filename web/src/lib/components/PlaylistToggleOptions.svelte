@@ -13,13 +13,16 @@
   const { music }: { music: MusicTrack } = $props();
 
   async function addToPlaylist(playlistId: string) {
-    const response = await backendClient<ApiResponse<string>>(`/playlists/${playlistId}/tracks`, {
-      method: "POST",
-      body: {
-        ...music,
-        videoType: "track",
+    const response = await backendClient<ApiResponse<string>>(
+      `/playlists/playlist/${playlistId}/tracks`,
+      {
+        method: "POST",
+        body: {
+          ...music,
+          videoType: "track",
+        },
       },
-    });
+    );
 
     if (response.success) {
       toast.success(response.data);
