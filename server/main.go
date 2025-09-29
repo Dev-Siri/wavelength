@@ -38,7 +38,9 @@ func main() {
 	}
 
 	app := fiber.New(fiber.Config{
-		ErrorHandler: error_controllers.ErrorHandler,
+		ErrorHandler:            error_controllers.ErrorHandler,
+		EnableTrustedProxyCheck: true,
+		TrustedProxies:          []string{"0.0.0.0/0"},
 	})
 
 	addr := ":" + env.GetPORT()
