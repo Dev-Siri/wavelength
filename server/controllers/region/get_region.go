@@ -1,16 +1,38 @@
 package region_controllers
 
 import (
-	"net/netip"
+	"encoding/json"
+	"fmt"
+	"net/http"
 	"time"
 	"wavelength/constants"
-	"wavelength/db"
 	"wavelength/logging"
 	"wavelength/models/responses"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 )
+
+func createDefaultResponse(ctx *fiber.Ctx, err error) error {
+	infiniteTime := time.Date(9999, 0, 1, 0, 0, 0, 0, time.UTC)
+
+	go logging.Logger.Error("Failed to get region.", zap.Error(err))
+
+	ctx.Cookie(&fiber.Cookie{
+		Name:     constants.RegionCookieKey,
+		Value:    constants.DefaultRegion,
+		HTTPOnly: false,
+		Secure:   false,
+		Expires:  infiniteTime,
+	})
+
+	return ctx.JSON(
+		&responses.Success[string]{
+			Success: true,
+			Data:    constants.DefaultRegion,
+		},
+	)
+}
 
 func GetRegion(ctx *fiber.Ctx) error {
 	region := ctx.Cookies(constants.RegionCookieKey)
@@ -19,45 +41,24 @@ func GetRegion(ctx *fiber.Ctx) error {
 		clientAddress := ctx.IP()
 		infiniteTime := time.Date(9999, 0, 1, 0, 0, 0, 0, time.UTC)
 
-		netAddress, err := netip.ParseAddr(clientAddress)
+		geoIpRequestUrl := fmt.Sprintf("%s/geoip/%s", constants.GeoIp2SearchApiUrl, clientAddress)
+		geoIpResponse, err := http.Get(geoIpRequestUrl)
 
 		if err != nil {
-			go logging.Logger.Error("Failed to get region.", zap.Error(err))
-			ctx.Cookie(&fiber.Cookie{
-				Name:     constants.RegionCookieKey,
-				Value:    constants.DefaultRegion,
-				HTTPOnly: false,
-				Secure:   false,
-				Expires:  infiniteTime,
-			})
-			return ctx.JSON(
-				&responses.Success[string]{
-					Success: true,
-					Data:    constants.DefaultRegion,
-				},
-			)
+			return createDefaultResponse(ctx, err)
 		}
 
-		geoIpLookup, err := db.GeoIpDb.Country(netAddress)
+		var geoIpInfo responses.GeoIpResponse
 
-		if err != nil {
-			go logging.Logger.Error("Failed to get region.", zap.Error(err))
-			ctx.Cookie(&fiber.Cookie{
-				Name:     constants.RegionCookieKey,
-				Value:    constants.DefaultRegion,
-				HTTPOnly: false,
-				Secure:   false,
-				Expires:  infiniteTime,
-			})
-			return ctx.JSON(
-				&responses.Success[string]{
-					Success: true,
-					Data:    constants.DefaultRegion,
-				},
-			)
+		if err := json.NewDecoder(geoIpResponse.Body).Decode(&geoIpInfo); err != nil {
+			return createDefaultResponse(ctx, err)
 		}
 
-		region = geoIpLookup.Country.ISOCode
+		if !geoIpInfo.Success || geoIpInfo.Data.Country == "" {
+			return createDefaultResponse(ctx, err)
+		}
+
+		region = geoIpInfo.Data.Country
 
 		ctx.Cookie(&fiber.Cookie{
 			Name:     constants.RegionCookieKey,
@@ -68,12 +69,10 @@ func GetRegion(ctx *fiber.Ctx) error {
 		})
 	}
 
-	ctx.JSON(
+	return ctx.JSON(
 		&responses.Success[string]{
 			Success: true,
 			Data:    region,
 		},
 	)
-
-	return nil
 }

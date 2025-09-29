@@ -2,5 +2,3 @@
 
 .env
 /bin/
-
-/lib/GeoLite2-Country.mmdb
