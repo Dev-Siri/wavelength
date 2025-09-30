@@ -1,7 +1,6 @@
 package stream_controllers
 
 import (
-	"fmt"
 	"wavelength/api"
 	"wavelength/constants"
 
@@ -19,10 +18,6 @@ func GetAudioStream(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get YouTube stream data: "+err.Error())
-	}
-
-	for _, f := range video.Formats {
-		fmt.Printf("itag=%d, mime=%s, url=%s\n", f.ItagNo, f.MimeType, f.URL)
 	}
 
 	formats := video.Formats.WithAudioChannels().Type(constants.SupportedStreamingFormat)
