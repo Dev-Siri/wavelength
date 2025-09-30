@@ -32,19 +32,28 @@ Then you can run the dev command.
 $ flutter run
 ```
 
-Finally to get the application running for real, navigate to `/server` and start the Go server. Again, also make sure to fill the environment variables for the server as well.
+Finally to get the application running for real, navigate to `/server` and start the Go server. Again, also make sure to fill the environment variables for the server as well, making sure that they are correct for both the docker and regular environments.
+
+Please note however that if you're compiling the binary yourself, (As shown in `1.`) you need to download additional binaries for the application to work. Namely, you'll need the `yt-dlp` binary and the `GeoLite2-Country.mmdb` database.
+
+You can download `yt-dlp` from their releases [here](https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp).
+
+To download the GeoLite2-Country database, you'll need to register for a free MaxMind account [here](https://maxmind.com/en/geolite2/signup), after which you can download specifically the "GeoLite2-Country" database.
+
+Once you've got the binaries, create a directory `lib` and place both the GeoLite2 Database and the yt-dlp binary. Finally you can run the second command.
 
 ```sh
-# Run it directly.
+# 1. Run it directly.
 $ go run main.go
-
-# OR, compile to a binary, then run it.
+# OR: Compile to a binary, then run it.
 $ go build -v -trimpath -ldflags=-s -ldflags=-w -buildvcs=false -o ./bin/wavelength .
 $ ./bin/wavelength
 
-# OR, build the docker image, then run it.
+# 3. Better yet, build the docker image, then run it.
+# The builder will automatically fetch the required dependent binaries
+# So you don't need to download them on your own.
 $ docker build . -t wavelength/server
-$ docker run -p 8080:8080 -e PORT=8080 --env-file=.env wavelength/server
+$ docker run -p 8080:8080 -e PORT=8080 --env-file=.env.docker wavelength/server
 ```
 
 ## License

@@ -1,6 +1,9 @@
 .DS_Store
 
 .env
-/bin/
+.env.*
+!.env.example
+!.env.*.example
 
+/bin/
 /lib/
