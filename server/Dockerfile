@@ -1,4 +1,5 @@
 FROM golang:1.24.1-alpine AS builder
+
 RUN apk add --no-cache vips vips-dev libheif-dev libexif-dev gcc musl-dev
 WORKDIR /usr/src/app
 
@@ -17,8 +18,12 @@ RUN apk add --no-cache vips libheif wget tar
 
 COPY --from=builder /usr/local/bin/app /usr/local/bin/app
 COPY --from=builder /usr/src/app/static /app/static
+COPY --from=builder /usr/src/app/lib /app/lib
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
+ENV GEOIP_MMDB_PATH=/app/lib/GeoLite2-Country.mmdb
 ENV STATIC_DIR=/app/static
 
 EXPOSE 8080
-CMD ["app"]
+
+ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
