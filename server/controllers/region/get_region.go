@@ -41,10 +41,6 @@ func GetRegion(ctx *fiber.Ctx) error {
 		clientAddress := ctx.IP()
 		infiniteTime := time.Date(9999, 0, 1, 0, 0, 0, 0, time.UTC)
 
-		fmt.Printf(`
-		CAddress: %s
-	`, clientAddress)
-
 		geoIpRequestUrl := fmt.Sprintf("%s/geoip/%s", constants.GeoIp2SearchApiUrl, clientAddress)
 		geoIpResponse, err := http.Get(geoIpRequestUrl)
 
