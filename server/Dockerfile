@@ -18,7 +18,6 @@ RUN apk add --no-cache vips libheif wget tar
 
 COPY --from=builder /usr/local/bin/app /usr/local/bin/app
 COPY --from=builder /usr/src/app/static /app/static
-COPY --from=builder /usr/src/app/lib /app/lib
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
 ENV GEOIP_MMDB_PATH=/app/lib/GeoLite2-Country.mmdb
