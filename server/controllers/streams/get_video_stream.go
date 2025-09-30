@@ -17,7 +17,7 @@ func GetVideoStream(ctx *fiber.Ctx) error {
 	video, err := api.YoutubeStreamClient.GetVideo(videoId)
 
 	if err != nil {
-		fiber.NewError(fiber.StatusInternalServerError, "Failed to get YouTube stream data: "+err.Error())
+		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get YouTube stream data: "+err.Error())
 	}
 
 	formats := video.Formats.Type(constants.SupportedStreamingFormat)
