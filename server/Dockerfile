@@ -15,7 +15,7 @@ FROM alpine:3.20
 
 WORKDIR /app
 
-RUN apk add --no-cache vips libheif wget tar python3
+RUN apk add --no-cache vips libheif wget tar python3 ffmpeg
 
 COPY --from=builder /usr/local/bin/app /usr/local/bin/app
 COPY --from=builder /usr/src/app/static /app/static
