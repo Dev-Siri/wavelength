@@ -12,15 +12,17 @@ ENV CGO_ENABLED=1
 RUN go build -v -trimpath -ldflags=-s -ldflags=-w -buildvcs=false -o /usr/local/bin/app .
 
 FROM alpine:3.20
+
 WORKDIR /app
 
-RUN apk add --no-cache vips libheif wget tar
+RUN apk add --no-cache vips libheif wget tar python3
 
 COPY --from=builder /usr/local/bin/app /usr/local/bin/app
 COPY --from=builder /usr/src/app/static /app/static
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
 ENV GEOIP_MMDB_PATH=/app/lib/GeoLite2-Country.mmdb
+ENV YT_DLP_PATH=/app/lib/yt-dlp
 ENV STATIC_DIR=/app/static
 
 EXPOSE 8080
