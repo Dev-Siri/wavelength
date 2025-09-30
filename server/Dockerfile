@@ -17,6 +17,8 @@ WORKDIR /app
 
 RUN apk add --no-cache vips libheif wget tar python3 ffmpeg
 
+RUN apk add --no-cache ca-certificates
+
 COPY --from=builder /usr/local/bin/app /usr/local/bin/app
 COPY --from=builder /usr/src/app/static /app/static
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
