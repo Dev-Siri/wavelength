@@ -1,6 +1,7 @@
 package stream_controllers
 
 import (
+	"bytes"
 	"os/exec"
 	"wavelength/constants"
 	"wavelength/env"
@@ -24,10 +25,14 @@ func GetAudioStream(ctx *fiber.Ctx) error {
 		utils.GetYouTubeWatchUrl(videoId),
 	)
 
+	var stderr bytes.Buffer
+
+	cmd.Stderr = &stderr
+
 	out, err := cmd.Output()
 
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "yt-dlp failed: "+err.Error())
+		return fiber.NewError(fiber.StatusInternalServerError, "yt-dlp failed: "+err.Error()+" - "+stderr.String())
 	}
 
 	ytDlpOutput := string(out)
