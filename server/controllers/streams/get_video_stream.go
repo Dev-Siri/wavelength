@@ -14,7 +14,7 @@ func GetVideoStream(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Video ID is required.")
 	}
 
-	video, err := api.YoutubeStreamClient.GetVideo(videoId)
+	video, err := api.YouTubeStreamClient.GetVideo(videoId)
 
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get YouTube stream data: "+err.Error())

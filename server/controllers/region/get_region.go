@@ -1,11 +1,10 @@
 package region_controllers
 
 import (
-	"encoding/json"
-	"fmt"
-	"net/http"
+	"net/netip"
 	"time"
 	"wavelength/constants"
+	"wavelength/db"
 	"wavelength/logging"
 	"wavelength/models/responses"
 
@@ -41,24 +40,19 @@ func GetRegion(ctx *fiber.Ctx) error {
 		clientAddress := ctx.IP()
 		infiniteTime := time.Date(9999, 0, 1, 0, 0, 0, 0, time.UTC)
 
-		geoIpRequestUrl := fmt.Sprintf("%s/geoip/%s", constants.GeoIp2SearchApiUrl, clientAddress)
-		geoIpResponse, err := http.Get(geoIpRequestUrl)
+		netAddress, err := netip.ParseAddr(clientAddress)
 
 		if err != nil {
 			return createDefaultResponse(ctx, err)
 		}
 
-		var geoIpInfo responses.GeoIpResponse
+		geoIpLookup, err := db.GeoIpDb.Country(netAddress)
 
-		if err := json.NewDecoder(geoIpResponse.Body).Decode(&geoIpInfo); err != nil {
+		if err != nil {
 			return createDefaultResponse(ctx, err)
 		}
 
-		if !geoIpInfo.Success || geoIpInfo.Data.Country == "" {
-			return createDefaultResponse(ctx, nil)
-		}
-
-		region = geoIpInfo.Data.Country
+		region = geoIpLookup.Country.ISOCode
 
 		ctx.Cookie(&fiber.Cookie{
 			Name:     constants.RegionCookieKey,
