@@ -47,8 +47,8 @@ func AddRemovePlaylistTrack(ctx *fiber.Ctx) error {
 	if songCount > 0 {
 		_, err := db.Database.Exec(`
 			DELETE FROM playlist_tracks 
-			WHERE playlist_id = $1 AND video_id = $2`,
-			playlistId, parsedBody.VideoId)
+			WHERE playlist_id = $1 AND video_id = $2
+		`, playlistId, parsedBody.VideoId)
 
 		if err != nil {
 			return fiber.NewError(fiber.StatusInternalServerError, "Failed to remove track: "+err.Error())
@@ -75,12 +75,26 @@ func AddRemovePlaylistTrack(ctx *fiber.Ctx) error {
 
 	_, err = db.Database.Exec(`
 		INSERT INTO playlist_tracks (
+			title,
+			thumbnail,
+			duration,
+			is_explicit,
+			author,
+			video_id,
+			video_type,
 			playlist_id, 
 			playlist_track_id, 
-			video_id, 
 			position_in_playlist
-		) VALUES ($1, $2, $3, $4)`,
-		playlistId, playlistTrackId, parsedBody.VideoId, totalSongCount+1)
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+		parsedBody.Title,
+		parsedBody.Thumbnail,
+		parsedBody.Duration,
+		parsedBody.IsExplicit,
+		parsedBody.Author,
+		parsedBody.VideoId,
+		parsedBody.VideoType,
+		playlistId, playlistTrackId, totalSongCount+1,
+	)
 
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to add track: "+err.Error())
