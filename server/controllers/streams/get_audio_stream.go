@@ -1,7 +1,7 @@
 package stream_controllers
 
 import (
-	"bytes"
+	"io"
 	"os/exec"
 	"wavelength/constants"
 	"wavelength/env"
@@ -18,31 +18,48 @@ func GetAudioStream(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Video ID is required.")
 	}
 
-	cmdArgs := []string{
-		"-f", constants.SupportedAudioStreamingFormat,
-		"-g", utils.GetYouTubeWatchUrl(videoId),
-		"--cookies", env.GetYtCookiePath(),
-		"--no-check-certificate",
-	}
-
-	if userAgent := ctx.Get("User-Agent"); userAgent != "" {
-		cmdArgs = append(cmdArgs, "--user-agent", userAgent)
-	}
-
-	cmd := exec.Command(ytDlpPath, cmdArgs...)
-
-	var stderr bytes.Buffer
-
-	cmd.Stderr = &stderr
-
-	out, err := cmd.Output()
+	rangeHeader := ctx.Get("Range")
+	playbackRange, err := utils.ParseRangeHeader(rangeHeader)
 
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "yt-dlp failed: "+err.Error()+" - "+stderr.String())
+		return err
 	}
 
-	ytDlpOutput := string(out)
-	audioURL := ytDlpOutput[:len(ytDlpOutput)-1]
+	cmd := exec.Command(
+		ytDlpPath,
+		"-f", constants.SupportedAudioStreamingFormat,
+		"--cookies", env.GetYtCookiePath(),
+		"--no-check-certificate",
+		"-o", "-",
+		utils.GetYouTubeWatchUrl(videoId),
+	)
 
-	return ctx.Redirect(audioURL)
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, "Failed to pipe: "+err.Error())
+	}
+
+	if err := cmd.Start(); err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, "yt-dlp start error: "+err.Error())
+	}
+
+	if playbackRange != nil {
+		return handleRangeRequest(ctx, stdout, cmd, playbackRange.Start, playbackRange.End)
+	}
+
+	ctx.Set("Content-Type", "audio/mp4")
+	ctx.Set("Accept-Ranges", "bytes")
+
+	_, err = io.Copy(ctx.Response().BodyWriter(), stdout)
+
+	if err != nil {
+		cmd.Process.Kill()
+		return fiber.NewError(fiber.StatusInternalServerError, "stream copy error: "+err.Error())
+	}
+
+	if err := cmd.Wait(); err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, "yt-dlp failed: "+err.Error())
+	}
+
+	return nil
 }
