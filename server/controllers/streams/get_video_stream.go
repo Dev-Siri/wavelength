@@ -36,7 +36,7 @@ func GetVideoStream(ctx *fiber.Ctx) error {
 	}
 
 	ytDlpOutput := string(out)
-	audioURL := ytDlpOutput[:len(ytDlpOutput)-1]
+	videoURL := ytDlpOutput[:len(ytDlpOutput)-1]
 
-	return ctx.Redirect(audioURL, 302)
+	return ctx.Redirect(videoURL, 302)
 }

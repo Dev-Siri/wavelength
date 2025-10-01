@@ -21,19 +21,13 @@ require (
 	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
 	cloud.google.com/go/compute/metadata v0.8.1 // indirect
 	github.com/andybalholm/brotli v1.1.0 // indirect
-	github.com/bitly/go-simplejson v0.5.1 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
-	github.com/dlclark/regexp2 v1.11.5 // indirect
-	github.com/dop251/goja v0.0.0-20250125213203-5ef83b82af17 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
-	github.com/go-sourcemap/sourcemap v2.1.4+incompatible // indirect
-	github.com/google/pprof v0.0.0-20250208200701-d0013a598941 // indirect
 	github.com/google/s2a-go v0.1.9 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.6 // indirect
 	github.com/googleapis/gax-go/v2 v2.15.0 // indirect
-	github.com/kkdai/youtube/v2 v2.10.4 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
