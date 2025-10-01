@@ -33,12 +33,10 @@ class _PlayingNowPreviewPresenterState
   Color? _trackThemeColor;
 
   Future<void> _fetchMusicVideo({
-    required String videoId,
     required String title,
     required String author,
   }) async {
     final response = await TrackRepo.fetchTrackMusicVideo(
-      trackId: videoId,
       title: title,
       artist: author,
     );
@@ -60,11 +58,7 @@ class _PlayingNowPreviewPresenterState
     final track = state.playingNowTrack;
 
     widget.onTrackChange(track.videoId);
-    _fetchMusicVideo(
-      videoId: track.videoId,
-      title: track.title,
-      author: track.author,
-    );
+    _fetchMusicVideo(title: track.title, author: track.author);
   }
 
   @override

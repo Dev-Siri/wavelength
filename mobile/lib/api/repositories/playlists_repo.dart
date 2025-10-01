@@ -82,7 +82,7 @@ class PlaylistsRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/playlists/$playlistId/tracks"),
+        Uri.parse("$backendUrl/playlists/playlist/$playlistId/tracks"),
       );
       final utf8BodyDecoded = utf8.decode(response.bodyBytes);
       final decodedResponse =
@@ -118,7 +118,7 @@ class PlaylistsRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/playlists/$playlistId/length"),
+        Uri.parse("$backendUrl/playlists/playlist/$playlistId/length"),
       );
       final decodedResponse =
           await compute<String, ApiResponse<PlaylistTracksLength>>((
@@ -178,7 +178,7 @@ class PlaylistsRepo {
   }) async {
     try {
       final response = await http.delete(
-        Uri.parse("$backendUrl/playlists/$playlistId"),
+        Uri.parse("$backendUrl/playlists/playlist/$playlistId"),
       );
 
       final decodedResponse = await compute<String, ApiResponse<String>>((
@@ -207,7 +207,7 @@ class PlaylistsRepo {
   }) async {
     try {
       final response = await http.put(
-        Uri.parse("$backendUrl/playlists/$playlistId"),
+        Uri.parse("$backendUrl/playlists/playlist/$playlistId"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"name": playlistName, "coverImage": coverImage}),
       );
@@ -236,7 +236,7 @@ class PlaylistsRepo {
   }) async {
     try {
       final response = await http.patch(
-        Uri.parse("$backendUrl/playlists/$playlistId/visibility"),
+        Uri.parse("$backendUrl/playlists/playlist/$playlistId/visibility"),
       );
 
       final decodedResponse = await compute<String, ApiResponse<String>>((

@@ -8,8 +8,8 @@ import "package:image_picker/image_picker.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/uploadthing_file.dart";
+import "package:wavelength/api/repositories/image_repo.dart";
 import "package:wavelength/api/repositories/playlists_repo.dart";
-import "package:wavelength/api/repositories/uploadthing_repo.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
@@ -65,9 +65,7 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
       return widget.routeData.coverImage;
     }
 
-    final uploadThingResponse = await UploadThingRepo.uploadImage(
-      _pickedCoverImage!,
-    );
+    final uploadThingResponse = await ImageRepo.uploadImage(_pickedCoverImage!);
 
     if (uploadThingResponse is ApiResponseSuccess<UploadThingFile>) {
       return uploadThingResponse.data.url;

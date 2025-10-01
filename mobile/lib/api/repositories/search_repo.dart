@@ -84,7 +84,7 @@ class SearchRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/music/search?q=$query&searchType=artists"),
+        Uri.parse("$backendUrl/artists/search?q=$query&searchType=artists"),
       );
       final utf8BodyDecoded = utf8.decode(response.bodyBytes);
       final decodedResponse = await compute<String, ApiResponse<List<Artist>>>((

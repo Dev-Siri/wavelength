@@ -13,7 +13,7 @@ class ArtistRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/artists/$browseId"),
+        Uri.parse("$backendUrl/artists/artist/$browseId"),
       );
       final utf8BodyDecoded = utf8.decode(response.bodyBytes);
       final decodedResponse =
@@ -43,7 +43,7 @@ class ArtistRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/artists/$browseId/extra"),
+        Uri.parse("$backendUrl/artists/artist/$browseId/extra"),
       );
 
       final decodedResponse = await compute<String, ApiResponse<ArtistExtra>>((

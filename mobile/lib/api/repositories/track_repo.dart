@@ -11,14 +11,13 @@ import "package:wavelength/constants.dart";
 
 class TrackRepo {
   static Future<ApiResponse<MusicVideoPreview>> fetchTrackMusicVideo({
-    required String trackId,
     required String title,
     required String artist,
   }) async {
     try {
       final response = await http.get(
         Uri.parse(
-          "$backendUrl/music/$trackId/music-video-preview?title=$title&artist=$artist",
+          "$backendUrl/music/music-video-preview?title=$title&artist=$artist",
         ),
       );
       final decodedResponse =
@@ -50,7 +49,7 @@ class TrackRepo {
   }) async {
     try {
       final response = await http.post(
-        Uri.parse("$backendUrl/playlists/$playlistId/tracks"),
+        Uri.parse("$backendUrl/playlists/playlist/$playlistId/tracks"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "author": track.author,
@@ -87,7 +86,7 @@ class TrackRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/music/$trackId/lyrics"),
+        Uri.parse("$backendUrl/music/playlist/$trackId/lyrics"),
       );
       final decodedResponse = await compute<String, ApiResponse<List<Lyric>>>((
         lyricsResponse,
