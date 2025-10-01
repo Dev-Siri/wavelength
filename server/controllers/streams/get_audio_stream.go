@@ -13,19 +13,23 @@ import (
 func GetAudioStream(ctx *fiber.Ctx) error {
 	ytDlpPath := env.GetYtDlpPath()
 	videoId := ctx.Params("videoId")
-	clientUA := ctx.Get("User-Agent")
 
 	if videoId == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "Video ID is required.")
 	}
 
-	cmd := exec.Command(
-		ytDlpPath,
+	cmdArgs := []string{
 		"-f", constants.SupportedAudioStreamingFormat,
 		"-g", utils.GetYouTubeWatchUrl(videoId),
 		"--cookies", env.GetYtCookiePath(),
-		"--user-agent", clientUA,
-	)
+		"--no-check-certificate",
+	}
+
+	if userAgent := ctx.Get("User-Agent"); userAgent != "" {
+		cmdArgs = append(cmdArgs, "--user-agent", userAgent)
+	}
+
+	cmd := exec.Command(ytDlpPath, cmdArgs...)
 
 	var stderr bytes.Buffer
 
@@ -40,5 +44,5 @@ func GetAudioStream(ctx *fiber.Ctx) error {
 	ytDlpOutput := string(out)
 	audioURL := ytDlpOutput[:len(ytDlpOutput)-1]
 
-	return ctx.Redirect(audioURL, 302)
+	return ctx.Redirect(audioURL)
 }
