@@ -1,42 +1,31 @@
 package stream_controllers
 
 import (
-	"bytes"
-	"os/exec"
-	"wavelength/constants"
-	"wavelength/env"
-	"wavelength/utils"
+	"wavelength/api"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func GetAudioStream(ctx *fiber.Ctx) error {
-	ytDlpPath := env.GetYtDlpPath()
 	videoId := ctx.Params("videoId")
 
 	if videoId == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "Video ID is required.")
 	}
 
-	cmd := exec.Command(
-		ytDlpPath,
-		"-f", constants.SupportedAudioStreamingFormat,
-		"-g", utils.GetYouTubeWatchUrl(videoId),
-		"--cookies", env.GetYtCookiePath(),
-	)
-
-	var stderr bytes.Buffer
-
-	cmd.Stderr = &stderr
-
-	out, err := cmd.Output()
+	video, err := api.YouTubeStreamClient.GetVideo(videoId)
 
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "yt-dlp failed: "+err.Error()+" - "+stderr.String())
+		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get YouTube stream data: "+err.Error())
 	}
 
-	ytDlpOutput := string(out)
-	audioURL := ytDlpOutput[:len(ytDlpOutput)-1]
+	formats := video.Formats.WithAudioChannels().Type("audio/mp4")
 
-	return ctx.Redirect(audioURL, 302)
+	if len(formats) == 0 {
+		return fiber.NewError(fiber.StatusNotFound, "No streams of supported format found.")
+	}
+
+	requiredFormat := &formats[0]
+
+	return ctx.Redirect(requiredFormat.URL, 302)
 }
