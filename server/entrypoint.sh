@@ -16,12 +16,6 @@ if [ -n "$MAXMIND_ACCOUNT_ID" ] && [ -n "$MAXMIND_LICENSE_KEY" ]; then
   rm -f /tmp/GeoLite2-Country.tar.gz
 fi
 
-echo "Downloading yt-dlp..."
-mkdir -p /app/lib
-wget --content-disposition \
-  -O /app/lib/yt-dlp "$YT_DLP_URL"
-chmod +x /app/lib/yt-dlp
-
 if [ -n "$YOUTUBE_COOKIES_B64" ]; then
   echo "Decoding YouTube cookies from YOUTUBE_COOKIES_B64..."
   mkdir -p /app/secrets
