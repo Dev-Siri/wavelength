@@ -13,6 +13,7 @@ import (
 func GetAudioStream(ctx *fiber.Ctx) error {
 	ytDlpPath := env.GetYtDlpPath()
 	videoId := ctx.Params("videoId")
+	clientUA := ctx.Get("User-Agent")
 
 	if videoId == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "Video ID is required.")
@@ -23,6 +24,7 @@ func GetAudioStream(ctx *fiber.Ctx) error {
 		"-f", constants.SupportedAudioStreamingFormat,
 		"-g", utils.GetYouTubeWatchUrl(videoId),
 		"--cookies", env.GetYtCookiePath(),
+		"--user-agent", clientUA,
 	)
 
 	var stderr bytes.Buffer
