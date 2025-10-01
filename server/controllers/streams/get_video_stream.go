@@ -20,6 +20,7 @@ func GetVideoStream(ctx *fiber.Ctx) error {
 
 	cmd := exec.Command(
 		ytDlpPath,
+		"--youtube-client", "tv",
 		"-f", constants.SupportedVideoStreamingFormat,
 		"-g", utils.GetYouTubeWatchUrl(videoId),
 		"--cookies", env.GetYtCookiePath(),
