@@ -21,8 +21,8 @@ func GetAudioStream(ctx *fiber.Ctx) error {
 	cmd := exec.Command(
 		ytDlpPath,
 		"-f", constants.SupportedAudioStreamingFormat,
-		"-g",
-		utils.GetYouTubeWatchUrl(videoId),
+		"-g", utils.GetYouTubeWatchUrl(videoId),
+		"--cookies", env.GetYtCookiePath(),
 	)
 
 	var stderr bytes.Buffer

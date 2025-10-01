@@ -21,8 +21,8 @@ func GetVideoStream(ctx *fiber.Ctx) error {
 	cmd := exec.Command(
 		ytDlpPath,
 		"-f", constants.SupportedVideoStreamingFormat,
-		"-g",
-		utils.GetYouTubeWatchUrl(videoId),
+		"-g", utils.GetYouTubeWatchUrl(videoId),
+		"--cookies", env.GetYtCookiePath(),
 	)
 
 	var stderr bytes.Buffer

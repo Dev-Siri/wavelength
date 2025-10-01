@@ -26,6 +26,7 @@ COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 ENV GEOIP_MMDB_PATH=/app/lib/GeoLite2-Country.mmdb
 ENV YT_DLP_PATH=/app/lib/yt-dlp
 ENV STATIC_DIR=/app/static
+ENV YT_COOKIE_PATH=/secrets/youtube_cookies.txt
 
 EXPOSE 8080
 
