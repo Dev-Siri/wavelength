@@ -32,8 +32,6 @@ func rapidApiFetch(path string, queryParams map[string]string) (*http.Response, 
 
 	base.RawQuery = q.Encode()
 
-	print(base.String())
-
 	request, err := http.NewRequest(http.MethodGet, base.String(), nil)
 
 	if err != nil {
