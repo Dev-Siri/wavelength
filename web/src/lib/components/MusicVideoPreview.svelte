@@ -7,27 +7,10 @@
 
   let musicVideoPreview: HTMLVideoElement;
 
-  let currentTime = $state(0);
-  let duration = $state(0);
-
-  async function viewRandomChunks() {
-    if (musicQueueStore.musicPlayingNow?.videoType === "uvideo") return;
-
-    if (currentTime >= duration - 20) musicVideoPreview.currentTime = 0;
-
-    musicVideoPreview.currentTime = currentTime + 10;
-    musicVideoPreview.play();
-  }
-
   $effect(() => {
     musicPlayerStore.musicPreviewPlayer = musicVideoPreview;
-    let interval: number;
 
     musicVideoPreview.src = getStreamUrl(musicVideoId, "video");
-
-    interval = setInterval(viewRandomChunks, 5000);
-
-    return () => clearInterval(interval);
   });
 
   $effect(() => {
@@ -53,6 +36,7 @@
   height="100%"
   width="100%"
   muted
+  loop
   bind:this={musicVideoPreview}
 >
 </video>
