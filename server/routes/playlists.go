@@ -14,5 +14,6 @@ func registerPlaylistRoutes(app *fiber.App) {
 	app.Get("/playlists/playlist/:playlistId/tracks", playlist_controllers.GetPlaylistTracks)
 	app.Post("/playlists/user/:email", playlist_controllers.CreatePlaylist)
 	app.Post("/playlists/playlist/:playlistId/tracks", playlist_controllers.AddRemovePlaylistTrack)
+	app.Put("/playlists/playlist/:playlistId/tracks", playlist_controllers.RearrangePlaylistTracks)
 	app.Patch("/playlists/playlist/:playlistId/visibility", playlist_controllers.ChangePlaylistVisibility)
 }
