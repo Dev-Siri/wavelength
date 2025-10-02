@@ -22,7 +22,7 @@
 
   async function fetchMusicVideo(playingNow: NonNullable<typeof musicQueueStore.musicPlayingNow>) {
     const musicVideoIdResponse = await backendClient<ApiResponse<{ videoId: string }>>(
-      `/music/track/${playingNow.videoId}/music-video-preview`,
+      "/music/music-video-preview",
       {
         searchParams: {
           title: playingNow.title,

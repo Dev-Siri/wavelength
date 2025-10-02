@@ -5,16 +5,15 @@
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
   import { backendClient } from "$lib/utils/query-client.js";
+
   import LoadingSpinner from "./LoadingSpinner.svelte";
 
   let lyricsList: HTMLDivElement | null = $state(null);
   let lyrics: Lyric[] | null = $state([]);
-  let duration = $state(0);
   let isLoading = $state(false);
   let hasErrored = $state(false);
 
-  let playerProgress = $derived((musicPlayerStore.musicPlayerProgress / 100) * duration);
-  let playerProgressMs = $derived(playerProgress * 1000);
+  let playerProgressMs = $derived(musicPlayerStore.musicCurrentTime * 1000);
   let currentLyricMs = $derived(lyrics?.find(lyric => lyric.startMs > playerProgressMs) ?? []);
 
   $effect(() => {
@@ -22,7 +21,6 @@
       if (!musicQueueStore.musicPlayingNow || !musicPlayerStore.musicPlayer) return;
 
       isLoading = true;
-      duration = await musicPlayerStore.musicPlayer.getDuration();
 
       const db = await getClientDB();
       const storedLyrics = await db.getAllFromIndex(
@@ -100,6 +98,12 @@
         });
     }
   });
+
+  function seekToLyricStart(startMs: number) {
+    if (!musicPlayerStore.musicPlayer) return;
+
+    musicPlayerStore.musicPlayer.currentTime = startMs / 1000;
+  }
 </script>
 
 {#if musicQueueStore.musicPlayingNow}
@@ -118,7 +122,7 @@
       {#each lyrics as lyric, i}
         <button
           type="button"
-          onclick={() => musicPlayerStore.musicPlayer?.seekTo(lyric.startMs / 1000, true)}
+          onclick={() => seekToLyricStart(lyric.startMs)}
           class="font-bold text-start text-3xl cursor-pointer duration-200 hover:text-white {playerProgressMs >
             lyric.startMs && playerProgressMs < lyric.startMs + lyric.durMs
             ? 'text-white'

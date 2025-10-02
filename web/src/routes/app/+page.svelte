@@ -15,7 +15,7 @@
   </h3>
   <div class="flex flex-wrap w-full justify-between">
     {#await data.pageData}
-      {#each new Array(10) as _}
+      {#each new Array(10)}
         <MusicCardSkeleton />
       {/each}
     {:then pageData}

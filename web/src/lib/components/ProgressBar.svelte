@@ -4,25 +4,19 @@
 
   let progressBarElement: HTMLDivElement;
 
-  let totalDuration = $state(0);
-  let currentTime = $state(0);
-
-  let totalMinutes = $derived(Math.floor((totalDuration - currentTime) / 60));
-  let totalSeconds = $derived(Math.floor((totalDuration - currentTime) % 60));
-  let currentMinutes = $derived(Math.floor(currentTime / 60));
-  let currentSeconds = $derived(Math.floor(currentTime % 60));
+  let totalMinutes = $derived(
+    Math.floor((musicPlayerStore.musicDuration - musicPlayerStore.musicCurrentTime) / 60),
+  );
+  let totalSeconds = $derived(
+    Math.floor((musicPlayerStore.musicDuration - musicPlayerStore.musicCurrentTime) % 60),
+  );
+  let currentMinutes = $derived(Math.floor(musicPlayerStore.musicCurrentTime / 60));
+  let currentSeconds = $derived(Math.floor(musicPlayerStore.musicCurrentTime % 60));
+  let musicPlayerProgress = $state(0);
 
   $effect(() => {
-    musicPlayerStore.musicPlayerProgress;
-    async function fetchDurations() {
-      const fetchedTotalDuration = (await musicPlayerStore.musicPlayer?.getDuration()) ?? 0;
-      const fetchedCurrentTime = (await musicPlayerStore.musicPlayer?.getCurrentTime()) ?? 0;
-
-      totalDuration = Math.round(fetchedTotalDuration);
-      currentTime = Math.round(fetchedCurrentTime);
-    }
-
-    fetchDurations();
+    const progress = (musicPlayerStore.musicCurrentTime / musicPlayerStore.musicDuration) * 100;
+    musicPlayerProgress = isNaN(progress) ? 0 : progress;
   });
 
   async function onProgressBarClick(event: MouseEvent) {
@@ -33,18 +27,18 @@
     const clickPositionX = event.clientX - left;
     const clickPercentage = (clickPositionX / width) * 100;
 
-    const duration = await musicPlayerStore.musicPlayer.getDuration();
+    const newTime = (clickPercentage / 100) * musicPlayerStore.musicDuration;
 
-    const newTime = (clickPercentage / 100) * duration;
+    musicPlayerStore.musicPlayer.currentTime = newTime;
 
-    currentTime = Math.round(newTime);
+    if (
+      musicQueueStore.musicPlayingNow?.videoType === "uvideo" &&
+      musicPlayerStore.musicPreviewPlayer
+    )
+      musicPlayerStore.musicPreviewPlayer.currentTime = newTime;
 
-    await musicPlayerStore.musicPlayer.seekTo(newTime, true);
-
-    if (musicQueueStore.musicPlayingNow?.videoType === "uvideo")
-      await musicPlayerStore.musicPreviewPlayer?.seekTo(newTime, true);
-
-    musicPlayerStore.musicPlayerProgress = (newTime / duration) * 100;
+    const newProgress = (newTime / musicPlayerStore.musicDuration) * 100;
+    musicPlayerProgress = isNaN(newProgress) ? 0 : newProgress;
   }
 </script>
 
@@ -62,11 +56,11 @@
   >
     <div
       class="h-1 bg-primary rounded-full duration-200"
-      style="width: {musicPlayerStore.musicPlayerProgress}%;"
+      style="width: {musicPlayerProgress}%;"
     ></div>
     <div
-      class="absolute h-4 w-4 rounded-full bg-muted-foreground hidden duration-200 border border-muted group-hover:inline"
-      style="margin-left: {musicPlayerStore.musicPlayerProgress - 3}%;"
+      class="absolute h-4 w-4 rounded-full bg-primary hidden duration-200 border border-muted group-hover:inline"
+      style="margin-left: {musicPlayerProgress - 3}%;"
     ></div>
   </div>
   <p class="text-sm text-muted-foreground">

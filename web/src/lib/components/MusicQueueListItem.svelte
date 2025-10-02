@@ -10,10 +10,14 @@
 
   const { musicQueueItem }: { musicQueueItem: QueueableMusic } = $props();
 
-  const removeMusicFromQueue = () =>
-    (musicQueueStore.musicQueue = musicQueueStore.musicQueue.filter(
+  function removeMusicFromQueue(
+    event: (MouseEvent | KeyboardEvent) & { currentTarget: EventTarget & HTMLDivElement },
+  ) {
+    event.stopPropagation();
+    musicQueueStore.musicQueue = musicQueueStore.musicQueue.filter(
       item => item.videoId !== musicQueueItem.videoId,
-    ));
+    );
+  }
 </script>
 
 <button

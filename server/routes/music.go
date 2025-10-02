@@ -13,5 +13,6 @@ func registerMusicRoutes(app *fiber.App) {
 	app.Get("/music/music-video-preview", music_controllers.GetMusicVideoPreviewId)
 	app.Get("/music/track/:videoId/lyrics", music_controllers.GetTrackLyrics)
 	app.Get("/music/track/:videoId/stats", music_controllers.GetMusicTrackStats)
+	app.Get("/music/track/:videoId/duration", music_controllers.GetMusicDuration)
 	app.Get("/music/track/:videoId/thumbnail", music_controllers.GetTrackThumbnail)
 }

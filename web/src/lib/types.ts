@@ -97,6 +97,8 @@ export interface Playlist {
   isPublic: boolean;
 }
 
+export type VideoType = "track" | "uvideo";
+
 export interface PlaylistTrack {
   playlistId: string;
   playlistTrackId: string;
@@ -107,5 +109,5 @@ export interface PlaylistTrack {
   author: string;
   duration: string;
   videoId: string;
-  videoType: "track" | "uvideo";
+  videoType: VideoType;
 }

@@ -2,6 +2,7 @@ package utils
 
 import (
 	"net/url"
+	"regexp"
 	"strconv"
 	"strings"
 	"wavelength/models"
@@ -38,6 +39,17 @@ func ParseDurationToSeconds(duration string) int {
 	minutesInSeconds := minutes * 60
 
 	return minutesInSeconds + seconds
+}
+
+func ParseDuration(iso string) int {
+	re := regexp.MustCompile(`PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?`)
+	matches := re.FindStringSubmatch(iso)
+
+	h, _ := strconv.Atoi(matches[1])
+	m, _ := strconv.Atoi(matches[2])
+	s, _ := strconv.Atoi(matches[3])
+
+	return h*3600 + m*60 + s
 }
 
 func ParseRangeHeader(rangeHeader string) (*models.PlaybackRange, error) {

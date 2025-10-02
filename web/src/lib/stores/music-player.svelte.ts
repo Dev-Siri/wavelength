@@ -1,31 +1,27 @@
-import type { YouTubePlayer } from "youtube-player/dist/types.js";
-
 type MusicInfoPanels = "playingNow" | "lyrics";
 type MusicRepeatMode = "none" | "all" | "one";
 
 class MusicPlayerStore {
-  musicPlayer = $state<YouTubePlayer | null>(null);
-  musicPreviewPlayer = $state<YouTubePlayer | null>(null);
+  musicPlayer = $state<HTMLAudioElement | null>(null);
+  musicPreviewPlayer = $state<HTMLVideoElement | null>(null);
   isMusicPlaying = $state(false);
-  musicPlayerProgress = $state(0);
   visiblePanel = $state<MusicInfoPanels | null>(null);
   musicRepeatMode = $state<MusicRepeatMode>("none");
   isMusicMuted = $state(false);
+  musicSource = $state<string | null>(null);
+  musicCurrentTime = $state(0);
+  musicDuration = $state(0);
+  volume = $state(1);
 
   playMusic = async () => {
-    if (!this.musicPlayer) return;
+    if (this.musicCurrentTime === this.musicDuration) this.musicCurrentTime = 0;
 
-    if (this.musicPlayerProgress === 100) this.musicPlayerProgress = 0;
-
-    await this.musicPlayer.playVideo();
-
+    await this.musicPlayer?.play();
     this.isMusicPlaying = true;
   };
 
-  pauseMusic = async () => {
-    if (!this.musicPlayer) return;
-
-    await this.musicPlayer.pauseVideo();
+  pauseMusic = () => {
+    this.musicPlayer?.pause();
     this.isMusicPlaying = false;
   };
 }

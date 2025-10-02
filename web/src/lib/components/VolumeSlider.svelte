@@ -7,17 +7,17 @@
   import { Button } from "./ui/button";
   import { Slider } from "./ui/slider";
 
-  let volume = $state(100);
-
   $effect(() => {
     const storedVolume = localStorage.getItem(localStorageKeys.volume);
 
-    if (storedVolume) volume = Number(storedVolume);
+    if (storedVolume) {
+      const numericalVolume = Number(storedVolume);
+      musicPlayerStore.volume = numericalVolume > 1 ? 1 : numericalVolume;
+    }
   });
 
   $effect(() => {
-    musicPlayerStore.musicPlayer?.setVolume(volume);
-    localStorage.setItem(localStorageKeys.volume, volume.toString());
+    localStorage.setItem(localStorageKeys.volume, musicPlayerStore.volume.toString());
   });
 </script>
 
@@ -33,5 +33,12 @@
       <Volume2Icon size={20} />
     {/if}
   </Button>
-  <Slider type="single" bind:value={volume} class="h-2 w-20 hidden md:flex" min={0} max={100} />
+  <Slider
+    type="single"
+    bind:value={musicPlayerStore.volume}
+    class="h-2 w-20 hidden md:flex"
+    step={0.01}
+    min={0}
+    max={1}
+  />
 </div>

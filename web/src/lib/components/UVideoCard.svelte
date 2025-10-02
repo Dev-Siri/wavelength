@@ -2,14 +2,14 @@
   import { invalidate } from "$app/navigation";
   import { EllipsisIcon, PlusIcon } from "@lucide/svelte";
   import toast from "svelte-french-toast";
-  import createYouTubePlayer from "youtube-player";
+  // import createYouTubePlayer from "youtube-player";
 
   import type { ApiResponse, YouTubeVideo } from "$lib/types.js";
 
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
   import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
   import playlistsStore from "$lib/stores/playlists.svelte.js";
-  import { durationify, parseHtmlEntities } from "$lib/utils/format.js";
+  import { parseHtmlEntities } from "$lib/utils/format.js";
   import { backendClient } from "$lib/utils/query-client.js";
 
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
@@ -36,13 +36,13 @@
   async function addToPlaylist(playlistId: string) {
     if (!tempDiv) return;
 
-    const tempPlayerInstance = createYouTubePlayer(tempDiv, {
-      videoId: uvideo.videoId,
-    });
+    // const tempPlayerInstance = createYouTubePlayer(tempDiv, {
+    //   videoId: uvideo.videoId,
+    // });
 
-    const duration = durationify(await tempPlayerInstance.getDuration());
+    // const duration = durationify(await tempPlayerInstance.getDuration());
 
-    tempPlayerInstance.destroy();
+    // tempPlayerInstance.destroy();
 
     const response = await backendClient<ApiResponse<string>>(
       `/playlists/playlist/${playlistId}/tracks`,
@@ -52,7 +52,7 @@
           author: uvideo.author,
           title: uvideo.title,
           videoId: uvideo.videoId,
-          duration,
+          // duration,
           isExplicit: false,
           thumbnail: getThumbnailUrl(uvideo.videoId),
           videoType: "uvideo",

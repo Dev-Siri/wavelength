@@ -16,7 +16,7 @@
     width: number;
     loading?: "lazy" | "eager";
     class?: string;
-  } & Record<string, any> = $props();
+  } & Record<string, unknown> = $props();
 
   let imageUrl = $state(`${BASE_URL}/api/image?url=${encodeURIComponent(src)}`);
 </script>

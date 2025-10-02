@@ -30,3 +30,7 @@ export function checkUrlValidity(uncheckedString: string): UrlValidity {
 export function getThumbnailUrl(videoId: string) {
   return new URL(`/music/track/${videoId}/thumbnail`, PUBLIC_BACKEND_URL).toString();
 }
+
+export function getStreamUrl(videoId: string, streamType: "audio" | "video") {
+  return new URL(`/stream/playback/${videoId}/${streamType}`, PUBLIC_BACKEND_URL).toString();
+}

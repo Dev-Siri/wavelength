@@ -13,7 +13,7 @@
 
   const { data }: PageProps = $props();
 
-  function handleOnInput(e: Event & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleOnInput() {
     if (inputValue === "") return goto("/app/playlist");
 
     goto(`/app/playlist?q=${encodeURIComponent(inputValue)}`);

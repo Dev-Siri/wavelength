@@ -1,7 +1,7 @@
-import type { PlayList } from "$lib/db/schema.js";
+import type { Playlist } from "$lib/types";
 
 class PlaylistsStore {
-  playlists = $state<PlayList[]>([]);
+  playlists = $state<Playlist[]>([]);
 }
 
 const playlistsStore = new PlaylistsStore();
