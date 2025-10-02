@@ -2,7 +2,6 @@
   import { invalidate } from "$app/navigation";
   import { EllipsisIcon, PlusIcon } from "@lucide/svelte";
   import toast from "svelte-french-toast";
-  // import createYouTubePlayer from "youtube-player";
 
   import type { ApiResponse, YouTubeVideo } from "$lib/types.js";
 
@@ -36,13 +35,11 @@
   async function addToPlaylist(playlistId: string) {
     if (!tempDiv) return;
 
-    // const tempPlayerInstance = createYouTubePlayer(tempDiv, {
-    //   videoId: uvideo.videoId,
-    // });
+    const durationResponse = await backendClient<ApiResponse<number>>(
+      `/music/track/${uvideo.videoId}/duration`,
+    );
 
-    // const duration = durationify(await tempPlayerInstance.getDuration());
-
-    // tempPlayerInstance.destroy();
+    if (!durationResponse.success) return;
 
     const response = await backendClient<ApiResponse<string>>(
       `/playlists/playlist/${playlistId}/tracks`,
@@ -52,7 +49,7 @@
           author: uvideo.author,
           title: uvideo.title,
           videoId: uvideo.videoId,
-          // duration,
+          duration: durationResponse.data,
           isExplicit: false,
           thumbnail: getThumbnailUrl(uvideo.videoId),
           videoType: "uvideo",
