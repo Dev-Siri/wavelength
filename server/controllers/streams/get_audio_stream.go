@@ -21,7 +21,7 @@ func GetAudioStream(ctx *fiber.Ctx) error {
 	existingStreamPath := fmt.Sprintf("/tmp/streams/%s-aud.mp4", videoId)
 
 	if _, err := os.Stat(existingStreamPath); err == nil {
-		return ctx.SendFile(existingStreamPath)
+		return servePlayableStream(ctx, existingStreamPath, "audio/mp4")
 	}
 
 	serverUrl := env.GetYtDlpServerUrl()
@@ -40,5 +40,5 @@ func GetAudioStream(ctx *fiber.Ctx) error {
 
 	streamPathOnSys := string(bodyBytes)
 
-	return ctx.SendFile(streamPathOnSys)
+	return servePlayableStream(ctx, streamPathOnSys, "audio/mp4")
 }
