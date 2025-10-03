@@ -2,10 +2,10 @@ package artist_controllers
 
 import (
 	"wavelength/api"
+	"wavelength/models"
 	"wavelength/models/responses"
 
 	"github.com/gofiber/fiber/v2"
-	"google.golang.org/api/youtube/v3"
 )
 
 func GetArtistExtraById(ctx *fiber.Ctx) error {
@@ -17,8 +17,10 @@ func GetArtistExtraById(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get extra artist details from YouTube: "+err.Error())
 	}
 
-	return ctx.JSON(responses.Success[*youtube.ChannelListResponse]{
+	return ctx.JSON(responses.Success[models.ArtistExtra]{
 		Success: true,
-		Data:    response,
+		Data: models.ArtistExtra{
+			Thumbnail: response.Items[0].Snippet.Thumbnails.High.Url,
+		},
 	})
 }
