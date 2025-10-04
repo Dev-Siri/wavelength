@@ -1,6 +1,6 @@
 package schemas
 
 type TrackPositionUpdateSchema struct {
-	PlaylistTrackId int `json:"playlistTrackId"`
-	NewPos          int `json:"newPos"`
+	PlaylistTrackId string `json:"playlistTrackId"`
+	NewPos          int    `json:"newPos"`
 }
