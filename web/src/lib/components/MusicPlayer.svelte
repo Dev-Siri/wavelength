@@ -60,7 +60,8 @@
       musicPlayerStore.musicCurrentTime = 0;
 
       musicPlayerStore.musicSource = getStreamUrl(musicQueueStore.musicPlayingNow.videoId, "audio");
-      musicPlayerStore.isMusicPlaying = true;
+
+      await musicPlayerStore.playMusic();
 
       if ("mediaSession" in navigator)
         navigator.mediaSession.metadata = new MediaMetadata({
