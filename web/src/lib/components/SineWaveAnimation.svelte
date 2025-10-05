@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+
   const {
     amplitude = 50,
     frequency = 0.02,
@@ -22,7 +24,7 @@
   let phase = $state(0);
   let size = $state({ width: 800, height: 300 });
 
-  $effect(() => {
+  onMount(() => {
     // Set canvas size to match element size
     const resize = () => {
       size.width = canvas.clientWidth;
