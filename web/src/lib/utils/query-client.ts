@@ -1,5 +1,9 @@
 import { PUBLIC_BACKEND_URL } from "$env/static/public";
 
+import { apiResponseSchema, type ApiResponse } from "./validation/api-response";
+
+import type { z } from "zod";
+
 type Method =
   | "GET"
   | "POST"
@@ -16,14 +20,14 @@ interface Options {
   body: Record<string, unknown> | object;
   searchParams: Record<string, unknown>;
   headers: Record<string, unknown>;
-  customFetch(input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>;
 }
 
-async function queryClient<T>(
+async function queryClient<T extends z.ZodTypeAny>(
   baseUrl: string,
   endpoint: string,
-  { method = "GET", body, searchParams, customFetch, headers }: Partial<Options> = {},
-): Promise<T> {
+  dataSchema: T,
+  { method = "GET", body, searchParams, headers }: Partial<Options> = {},
+): Promise<z.infer<T>> {
   const url = new URL(endpoint, baseUrl);
   const requestHeaders: Record<string, string> = {
     "Content-Type": "application/json",
@@ -37,59 +41,31 @@ async function queryClient<T>(
         url.searchParams.set(searchParamKey, String(searchParams[searchParamKey])),
     );
 
-  try {
-    const opts = {
-      method,
-      body: JSON.stringify(body),
-      headers: requestHeaders,
-    };
+  const opts = {
+    method,
+    body: JSON.stringify(body),
+    headers: requestHeaders,
+  };
 
-    const response = await (customFetch ?? fetch)(url, opts);
+  const response = await fetch(url, opts);
 
-    if (!response.ok) throw new Error(await response.text());
+  if (!response.headers.get("Content-Type")?.includes("application/json"))
+    throw new Error("Response does not follow the app's spec to use JSON.");
 
-    if (!response.headers.get("Content-Type")?.includes("application/json"))
-      return JSON.parse(await response.text()) as T;
+  const jsonResponse = await response.json();
+  const validatedResponse = apiResponseSchema(dataSchema).parse(jsonResponse) as ApiResponse<T>;
 
-    return (await response.json()) as T;
-  } catch (error) {
-    // Print the error message on the server, only trigger the +error.svelte on the client.
-    // Extra validation to make sure actual error objects are never printed in the browser.
-    if (typeof window !== "undefined") throw error;
+  if (!validatedResponse.success) throw new Error(validatedResponse.message);
 
-    if (error instanceof TypeError)
-      console.error("A network error was thrown with message:", error.message);
-    else if (error instanceof SyntaxError)
-      console.error("Failed to parse JSON body:", error.message);
-    else if (
-      typeof DOMException !== "undefined" &&
-      error instanceof DOMException &&
-      error.name === "AbortError"
-    )
-      console.error("Request was aborted with message:", error.message);
-    else if (error instanceof Error)
-      console.error("A new instance of `Error` was thrown with message:", error.message);
-    else console.error("An unknown error was thrown:", error);
-
-    if (error instanceof Response)
-      switch (error.status) {
-        case 400:
-          console.error("The client sent a bad response.");
-          break;
-        case 404:
-          console.error("Resource not found.");
-          break;
-        case 500:
-          console.error("Internal Server Error");
-      }
-
-    return {} as T;
-  }
+  return validatedResponse.data;
 }
 
 function createQueryClient(baseUrl: string) {
-  return <T>(endpoint: string, options: Partial<Options> = {}) =>
-    queryClient<T>(baseUrl, endpoint, options);
+  return <T extends z.ZodTypeAny>(
+    endpoint: string,
+    dataSchema: T,
+    options: Partial<Options> = {},
+  ) => queryClient<T>(baseUrl, endpoint, dataSchema, options);
 }
 
 export const backendClient = createQueryClient(PUBLIC_BACKEND_URL);

@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { invalidateAll } from "$app/navigation";
   import { LoaderCircleIcon } from "@lucide/svelte";
+  import { createMutation, useQueryClient } from "@tanstack/svelte-query";
   import { UploadButton } from "@uploadthing/svelte";
   import toast from "svelte-french-toast";
+  import { z } from "zod";
 
-  import type { ApiResponse, Playlist } from "$lib/types.js";
+  import type { Playlist } from "$lib/utils/validation/playlists";
 
-  import playlistsStore from "$lib/stores/playlists.svelte";
-  import userStore from "$lib/stores/user.svelte";
+  import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";
+  import { backendClient } from "$lib/utils/query-client.js";
   import { createUploader } from "$lib/utils/uploadthing.js";
 
-  import { backendClient } from "$lib/utils/query-client.js";
   import { Button } from "./ui/button";
   import * as Dialog from "./ui/dialog";
   import { Input } from "./ui/input";
@@ -22,45 +22,40 @@
   let playlistTitle = $state(initialPlaylist.name);
   let playlistCoverImage = $state(initialPlaylist.coverImage);
 
+  const queryClient = useQueryClient();
   const uploader = createUploader("imageUploader", {
     onClientUploadComplete(res) {
       playlistCoverImage = res[0].ufsUrl;
     },
   });
 
-  async function handleSubmit(
-    event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement },
-  ) {
-    event.preventDefault();
-
-    isLoading = true;
-
-    const playlistEditResponse = await backendClient<ApiResponse<string>>(
-      `/playlists/playlist/${initialPlaylist.playlistId}`,
-      {
+  const playlistUpdateMutation = createMutation(() => ({
+    mutationKey: svelteMutationKeys.updatePlaylist(initialPlaylist.playlistId),
+    mutationFn: () =>
+      backendClient(`/playlists/playlist/${initialPlaylist.playlistId}`, z.string(), {
         method: "PUT",
         body: {
           name: playlistTitle,
           coverImage: playlistCoverImage,
         },
-      },
-    );
+      }),
+    onError: () => toast.error("Failed to update playlist details."),
+    onSuccess() {
+      toast.success("Updated playlist details successfully.");
+      queryClient.refetchQueries({
+        queryKey: [
+          ...svelteQueryKeys.userPlaylists,
+          svelteQueryKeys.playlist(initialPlaylist.playlistId),
+        ],
+      });
+    },
+  }));
 
-    isLoading = false;
-
-    if (!playlistEditResponse.success) return toast.error("Failed to update playlist details.");
-
-    toast.success("Updated playlist details successfully.");
-
-    invalidateAll();
-
-    if (!userStore.user) return;
-
-    const response = await backendClient<ApiResponse<Playlist[]>>(
-      `/playlists/user/${userStore.user.email}`,
-    );
-
-    if (response.success) playlistsStore.playlists = response.data;
+  async function handleSubmit(
+    event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement },
+  ) {
+    event.preventDefault();
+    playlistUpdateMutation.mutate();
   }
 </script>
 

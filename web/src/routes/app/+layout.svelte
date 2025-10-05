@@ -1,10 +1,10 @@
 <script lang="ts">
+  import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
   import { Toaster } from "svelte-french-toast";
   import { Pane, Splitpanes } from "svelte-splitpanes";
   import { fly, slide } from "svelte/transition";
 
   import type { Snippet } from "svelte";
-  import type { LayoutData } from "./$types.js";
 
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
   import musicQueueStore from "$lib/stores/music-queue.svelte.js";
@@ -29,7 +29,7 @@
     content: number;
   }
 
-  const { children, data }: { data: LayoutData; children?: Snippet } = $props();
+  const { children }: { children?: Snippet } = $props();
 
   let screenSize: number | null = $state(null);
   let paneWidth: number = $state(20);
@@ -93,53 +93,57 @@
       paneWidth = sizes.sidebar.maxSize;
     }
   });
+
+  const queryClient = new QueryClient();
 </script>
 
-<Tooltip.Provider>
-  <div class="h-screen flex flex-col bg-extra-dark">
-    <Splitpanes class="flex-1 overflow-hidden" on:resize={e => (paneWidth = e.detail[0].size)}>
-      <Pane class="bg-extra-dark rounded-tr-md rounded-br-md" {...sizes.sidebar}>
-        <Sidebar {paneWidth} />
-      </Pane>
-      <Pane class="h-full w-full bg-extra-dark relative" size={sizes.content}>
-        <TopBar region={data.region} />
-        <main class="bg-extra-dark mt-12 h-screen z-30">
-          {#if musicQueueStore.musicPlayingNow && musicPlayerStore.visiblePanel}
-            <div
-              class="absolute inset-x-0 top-[10.5%] bottom-0 z-80 rounded-2xl flex flex-col overflow-hidden"
-              in:fly={{ y: 20, duration: 100 }}
-              out:fly={{ y: 20, duration: 100 }}
-            >
-              <InfoOverlay>
-                {#if musicPlayerStore.visiblePanel === "playingNow"}
-                  <div in:fly={{ x: -200, y: 0 }} out:fly={{ x: -200, y: 0 }}>
-                    <NowPlayingOverlay />
-                  </div>
-                {:else if musicPlayerStore.visiblePanel === "lyrics"}
-                  <div in:fly={{ x: -200, y: 0 }} out:fly={{ x: 400, y: 0 }}>
-                    <LyricsOverlay />
-                  </div>
-                {/if}
-              </InfoOverlay>
-            </div>
-          {/if}
-          {@render children?.()}
-        </main>
-      </Pane>
-      {#if musicQueueStore.isMusicQueueVisible}
-        <Pane {...sizes.queue} class="z-9999">
-          <div in:slide={{ duration: 100 }} out:slide={{ duration: 100 }} class="h-full w-full">
-            <MusicQueueDisplay />
-          </div>
+<QueryClientProvider client={queryClient}>
+  <Tooltip.Provider>
+    <div class="h-screen flex flex-col bg-extra-dark">
+      <Splitpanes class="flex-1 overflow-hidden" on:resize={e => (paneWidth = e.detail[0].size)}>
+        <Pane class="bg-extra-dark rounded-tr-md rounded-br-md" {...sizes.sidebar}>
+          <Sidebar {paneWidth} />
         </Pane>
-      {/if}
-    </Splitpanes>
-    <div class="h-[14%] self-end w-full">
-      <MusicPlayer />
+        <Pane class="h-full w-full bg-extra-dark relative" size={sizes.content}>
+          <TopBar />
+          <main class="bg-extra-dark mt-12 h-screen z-30">
+            {#if musicQueueStore.musicPlayingNow && musicPlayerStore.visiblePanel}
+              <div
+                class="absolute inset-x-0 top-[10.5%] bottom-0 z-80 rounded-2xl flex flex-col overflow-hidden"
+                in:fly={{ y: 20, duration: 100 }}
+                out:fly={{ y: 20, duration: 100 }}
+              >
+                <InfoOverlay>
+                  {#if musicPlayerStore.visiblePanel === "playingNow"}
+                    <div in:fly={{ x: -200, y: 0 }} out:fly={{ x: -200, y: 0 }}>
+                      <NowPlayingOverlay />
+                    </div>
+                  {:else if musicPlayerStore.visiblePanel === "lyrics"}
+                    <div in:fly={{ x: -200, y: 0 }} out:fly={{ x: 400, y: 0 }}>
+                      <LyricsOverlay />
+                    </div>
+                  {/if}
+                </InfoOverlay>
+              </div>
+            {/if}
+            {@render children?.()}
+          </main>
+        </Pane>
+        {#if musicQueueStore.isMusicQueueVisible}
+          <Pane {...sizes.queue} class="z-9999">
+            <div in:slide={{ duration: 100 }} out:slide={{ duration: 100 }} class="h-full w-full">
+              <MusicQueueDisplay />
+            </div>
+          </Pane>
+        {/if}
+      </Splitpanes>
+      <div class="h-[14%] self-end w-full">
+        <MusicPlayer />
+      </div>
     </div>
-  </div>
-</Tooltip.Provider>
-<Toaster
-  position="bottom-right"
-  toastOptions={{ style: `background-color: #111; color: white;` }}
-/>
+  </Tooltip.Provider>
+  <Toaster
+    position="bottom-right"
+    toastOptions={{ style: `background-color: #111; color: white;` }}
+  />
+</QueryClientProvider>

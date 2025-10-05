@@ -1,41 +1,49 @@
 <script lang="ts">
-  import { invalidate } from "$app/navigation";
   import { PlusIcon } from "@lucide/svelte";
+  import { createMutation, useQueryClient } from "@tanstack/svelte-query";
   import toast from "svelte-french-toast";
+  import { z } from "zod";
 
-  import type { ApiResponse, MusicTrack } from "$lib/types.js";
+  import type { MusicTrack } from "$lib/utils/validation/music-track";
+  import type { Playlist } from "$lib/utils/validation/playlists";
 
-  import playlistsStore from "$lib/stores/playlists.svelte";
+  import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";
   import { backendClient } from "$lib/utils/query-client.js";
 
   import DropdownMenuItem from "./ui/dropdown-menu/dropdown-menu-item.svelte";
 
   const { music }: { music: MusicTrack } = $props();
 
-  async function addToPlaylist(playlistId: string) {
-    const response = await backendClient<ApiResponse<string>>(
-      `/playlists/playlist/${playlistId}/tracks`,
-      {
+  const queryClient = useQueryClient();
+  const playlists = $derived.by(() =>
+    queryClient.getQueryData<Playlist[]>(svelteQueryKeys.userPlaylists),
+  );
+
+  const playlistsAddMutation = createMutation(() => ({
+    mutationKey: svelteMutationKeys.addToPlaylists,
+    mutationFn: (playlistId: string) =>
+      backendClient(`/playlists/playlist/${playlistId}/tracks`, z.string(), {
         method: "POST",
         body: {
           ...music,
           videoType: "track",
         },
-      },
-    );
-
-    if (response.success) {
-      toast.success(response.data);
-      invalidate(url => url.pathname.startsWith("/playlist"));
-      return;
-    }
-
-    toast.error("Failed to update playlist.");
-  }
+      }),
+    onError: () => toast.error("Failed to update playlist."),
+    onSuccess(data, playlistId) {
+      toast.success(data);
+      queryClient.invalidateQueries({ queryKey: svelteQueryKeys.playlist(playlistId) });
+    },
+  }));
 </script>
 
-{#each playlistsStore.playlists as playlist}
-  <DropdownMenuItem onclick={() => addToPlaylist(playlist.playlistId)} class="flex py-3 gap-2">
-    <PlusIcon size={20} /> Toggle from "{playlist.name}"
-  </DropdownMenuItem>
-{/each}
+{#if playlists?.length}
+  {#each playlists as playlist}
+    <DropdownMenuItem
+      onclick={() => playlistsAddMutation.mutate(playlist.playlistId)}
+      class="flex py-3 gap-2"
+    >
+      <PlusIcon size={20} /> Toggle from "{playlist.name}"
+    </DropdownMenuItem>
+  {/each}
+{/if}

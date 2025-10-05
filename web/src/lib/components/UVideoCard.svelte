@@ -1,24 +1,29 @@
 <script lang="ts">
-  import { invalidate } from "$app/navigation";
   import { EllipsisIcon, PlusIcon } from "@lucide/svelte";
+  import { createMutation, useQueryClient } from "@tanstack/svelte-query";
   import toast from "svelte-french-toast";
+  import { z } from "zod";
 
-  import type { ApiResponse, YouTubeVideo } from "$lib/types.js";
+  import type { Playlist } from "$lib/utils/validation/playlists";
+  import type { YouTubeVideo } from "$lib/utils/validation/youtube-video";
 
+  import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
   import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
-  import playlistsStore from "$lib/stores/playlists.svelte.js";
   import { parseHtmlEntities } from "$lib/utils/format.js";
   import { backendClient } from "$lib/utils/query-client.js";
+  import { getThumbnailUrl } from "$lib/utils/url";
 
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import * as Tooltip from "$lib/components/ui/tooltip";
-  import { getThumbnailUrl } from "$lib/utils/url";
   import Image from "./Image.svelte";
 
   const { uvideo }: { uvideo: YouTubeVideo } = $props();
 
-  let tempDiv: HTMLDivElement | null = $state(null);
+  const queryClient = useQueryClient();
+  const playlists = $derived.by(() =>
+    queryClient.getQueryData<Playlist[]>(svelteQueryKeys.userPlaylists),
+  );
 
   async function playYtVideo() {
     const queueableTrack = {
@@ -32,43 +37,32 @@
     musicPlayerStore.visiblePanel = "playingNow";
   }
 
-  async function addToPlaylist(playlistId: string) {
-    if (!tempDiv) return;
+  const addToPlaylistMutation = createMutation(() => ({
+    mutationKey: svelteMutationKeys.addUVideoToPlaylist,
+    onError: () => toast.error("Failed to update playlist."),
+    onSuccess(data: string, playlistId: string) {
+      toast.success(data);
+      queryClient.invalidateQueries({ queryKey: svelteQueryKeys.playlist(playlistId) });
+    },
+    async mutationFn(playlistId: string) {
+      const duration = await backendClient(`/music/track/${uvideo.videoId}/duration`, z.number());
 
-    const durationResponse = await backendClient<ApiResponse<number>>(
-      `/music/track/${uvideo.videoId}/duration`,
-    );
-
-    if (!durationResponse.success) return;
-
-    const response = await backendClient<ApiResponse<string>>(
-      `/playlists/playlist/${playlistId}/tracks`,
-      {
+      return backendClient(`/playlists/playlist/${playlistId}/tracks`, z.string(), {
         method: "POST",
         body: {
           author: uvideo.author,
           title: uvideo.title,
           videoId: uvideo.videoId,
-          duration: durationResponse.data,
+          duration: duration,
           isExplicit: false,
           thumbnail: getThumbnailUrl(uvideo.videoId),
           videoType: "uvideo",
         },
-      },
-    );
-
-    if (response.success) {
-      toast.success(response.data);
-      invalidate(url => url.pathname.startsWith("/playlist"));
-      return;
-    }
-
-    toast.error("Failed to update playlist.");
-  }
+      });
+    },
+  }));
 </script>
 
-<!-- temp div to retrieve length of vid -->
-<div class="hidden" id="temp-player-{uvideo.videoId}" bind:this={tempDiv}></div>
 <DropdownMenu.Root>
   <button type="button" class="relative rounded-2xl group" onclick={playYtVideo}>
     <Image
@@ -113,13 +107,18 @@
       </p>
     </div>
   </button>
-  <DropdownMenu.Content>
-    {#each playlistsStore.playlists as playlist}
-      <DropdownMenu.Item onclick={() => addToPlaylist(playlist.playlistId)} class="flex py-3 gap-2">
-        <PlusIcon size={20} /> Add or Remove from Playlist "{playlist.name}"
-      </DropdownMenu.Item>
-    {/each}
-  </DropdownMenu.Content>
+  {#if playlists && playlists.length}
+    <DropdownMenu.Content>
+      {#each playlists as playlist}
+        <DropdownMenu.Item
+          onclick={() => addToPlaylistMutation.mutate(playlist.playlistId)}
+          class="flex py-3 gap-2"
+        >
+          <PlusIcon size={20} /> Add or Remove from Playlist "{playlist.name}"
+        </DropdownMenu.Item>
+      {/each}
+    </DropdownMenu.Content>
+  {/if}
 </DropdownMenu.Root>
 
 <style>

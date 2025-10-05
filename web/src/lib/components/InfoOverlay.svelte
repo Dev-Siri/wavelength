@@ -1,46 +1,48 @@
 <script lang="ts">
   import { XIcon } from "@lucide/svelte";
+  import { createQuery } from "@tanstack/svelte-query";
 
-  import type { ApiResponse } from "$lib/types.js";
   import type { Snippet } from "svelte";
 
+  import { svelteQueryKeys } from "$lib/constants/keys";
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
   import { backendClient } from "$lib/utils/query-client";
+  import { musicVideoPreviewSchema } from "$lib/utils/validation/music-video-preview";
 
   import MusicVideoPreview from "./MusicVideoPreview.svelte";
   import { Button } from "./ui/button";
 
   const { children }: { children: Snippet } = $props();
 
-  let musicVideoId = $state("");
+  const musicVideoPreviewQuery = createQuery(() => ({
+    queryKey: svelteQueryKeys.musicVideoPreview(
+      musicQueueStore.musicPlayingNow?.title ?? "",
+      musicQueueStore.musicPlayingNow?.author ?? "",
+    ),
+    async queryFn() {
+      if (
+        musicQueueStore.musicPlayingNow &&
+        musicQueueStore.musicPlayingNow?.videoType !== "uvideo"
+      )
+        return;
 
-  $effect(() => {
-    if (musicQueueStore.musicPlayingNow && musicQueueStore.musicPlayingNow.videoType !== "uvideo")
-      fetchMusicVideo(musicQueueStore.musicPlayingNow);
-  });
-
-  async function fetchMusicVideo(playingNow: NonNullable<typeof musicQueueStore.musicPlayingNow>) {
-    const musicVideoIdResponse = await backendClient<ApiResponse<{ videoId: string }>>(
-      "/music/music-video-preview",
-      {
+      return backendClient("/music/music-video-preview", musicVideoPreviewSchema, {
         searchParams: {
-          title: playingNow.title,
-          artist: playingNow.author,
+          title: musicQueueStore.musicPlayingNow?.title ?? "",
+          artist: musicQueueStore.musicPlayingNow?.author ?? "",
         },
-      },
-    );
-
-    if (musicVideoIdResponse.success) musicVideoId = musicVideoIdResponse.data.videoId;
-  }
+      });
+    },
+  }));
 </script>
 
 <article class="bg-black relative h-[104%] w-full rounded-t-2xl pr-20 overflow-hidden">
-  {#key musicVideoId}
+  {#key musicVideoPreviewQuery.data}
     <MusicVideoPreview
       musicVideoId={musicQueueStore.musicPlayingNow?.videoType === "uvideo"
         ? musicQueueStore.musicPlayingNow.videoId
-        : musicVideoId}
+        : (musicVideoPreviewQuery.data?.videoId ?? "")}
     />
   {/key}
   <div class="flex absolute w-full btn-container-gradient rounded-2xl p-3">

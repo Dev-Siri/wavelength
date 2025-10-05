@@ -1,4 +1,5 @@
-import type { BaseMusicTrack, VideoType } from "$lib/types.js";
+import type { BaseMusicTrack } from "$lib/utils/validation/music-track";
+import type { VideoType } from "$lib/utils/validation/playlist-track";
 
 export interface QueueableMusic extends BaseMusicTrack {
   videoType: VideoType;

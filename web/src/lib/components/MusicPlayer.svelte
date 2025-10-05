@@ -1,17 +1,11 @@
 <script lang="ts">
-  import { EllipsisIcon } from "@lucide/svelte";
-
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
-  import playlistsStore from "$lib/stores/playlists.svelte";
-  import { durationify, parseHtmlEntities } from "$lib/utils/format.js";
   import { getStreamUrl, getThumbnailUrl } from "$lib/utils/url";
 
-  import Image from "./Image.svelte";
   import MusicPlayerControls from "./MusicPlayerControls.svelte";
+  import MusicPlayerTrackLabel from "./MusicPlayerTrackLabel.svelte";
   import PlaybackOptions from "./PlaybackOptions.svelte";
-  import PlaylistToggleOptions from "./PlaylistToggleOptions.svelte";
-  import * as DropdownMenu from "./ui/dropdown-menu";
 
   let musicPlayerElement: HTMLAudioElement;
 
@@ -103,45 +97,7 @@
     bind:volume={musicPlayerStore.volume}
   ></audio>
   <section class="flex h-full w-1/3 items-center">
-    {#if musicQueueStore.musicPlayingNow}
-      <DropdownMenu.Root>
-        <DropdownMenu.Trigger>
-          <div class="relative group h-20 w-20 cursor-pointer">
-            <EllipsisIcon
-              class="absolute bg-black bg-opacity-80 z-99999 rounded-full p-0.5 duration-200 top-2 right-2"
-              color="white"
-              size={20}
-            />
-            {#key musicQueueStore.musicPlayingNow}
-              <Image
-                src={getThumbnailUrl(musicQueueStore.musicPlayingNow.videoId)}
-                alt="Cover"
-                height={80}
-                width={80}
-                class="rounded-md object-cover aspect-square duration-200 group-hover:brightness-75"
-              />
-            {/key}
-          </div>
-        </DropdownMenu.Trigger>
-        <DropdownMenu.Content class="z-9999" hidden={!playlistsStore.playlists.length}>
-          <PlaylistToggleOptions
-            music={{
-              ...musicQueueStore.musicPlayingNow,
-              isExplicit: false,
-              duration: durationify(musicPlayerStore.musicDuration),
-            }}
-          />
-        </DropdownMenu.Content>
-      </DropdownMenu.Root>
-      <div class="hidden sm:block">
-        <p class="text-md ml-2 text-primary">
-          {parseHtmlEntities(musicQueueStore.musicPlayingNow.title)}
-        </p>
-        <p class="text-xs ml-2 text-muted-foreground">{musicQueueStore.musicPlayingNow.author}</p>
-      </div>
-    {:else}
-      <div class="h-20 w-20 bg-primary-foreground rounded-md"></div>
-    {/if}
+    <MusicPlayerTrackLabel />
   </section>
   <section class="flex flex-col gap-2 h-full w-1/3">
     <MusicPlayerControls />

@@ -5,9 +5,12 @@
     sortItems,
     type SortEventDetail,
   } from "@rodrigodagostino/svelte-sortable-list";
+  import { createMutation } from "@tanstack/svelte-query";
+  import { z } from "zod";
 
-  import type { PlaylistTrack } from "$lib/types.js";
+  import type { PlaylistTrack } from "$lib/utils/validation/playlist-track";
 
+  import { svelteMutationKeys } from "$lib/constants/keys";
   import { backendClient } from "$lib/utils/query-client.js";
 
   import PlaylistTracksListItem from "./PlaylistTracksListItem.svelte";
@@ -29,25 +32,24 @@
   );
   let prevItems = $derived([...items]);
 
-  function handleSort(event: CustomEvent<SortEventDetail>) {
-    const { prevItemIndex, nextItemIndex } = event.detail;
-
-    items = sortItems(items, prevItemIndex, nextItemIndex);
-  }
-
-  $effect(() => {
-    async function rearrangeItems() {
-      await backendClient(`/playlists/playlist/${playlistId}/tracks`, {
+  const rearrangeItemsMutation = createMutation(() => ({
+    mutationKey: svelteMutationKeys.rearrangePlaylistTracks(playlistId),
+    mutationFn: () =>
+      backendClient(`/playlists/playlist/${playlistId}/tracks`, z.string(), {
         method: "PUT",
         body: items.map((_, i) => ({
           playlistTrackId: prevItems[i].playlistTrackId,
           newPos: i + 1,
         })),
-      });
-    }
+      }),
+  }));
 
-    if (!isRearrangingList) rearrangeItems();
-  });
+  function handleSort(event: CustomEvent<SortEventDetail>) {
+    const { prevItemIndex, nextItemIndex } = event.detail;
+
+    items = sortItems(items, prevItemIndex, nextItemIndex);
+    rearrangeItemsMutation.mutate();
+  }
 </script>
 
 {#if isRearrangingList}

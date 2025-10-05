@@ -1,13 +1,15 @@
 <script lang="ts">
   import { EllipsisIcon, GlobeIcon, PencilIcon, PlayIcon, Trash2Icon } from "@lucide/svelte";
+  import { createMutation, useQueryClient } from "@tanstack/svelte-query";
   import toast from "svelte-french-toast";
+  import { z } from "zod";
 
-  import type { ApiResponse, Playlist, PlaylistTrack } from "$lib/types.js";
+  import type { PlaylistTrack } from "$lib/utils/validation/playlist-track";
+  import type { Playlist } from "$lib/utils/validation/playlists";
 
+  import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
-  import playlistsStore from "$lib/stores/playlists.svelte";
-  import userStore from "$lib/stores/user.svelte";
   import { backendClient } from "$lib/utils/query-client";
 
   import EditPlaylistDetailsDialog from "./EditPlaylistDetailsDialog.svelte";
@@ -32,41 +34,29 @@
   } = $props();
 
   const { coverImage, name, playlistId, isPublic } = playlist;
+  const queryClient = useQueryClient();
 
-  async function handleDeletePlaylist() {
-    if (!userStore.user) return;
+  let playlistTracks = $derived.by(() =>
+    queryClient.getQueryData<PlaylistTrack[]>(svelteQueryKeys.playlistTrack(playlistId)),
+  );
 
-    const deletePlaylistResponse = await backendClient<ApiResponse<string>>(
-      `/playlists/playlist/${playlistId}`,
-      {
-        method: "DELETE",
-      },
-    );
-
-    if (!deletePlaylistResponse.success) return toast.error("Failed to delete playlist.");
-
-    toast.success(`Deleted playlist "${name}".`);
-
-    const response = await backendClient<ApiResponse<Playlist[]>>(
-      `/playlists/user/${userStore.user.email}`,
-    );
-
-    if (response.success) playlistsStore.playlists = response.data;
-  }
+  const playlistDeleteMutation = createMutation(() => ({
+    mutationKey: svelteMutationKeys.deletePlaylist(playlistId),
+    mutationFn: () =>
+      backendClient(`/playlists/playlist/${playlistId}`, z.string(), { method: "DELETE" }),
+    onError: () => toast.error("Failed to delete playlist."),
+    onSuccess() {
+      toast.success(`Deleted playlist "${name}".`);
+      queryClient.invalidateQueries({ queryKey: svelteQueryKeys.userPlaylists });
+    },
+  }));
 
   async function playPlaylist() {
-    const playlistTracksResponse = await backendClient<ApiResponse<PlaylistTrack[]>>(
-      `/playlists/playlist/${playlistId}/tracks`,
-      {
-        customFetch: fetch,
-      },
-    );
-
-    if (!playlistTracksResponse.success) return;
+    if (!playlistTracks) return;
 
     musicQueueStore.musicQueue = [];
-    musicQueueStore.addToQueue(...playlistTracksResponse.data);
-    musicQueueStore.musicPlayingNow = playlistTracksResponse.data[0];
+    musicQueueStore.addToQueue(...playlistTracks);
+    musicQueueStore.musicPlayingNow = playlistTracks[0];
     musicPlayerStore.playMusic();
     musicPlayerStore.visiblePanel = "playingNow";
   }
@@ -135,7 +125,7 @@
         </Dialog.Trigger>
         <DropdownMenu.Item
           class="py-3 pr-20 gap-1 items-center text-red-500"
-          onclick={handleDeletePlaylist}
+          onclick={() => playlistDeleteMutation.mutate()}
         >
           <Trash2Icon size={16} />
           Delete playlist

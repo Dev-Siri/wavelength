@@ -5,12 +5,16 @@ import { cleanupOutdatedCaches, precacheAndRoute } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
 import { StaleWhileRevalidate } from "workbox-strategies";
 
-declare let self: ServiceWorkerGlobalScope;
+const manifest = [
+  { url: "/_app/immutable/start.js", revision: "1" },
+  { url: "/_app/immutable/chunks/index.js", revision: "1" },
+  { url: "/_app/assets/logo.png", revision: "1" },
+  { url: "/index.html", revision: "1" },
+];
 
-clientsClaim();
-
-precacheAndRoute(self.__WB_MANIFEST);
+precacheAndRoute(manifest);
 cleanupOutdatedCaches();
+clientsClaim();
 registerRoute(
   ({ request }) => request.destination === "image",
   new StaleWhileRevalidate({

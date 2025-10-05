@@ -1,77 +1,46 @@
 <script lang="ts">
-  import { Skeleton } from "$lib/components/ui/skeleton";
+  import { goto } from "$app/navigation";
+  import { page } from "$app/state";
 
-  import type { PageData } from "./$types.js";
+  import Button from "$lib/components/ui/button/button.svelte";
+  import ArtistSearch from "./artist-search.svelte";
+  import PlaylistSearch from "./playlist-search.svelte";
+  import TrackSearch from "./track-search.svelte";
+  import VideoSearch from "./video-search.svelte";
 
-  import ArtistLabel from "$lib/components/ArtistLabel.svelte";
-  import ArtistLabelSkeleton from "$lib/components/skeletons/ArtistLabelSkeleton.svelte";
-  import TrackItemSkeleton from "$lib/components/skeletons/TrackItemSkeleton.svelte";
-  import TopResult from "$lib/components/TopResult.svelte";
-  import TrackItem from "$lib/components/TrackItem.svelte";
-  import UVideoCard from "$lib/components/UVideoCard.svelte";
+  const searchTypes = ["tracks", "videos", "artists", "playlists"];
 
-  const { data }: { data: PageData } = $props();
+  const q = $derived.by(() => page.url.searchParams.get("q") ?? "");
+  const currentSearchType = $derived.by(() => page.url.searchParams.get("type"));
+
+  $effect(() => {
+    if (!q) goto("/");
+
+    if (!currentSearchType || !searchTypes.includes(currentSearchType))
+      goto(`/app/search?q=${encodeURIComponent(q)}&type=tracks`);
+  });
 </script>
 
 <div class="h-screen p-4 overflow-auto pb-[20%]">
+  <section class="flex items-center gap-4 mt-4">
+    {#each searchTypes as searchType}
+      <Button
+        href={`/app/search?q=${encodeURIComponent(q)}&type=${encodeURIComponent(searchType)}`}
+        variant={searchType === currentSearchType ? "default" : "secondary"}
+      >
+        {searchType.charAt(0).toUpperCase()}{searchType.slice(1)}
+      </Button>
+    {/each}
+  </section>
   <div class="flex h-[272px] w-full gap-5 mt-8 mb-16">
-    {#await data.pageData.songResponse}
-      <div class="w-2/3">
-        <h2 class="text-2xl mb-3 font-semibold">Top Result</h2>
-        <div class="w-full bg-muted bg-opacity-40 rounded-2xl pt-4 pb-6 pl-4">
-          <Skeleton class="rounded-lg h-28 w-28" />
-          <Skeleton class="w-4/5 h-4 mt-8" />
-          <Skeleton class="w-2/5 h-3 mt-2" />
-        </div>
-      </div>
-      <div class="w-2/3">
-        <h2 class="text-2xl mb-3 font-semibold">Songs</h2>
-        <TrackItemSkeleton />
-        <TrackItemSkeleton />
-        <TrackItemSkeleton />
-        <TrackItemSkeleton />
-      </div>
-    {:then songResponse}
-      {#if songResponse.success}
-        {@const topResult = songResponse.data.result[0]}
-        <div class="h-full w-1/2">
-          <h2 class="text-2xl mb-3 font-semibold">Top Result</h2>
-          <TopResult {topResult} />
-        </div>
-        <div class="h-full w-1/2">
-          <h2 class="text-2xl mb-3 font-semibold">Songs</h2>
-          {#each songResponse.data.result.slice(0, 4) as music}
-            <TrackItem {music} />
-          {/each}
-        </div>
-      {/if}
-    {/await}
+    {#if currentSearchType === "tracks"}
+      <TrackSearch {q} />
+    {:else if currentSearchType === "videos"}
+      <VideoSearch {q} />
+    {:else if currentSearchType === "artists"}
+      <ArtistSearch {q} />
+    {:else if currentSearchType === "playlists"}
+      <PlaylistSearch {q} />
+    {/if}
   </div>
-  <h2 class="text-2xl my-4 font-semibold">YouTube Videos</h2>
-  {#await data.pageData.uvideosResponse then uvideosResponse}
-    {#if uvideosResponse.success}
-      <div class="flex flex-wrap w-full gap-4">
-        {#each uvideosResponse.data as uvideo}
-          <UVideoCard {uvideo} />
-        {/each}
-      </div>
-    {/if}
-  {/await}
-  <h2 class="text-2xl my-4 font-semibold">Artists</h2>
-  {#await data.pageData.artistResponse}
-    <div class="flex flex-wrap w-full gap-4">
-      <ArtistLabelSkeleton />
-      <ArtistLabelSkeleton />
-      <ArtistLabelSkeleton />
-      <ArtistLabelSkeleton />
-    </div>
-  {:then artistResponse}
-    {#if artistResponse.success}
-      <div class="flex flex-wrap w-full gap-4">
-        {#each artistResponse.data.result.slice(0, 5) as artist}
-          <ArtistLabel {artist} />
-        {/each}
-      </div>
-    {/if}
-  {/await}
 </div>

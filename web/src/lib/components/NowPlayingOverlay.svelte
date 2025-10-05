@@ -7,47 +7,44 @@
     YoutubeIcon,
   } from "@lucide/svelte";
 
-  import type { ApiResponse, MusicTrackStats, ThemeColor } from "$lib/types";
-
   import musicQueueStore from "$lib/stores/music-queue.svelte";
   import { compactify, parseHtmlEntities } from "$lib/utils/format.js";
   import { backendClient } from "$lib/utils/query-client.js";
   import { getThumbnailUrl } from "$lib/utils/url";
 
+  import { svelteQueryKeys } from "$lib/constants/keys";
+  import { musicTrackStatsSchema } from "$lib/utils/validation/music-track-stats";
+  import { themeColorSchema } from "$lib/utils/validation/theme-color";
+  import { createQuery } from "@tanstack/svelte-query";
   import Image from "./Image.svelte";
   import { Button } from "./ui/button";
   import * as Tooltip from "./ui/tooltip";
 
-  let themeColor = $state({ r: 0, g: 0, b: 0 });
-  let videoStats: MusicTrackStats | null = $state(null);
+  let musicThumbnail = $derived(getThumbnailUrl(musicQueueStore.musicPlayingNow?.videoId ?? ""));
+
+  const themeColorQuery = createQuery(() => ({
+    queryKey: svelteQueryKeys.themeColor(musicThumbnail),
+    queryFn: () =>
+      backendClient("/image/theme-color", themeColorSchema, {
+        searchParams: { imageUrl: musicThumbnail },
+      }),
+  }));
+
+  const musicStatsQuery = createQuery(() => ({
+    queryKey: svelteQueryKeys.musicStats(musicQueueStore.musicPlayingNow?.videoId ?? ""),
+    queryFn: () =>
+      backendClient(
+        `/music/track/${musicQueueStore.musicPlayingNow?.videoId}/stats`,
+        musicTrackStatsSchema,
+        { searchParams: { imageUrl: musicThumbnail } },
+      ),
+  }));
 
   let coverStyle = $derived(
-    themeColor
-      ? `box-shadow: 0 0px 70px 10px rgb(${themeColor.r}, ${themeColor.g}, ${themeColor.b});`
+    themeColorQuery.isSuccess
+      ? `box-shadow: 0 0px 70px 10px rgb(${themeColorQuery.data.r}, ${themeColorQuery.data.g}, ${themeColorQuery.data.b});`
       : "",
   );
-
-  $effect(() => {
-    async function fetchData() {
-      if (!musicQueueStore.musicPlayingNow) return;
-
-      const [themeColorResponse, statsResponse] = await Promise.all([
-        backendClient<ApiResponse<ThemeColor>>("/image/theme-color", {
-          searchParams: {
-            imageUrl: getThumbnailUrl(musicQueueStore.musicPlayingNow.videoId),
-          },
-        }),
-        backendClient<ApiResponse<MusicTrackStats>>(
-          `/music/track/${musicQueueStore.musicPlayingNow.videoId}/stats`,
-        ),
-      ]);
-
-      if (themeColorResponse.success) themeColor = themeColorResponse.data;
-      if (statsResponse.success) videoStats = statsResponse.data;
-    }
-
-    fetchData();
-  });
 </script>
 
 {#if musicQueueStore.musicPlayingNow}
@@ -55,7 +52,7 @@
     class="flex flex-col min-[800px]:flex-row justify-center min-[800px]:justify-start text-center min-[800px]:text-start items-center h-3/5 p-9 min-[800px]:p-14 pt-5"
   >
     <Image
-      src={getThumbnailUrl(musicQueueStore.musicPlayingNow.videoId)}
+      src={musicThumbnail}
       alt="Thumbnail"
       height={256}
       width={256}
@@ -98,7 +95,8 @@
       </div>
     </div>
   </section>
-  {#if videoStats}
+  {#if musicStatsQuery.isSuccess}
+    {@const musicStats = musicStatsQuery.data}
     <section>
       <Button
         href="https://youtube.com/watch?v={musicQueueStore.musicPlayingNow.videoId}"
@@ -107,18 +105,18 @@
         target="_blank"
         class="flex justify-between items-center min-[800px]:ml-14 w-fit gap-4 py-6 min-[800px]:-mt-32 lg:-mt-10"
       >
-        {#if videoStats.likeCount}
+        {#if musicStats.likeCount}
           <div class="flex items-center justify-center gap-1.5 cursor-default" aria-label="Likes">
             <Tooltip.Root>
               <Tooltip.Trigger>
                 <ThumbsUpIcon />
               </Tooltip.Trigger>
               <Tooltip.Content>
-                <p>{videoStats.likeCount} Likes</p>
+                <p>{musicStats.likeCount} Likes</p>
               </Tooltip.Content>
             </Tooltip.Root>
             <p class="text-md text-primary">
-              {compactify(Number(videoStats.likeCount))}
+              {compactify(Number(musicStats.likeCount))}
             </p>
           </div>
           <div
@@ -130,11 +128,11 @@
                 <MessageSquareIcon />
               </Tooltip.Trigger>
               <Tooltip.Content>
-                <p>{videoStats.commentCount} Comments</p>
+                <p>{musicStats.commentCount} Comments</p>
               </Tooltip.Content>
             </Tooltip.Root>
             <p class="text-md text-primary">
-              {compactify(Number(videoStats.commentCount))}
+              {compactify(Number(musicStats.commentCount))}
             </p>
           </div>
           <div class="flex items-center justify-center gap-1.5 cursor-default" aria-label="Streams">
@@ -143,11 +141,11 @@
                 <CirclePlayIcon />
               </Tooltip.Trigger>
               <Tooltip.Content>
-                <p>{videoStats.viewCount} Streams</p>
+                <p>{musicStats.viewCount} Streams</p>
               </Tooltip.Content>
             </Tooltip.Root>
             <p class="text-md text-primary">
-              {compactify(Number(videoStats.viewCount))}
+              {compactify(Number(musicStats.viewCount))}
             </p>
           </div>
         {/if}

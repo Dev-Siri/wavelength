@@ -1,39 +1,36 @@
 <script lang="ts">
-  import { CompassIcon, PlusIcon } from "@lucide/svelte";
+  import { PlusIcon } from "@lucide/svelte";
+  import { createMutation, useQueryClient } from "@tanstack/svelte-query";
   import toast from "svelte-french-toast";
+  import { z } from "zod";
 
-  import type { ApiResponse, Playlist } from "$lib/types.js";
-
-  import playlistsStore from "$lib/stores/playlists.svelte.js";
+  import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";
   import userStore from "$lib/stores/user.svelte.js";
   import { backendClient } from "$lib/utils/query-client.js";
 
   import Library from "./Library.svelte";
-  import Button from "./ui/button/button.svelte";
+  import { Button } from "./ui/button";
 
   const { paneWidth }: { paneWidth: number } = $props();
 
-  async function createNewPlaylist() {
-    if (!userStore.user) return;
+  const queryClient = useQueryClient();
 
-    const createPlaylistResponse = await backendClient<ApiResponse<string>>(
-      `/playlists/user/${userStore.user.email}`,
-      { method: "POST" },
-    );
-
-    if (!createPlaylistResponse.success) {
-      toast.error("Failed to create playlist.");
-      return;
-    }
-
-    toast.success("Created a new playlist.");
-
-    const playlistsResponse = await backendClient<ApiResponse<Playlist[]>>(
-      `/playlists/user/${userStore.user.email}`,
-    );
-
-    if (playlistsResponse.success) playlistsStore.playlists = playlistsResponse.data;
-  }
+  const createPlaylistMutation = createMutation(() => ({
+    mutationKey: svelteMutationKeys.createPlaylist(userStore.user?.email),
+    mutationFn: () =>
+      backendClient(`/playlists/user/${userStore.user?.email}`, z.string(), {
+        method: "POST",
+        searchParams: {
+          authorName: userStore.user?.name,
+          authorImage: userStore.user?.image,
+        },
+      }),
+    onError: () => toast.error("Failed to create playlist."),
+    onSuccess() {
+      toast.success("Created a new playlist.");
+      queryClient.invalidateQueries({ queryKey: svelteQueryKeys.userPlaylists });
+    },
+  }));
 </script>
 
 <aside class="h-full bg-black">
@@ -46,14 +43,8 @@
     </a>
   </div>
   <div class="flex flex-col h-full w-full px-3 mt-2 gap-2">
-    <Button variant="secondary" href="/app/playlist">
-      <CompassIcon size={20} />
-      {#if paneWidth > 17}
-        <span class="ml-1 hidden md:block">Discover Playlists</span>
-      {/if}
-    </Button>
     {#if userStore.user}
-      <Button variant="secondary" onclick={createNewPlaylist}>
+      <Button variant="secondary" onclick={() => createPlaylistMutation.mutate()}>
         <PlusIcon size={20} />
         {#if paneWidth > 17}
           <span class="mr-5 hidden md:block">Add Playlist</span>

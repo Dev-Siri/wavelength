@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { DownloadIcon } from "@lucide/svelte";
+  import { useQueryClient } from "@tanstack/svelte-query";
   import "flag-icons/css/flag-icons.min.css";
 
+  import { svelteQueryKeys } from "$lib/constants/keys";
   import userStore from "$lib/stores/user.svelte.js";
   import { codeToCountryName } from "$lib/utils/countries.js";
 
@@ -9,9 +12,9 @@
   import Button from "./ui/button/button.svelte";
   import * as Tooltip from "./ui/tooltip";
   import UserProfileIcon from "./UserProfileIcon.svelte";
-  import AndroidLogo from "./vectors/AndroidLogo.svelte";
 
-  const { region }: { region: string } = $props();
+  const queryClient = useQueryClient();
+  const region = $derived.by(() => queryClient.getQueryData<string>(svelteQueryKeys.region));
 </script>
 
 <header
@@ -24,17 +27,23 @@
     <GoogleLoginButton />
   {:else}
     <div class="flex items-center self-end gap-2">
-      <Tooltip.Root>
-        <Tooltip.Trigger>
-          <span class="select-none fi fi-{region.toLowerCase()}"></span>
-        </Tooltip.Trigger>
-        <Tooltip.Content>
-          {@const countryName = codeToCountryName(region)}
-          <p>{countryName.charAt(0).toUpperCase()}{countryName.slice(1)}</p>
-        </Tooltip.Content>
-      </Tooltip.Root>
-      <Button href="/downloads" class="flex gap-2 items-center" variant="outline">
-        <AndroidLogo />
+      {#if region}
+        <Tooltip.Root>
+          <Tooltip.Trigger>
+            <span class="select-none fi fi-{region.toLowerCase()}"></span>
+          </Tooltip.Trigger>
+          <Tooltip.Content>
+            {@const countryName = codeToCountryName(region)}
+            <p>{countryName.charAt(0).toUpperCase()}{countryName.slice(1)}</p>
+          </Tooltip.Content>
+        </Tooltip.Root>
+      {/if}
+      <Button
+        href="/downloads"
+        class="flex gap-2 items-center text-muted-foreground"
+        variant="ghost"
+      >
+        <DownloadIcon />
         <p class="text-md">Install App</p>
       </Button>
       <UserProfileIcon />

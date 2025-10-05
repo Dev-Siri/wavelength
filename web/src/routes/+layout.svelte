@@ -21,7 +21,7 @@
 </script>
 
 <svelte:head>
-  <title>Wavelength</title>
+  <title>WavLen</title>
 </svelte:head>
 
 {@render children?.()}

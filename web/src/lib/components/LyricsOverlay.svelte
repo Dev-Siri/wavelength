@@ -1,84 +1,31 @@
 <script lang="ts">
-  import type { ApiResponse, Lyric } from "$lib/types.js";
+  import { lyricsSchema } from "$lib/utils/validation/lyric";
 
-  import getClientDB from "$lib/db/client-indexed-db.js";
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
   import { backendClient } from "$lib/utils/query-client.js";
 
+  import { svelteQueryKeys } from "$lib/constants/keys";
+  import { createQuery } from "@tanstack/svelte-query";
   import LoadingSpinner from "./LoadingSpinner.svelte";
 
   let lyricsList: HTMLDivElement | null = $state(null);
-  let lyrics: Lyric[] | null = $state([]);
-  let isLoading = $state(false);
-  let hasErrored = $state(false);
 
   let playerProgressMs = $derived(musicPlayerStore.musicCurrentTime * 1000);
-  let currentLyricMs = $derived(lyrics?.find(lyric => lyric.startMs > playerProgressMs) ?? []);
 
-  $effect(() => {
-    async function fetchLyrics() {
-      if (!musicQueueStore.musicPlayingNow || !musicPlayerStore.musicPlayer) return;
+  const lyricsQuery = createQuery(() => ({
+    queryKey: svelteQueryKeys.lyrics(musicQueueStore.musicPlayingNow?.videoId ?? ""),
+    queryFn: () =>
+      backendClient(
+        `/music/track/${musicQueueStore.musicPlayingNow?.videoId}/lyrics`,
+        lyricsSchema,
+      ),
+    staleTime: Infinity,
+  }));
 
-      isLoading = true;
-
-      const db = await getClientDB();
-      const storedLyrics = await db.getAllFromIndex(
-        "lyrics",
-        "by_videoId",
-        musicQueueStore.musicPlayingNow.videoId,
-      );
-
-      if (storedLyrics.length) {
-        lyrics = storedLyrics.toSorted((a, b) => a.order - b.order);
-        isLoading = false;
-        return;
-      }
-
-      try {
-        const lyricsResponse = await backendClient<ApiResponse<Lyric[]>>(
-          `/music/track/${musicQueueStore.musicPlayingNow.videoId}/lyrics`,
-        );
-
-        if (lyricsResponse.success) {
-          lyrics = lyricsResponse.data;
-
-          const tx = db.transaction("lyrics", "readwrite");
-          const store = tx.objectStore("lyrics");
-
-          for (const [index, lyric] of lyrics.entries()) {
-            const { durMs, startMs, text } = lyric;
-
-            await store.put({
-              durMs,
-              startMs,
-              text,
-              videoId: musicQueueStore.musicPlayingNow.videoId,
-              lyricId: `l-${musicQueueStore.musicPlayingNow.videoId}-${index}`,
-              order: index,
-            });
-          }
-
-          await tx.done;
-
-          isLoading = false;
-          return;
-        } else {
-          isLoading = false;
-          hasErrored = true;
-          return;
-        }
-      } catch {
-        isLoading = false;
-        hasErrored = true;
-      }
-
-      isLoading = false;
-      hasErrored = false;
-    }
-
-    fetchLyrics();
-  });
+  let currentLyricMs = $derived(
+    lyricsQuery.data?.find(lyric => lyric.startMs > playerProgressMs) ?? [],
+  );
 
   $effect(() => {
     if (
@@ -107,17 +54,12 @@
 </script>
 
 {#if musicQueueStore.musicPlayingNow}
-  {#if isLoading}
+  {#if lyricsQuery.isLoading}
     <div class="flex flex-col items-center justify-center pt-40 pl-4">
       <LoadingSpinner />
     </div>
-  {:else if hasErrored || !lyrics}
-    <div class="flex flex-col items-center justify-center pt-52 pl-4">
-      <p class="text-5xl font-bold text-center text-balance text-red-500">
-        No lyrics available for this track.
-      </p>
-    </div>
-  {:else}
+  {:else if lyricsQuery.isSuccess && lyricsQuery.data.length}
+    {@const lyrics = lyricsQuery.data}
     <div class="flex flex-col pl-4 pt-4 pb-20 gap-10 overflow-auto" bind:this={lyricsList}>
       {#each lyrics as lyric, i}
         <button
@@ -134,6 +76,12 @@
           {lyric.text}
         </button>
       {/each}
+    </div>
+  {:else}
+    <div class="flex flex-col items-center justify-center pt-52 pl-4">
+      <p class="text-5xl font-bold text-center text-balance text-red-500">
+        No lyrics available for this track.
+      </p>
     </div>
   {/if}
 {/if}
