@@ -10,6 +10,7 @@ func registerPlaylistRoutes(app *fiber.App) {
 	app.Get("/playlists", playlist_controllers.GetPublicPlaylists)
 	app.Get("/playlists/user/:email", playlist_controllers.GetUserPlaylists)
 	app.Get("/playlists/playlist/:playlistId", playlist_controllers.GetPlaylistById)
+	app.Delete("/playlists/playlist/:playlistId", playlist_controllers.DeletePlaylistById)
 	app.Get("/playlists/playlist/:playlistId/length", playlist_controllers.GetPlaylistTracksLength)
 	app.Get("/playlists/playlist/:playlistId/tracks", playlist_controllers.GetPlaylistTracks)
 	app.Post("/playlists/user/:email", playlist_controllers.CreatePlaylist)
