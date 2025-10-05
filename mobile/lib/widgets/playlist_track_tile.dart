@@ -17,7 +17,7 @@ import "package:wavelength/bloc/music_player/music_player_track/music_player_tra
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
 import "package:wavelength/utils/parse.dart";
-import "package:wavelength/utils/thumbnail.dart";
+import "package:wavelength/utils/url.dart";
 import "package:wavelength/widgets/explicit_indicator.dart";
 import "package:wavelength/widgets/playlist_track_tile_options_bottom_sheet.dart";
 
@@ -36,6 +36,7 @@ class PlaylistTrackTile extends StatelessWidget {
       videoId: playlistTrack.videoId,
       title: playlistTrack.title,
       thumbnail: getTrackThumbnail(playlistTrack.videoId),
+      duration: parseToDuration(playlistTrack.duration),
       author: playlistTrack.author,
       videoType: playlistTrack.videoType,
     );
@@ -47,7 +48,8 @@ class PlaylistTrackTile extends StatelessWidget {
               (track) => QueueableMusic(
                 videoId: track.videoId,
                 title: track.title,
-                thumbnail: track.thumbnail,
+                thumbnail: getTrackThumbnail(track.videoId),
+                duration: parseToDuration(track.duration),
                 author: track.author,
                 videoType: track.videoType,
               ),

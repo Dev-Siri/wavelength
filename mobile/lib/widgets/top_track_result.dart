@@ -27,6 +27,7 @@ class TopTrackResult extends StatelessWidget {
       videoId: track.videoId,
       title: track.title,
       thumbnail: track.thumbnail,
+      duration: parseToDuration(track.duration),
       author: track.author,
       videoType: VideoType.track,
     );

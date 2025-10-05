@@ -86,7 +86,7 @@ class TrackRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/music/playlist/$trackId/lyrics"),
+        Uri.parse("$backendUrl/music/track/$trackId/lyrics"),
       );
       final decodedResponse = await compute<String, ApiResponse<List<Lyric>>>((
         lyricsResponse,
@@ -100,6 +100,34 @@ class TrackRepo {
           return ApiResponseSuccess(
             data: lyrics.map((lyric) => Lyric.fromJson(lyric)).toList(),
           );
+        }
+
+        return ApiResponseError(message: decodedJson["message"] as String);
+      }, response.body);
+
+      return decodedResponse;
+    } catch (e) {
+      return ApiResponseError(message: e.toString());
+    }
+  }
+
+  static Future<ApiResponse<int>> fetchTrackDuration({
+    required String trackId,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$backendUrl/music/track/$trackId/duration"),
+      );
+      final decodedResponse = await compute<String, ApiResponse<int>>((
+        durationResponse,
+      ) {
+        final decodedJson = jsonDecode(durationResponse);
+        final isSuccessful = decodedJson["success"] as bool;
+
+        if (isSuccessful) {
+          final duration = decodedJson["data"] as int;
+
+          return ApiResponseSuccess(data: duration);
         }
 
         return ApiResponseError(message: decodedJson["message"] as String);

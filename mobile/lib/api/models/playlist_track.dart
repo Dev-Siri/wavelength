@@ -35,8 +35,9 @@ class PlaylistTrack {
       author: json["author"] as String,
       duration: json["duration"] as String,
       videoId: json["videoId"] as String,
-      videoType:
-          json["videoType"] == "track" ? VideoType.track : VideoType.uvideo,
+      videoType: json["videoType"] == "track"
+          ? VideoType.track
+          : VideoType.uvideo,
       playlistId: json["playlistId"] as String,
     );
   }

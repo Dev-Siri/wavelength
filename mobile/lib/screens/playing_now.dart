@@ -9,7 +9,7 @@ import "package:wavelength/api/models/playlist_theme_color.dart";
 import "package:wavelength/api/repositories/image_repo.dart";
 import "package:wavelength/screens/playing_now_presenters/lyrics_presenter.dart";
 import "package:wavelength/screens/playing_now_presenters/playing_now_preview_presenter.dart";
-import "package:wavelength/utils/thumbnail.dart";
+import "package:wavelength/utils/url.dart";
 
 enum PlayingNowPresenter { preview, lyrics }
 

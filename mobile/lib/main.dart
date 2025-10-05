@@ -7,7 +7,6 @@ import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:google_sign_in/google_sign_in.dart";
 import "package:hive_flutter/hive_flutter.dart";
 import "package:wavelength/api/models/adapters/lyric_adapter.dart";
-import "package:wavelength/api/models/adapters/playback_stream_adapter.dart";
 import "package:wavelength/api/models/adapters/playlist_adapter.dart";
 import "package:wavelength/api/models/adapters/playlist_track_adapter.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
@@ -33,7 +32,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
 
-  Hive.registerAdapter(PlaybackStreamAdapter());
   Hive.registerAdapter(PlaylistTrackAdapter());
   Hive.registerAdapter(LyricAdapter());
   Hive.registerAdapter(PlaylistAdapter());

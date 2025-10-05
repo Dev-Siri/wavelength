@@ -18,3 +18,20 @@ String durationify(Duration duration) {
     return "${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
   }
 }
+
+Duration parseToDuration(String input) {
+  final parts = input.split(":").map(int.parse).toList();
+
+  if (parts.length == 3) {
+    final hours = parts[0];
+    final minutes = parts[1];
+    final seconds = parts[2];
+    return Duration(hours: hours, minutes: minutes, seconds: seconds);
+  } else if (parts.length == 2) {
+    final minutes = parts[0];
+    final seconds = parts[1];
+    return Duration(minutes: minutes, seconds: seconds);
+  } else {
+    throw FormatException("Invalid duration format: $input");
+  }
+}

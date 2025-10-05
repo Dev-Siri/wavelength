@@ -27,6 +27,7 @@ import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_bloc.d
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_event.dart";
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_state.dart";
 import "package:wavelength/screens/edit_playlist.dart";
+import "package:wavelength/utils/parse.dart";
 import "package:wavelength/widgets/brand_cover_image.dart";
 import "package:wavelength/widgets/loading_indicator.dart";
 import "package:wavelength/widgets/music_player_presence_adjuster.dart";
@@ -64,6 +65,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
             videoId: track.videoId,
             title: track.title,
             thumbnail: track.thumbnail,
+            duration: parseToDuration(track.duration),
             author: track.author,
             videoType: track.videoType,
           ),

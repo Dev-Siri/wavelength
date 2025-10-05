@@ -8,7 +8,7 @@ import "package:wavelength/api/repositories/track_repo.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
 import "package:wavelength/utils/parse.dart";
-import "package:wavelength/utils/thumbnail.dart";
+import "package:wavelength/utils/url.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_event.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_state.dart";

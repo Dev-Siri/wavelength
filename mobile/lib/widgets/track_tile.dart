@@ -14,6 +14,7 @@ import "package:wavelength/bloc/music_player/music_player_queue/music_player_que
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
+import "package:wavelength/utils/parse.dart";
 import "package:wavelength/widgets/add_to_playlist_bottom_sheet.dart";
 import "package:wavelength/widgets/explicit_indicator.dart";
 
@@ -27,6 +28,7 @@ class TrackTile extends StatelessWidget {
       videoId: track.videoId,
       title: track.title,
       thumbnail: track.thumbnail,
+      duration: parseToDuration(track.duration),
       author: track.author,
       videoType: VideoType.track,
     );

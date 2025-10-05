@@ -5,123 +5,89 @@ import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
+import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/representations/queueable_music.dart";
 import "package:wavelength/api/models/track.dart";
 import "package:wavelength/api/models/video.dart";
+import "package:wavelength/api/repositories/track_repo.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:wavelength/utils/parse.dart";
-import "package:wavelength/utils/thumbnail.dart";
+import "package:wavelength/utils/url.dart";
 import "package:wavelength/widgets/add_to_playlist_bottom_sheet.dart";
-import "package:youtube_player_flutter/youtube_player_flutter.dart";
 
-class VideoCard extends StatefulWidget {
+class VideoCard extends StatelessWidget {
   final Video video;
 
   const VideoCard({super.key, required this.video});
 
-  @override
-  State<VideoCard> createState() => _VideoCardState();
-}
-
-class _VideoCardState extends State<VideoCard> {
-  YoutubePlayerController? _tempYoutubePlayerController;
-  Duration? videoDuration;
-
-  void _initTempVideo(String videoId) {
-    final controller = YoutubePlayerController(
-      initialVideoId: videoId,
-      flags: const YoutubePlayerFlags(autoPlay: true, mute: true),
+  Future<void> _playYouTubeVideo(BuildContext context) async {
+    final musicTrackBloc = context.read<MusicPlayerTrackBloc>();
+    final durationResponse = await TrackRepo.fetchTrackDuration(
+      trackId: video.videoId,
     );
 
-    controller.addListener(_onTempPlayerReady);
-
-    setState(() => _tempYoutubePlayerController = controller);
-
-    _tempYoutubePlayerController?.load(videoId);
-  }
-
-  void _onTempPlayerReady() {
-    final vDuration = _tempYoutubePlayerController!.metadata.duration;
-
-    if (vDuration != Duration.zero) {
-      setState(() {
-        videoDuration = vDuration;
-        _tempYoutubePlayerController = null;
-      });
+    if (durationResponse is ApiResponseSuccess<int>) {
+      musicTrackBloc.add(
+        MusicPlayerTrackLoadEvent(
+          queueableMusic: QueueableMusic(
+            videoId: video.videoId,
+            title: video.title,
+            thumbnail: getTrackThumbnail(video.videoId),
+            duration: Duration(seconds: durationResponse.data),
+            author: video.author,
+            videoType: VideoType.uvideo,
+          ),
+        ),
+      );
     }
   }
 
-  void _playYouTubeVideo(BuildContext context) {
-    final coverImageUrl = getTrackThumbnail(widget.video.id.videoId);
-
-    context.read<MusicPlayerTrackBloc>().add(
-      MusicPlayerTrackLoadEvent(
-        queueableMusic: QueueableMusic(
-          videoId: widget.video.id.videoId,
-          title: widget.video.snippet.title ?? "",
-          thumbnail: coverImageUrl,
-          author: widget.video.snippet.channelTitle ?? "",
-          videoType: VideoType.uvideo,
-        ),
-      ),
+  Future<void> _showPlaylistAdditionDialog(BuildContext context) async {
+    final musicTrackBloc = context.read<AppBottomSheetBloc>();
+    final durationResponse = await TrackRepo.fetchTrackDuration(
+      trackId: video.videoId,
     );
-  }
 
-  void _showPlaylistAdditionDialog(BuildContext context) {
-    _initTempVideo(widget.video.id.videoId);
-
-    if (videoDuration == null) return;
-
-    context.read<AppBottomSheetBloc>().add(
-      AppBottomSheetOpenEvent(
-        context: context,
-        isScrollControlled: true,
-        useRootNavigator: true,
-        builder: (context) => AddToPlaylistBottomSheet(
-          track: Track(
-            videoId: widget.video.id.videoId,
-            title: widget.video.snippet.title ?? "",
-            thumbnail: getTrackThumbnail(widget.video.id.videoId),
-            author: widget.video.snippet.channelId ?? "",
-            duration: durationify(videoDuration ?? Duration.zero),
-            isExplicit: false,
+    if (durationResponse is ApiResponseSuccess<int>) {
+      musicTrackBloc.add(
+        AppBottomSheetOpenEvent(
+          context: context,
+          isScrollControlled: true,
+          useRootNavigator: true,
+          builder: (context) => AddToPlaylistBottomSheet(
+            track: Track(
+              videoId: video.videoId,
+              title: video.title,
+              thumbnail: getTrackThumbnail(video.videoId),
+              author: video.author,
+              duration: durationify(Duration(seconds: durationResponse.data)),
+              isExplicit: false,
+            ),
+            videoType: VideoType.track,
           ),
-          videoType: VideoType.track,
         ),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _tempYoutubePlayerController?.dispose();
-    super.dispose();
+      );
+    }
   }
 
   // showModalBottomSheet(
   @override
   Widget build(BuildContext context) {
     final thumbnail = CachedNetworkImage(
-      imageUrl:
-          widget.video.snippet.thumbnails.high.url ??
-          widget.video.snippet.thumbnails.medium.url ??
-          widget.video.snippet.thumbnails.normal.url ??
-          "",
+      imageUrl: video.thumbnail,
       height: 250,
       width: double.infinity,
       fit: BoxFit.cover,
     );
 
-    final title = decodeHtmlSpecialChars(widget.video.snippet.title ?? "");
+    final title = decodeHtmlSpecialChars(video.title);
 
     return Stack(
       children: [
-        if (_tempYoutubePlayerController != null)
-          YoutubePlayer(controller: _tempYoutubePlayerController!, width: 1),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -151,7 +117,7 @@ class _VideoCardState extends State<VideoCard> {
                           : title,
                     ),
                     TextSpan(
-                      text: " - ${widget.video.snippet.channelTitle}",
+                      text: " - ${video.author}",
                       style: TextStyle(color: Colors.grey, fontSize: 17),
                     ),
                   ],

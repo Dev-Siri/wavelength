@@ -62,10 +62,9 @@ class _ArtistScreenState extends State<ArtistScreen> {
                       child: Center(
                         child: ErrorMessageDialog(
                           message: "Failed to get artist details from YouTube.",
-                          onRetry:
-                              () => _artistBloc.add(
-                                ArtistFetchEvent(browseId: widget.browseId),
-                              ),
+                          onRetry: () => _artistBloc.add(
+                            ArtistFetchEvent(browseId: widget.browseId),
+                          ),
                         ),
                       ),
                     ),
@@ -86,8 +85,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
                   child: CircleAvatar(
                     radius: 100,
                     foregroundImage: CachedNetworkImageProvider(
-                      state.artistExtra.items[0].snippet.thumbnails.high.url ??
-                          "",
+                      state.artistExtra.thumbnail,
                     ),
                   ),
                 ),
@@ -112,50 +110,49 @@ class _ArtistScreenState extends State<ArtistScreen> {
                     horizontal: 35,
                     vertical: 5,
                   ),
-                  child:
-                      Platform.isIOS
-                          ? CupertinoButton(
-                            onPressed: _openArtistOnYouTube,
-                            color: Colors.red,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(LucideIcons.youtube, color: Colors.white),
-                                SizedBox(width: 10),
-                                Text(
-                                  "View artist on YouTube.",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ],
-                            ),
-                          )
-                          : MaterialButton(
-                            onPressed: _openArtistOnYouTube,
-                            color: Colors.red,
-                            padding: EdgeInsets.all(12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  LucideIcons.youtube,
-                                  color: Colors.white,
-                                  size: 25,
-                                ),
-                                SizedBox(width: 10),
-                                Text(
-                                  "View artist on YouTube.",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
-                            ),
+                  child: Platform.isIOS
+                      ? CupertinoButton(
+                          onPressed: _openArtistOnYouTube,
+                          color: Colors.red,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(LucideIcons.youtube, color: Colors.white),
+                              SizedBox(width: 10),
+                              Text(
+                                "View artist on YouTube.",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
                           ),
+                        )
+                      : MaterialButton(
+                          onPressed: _openArtistOnYouTube,
+                          color: Colors.red,
+                          padding: EdgeInsets.all(12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                LucideIcons.youtube,
+                                color: Colors.white,
+                                size: 25,
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                "View artist on YouTube.",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                 ),
               ],
             );

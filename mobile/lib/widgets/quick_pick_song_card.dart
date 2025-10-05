@@ -1,9 +1,11 @@
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/quick_picks_item.dart";
 import "package:wavelength/api/models/representations/queueable_music.dart";
+import "package:wavelength/api/repositories/track_repo.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 
@@ -12,21 +14,32 @@ class QuickPickSongCard extends StatelessWidget {
 
   const QuickPickSongCard({super.key, required this.quickPicksItem});
 
+  Future<void> _playQuickPicksSong(BuildContext context) async {
+    final musicTrackBloc = context.read<MusicPlayerTrackBloc>();
+    final response = await TrackRepo.fetchTrackDuration(
+      trackId: quickPicksItem.videoId,
+    );
+
+    if (response is ApiResponseSuccess<int>) {
+      musicTrackBloc.add(
+        MusicPlayerTrackLoadEvent(
+          queueableMusic: QueueableMusic(
+            videoId: quickPicksItem.videoId,
+            title: quickPicksItem.title,
+            thumbnail: quickPicksItem.thumbnail,
+            author: quickPicksItem.author,
+            duration: Duration(seconds: response.data),
+            videoType: VideoType.track,
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap:
-          () => context.read<MusicPlayerTrackBloc>().add(
-            MusicPlayerTrackLoadEvent(
-              queueableMusic: QueueableMusic(
-                videoId: quickPicksItem.videoId,
-                title: quickPicksItem.title,
-                thumbnail: quickPicksItem.thumbnail,
-                author: quickPicksItem.author,
-                videoType: VideoType.track,
-              ),
-            ),
-          ),
+      onTap: () => _playQuickPicksSong(context),
       child: Container(
         padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
