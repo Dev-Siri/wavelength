@@ -25,17 +25,13 @@ class MusicPlayerQueueBloc
 
     for (final queueableMusic in event.newQueue) {
       await player.addAudioSource(
-        ClippingAudioSource(
-          child: AudioSource.uri(
-            Uri.parse(
-              getTrackPlaybackUrl(
-                queueableMusic.videoId,
-                StreamPlaybackType.audio,
-              ),
+        AudioSource.uri(
+          Uri.parse(
+            getTrackPlaybackUrl(
+              queueableMusic.videoId,
+              StreamPlaybackType.audio,
             ),
           ),
-          duration: queueableMusic.duration,
-          end: queueableMusic.duration,
           tag: MediaItem(
             id: queueableMusic.videoId,
             title: queueableMusic.title,
@@ -60,17 +56,13 @@ class MusicPlayerQueueBloc
     final player = MusicPlayerSingleton().player;
 
     player.addAudioSource(
-      ClippingAudioSource(
-        child: AudioSource.uri(
-          Uri.parse(
-            getTrackPlaybackUrl(
-              event.queueableMusic.videoId,
-              StreamPlaybackType.audio,
-            ),
+      AudioSource.uri(
+        Uri.parse(
+          getTrackPlaybackUrl(
+            event.queueableMusic.videoId,
+            StreamPlaybackType.audio,
           ),
         ),
-        duration: event.queueableMusic.duration,
-        end: event.queueableMusic.duration,
         tag: MediaItem(
           id: event.queueableMusic.videoId,
           title: event.queueableMusic.title,

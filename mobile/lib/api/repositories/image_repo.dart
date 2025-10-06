@@ -14,7 +14,7 @@ class ImageRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/image/theme-color?url=$url"),
+        Uri.parse("$backendUrl/image/theme-color?imageUrl=$url"),
       );
       final decodedResponse = await compute<String, ApiResponse<ThemeColor>>((
         stringResponse,

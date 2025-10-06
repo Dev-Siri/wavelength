@@ -31,22 +31,14 @@ class MusicPlayerTrackBloc
     emit(MusicPlayerTrackLoadingState());
 
     try {
-      emit(
-        MusicPlayerTrackPlayingNowState(playingNowTrack: event.queueableMusic),
-      );
-
       await player.setAudioSource(
-        ClippingAudioSource(
-          child: AudioSource.uri(
-            Uri.parse(
-              getTrackPlaybackUrl(
-                event.queueableMusic.videoId,
-                StreamPlaybackType.audio,
-              ),
+        AudioSource.uri(
+          Uri.parse(
+            getTrackPlaybackUrl(
+              event.queueableMusic.videoId,
+              StreamPlaybackType.audio,
             ),
           ),
-          duration: event.queueableMusic.duration,
-          end: event.queueableMusic.duration,
           tag: MediaItem(
             id: event.queueableMusic.videoId,
             title: event.queueableMusic.title,
@@ -56,6 +48,9 @@ class MusicPlayerTrackBloc
         ),
       );
 
+      emit(
+        MusicPlayerTrackPlayingNowState(playingNowTrack: event.queueableMusic),
+      );
       await player.play();
     } catch (err) {
       emit(MusicPlayerTrackEmptyState());
