@@ -47,13 +47,13 @@ class VideoCard extends StatelessWidget {
   }
 
   Future<void> _showPlaylistAdditionDialog(BuildContext context) async {
-    final musicTrackBloc = context.read<AppBottomSheetBloc>();
+    final bottomSheetBloc = context.read<AppBottomSheetBloc>();
     final durationResponse = await TrackRepo.fetchTrackDuration(
       trackId: video.videoId,
     );
 
     if (durationResponse is ApiResponseSuccess<int>) {
-      musicTrackBloc.add(
+      bottomSheetBloc.add(
         AppBottomSheetOpenEvent(
           context: context,
           isScrollControlled: true,

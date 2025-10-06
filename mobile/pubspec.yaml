@@ -36,7 +36,7 @@ dependencies:
   flutter_bloc: ^9.0.0
   lucide_icons_flutter: ^1.2.7
   cupertino_icons: ^1.0.8
-  youtube_player_flutter: ^9.1.2
+  video_player: ^2.10.0
 
 dev_dependencies:
   flutter_test:

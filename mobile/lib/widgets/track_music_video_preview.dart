@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
-import "package:youtube_player_flutter/youtube_player_flutter.dart";
+import "package:video_player/video_player.dart";
+import "package:wavelength/utils/url.dart";
 
 class TrackMusicVideoPreview extends StatefulWidget {
   final String musicVideoId;
@@ -11,48 +12,43 @@ class TrackMusicVideoPreview extends StatefulWidget {
 }
 
 class _TrackMusicVideoPreviewState extends State<TrackMusicVideoPreview> {
-  late YoutubePlayerController _youtubePlayerController;
+  VideoPlayerController? _controller;
 
   @override
   void initState() {
-    _youtubePlayerController = YoutubePlayerController(
-      initialVideoId: widget.musicVideoId,
-      flags: YoutubePlayerFlags(
-        mute: true,
-        hideControls: true,
-        controlsVisibleAtStart: false,
-        showLiveFullscreenButton: false,
-        autoPlay: true,
-        enableCaption: false,
-        startAt: 5,
-      ),
-    )..mute();
     super.initState();
+    final url = getTrackPlaybackUrl(
+      widget.musicVideoId,
+      StreamPlaybackType.video,
+    );
+    _controller =
+        VideoPlayerController.networkUrl(
+            Uri.parse(url),
+            videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+          )
+          ..initialize()
+          ..setLooping(true)
+          ..setVolume(0)
+          ..play();
+    // Display the first frame.
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_controller == null) return const SizedBox.shrink();
+
     return Positioned.fill(
       bottom: (MediaQuery.of(context).size.height / 10) + 30,
       child: Opacity(
         opacity: 0.25,
         child: IgnorePointer(
-          child: Center(
-            child: AspectRatio(
-              aspectRatio: 9 / 16,
-              child: FittedBox(
-                fit: BoxFit.cover,
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.width * 9 / 16,
-                  width: MediaQuery.of(context).size.width,
-                  child: YoutubePlayer(
-                    controller: _youtubePlayerController,
-                    onEnded: (_) =>
-                        _youtubePlayerController.seekTo(Duration(seconds: 0)),
-                    showVideoProgressIndicator: false,
-                  ),
-                ),
-              ),
+          child: FittedBox(
+            fit: BoxFit.cover,
+            child: SizedBox(
+              height: MediaQuery.of(context).size.width * 9 / 16,
+              width: MediaQuery.of(context).size.width,
+              child: VideoPlayer(_controller!),
             ),
           ),
         ),

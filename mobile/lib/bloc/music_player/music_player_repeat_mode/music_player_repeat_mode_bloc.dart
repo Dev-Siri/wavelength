@@ -24,7 +24,7 @@ class MusicPlayerRepeatModeBloc
     } else if (state is MusicPlayerRepeatModeRepeatAllState) {
       player.setLoopMode(LoopMode.all);
       emit(MusicPlayerRepeatModeRepeatOneState());
-    } else {
+    } else if (state is MusicPlayerRepeatModeRepeatOneState) {
       player.setLoopMode(LoopMode.one);
       emit(MusicPlayerRepeatModeRepeatOffState());
     }

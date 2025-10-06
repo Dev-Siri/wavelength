@@ -48,10 +48,10 @@ class MusicPlayerTrackBloc
         ),
       );
 
+      await player.play();
       emit(
         MusicPlayerTrackPlayingNowState(playingNowTrack: event.queueableMusic),
       );
-      await player.play();
     } catch (err) {
       emit(MusicPlayerTrackEmptyState());
     }
