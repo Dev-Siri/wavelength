@@ -61,8 +61,6 @@
 
       musicPlayerStore.musicSource = getStreamUrl(musicQueueStore.musicPlayingNow.videoId, "audio");
 
-      await musicPlayerStore.playMusic();
-
       if ("mediaSession" in navigator)
         navigator.mediaSession.metadata = new MediaMetadata({
           title: musicQueueStore.musicPlayingNow.title,
@@ -90,6 +88,7 @@
     bind:muted={musicPlayerStore.isMusicMuted}
     onpause={() => (musicPlayerStore.isMusicPlaying = false)}
     onplay={() => (musicPlayerStore.isMusicPlaying = true)}
+    oncanplaythrough={() => musicPlayerElement.play()}
     onended={handlePlayerEnd}
     ondurationchange={({ currentTarget: { duration } }) =>
       (musicPlayerStore.musicDuration = duration)}
