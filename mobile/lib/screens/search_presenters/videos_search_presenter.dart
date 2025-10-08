@@ -13,7 +13,7 @@ class VideosSearchPresenter extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<VideosBloc, VideosState>(
       builder: (context, state) {
-        if (state is VideosDefaultState) return SizedBox();
+        if (state is VideosDefaultState) return const SizedBox();
 
         if (state is! VideosFetchSuccessState) {
           return Stack(
@@ -21,8 +21,8 @@ class VideosSearchPresenter extends StatelessWidget {
               Column(
                 children: [
                   for (int i = 0; i < 10; i++)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 10),
                       child: PlaylistTileSkeleton(),
                     ),
                 ],
@@ -33,7 +33,7 @@ class VideosSearchPresenter extends StatelessWidget {
                     padding: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height / 3.5,
                     ),
-                    child: ErrorMessageDialog(
+                    child: const ErrorMessageDialog(
                       message:
                           "Something went wrong while trying to get YouTube videos.",
                     ),
@@ -48,7 +48,7 @@ class VideosSearchPresenter extends StatelessWidget {
             padding: EdgeInsets.only(
               top: MediaQuery.of(context).size.height / 4,
             ),
-            child: Center(
+            child: const Center(
               child: Text(
                 "No YouTube videos found for that query.",
                 style: TextStyle(fontSize: 20),

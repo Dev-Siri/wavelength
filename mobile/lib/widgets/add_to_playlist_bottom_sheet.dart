@@ -48,7 +48,7 @@ class AddToPlaylistBottomSheet extends StatelessWidget {
           isResponseSuccessful
               ? trackToggleResponse.data
               : "An error occured while adding track to the playlist.",
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
       ),
     );
@@ -58,21 +58,21 @@ class AddToPlaylistBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<LibraryBloc, LibraryState>(
       builder: (context, state) {
-        if (state is! LibraryFetchSuccessState) return SizedBox.shrink();
+        if (state is! LibraryFetchSuccessState) return const SizedBox.shrink();
 
         return Container(
           height:
               MediaQuery.of(context).size.height *
               0.4, // 40% of the screen's height.
           width: double.infinity,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
           child: Column(
             children: state.playlists.map((playlist) {
               final title = Text(
                 playlist.name,
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
               );
               final subtitle = Text(
                 "Add to this playlist.",
@@ -80,15 +80,15 @@ class AddToPlaylistBottomSheet extends StatelessWidget {
               );
 
               return ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
                 child: Platform.isIOS
                     ? CupertinoListTile(
                         onTap: () => _toggleTrackFromPlaylist(
                           context,
                           playlist.playlistId,
                         ),
-                        leading: Icon(LucideIcons.listMusic),
-                        padding: EdgeInsets.all(20),
+                        leading: const Icon(LucideIcons.listMusic),
+                        padding: const EdgeInsets.all(20),
                         title: title,
                         subtitle: subtitle,
                       )
@@ -97,7 +97,7 @@ class AddToPlaylistBottomSheet extends StatelessWidget {
                           context,
                           playlist.playlistId,
                         ),
-                        leading: Icon(LucideIcons.listMusic),
+                        leading: const Icon(LucideIcons.listMusic),
                         title: title,
                         subtitle: subtitle,
                       ),

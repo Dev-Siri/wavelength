@@ -17,49 +17,46 @@ class UserLeadingIcon extends StatelessWidget {
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.only(left: 8, top: 8),
-          child:
-              Platform.isIOS
-                  ? CupertinoButton(
-                    onPressed: () => Scaffold.of(context).openDrawer(),
-                    sizeStyle: CupertinoButtonSize.small,
-                    padding: EdgeInsets.zero,
-                    child:
-                        state is AuthStateAuthorized
-                            ? CircleAvatar(
-                              backgroundImage: CachedNetworkImageProvider(
-                                state.user.photoUrl ?? "",
-                              ),
-                            )
-                            : Icon(
-                              LucideIcons.user,
-                              color: Colors.white,
-                              size: 28,
-                            ),
-                  )
-                  : ElevatedButton(
-                    onPressed: () => Scaffold.of(context).openDrawer(),
-                    style: ButtonStyle(
-                      alignment: Alignment.center,
-                      padding: WidgetStatePropertyAll<EdgeInsets>(
-                        EdgeInsets.zero,
-                      ),
-                      backgroundColor: WidgetStatePropertyAll<Color>(
-                        Colors.grey.shade800,
-                      ),
+          child: Platform.isIOS
+              ? CupertinoButton(
+                  onPressed: () => Scaffold.of(context).openDrawer(),
+                  sizeStyle: CupertinoButtonSize.small,
+                  padding: EdgeInsets.zero,
+                  child: state is AuthStateAuthorized
+                      ? CircleAvatar(
+                          backgroundImage: CachedNetworkImageProvider(
+                            state.user.photoUrl ?? "",
+                          ),
+                        )
+                      : const Icon(
+                          LucideIcons.user,
+                          color: Colors.white,
+                          size: 28,
+                        ),
+                )
+              : ElevatedButton(
+                  onPressed: () => Scaffold.of(context).openDrawer(),
+                  style: ButtonStyle(
+                    alignment: Alignment.center,
+                    padding: const WidgetStatePropertyAll<EdgeInsets>(
+                      EdgeInsets.zero,
                     ),
-                    child:
-                        state is AuthStateAuthorized
-                            ? CircleAvatar(
-                              backgroundImage: CachedNetworkImageProvider(
-                                state.user.photoUrl ?? "",
-                              ),
-                            )
-                            : Icon(
-                              LucideIcons.user,
-                              color: Colors.white,
-                              size: 28,
-                            ),
+                    backgroundColor: WidgetStatePropertyAll<Color>(
+                      Colors.grey.shade800,
+                    ),
                   ),
+                  child: state is AuthStateAuthorized
+                      ? CircleAvatar(
+                          backgroundImage: CachedNetworkImageProvider(
+                            state.user.photoUrl ?? "",
+                          ),
+                        )
+                      : const Icon(
+                          LucideIcons.user,
+                          color: Colors.white,
+                          size: 28,
+                        ),
+                ),
         );
       },
     );

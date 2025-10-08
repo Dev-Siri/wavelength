@@ -15,15 +15,15 @@ class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: AppBar(
         centerTitle: true,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 3),
+        title: const Padding(
+          padding: EdgeInsets.only(top: 3),
           child: SvgPicture(
             AssetBytesLoader("assets/vectors/logo.svg.vec"),
             height: 60,
             width: 100,
           ),
         ),
-        leading: UserLeadingIcon(),
+        leading: const UserLeadingIcon(),
       ),
     );
   }

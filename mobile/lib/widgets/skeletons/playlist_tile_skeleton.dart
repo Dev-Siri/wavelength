@@ -7,7 +7,7 @@ class PlaylistTileSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         color: Colors.grey.shade900,
         borderRadius: BorderRadius.circular(15),
@@ -16,21 +16,21 @@ class PlaylistTileSkeleton extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(15),
-            child: Shimmer(child: SizedBox(height: 50, width: 50)),
+            child: Shimmer(child: const SizedBox(height: 50, width: 50)),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Shimmer(child: SizedBox(height: 15, width: 200)),
+                child: Shimmer(child: const SizedBox(height: 15, width: 200)),
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Shimmer(child: SizedBox(height: 15, width: 100)),
+                child: Shimmer(child: const SizedBox(height: 15, width: 100)),
               ),
             ],
           ),

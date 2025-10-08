@@ -80,8 +80,8 @@ class App extends StatelessWidget {
                   : null,
               scopes: ["email", "profile"],
             ),
-            FlutterSecureStorage(
-              aOptions: const AndroidOptions(encryptedSharedPreferences: true),
+            const FlutterSecureStorage(
+              aOptions: AndroidOptions(encryptedSharedPreferences: true),
             ),
           ),
         ),
@@ -91,12 +91,12 @@ class App extends StatelessWidget {
         routerConfig: router,
         themeMode: ThemeMode.dark,
         theme: ThemeData(
-          colorScheme: ColorScheme.dark(),
+          colorScheme: const ColorScheme.dark(),
           primaryColor: Colors.white,
           scaffoldBackgroundColor: Colors.black,
-          appBarTheme: AppBarTheme(backgroundColor: Colors.black),
+          appBarTheme: const AppBarTheme(backgroundColor: Colors.black),
           fontFamily: "Geist",
-          fontFamilyFallback: ["AppleColorEmoji", "NotoColorEmoji"],
+          fontFamilyFallback: const ["AppleColorEmoji", "NotoColorEmoji"],
           textSelectionTheme: TextSelectionThemeData(
             selectionColor: Colors.blue.withAlpha(102),
             selectionHandleColor: Colors.blue,

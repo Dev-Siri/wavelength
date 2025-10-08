@@ -98,13 +98,13 @@ class MusicPlayerPlayOptions extends StatelessWidget {
           },
         );
 
-    final previousButtonInnerUi = Icon(
+    final previousButtonInnerUi = const Icon(
       LucideIcons.skipBack,
       color: Colors.white,
       size: 22,
     );
 
-    final nextButtonInnerUi = Icon(
+    final nextButtonInnerUi = const Icon(
       LucideIcons.skipForward,
       color: Colors.white,
       size: 22,
@@ -131,31 +131,33 @@ class MusicPlayerPlayOptions extends StatelessWidget {
               );
             },
           ),
-          Spacer(),
+          const Spacer(),
           if (Platform.isAndroid)
             MaterialButton(
               minWidth: 0,
               height: 0,
-              shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
-              padding: EdgeInsets.all(14),
+              shape: const CircleBorder(
+                side: BorderSide(color: Colors.transparent),
+              ),
+              padding: const EdgeInsets.all(14),
               onPressed: () => _playPreviousTrack(context),
               child: previousButtonInnerUi,
             )
           else
             CupertinoButton(
               borderRadius: BorderRadius.circular(100),
-              padding: EdgeInsets.all(14),
+              padding: const EdgeInsets.all(14),
               onPressed: () => _playPreviousTrack(context),
               child: previousButtonInnerUi,
             ),
-          SizedBox(width: 15),
+          const SizedBox(width: 15),
           if (Platform.isAndroid)
             MaterialButton(
               minWidth: 0,
               height: 0,
               color: Colors.white,
-              shape: CircleBorder(side: BorderSide()),
-              padding: EdgeInsets.all(18),
+              shape: const CircleBorder(side: BorderSide()),
+              padding: const EdgeInsets.all(18),
               onPressed: () => context.read<MusicPlayerPlaystateBloc>().add(
                 MusicPlayerPlaystateToggleEvent(),
               ),
@@ -165,30 +167,32 @@ class MusicPlayerPlayOptions extends StatelessWidget {
             CupertinoButton(
               color: Colors.white,
               borderRadius: BorderRadius.circular(100),
-              padding: EdgeInsets.all(18),
+              padding: const EdgeInsets.all(18),
               onPressed: () => context.read<MusicPlayerPlaystateBloc>().add(
                 MusicPlayerPlaystateToggleEvent(),
               ),
               child: playButtonInnerUi,
             ),
-          SizedBox(width: 15),
+          const SizedBox(width: 15),
           if (Platform.isAndroid)
             MaterialButton(
               minWidth: 0,
               height: 0,
-              shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
-              padding: EdgeInsets.all(14),
+              shape: const CircleBorder(
+                side: BorderSide(color: Colors.transparent),
+              ),
+              padding: const EdgeInsets.all(14),
               onPressed: () => _playNextTrack(context),
               child: nextButtonInnerUi,
             )
           else
             CupertinoButton(
               borderRadius: BorderRadius.circular(100),
-              padding: EdgeInsets.all(14),
+              padding: const EdgeInsets.all(14),
               onPressed: () => _playNextTrack(context),
               child: nextButtonInnerUi,
             ),
-          Spacer(),
+          const Spacer(),
           GestureDetector(
             onTap: () => context.read<MusicPlayerRepeatModeBloc>().add(
               MusicPlayerRepeatModeChangeRepeatModeEvent(),

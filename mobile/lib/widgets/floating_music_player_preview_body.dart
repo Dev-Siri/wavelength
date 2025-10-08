@@ -49,7 +49,7 @@ class FloatingMusicPlayerPreviewBody extends StatelessWidget {
               children: [
                 Text(
                   decodeHtmlSpecialChars(playingNowTrack.title),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
                     overflow: TextOverflow.ellipsis,

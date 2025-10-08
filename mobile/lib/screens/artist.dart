@@ -58,7 +58,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Transform.translate(
-                      offset: Offset(0, -100),
+                      offset: const Offset(0, -100),
                       child: Center(
                         child: ErrorMessageDialog(
                           message: "Failed to get artist details from YouTube.",
@@ -73,8 +73,8 @@ class _ArtistScreenState extends State<ArtistScreen> {
               }
 
               return Transform.translate(
-                offset: Offset(0, -100),
-                child: Center(child: LoadingIndicator()),
+                offset: const Offset(0, -100),
+                child: const Center(child: LoadingIndicator()),
               );
             }
 
@@ -93,7 +93,10 @@ class _ArtistScreenState extends State<ArtistScreen> {
                   padding: const EdgeInsets.only(top: 10),
                   child: Text(
                     state.artist.title,
-                    style: TextStyle(fontSize: 44, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 44,
+                      fontWeight: FontWeight.bold,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -101,7 +104,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
                   padding: const EdgeInsets.only(bottom: 10),
                   child: Text(
                     "${state.artist.subscriberCount} subscribers",
-                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                    style: const TextStyle(fontSize: 18, color: Colors.grey),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -114,7 +117,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
                       ? CupertinoButton(
                           onPressed: _openArtistOnYouTube,
                           color: Colors.red,
-                          child: Row(
+                          child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(LucideIcons.youtube, color: Colors.white),
@@ -129,11 +132,11 @@ class _ArtistScreenState extends State<ArtistScreen> {
                       : MaterialButton(
                           onPressed: _openArtistOnYouTube,
                           color: Colors.red,
-                          padding: EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: Row(
+                          child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [

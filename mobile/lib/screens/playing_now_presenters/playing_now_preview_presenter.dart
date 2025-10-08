@@ -79,10 +79,10 @@ class _PlayingNowPreviewPresenterState
       builder: (context, state) {
         if (state is! MusicPlayerTrackPlayingNowState) {
           if (state is MusicPlayerTrackLoadingState) {
-            return Center(child: LoadingIndicator());
+            return const Center(child: LoadingIndicator());
           }
 
-          return SizedBox.shrink();
+          return const SizedBox.shrink();
         }
 
         final track = state.playingNowTrack;
@@ -112,7 +112,7 @@ class _PlayingNowPreviewPresenterState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Spacer(),
+                    const Spacer(),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
@@ -127,7 +127,7 @@ class _PlayingNowPreviewPresenterState
                               width: 65,
                             ),
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           Padding(
                             padding: const EdgeInsets.only(top: 10),
                             child: Column(
@@ -165,7 +165,7 @@ class _PlayingNowPreviewPresenterState
                     >(
                       builder: (context, state) {
                         if (state is! MusicPlayerDurationAvailableState) {
-                          return SizedBox.shrink();
+                          return const SizedBox.shrink();
                         }
 
                         return MusicPlayerProgressBar(
@@ -181,8 +181,8 @@ class _PlayingNowPreviewPresenterState
                         );
                       },
                     ),
-                    MusicPlayerPlayOptions(),
-                    SizedBox(height: 100),
+                    const MusicPlayerPlayOptions(),
+                    const SizedBox(height: 100),
                   ],
                 ),
               ),

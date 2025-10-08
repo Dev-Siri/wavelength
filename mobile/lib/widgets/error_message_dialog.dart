@@ -13,8 +13,8 @@ class ErrorMessageDialog extends StatelessWidget {
     final retryButton = CupertinoButton(
       color: Colors.white,
       onPressed: onRetry,
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      child: Row(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(LucideIcons.rotateCw, size: 16, color: Colors.black),
@@ -32,12 +32,12 @@ class ErrorMessageDialog extends StatelessWidget {
         color: Colors.red.shade700,
         borderRadius: BorderRadius.circular(20),
       ),
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       width: MediaQuery.of(context).size.width - 100,
       child: Column(
         children: [
-          Icon(Icons.error),
-          SizedBox(height: 10),
+          const Icon(Icons.error),
+          const SizedBox(height: 10),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(message, softWrap: true, textAlign: TextAlign.center),

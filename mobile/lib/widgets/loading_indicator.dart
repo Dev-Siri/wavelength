@@ -14,7 +14,7 @@ class LoadingIndicator extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SvgPicture(AssetBytesLoader("assets/vectors/lambda.svg.vec")),
+          const SvgPicture(AssetBytesLoader("assets/vectors/lambda.svg.vec")),
           Padding(
             padding: EdgeInsets.symmetric(
               horizontal: MediaQuery.of(context).size.width / 6,

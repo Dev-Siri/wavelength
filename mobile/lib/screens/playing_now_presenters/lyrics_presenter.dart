@@ -87,7 +87,7 @@ class _LyricsPresenterState extends State<LyricsPresenter> {
                   );
                 }
 
-                return Expanded(flex: 2, child: LoadingIndicator());
+                return const Expanded(flex: 2, child: LoadingIndicator());
               }
 
               lyricKeys = List.generate(
@@ -163,7 +163,7 @@ class _LyricsPresenterState extends State<LyricsPresenter> {
                                     ),
                                   ),
                                   child: AnimatedDefaultTextStyle(
-                                    duration: Duration(milliseconds: 200),
+                                    duration: const Duration(milliseconds: 200),
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 28,
@@ -181,9 +181,9 @@ class _LyricsPresenterState extends State<LyricsPresenter> {
               );
             },
           ),
-          SizedBox(height: 10),
-          MusicPlayerPlayOptions(),
-          SizedBox(height: 100),
+          const SizedBox(height: 10),
+          const MusicPlayerPlayOptions(),
+          const SizedBox(height: 100),
         ],
       ),
     );

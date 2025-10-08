@@ -14,7 +14,7 @@ class TracksSearchPresenter extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<TracksBloc, TracksState>(
       builder: (context, state) {
-        if (state is TracksDefaultState) return SizedBox();
+        if (state is TracksDefaultState) return const SizedBox();
 
         if (state is! TracksFetchSuccessState) {
           return Stack(
@@ -22,8 +22,8 @@ class TracksSearchPresenter extends StatelessWidget {
               Column(
                 children: [
                   for (int i = 0; i < 10; i++)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 10),
                       child: PlaylistTileSkeleton(),
                     ),
                 ],
@@ -34,7 +34,7 @@ class TracksSearchPresenter extends StatelessWidget {
                     padding: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height / 3.5,
                     ),
-                    child: ErrorMessageDialog(
+                    child: const ErrorMessageDialog(
                       message:
                           "Something went wrong while trying to get songs.",
                     ),
@@ -49,7 +49,7 @@ class TracksSearchPresenter extends StatelessWidget {
             padding: EdgeInsets.only(
               top: MediaQuery.of(context).size.height / 4,
             ),
-            child: Center(
+            child: const Center(
               child: Text(
                 "No match found for that query.",
                 style: TextStyle(fontSize: 20),
@@ -61,16 +61,16 @@ class TracksSearchPresenter extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10, left: 2),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 10, left: 2),
               child: Text(
                 "Top Result",
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900),
               ),
             ),
             TopTrackResult(track: state.tracks[0]),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10, left: 2),
+            const Padding(
+              padding: EdgeInsets.only(top: 10, bottom: 10, left: 2),
               child: Text("More Tracks", style: TextStyle(fontSize: 14)),
             ),
             for (final track in state.tracks.skip(1))

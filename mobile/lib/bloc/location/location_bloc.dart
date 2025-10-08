@@ -8,7 +8,7 @@ import "package:wavelength/bloc/location/location_state.dart";
 import "package:wavelength/constants.dart";
 
 class LocationBloc extends Bloc<LocationEvent, LocationState> {
-  LocationBloc() : super(LocationState(countryCode: defaultLocale)) {
+  LocationBloc() : super(const LocationState(countryCode: defaultLocale)) {
     on<LocationFetchEvent>(_fetchLocation);
   }
 
@@ -50,7 +50,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
       if (countryCode != locale) sharedPrefs.setString("user_cc", countryCode);
     } catch (_) {
-      emit(LocationState(countryCode: defaultLocale));
+      emit(const LocationState(countryCode: defaultLocale));
     }
   }
 }

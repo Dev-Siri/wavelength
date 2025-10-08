@@ -55,17 +55,17 @@ class _AppShellState extends State<AppShell> {
       label: "",
       tooltip: "Home",
     ),
-    BottomNavigationBarItem(
+    const BottomNavigationBarItem(
       icon: Icon(LucideIcons.compass),
       label: "",
       tooltip: "Explore",
     ),
-    BottomNavigationBarItem(
+    const BottomNavigationBarItem(
       icon: Icon(LucideIcons.library),
       label: "",
       tooltip: "Your Library",
     ),
-    BottomNavigationBarItem(
+    const BottomNavigationBarItem(
       icon: Icon(LucideIcons.plus),
       label: "",
       tooltip: "Create",
@@ -95,7 +95,7 @@ class _AppShellState extends State<AppShell> {
         context.read<AppBottomSheetBloc>().add(
           AppBottomSheetOpenEvent(
             context: context,
-            builder: (context) => PlaylistCreationBottomSheet(),
+            builder: (context) => const PlaylistCreationBottomSheet(),
           ),
         );
     }
@@ -108,11 +108,11 @@ class _AppShellState extends State<AppShell> {
         return Padding(
           padding: const EdgeInsets.only(top: 8),
           child: Scaffold(
-            appBar: SharedAppBar(),
-            drawer: UserInfoDrawer(),
+            appBar: const SharedAppBar(),
+            drawer: const UserInfoDrawer(),
             body: MusicPlayerPresenceAdjuster(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: BlocConsumer<AuthBloc, AuthState>(
                   listener: (context, state) {
                     if (state is AuthStateAuthorized) {

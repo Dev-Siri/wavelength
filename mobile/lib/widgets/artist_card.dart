@@ -21,14 +21,14 @@ class ArtistCard extends StatelessWidget {
             foregroundImage: CachedNetworkImageProvider(artist.thumbnail),
           ),
           Container(
-            padding: EdgeInsets.only(left: 10),
+            padding: const EdgeInsets.only(left: 10),
             width: 250,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   artist.title,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     overflow: TextOverflow.ellipsis,
                     fontWeight: FontWeight.bold,

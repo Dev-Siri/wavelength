@@ -41,9 +41,9 @@ class _PlaylistCreationBottomSheetState
 
     if (response is ApiResponseSuccess) {
       messenger.showSnackBar(
-        SnackBar(
+        const SnackBar(
           backgroundColor: Colors.green,
-          content: const Text(
+          content: Text(
             "Playlist created successfully!",
             style: TextStyle(color: Colors.white),
           ),
@@ -52,9 +52,9 @@ class _PlaylistCreationBottomSheetState
       libraryBloc.add(LibraryPlaylistsFetchEvent(email: userEmail));
     } else {
       messenger.showSnackBar(
-        SnackBar(
+        const SnackBar(
           backgroundColor: Colors.red,
-          content: const Text(
+          content: Text(
             "Something went wrong.",
             style: TextStyle(color: Colors.white),
           ),
@@ -67,7 +67,7 @@ class _PlaylistCreationBottomSheetState
 
   @override
   Widget build(BuildContext context) {
-    final title = Text("Playlist", style: TextStyle(color: Colors.white));
+    final title = const Text("Playlist", style: TextStyle(color: Colors.white));
     final subtitle = Text(
       "Create an empty playlist.",
       style: TextStyle(color: Colors.grey.shade600),
@@ -76,22 +76,22 @@ class _PlaylistCreationBottomSheetState
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         if (state is! AuthStateAuthorized) {
-          return SizedBox();
+          return const SizedBox();
         }
 
         return Container(
           height: 80,
           width: double.infinity,
           margin: Platform.isIOS
-              ? EdgeInsets.only(bottom: 20)
+              ? const EdgeInsets.only(bottom: 20)
               : EdgeInsets.zero,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
           child: Column(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
                 child: Platform.isIOS
                     ? CupertinoListTile(
                         onTap: () => _createPlaylist(
@@ -99,8 +99,8 @@ class _PlaylistCreationBottomSheetState
                           username: state.user.displayName ?? "",
                           userImage: state.user.photoUrl ?? "",
                         ),
-                        leading: Icon(LucideIcons.listMusic),
-                        padding: EdgeInsets.all(20),
+                        leading: const Icon(LucideIcons.listMusic),
+                        padding: const EdgeInsets.all(20),
                         title: title,
                         subtitle: subtitle,
                       )
@@ -110,7 +110,7 @@ class _PlaylistCreationBottomSheetState
                           username: state.user.displayName ?? "",
                           userImage: state.user.photoUrl ?? "",
                         ),
-                        leading: Icon(LucideIcons.listMusic),
+                        leading: const Icon(LucideIcons.listMusic),
                         title: title,
                         subtitle: subtitle,
                       ),

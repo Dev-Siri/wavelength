@@ -10,8 +10,8 @@ class ExplicitIndicator extends StatelessWidget {
         color: Colors.grey.shade600,
         borderRadius: BorderRadius.circular(4),
       ),
-      padding: EdgeInsets.symmetric(horizontal: 4),
-      child: Text(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: const Text(
         "E",
         style: TextStyle(
           color: Colors.black,

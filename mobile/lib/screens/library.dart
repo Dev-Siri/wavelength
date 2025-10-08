@@ -25,16 +25,16 @@ class LibraryScreen extends StatelessWidget {
               : null,
           child: ListView(
             children: [
-              SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+              const SizedBox(height: 16),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
                 child: Text("Your Library", style: TextStyle(fontSize: 30)),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
                   if (state is AuthStateUnauthorized) {
-                    return Column(
+                    return const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
@@ -52,8 +52,8 @@ class LibraryScreen extends StatelessWidget {
                         return Column(
                           children: [
                             for (int i = 0; i < 10; i++)
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 5),
+                              const Padding(
+                                padding: EdgeInsets.only(bottom: 5),
                                 child: PlaylistTileSkeleton(),
                               ),
                           ],

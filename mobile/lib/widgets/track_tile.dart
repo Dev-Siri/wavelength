@@ -44,7 +44,7 @@ class TrackTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         color: Colors.grey.shade900,
         borderRadius: BorderRadius.circular(15),
@@ -80,7 +80,7 @@ class TrackTile extends StatelessWidget {
                           ),
                         ),
                         if (isThisTrackPlaying)
-                          MiniMusicVisualizer(
+                          const MiniMusicVisualizer(
                             color: Colors.white,
                             animate: true,
                             width: 4,
@@ -90,7 +90,7 @@ class TrackTile extends StatelessWidget {
                     );
                   },
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,24 +100,24 @@ class TrackTile extends StatelessWidget {
                       child: Text(
                         track.title,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w900,
                           color: Colors.white,
                         ),
                       ),
                     ),
-                    SizedBox(height: 3),
+                    const SizedBox(height: 3),
                     Row(
                       children: [
                         if (track.isExplicit)
-                          Padding(
-                            padding: const EdgeInsets.only(right: 5),
+                          const Padding(
+                            padding: EdgeInsets.only(right: 5),
                             child: ExplicitIndicator(),
                           ),
                         Text(
                           track.author,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.grey,
                             height: 1,
                             fontSize: 14,
@@ -149,7 +149,7 @@ class TrackTile extends StatelessWidget {
                 ),
               ),
             ),
-            child: Icon(LucideIcons.circlePlus, color: Colors.white),
+            child: const Icon(LucideIcons.circlePlus, color: Colors.white),
           ),
         ],
       ),

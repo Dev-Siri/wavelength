@@ -46,7 +46,7 @@ class _PlaylistVisibilityToggleState extends State<PlaylistVisibilityToggle> {
           backgroundColor: Colors.blue,
           content: Text(
             "Changed visibility of playlist to ${_isPrivate ? "public" : "private"}.",
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
         ),
       );
@@ -58,7 +58,7 @@ class _PlaylistVisibilityToggleState extends State<PlaylistVisibilityToggle> {
     }
 
     messenger.showSnackBar(
-      SnackBar(
+      const SnackBar(
         backgroundColor: Colors.red,
         content: Text(
           "An error occured while changing visibility.",
@@ -80,10 +80,10 @@ class _PlaylistVisibilityToggleState extends State<PlaylistVisibilityToggle> {
           size: 16,
           color: Colors.white,
         ),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         Text(
           _isPrivate ? "Private" : "Public",
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
       ],
     );
@@ -91,7 +91,7 @@ class _PlaylistVisibilityToggleState extends State<PlaylistVisibilityToggle> {
     if (Platform.isIOS) {
       return CupertinoButton(
         color: Colors.grey.shade800,
-        padding: EdgeInsets.symmetric(vertical: 14, horizontal: 18),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 18),
         onPressed: _isLoading ? null : _toggleVisibilityPlaylist,
         child: innerUi,
       );
@@ -99,7 +99,7 @@ class _PlaylistVisibilityToggleState extends State<PlaylistVisibilityToggle> {
 
     return MaterialButton(
       color: Colors.grey.shade800,
-      padding: EdgeInsets.symmetric(vertical: 14, horizontal: 18),
+      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 18),
       onPressed: _isLoading ? null : _toggleVisibilityPlaylist,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadiusGeometry.circular(10),

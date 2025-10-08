@@ -89,9 +89,9 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
 
     if (_hasFileUploadErrored) {
       messenger.showSnackBar(
-        SnackBar(
+        const SnackBar(
           backgroundColor: Colors.red,
-          content: const Text(
+          content: Text(
             "An error occured while uploading cover image.",
             style: TextStyle(color: Colors.white),
           ),
@@ -121,9 +121,9 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
 
     setState(() => _isLoading = false);
     messenger.showSnackBar(
-      SnackBar(
+      const SnackBar(
         backgroundColor: Colors.red,
-        content: const Text(
+        content: Text(
           "An error occured while updating playlist.",
           style: TextStyle(color: Colors.white),
         ),
@@ -146,14 +146,14 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         leading: BackButton(onPressed: () => context.pop()),
-        title: Text("Edit"),
+        title: const Text("Edit"),
       ),
       backgroundColor: Colors.black,
       body: MusicPlayerPresenceAdjuster(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             GestureDetector(
               onTap: _handleImagePicker,
               child: Stack(
@@ -175,7 +175,7 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
                                   future: _pickedCoverImage!.readAsBytes(),
                                   builder: (context, snapshot) {
                                     if (snapshot.data == null) {
-                                      return SizedBox.shrink();
+                                      return const SizedBox.shrink();
                                     }
 
                                     return Image.memory(
@@ -190,8 +190,8 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
                   ),
                   Column(
                     children: [
-                      Icon(LucideIcons.image, size: 40),
-                      SizedBox(height: 10),
+                      const Icon(LucideIcons.image, size: 40),
+                      const SizedBox(height: 10),
                       Text(
                         "Click to pick${widget.routeData.coverImage == null ? " " : " a new "}cover image.",
                       ),
@@ -207,18 +207,18 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
                       controller: _nameInputControl,
                       cursorColor: Colors.white,
                       placeholder: "Playlist Name",
-                      style: TextStyle(fontSize: 30),
+                      style: const TextStyle(fontSize: 30),
                     )
                   : TextField(
                       controller: _nameInputControl,
                       cursorColor: Colors.white,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: "Playlist Name",
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.white, width: 3),
                         ),
                       ),
-                      style: TextStyle(fontSize: 30),
+                      style: const TextStyle(fontSize: 30),
                     ),
             ),
             Row(
@@ -231,8 +231,8 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
                   child: Row(
                     children: [
                       if (_isLoading)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
+                        const Padding(
+                          padding: EdgeInsets.only(right: 10),
                           child: SizedBox(
                             height: 15,
                             width: 15,
@@ -242,14 +242,14 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
                             ),
                           ),
                         ),
-                      Text(
+                      const Text(
                         "Confirm Edit",
                         style: TextStyle(color: Colors.black),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(width: 20),
+                const SizedBox(width: 20),
               ],
             ),
           ],

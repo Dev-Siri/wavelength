@@ -25,28 +25,34 @@ class UserInfoDrawer extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               children: [
-                SvgPicture(AssetBytesLoader("assets/vectors/lambda.svg.vec")),
+                const SvgPicture(
+                  AssetBytesLoader("assets/vectors/lambda.svg.vec"),
+                ),
                 BlocBuilder<AuthBloc, AuthState>(
                   builder: (context, state) {
-                    if (state is! AuthStateAuthorized) return SizedBox.shrink();
+                    if (state is! AuthStateAuthorized) {
+                      return const SizedBox.shrink();
+                    }
 
                     return Transform.translate(
-                      offset: Offset(-15, 0),
+                      offset: const Offset(-15, 0),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width / 2.3,
                         child: Text.rich(
                           TextSpan(
                             text: "Hello, ",
-                            style: TextStyle(fontSize: 18),
+                            style: const TextStyle(fontSize: 18),
                             children: [
                               TextSpan(
                                 text: state.user.displayName ?? "User",
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                              TextSpan(text: "!"),
+                              const TextSpan(text: "!"),
                             ],
                           ),
                           softWrap: true,
@@ -65,7 +71,7 @@ class UserInfoDrawer extends StatelessWidget {
                   return Expanded(
                     child: Column(
                       children: [
-                        Spacer(),
+                        const Spacer(),
                         Padding(
                           padding: const EdgeInsets.all(16),
                           child: Row(
@@ -88,7 +94,7 @@ class UserInfoDrawer extends StatelessWidget {
                                   onPressed: () => context.read<AuthBloc>().add(
                                     AuthLogoutUserEvent(),
                                   ),
-                                  child: Icon(
+                                  child: const Icon(
                                     LucideIcons.logOut,
                                     color: Colors.red,
                                   ),
@@ -98,7 +104,7 @@ class UserInfoDrawer extends StatelessWidget {
                                   onPressed: () => context.read<AuthBloc>().add(
                                     AuthLogoutUserEvent(),
                                   ),
-                                  icon: Icon(
+                                  icon: const Icon(
                                     LucideIcons.logOut,
                                     color: Colors.red,
                                   ),
@@ -111,8 +117,8 @@ class UserInfoDrawer extends StatelessWidget {
                   );
                 }
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                return const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
                   child: GoogleLoginButton(),
                 );
               },

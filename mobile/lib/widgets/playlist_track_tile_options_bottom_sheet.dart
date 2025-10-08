@@ -49,7 +49,7 @@ class PlaylistTrackTileOptionsBottomSheet extends StatelessWidget {
           isResponseSuccessful
               ? trackToggleResponse.data
               : "An error occured while removing track from the playlist.",
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
       ),
     );
@@ -68,27 +68,27 @@ class PlaylistTrackTileOptionsBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = Text(
+    final title = const Text(
       "Remove from playlist.",
       style: TextStyle(color: Colors.red),
     );
-    final leading = Icon(LucideIcons.trash, color: Colors.red);
+    final leading = const Icon(LucideIcons.trash, color: Colors.red);
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.12, // 12% of the screen
       width: double.infinity,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(20)),
       ),
       child: Column(
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(20)),
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
             child: Platform.isIOS
                 ? CupertinoListTile(
                     onTap: () => _handleTileTap(context),
                     leading: leading,
-                    padding: EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(20),
                     title: title,
                   )
                 : ListTile(

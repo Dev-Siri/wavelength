@@ -22,7 +22,7 @@ final router = GoRouter(
       routes: [
         ShellRoute(
           routes: [
-            GoRoute(path: "/", builder: (_, __) => HomeScreen()),
+            GoRoute(path: "/", builder: (_, __) => const HomeScreen()),
             GoRoute(
               path: "/explore",
               builder: (_, __) => MultiBlocProvider(
@@ -32,10 +32,13 @@ final router = GoRouter(
                   BlocProvider(create: (_) => VideosBloc()),
                   BlocProvider(create: (_) => ArtistsBloc()),
                 ],
-                child: ExploreScreen(),
+                child: const ExploreScreen(),
               ),
             ),
-            GoRoute(path: "/library", builder: (_, __) => LibraryScreen()),
+            GoRoute(
+              path: "/library",
+              builder: (_, __) => const LibraryScreen(),
+            ),
           ],
           builder: (_, __, child) {
             return AppShell(child: child);
@@ -65,7 +68,7 @@ final router = GoRouter(
                       playlistId: id,
                       routeData: state.extra as EditPlaylistRouteData,
                     )
-                  : SizedBox.shrink(),
+                  : const SizedBox.shrink(),
               transitionsBuilder: pageSlideUpTransition,
             );
           },
@@ -86,7 +89,7 @@ final router = GoRouter(
           pageBuilder: (_, state) {
             return CustomTransitionPage(
               key: state.pageKey,
-              child: PlayingNowScreen(),
+              child: const PlayingNowScreen(),
               transitionsBuilder: pageSlideUpTransition,
             );
           },

@@ -43,7 +43,7 @@ class TopTrackResult extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(15),
+      padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Colors.grey.shade900,
         borderRadius: BorderRadius.circular(15),
@@ -55,29 +55,29 @@ class TopTrackResult extends StatelessWidget {
             borderRadius: BorderRadius.circular(15),
             child: CachedNetworkImage(imageUrl: track.thumbnail),
           ),
-          SizedBox(width: 20),
+          const SizedBox(width: 20),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   decodeHtmlSpecialChars(track.title),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 26,
                     height: 1.1,
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
                   track.author,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.grey,
                     height: 1.1,
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -93,7 +93,7 @@ class TopTrackResult extends StatelessWidget {
                               if (state is MusicPlayerTrackPlayingNowState &&
                                   state.playingNowTrack.videoId ==
                                       track.videoId) {
-                                return MiniMusicVisualizer(
+                                return const MiniMusicVisualizer(
                                   color: Colors.white,
                                   animate: true,
                                   width: 4,
@@ -101,7 +101,7 @@ class TopTrackResult extends StatelessWidget {
                                 );
                               }
 
-                              return Icon(
+                              return const Icon(
                                 LucideIcons.play,
                                 color: Colors.white,
                               );
@@ -128,7 +128,10 @@ class TopTrackResult extends StatelessWidget {
                           ),
                         ),
                       ),
-                      child: Icon(LucideIcons.circlePlus, color: Colors.white),
+                      child: const Icon(
+                        LucideIcons.circlePlus,
+                        color: Colors.white,
+                      ),
                     ),
                   ],
                 ),

@@ -54,10 +54,10 @@ class _RootState extends State<Root> {
                   builder: (context, state) {
                     if (!isOnPlayingNowScreen &&
                         state is AppBottomSheetClosedState) {
-                      return FloatingMusicPlayerPreview();
+                      return const FloatingMusicPlayerPreview();
                     }
 
-                    return SizedBox.shrink();
+                    return const SizedBox.shrink();
                   },
                 ),
               ),

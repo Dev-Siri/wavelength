@@ -35,9 +35,9 @@ class _PlaylistTileState extends State<PlaylistTile> {
 
     if (response is ApiResponseSuccess) {
       messenger.showSnackBar(
-        SnackBar(
+        const SnackBar(
           backgroundColor: Colors.green,
-          content: const Text(
+          content: Text(
             "Playlist deleted successfully!",
             style: TextStyle(color: Colors.white),
           ),
@@ -49,9 +49,9 @@ class _PlaylistTileState extends State<PlaylistTile> {
     }
 
     messenger.showSnackBar(
-      SnackBar(
+      const SnackBar(
         backgroundColor: Colors.red,
-        content: const Text(
+        content: Text(
           "Failed to delete playlist.",
           style: TextStyle(color: Colors.white),
         ),
@@ -62,7 +62,7 @@ class _PlaylistTileState extends State<PlaylistTile> {
   @override
   Widget build(BuildContext context) {
     final Widget innerUi = Padding(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       child: Row(
         children: [
           if (widget.playlist.coverImage != null)
@@ -84,32 +84,36 @@ class _PlaylistTileState extends State<PlaylistTile> {
                 borderRadius: BorderRadius.circular(15),
               ),
             ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 widget.playlist.name,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               Text(
                 widget.playlist.authorName,
-                style: TextStyle(color: Colors.grey, height: 1, fontSize: 14),
+                style: const TextStyle(
+                  color: Colors.grey,
+                  height: 1,
+                  fontSize: 14,
+                ),
               ),
             ],
           ),
-          Spacer(),
+          const Spacer(),
           BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
               return IconButton(
-                icon: Icon(LucideIcons.trash2, color: Colors.red),
+                icon: const Icon(LucideIcons.trash2, color: Colors.red),
                 onPressed: () => state is AuthStateAuthorized
                     ? showDialog(
                         context: context,

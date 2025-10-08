@@ -118,7 +118,7 @@ class VideoCard extends StatelessWidget {
                     ),
                     TextSpan(
                       text: " - ${video.author}",
-                      style: TextStyle(color: Colors.grey, fontSize: 17),
+                      style: const TextStyle(color: Colors.grey, fontSize: 17),
                     ),
                   ],
                 ),
@@ -134,7 +134,7 @@ class VideoCard extends StatelessWidget {
               child: Platform.isIOS
                   ? CupertinoButton(
                       onPressed: () => _showPlaylistAdditionDialog(context),
-                      child: Icon(
+                      child: const Icon(
                         LucideIcons.circlePlus,
                         color: Colors.white,
                         size: 24,
@@ -146,7 +146,7 @@ class VideoCard extends StatelessWidget {
                         padding: EdgeInsets.zero,
                         minWidth: 20,
                         onPressed: () => _showPlaylistAdditionDialog(context),
-                        child: Icon(LucideIcons.circlePlus),
+                        child: const Icon(LucideIcons.circlePlus),
                       ),
                     ),
             ),

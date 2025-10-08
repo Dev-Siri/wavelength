@@ -86,11 +86,11 @@ class PlaylistTrackTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final innerUi = Container(
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(width: 5),
+          const SizedBox(width: 5),
           BlocBuilder<MusicPlayerTrackBloc, MusicPlayerTrackState>(
             builder: (context, state) {
               final isThisTrackPlaying =
@@ -113,7 +113,7 @@ class PlaylistTrackTile extends StatelessWidget {
                     ),
                   ),
                   if (isThisTrackPlaying)
-                    MiniMusicVisualizer(
+                    const MiniMusicVisualizer(
                       color: Colors.white,
                       animate: true,
                       width: 4,
@@ -123,7 +123,7 @@ class PlaylistTrackTile extends StatelessWidget {
               );
             },
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,7 +133,7 @@ class PlaylistTrackTile extends StatelessWidget {
                 child: Text(
                   decodeHtmlSpecialChars(playlistTrack.title),
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                     color: Colors.white,
@@ -143,15 +143,15 @@ class PlaylistTrackTile extends StatelessWidget {
               Row(
                 children: [
                   if (playlistTrack.isExplicit)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 5),
+                    const Padding(
+                      padding: EdgeInsets.only(right: 5),
                       child: ExplicitIndicator(),
                     ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width / 2,
                     child: Text(
                       playlistTrack.author,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.grey,
                         fontSize: 14,
                         overflow: TextOverflow.ellipsis,
@@ -162,16 +162,16 @@ class PlaylistTrackTile extends StatelessWidget {
               ),
             ],
           ),
-          Spacer(),
+          const Spacer(),
           Text(
             playlistTrack.duration.toString(),
-            style: TextStyle(color: Colors.grey, fontSize: 14),
+            style: const TextStyle(color: Colors.grey, fontSize: 14),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: GestureDetector(
               onTap: () => _showPlaylistTrackOptions(context),
-              child: Icon(LucideIcons.ellipsis, color: Colors.grey),
+              child: const Icon(LucideIcons.ellipsis, color: Colors.grey),
             ),
           ),
         ],

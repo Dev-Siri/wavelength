@@ -41,16 +41,16 @@ class QuickPickSongCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => _playQuickPicksSong(context),
       child: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
           color: Colors.grey.shade900,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
+              borderRadius: const BorderRadius.all(Radius.circular(20)),
               child: CachedNetworkImage(
                 imageUrl: quickPicksItem.thumbnail,
                 fit: BoxFit.cover,
@@ -58,13 +58,13 @@ class QuickPickSongCard extends StatelessWidget {
                 width: (MediaQuery.of(context).size.width / 2) - 50,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             SizedBox(
               width: 130,
               child: Center(
                 child: Text(
                   quickPicksItem.title,
-                  style: TextStyle(overflow: TextOverflow.ellipsis),
+                  style: const TextStyle(overflow: TextOverflow.ellipsis),
                 ),
               ),
             ),
@@ -73,7 +73,7 @@ class QuickPickSongCard extends StatelessWidget {
               child: Center(
                 child: Text(
                   quickPicksItem.author,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 10,
                     color: Colors.grey,
                     overflow: TextOverflow.ellipsis,

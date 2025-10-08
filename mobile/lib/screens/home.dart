@@ -55,8 +55,8 @@ class HomeScreen extends StatelessWidget {
                                   width:
                                       (MediaQuery.of(context).size.width - 20) /
                                       2,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(5),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(5),
                                     child: QuickPickSongCardSkeleton(),
                                   ),
                                 ),
@@ -68,7 +68,7 @@ class HomeScreen extends StatelessWidget {
                                 padding: EdgeInsets.only(
                                   top: MediaQuery.of(context).size.height / 3,
                                 ),
-                                child: ErrorMessageDialog(
+                                child: const ErrorMessageDialog(
                                   message:
                                       "Something went wrong while trying to fetch your feed.",
                                 ),
@@ -89,7 +89,7 @@ class HomeScreen extends StatelessWidget {
                             Stack(
                               alignment: Alignment.center,
                               children: [
-                                SvgPicture(
+                                const SvgPicture(
                                   AssetBytesLoader(
                                     "assets/vectors/lambda.svg.vec",
                                   ),
@@ -103,7 +103,7 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                   child: Transform.rotate(
                                     angle: math.pi / 12,
-                                    child: Text(
+                                    child: const Text(
                                       "?",
                                       style: TextStyle(
                                         fontSize: 34,
@@ -115,8 +115,8 @@ class HomeScreen extends StatelessWidget {
                               ],
                             ),
                             Transform.translate(
-                              offset: Offset(0, -20),
-                              child: Text(
+                              offset: const Offset(0, -20),
+                              child: const Text(
                                 "Swipe down on the screen.",
                                 style: TextStyle(fontSize: 18),
                               ),
@@ -140,7 +140,7 @@ class HomeScreen extends StatelessWidget {
                     );
                   },
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
               ],
             ),
           );

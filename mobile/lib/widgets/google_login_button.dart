@@ -15,47 +15,48 @@ class GoogleLoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child:
-          Platform.isIOS
-              ? CupertinoButton(
-                color: Colors.white,
-                onPressed:
-                    () => context.read<AuthBloc>().add(AuthLoginUserEvent()),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture(
-                      AssetBytesLoader("assets/vectors/google-logo.svg.vec"),
-                      height: 20,
-                    ),
-                    SizedBox(width: 6),
-                    Text(
-                      "Sign in with Google",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ],
+      child: Platform.isIOS
+          ? CupertinoButton(
+              color: Colors.white,
+              onPressed: () =>
+                  context.read<AuthBloc>().add(AuthLoginUserEvent()),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture(
+                    AssetBytesLoader("assets/vectors/google-logo.svg.vec"),
+                    height: 20,
+                  ),
+                  SizedBox(width: 6),
+                  Text(
+                    "Sign in with Google",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ],
+              ),
+            )
+          : ElevatedButton.icon(
+              style: ButtonStyle(
+                backgroundColor: const WidgetStatePropertyAll<Color>(
+                  Colors.white,
                 ),
-              )
-              : ElevatedButton.icon(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStatePropertyAll<Color>(Colors.white),
-                  shape: WidgetStatePropertyAll<OutlinedBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                shape: WidgetStatePropertyAll<OutlinedBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                onPressed:
-                    () => context.read<AuthBloc>().add(AuthLoginUserEvent()),
-                icon: SvgPicture(
-                  AssetBytesLoader("assets/vectors/google-logo.svg.vec"),
-                  height: 20,
-                ),
-                label: Text(
-                  "Sign in with Google",
-                  style: TextStyle(color: Colors.black),
-                ),
               ),
+              onPressed: () =>
+                  context.read<AuthBloc>().add(AuthLoginUserEvent()),
+              icon: const SvgPicture(
+                AssetBytesLoader("assets/vectors/google-logo.svg.vec"),
+                height: 20,
+              ),
+              label: const Text(
+                "Sign in with Google",
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
     );
   }
 }

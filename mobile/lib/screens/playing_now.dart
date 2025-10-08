@@ -97,12 +97,12 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
         ),
         backgroundColor: Colors.transparent,
         body: AnimatedSwitcher(
-          duration: Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 200),
           child: _presentedScreen == PlayingNowPresenter.preview
               ? PlayingNowPreviewPresenter(
                   onTrackChange: (trackId) => _fetchTrackThemeColor(trackId),
                 )
-              : LyricsPresenter(),
+              : const LyricsPresenter(),
         ),
       ),
     );

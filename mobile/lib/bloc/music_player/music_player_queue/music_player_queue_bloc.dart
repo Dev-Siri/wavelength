@@ -8,7 +8,8 @@ import "package:wavelength/utils/url.dart";
 
 class MusicPlayerQueueBloc
     extends Bloc<MusicPlayerQueueEvent, MusicPlayerQueueState> {
-  MusicPlayerQueueBloc() : super(MusicPlayerQueueState(tracksInQueue: [])) {
+  MusicPlayerQueueBloc()
+    : super(const MusicPlayerQueueState(tracksInQueue: [])) {
     on<MusicPlayerQueueAddToQueueEvent>(_addToQueue);
     on<MusicPlayerReplaceQueueEvent>(_replaceQueue);
   }

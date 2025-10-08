@@ -130,17 +130,17 @@ class _ExploreScreenState extends State<ExploreScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: ListView(
         children: [
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           TextField(
             onChanged: _onSearchChanged,
-            style: TextStyle(color: Colors.black),
+            style: const TextStyle(color: Colors.black),
             cursorColor: Colors.blue,
             autocorrect: false,
             decoration: InputDecoration(
               filled: true,
               fillColor: Colors.white,
               hintText: "Search for ${_getInputHintText()}...",
-              hintStyle: TextStyle(
+              hintStyle: const TextStyle(
                 color: Colors.grey,
                 fontWeight: FontWeight.w900,
               ),
@@ -148,8 +148,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 borderRadius: BorderRadius.circular(0),
                 borderSide: BorderSide.none,
               ),
-              prefixIcon: Padding(
-                padding: const EdgeInsets.only(left: 6),
+              prefixIcon: const Padding(
+                padding: EdgeInsets.only(left: 6),
                 child: Icon(LucideIcons.compass, color: Colors.grey),
               ),
             ),
@@ -183,17 +183,18 @@ class _ExploreScreenState extends State<ExploreScreen> {
               ),
             ],
           ),
-          SizedBox(height: 10),
-          if (_searchType == SearchType.playlists) PlaylistsSearchPresenter(),
-          if (_searchType == SearchType.tracks) TracksSearchPresenter(),
-          if (_searchType == SearchType.videos) VideosSearchPresenter(),
-          if (_searchType == SearchType.artists) ArtistsSearchPresenter(),
+          const SizedBox(height: 10),
+          if (_searchType == SearchType.playlists)
+            const PlaylistsSearchPresenter(),
+          if (_searchType == SearchType.tracks) const TracksSearchPresenter(),
+          if (_searchType == SearchType.videos) const VideosSearchPresenter(),
+          if (_searchType == SearchType.artists) const ArtistsSearchPresenter(),
           if (_searchQuery == "" && _searchType != SearchType.playlists)
             Padding(
               padding: EdgeInsets.only(
                 top: MediaQuery.of(context).size.height / 4,
               ),
-              child: Center(
+              child: const Center(
                 child: Text(
                   "Try searching for something.",
                   style: TextStyle(fontSize: 20),

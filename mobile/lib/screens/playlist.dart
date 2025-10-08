@@ -85,7 +85,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
     return BlocBuilder<LibraryBloc, LibraryState>(
       builder: (context, state) {
         if (state is! LibraryFetchSuccessState) {
-          return Center(child: LoadingIndicator());
+          return const Center(child: LoadingIndicator());
         }
 
         final playlist = state.playlists.firstWhere(
@@ -112,7 +112,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                       coverImage: playlist.coverImage,
                     ),
                   ),
-                  child: Icon(LucideIcons.pencil, color: Colors.white),
+                  child: const Icon(LucideIcons.pencil, color: Colors.white),
                 )
               else
                 IconButton(
@@ -123,7 +123,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                       coverImage: playlist.coverImage,
                     ),
                   ),
-                  icon: Icon(LucideIcons.pencil, color: Colors.white),
+                  icon: const Icon(LucideIcons.pencil, color: Colors.white),
                 ),
             ],
           ),
@@ -151,7 +151,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                   },
                 ),
                 Padding(
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                     left: 20,
                     right: 20,
                     top: 20,
@@ -162,7 +162,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                     children: [
                       Text(
                         playlist.name,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
                         ),
@@ -177,7 +177,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                               builder: (context, state) {
                                 if (state is! PlaylistLengthSuccessState) {
                                   if (state is PlaylistLengthErrorState) {
-                                    return Row(
+                                    return const Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
@@ -207,7 +207,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
                                       child: Shimmer(
-                                        child: SizedBox(height: 10),
+                                        child: const SizedBox(height: 10),
                                       ),
                                     ),
                                   );
@@ -220,9 +220,9 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                               },
                             ),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Transform.translate(
-                        offset: Offset(-3, 0),
+                        offset: const Offset(-3, 0),
                         child: Row(
                           children: [
                             CircleAvatar(
@@ -230,10 +230,10 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                 playlist.authorImage,
                               ),
                             ),
-                            SizedBox(width: 7.5),
+                            const SizedBox(width: 7.5),
                             Text(
                               playlist.authorName,
-                              style: TextStyle(fontSize: 16),
+                              style: const TextStyle(fontSize: 16),
                             ),
                           ],
                         ),
@@ -248,7 +248,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                         padding: EdgeInsets.only(
                           top: (MediaQuery.of(context).size.height / 4) - 150,
                         ),
-                        child: Center(child: LoadingIndicator()),
+                        child: const Center(child: LoadingIndicator()),
                       );
                     }
 
@@ -274,8 +274,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                 ),
                                 onPressed: () =>
                                     _playPlaylistTracks(orderedSongs),
-                                icon: Padding(
-                                  padding: const EdgeInsets.all(8),
+                                icon: const Padding(
+                                  padding: EdgeInsets.all(8),
                                   child: Icon(LucideIcons.play),
                                 ),
                               ),
@@ -285,7 +285,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                 if (state is! AuthStateAuthorized ||
                                     state.user.email !=
                                         playlist.authorGoogleEmail) {
-                                  return SizedBox.shrink();
+                                  return const SizedBox.shrink();
                                 }
 
                                 return PlaylistVisibilityToggle(
@@ -296,7 +296,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         for (final song in orderedSongs)
                           Padding(
                             padding: const EdgeInsets.only(bottom: 10),

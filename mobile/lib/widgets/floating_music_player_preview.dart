@@ -72,7 +72,7 @@ class _FloatingMusicPlayerPreviewState
   Widget build(BuildContext context) {
     return BlocBuilder<MusicPlayerTrackBloc, MusicPlayerTrackState>(
       builder: (context, state) {
-        if (state is MusicPlayerTrackEmptyState) return SizedBox.shrink();
+        if (state is MusicPlayerTrackEmptyState) return const SizedBox.shrink();
 
         return GestureDetector(
           onTap: () => context.push("/playing-now"),
@@ -152,9 +152,9 @@ class _FloatingMusicPlayerPreviewState
                       );
                     },
                     child: _isChangingTrackProgress
-                        ? SizedBox.shrink()
+                        ? const SizedBox.shrink()
                         : state is! MusicPlayerTrackPlayingNowState
-                        ? Center(
+                        ? const Center(
                             child: CircularProgressIndicator.adaptive(
                               valueColor: AlwaysStoppedAnimation(Colors.white),
                             ),
