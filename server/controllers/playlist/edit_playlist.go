@@ -23,7 +23,7 @@ func EditPlaylist(ctx *fiber.Ctx) error {
 
 	// Build dynamic update query
 	setClauses := []string{}
-	args := []string{}
+	args := []any{}
 	argPos := 1
 
 	if playlistEditBody.Name != "" {
@@ -57,7 +57,7 @@ func EditPlaylist(ctx *fiber.Ctx) error {
 
 	args = append(args, playlistId)
 
-	_, err := db.Database.Exec(query, args)
+	_, err := db.Database.Exec(query, args...)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to edit playlist: "+err.Error())
 	}
