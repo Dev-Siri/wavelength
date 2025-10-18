@@ -1,6 +1,7 @@
 package playlist_controllers
 
 import (
+	"strconv"
 	"wavelength/db"
 	"wavelength/models/responses"
 	"wavelength/models/schemas"
@@ -27,13 +28,13 @@ func EditPlaylist(ctx *fiber.Ctx) error {
 	argPos := 1
 
 	if playlistEditBody.Name != "" {
-		setClauses = append(setClauses, "name = $"+string(rune(argPos)))
+		setClauses = append(setClauses, "name = $"+strconv.Itoa(argPos))
 		args = append(args, playlistEditBody.Name)
 		argPos++
 	}
 
 	if playlistEditBody.CoverImage != "" {
-		setClauses = append(setClauses, "cover_image = $"+string(rune(argPos)))
+		setClauses = append(setClauses, "cover_image = $"+strconv.Itoa(argPos))
 		args = append(args, playlistEditBody.CoverImage)
 		argPos++
 	}
@@ -53,7 +54,7 @@ func EditPlaylist(ctx *fiber.Ctx) error {
 			}
 			return s
 		}() +
-		" WHERE playlist_id = $" + string(rune(argPos))
+		" WHERE playlist_id = $" + strconv.Itoa(argPos)
 
 	args = append(args, playlistId)
 
