@@ -1,10 +1,5 @@
 <script lang="ts">
-  import {
-    SortableItem,
-    SortableList,
-    sortItems,
-    type SortEventDetail,
-  } from "@rodrigodagostino/svelte-sortable-list";
+  import { SortableList, sortItems } from "@rodrigodagostino/svelte-sortable-list";
   import { createMutation } from "@tanstack/svelte-query";
   import { z } from "zod";
 
@@ -44,22 +39,27 @@
       }),
   }));
 
-  function handleSort(event: CustomEvent<SortEventDetail>) {
-    const { prevItemIndex, nextItemIndex } = event.detail;
+  function handleSort({
+    draggedItemIndex,
+    targetItemIndex,
+    isCanceled,
+  }: SortableList.RootEvents["ondragend"]) {
+    if (!isCanceled && typeof targetItemIndex === "number" && draggedItemIndex !== targetItemIndex)
+      items = sortItems(items, draggedItemIndex, targetItemIndex);
 
-    items = sortItems(items, prevItemIndex, nextItemIndex);
     rearrangeItemsMutation.mutate();
   }
 </script>
 
 {#if isRearrangingList}
-  <SortableList on:sort={handleSort}>
-    {#each items as music, i}
-      <SortableItem id={music.playlistTrackId} index={i}>
+  <SortableList.Root ondragend={handleSort}>
+    {#each items as music, i (`${music.playlistId}-${i}`)}
+      {console.log(`${i}: `, music.playlistTrackId)}
+      <SortableList.Item id={music.playlistTrackId} index={i}>
         <PlaylistTracksListItem {music} {isRearrangingList} {i} />
-      </SortableItem>
+      </SortableList.Item>
     {/each}
-  </SortableList>
+  </SortableList.Root>
 {:else}
   {#each items as music, i}
     <PlaylistTracksListItem {music} {isRearrangingList} {i} />

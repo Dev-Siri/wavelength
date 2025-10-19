@@ -73,7 +73,7 @@
   <input
     type="text"
     name="q"
-    placeholder="Search for Songs, Albums & Artists..."
+    placeholder="What do you want to play?"
     class="bg-transparent outline-hidden w-full"
     autocomplete="off"
     id="search-input"

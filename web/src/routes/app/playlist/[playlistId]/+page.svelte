@@ -14,6 +14,7 @@
     playlistTracksSchema,
   } from "$lib/utils/validation/playlist-track";
   import { playlistSchema } from "$lib/utils/validation/playlists.js";
+  import { themeColorSchema } from "$lib/utils/validation/theme-color";
 
   import ChangePlaylistVisibilityButton from "$lib/components/ChangePlaylistVisibilityButton.svelte";
   import EditPlaylistDetailsDialog from "$lib/components/EditPlaylistDetailsDialog.svelte";
@@ -35,23 +36,36 @@
   }
 
   const playlistQuery = createQuery(() => ({
-    queryKey: svelteQueryKeys.playlist(page.params.playlistId),
+    queryKey: svelteQueryKeys.playlist(page.params.playlistId ?? ""),
     queryFn: () => backendClient(`/playlists/playlist/${page.params.playlistId}`, playlistSchema),
   }));
 
   const playlistTracksQuery = createQuery(() => ({
-    queryKey: svelteQueryKeys.playlistTrack(page.params.playlistId),
+    queryKey: svelteQueryKeys.playlistTrack(page.params.playlistId ?? ""),
     queryFn: () =>
       backendClient(`/playlists/playlist/${page.params.playlistId}/tracks`, playlistTracksSchema),
   }));
 
   const playlistPlaylengthQuery = createQuery(() => ({
-    queryKey: svelteQueryKeys.playlistTrackLength(page.params.playlistId),
+    queryKey: svelteQueryKeys.playlistTrackLength(page.params.playlistId ?? ""),
     queryFn: () =>
       backendClient(
         `/playlists/playlist/${page.params.playlistId}/length`,
         playlistTrackLengthSchema,
       ),
+  }));
+
+  let playlistThumbnailUrl = $derived(playlistQuery.data?.coverImage ?? "");
+
+  const playlistThemeColorQuery = createQuery(() => ({
+    queryKey: svelteQueryKeys.themeColor(playlistThumbnailUrl),
+    queryFn() {
+      if (!playlistThumbnailUrl) return;
+
+      return backendClient(`/image/theme-color`, themeColorSchema, {
+        searchParams: { imageUrl: playlistThumbnailUrl },
+      });
+    },
   }));
 
   $effect(() => {
@@ -65,7 +79,7 @@
 
 <Dialog.Root>
   <div
-    class="flex flex-col h-full w-full bg-black rounded-2xl mt-8"
+    class="flex flex-col h-full w-full bg-black rounded-2xl overflow-y-auto"
     in:fly={{ y: 20, duration: 100 }}
     out:fly={{ y: 20, duration: 100 }}
   >
@@ -78,8 +92,19 @@
       <Dialog.Content>
         <EditPlaylistDetailsDialog initialPlaylist={playlist} />
       </Dialog.Content>
-      <div class="w-full p-4 pb-2 bg-black h-full mt-4 sm:mt-6 lg:mt-1 rounded-2xl">
-        <div class="flex gap-4">
+      <div class="relative w-full p-4 pb-2 bg-black h-full mt-4 sm:mt-6 lg:mt-1 rounded-2xl">
+        {#if playlistThemeColorQuery.isSuccess && playlistThemeColorQuery.data}
+          <div
+            class="absolute duration-200 h-1/2 z-0 inset-0 pointer-events-none"
+            style="
+        background: linear-gradient(to bottom, rgb({playlistThemeColorQuery.data
+              .r}, {playlistThemeColorQuery.data.g}, {playlistThemeColorQuery.data
+              .b}), transparent);
+        opacity: 0.5;
+      "
+          ></div>
+        {/if}
+        <div class="relative flex gap-4 mt-4">
           {#if playlist.coverImage}
             {#key playlist}
               <Image
@@ -91,7 +116,7 @@
               />
             {/key}
           {:else}
-            <div class="h-48 w-1/5 rounded-2xl bg-muted"></div>
+            <div class="h-48 w-48 rounded-2xl aspect-square bg-muted"></div>
           {/if}
           <div class="flex flex-col w-3/5 h-full gap-2">
             <span class="text-lg ml-0.5 select-none">Playlist</span>
@@ -114,15 +139,17 @@
               {/key}
               <p class="font-semibold">
                 {playlist.authorName}
-                {#if playlistPlaylengthQuery.isSuccess}
-                  <PlaylistLength playlistTrackLength={playlistPlaylengthQuery.data} />
-                {/if}
+                {#key playlistPlaylengthQuery.dataUpdatedAt}
+                  {#if playlistPlaylengthQuery.isSuccess}
+                    <PlaylistLength playlistTrackLength={playlistPlaylengthQuery.data} />
+                  {/if}
+                {/key}
               </p>
             </div>
           </div>
         </div>
         <!-- for the music list -->
-        <div class="h-full">
+        <div class="h-full bg-black">
           {#if playlistTracksQuery.isLoading}
             <div class="w-full flex items-center justify-center py-20">
               <LoadingSpinner />
@@ -132,18 +159,17 @@
             {#if playlistTracks.length}
               <div class="flex items-center gap-2">
                 <Button
-                  class="rounded-full w-fit my-3 py-6 ml-1"
+                  class="rounded-full w-fit my-3 py-6 ml-1 z-10"
                   onclick={() => playPlaylist(playlistTracks ?? [])}
                 >
                   <PlayIcon class="text-primary-foreground" fill="black" />
                 </Button>
-                <ChangePlaylistVisibilityButton
-                  playlistId={playlist.playlistId}
-                  isPublic={playlist.isPublic}
-                />
-                <p class="text-muted-foreground ml-auto mr-4">
-                  {playlistTracks.length} / 40 Tracks
-                </p>
+                <div class="z-10">
+                  <ChangePlaylistVisibilityButton
+                    playlistId={playlist.playlistId}
+                    isPublic={playlist.isPublic}
+                  />
+                </div>
               </div>
               <header
                 class="flex justify-around items-center gap-5 select-none text-muted-foreground"
@@ -169,7 +195,7 @@
                 <p class="flex-2">Title</p>
                 <ClockIcon size={18} class="mr-[62px]" />
               </header>
-              <div class="h-2/4 pb-[40%] min-660:pb-[35%] mt-2 overflow-y-auto overflow-x-hidden">
+              <div class="mt-2 overflow-x-hidden pb-[80%] md:pb-[40%] lg:pb-[20%]">
                 {#key playlistTracks}
                   <PlaylistTracksList
                     {playlistTracks}

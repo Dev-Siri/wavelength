@@ -32,7 +32,7 @@
   const { children }: { children?: Snippet } = $props();
 
   let screenSize: number | null = $state(null);
-  let paneWidth: number = $state(20);
+  let sidebarWidth = $state(20);
 
   const defaultSizes: PaneSizes = {
     sidebar: {
@@ -88,9 +88,9 @@
 
   $effect(() => {
     if (musicQueueStore.isMusicQueueVisible) {
-      paneWidth = sizes.sidebar.minSize;
+      sidebarWidth = sizes.sidebar.minSize;
     } else {
-      paneWidth = sizes.sidebar.maxSize;
+      sidebarWidth = sizes.sidebar.maxSize;
     }
   });
 
@@ -100,9 +100,9 @@
 <QueryClientProvider client={queryClient}>
   <Tooltip.Provider>
     <div class="h-screen flex flex-col bg-extra-dark">
-      <Splitpanes class="flex-1 overflow-hidden" on:resize={e => (paneWidth = e.detail[0].size)}>
-        <Pane class="bg-extra-dark rounded-tr-md rounded-br-md" {...sizes.sidebar}>
-          <Sidebar {paneWidth} />
+      <Splitpanes class="flex-1 overflow-hidden" on:resize={e => (sidebarWidth = e.detail[0].size)}>
+        <Pane class="bg-extra-dark rounded-tr-md" {...sizes.sidebar}>
+          <Sidebar {sidebarWidth} />
         </Pane>
         <Pane class="h-full w-full bg-extra-dark relative" size={sizes.content}>
           <TopBar />

@@ -11,7 +11,7 @@
   import Library from "./Library.svelte";
   import { Button } from "./ui/button";
 
-  const { paneWidth }: { paneWidth: number } = $props();
+  const { sidebarWidth }: { sidebarWidth: number } = $props();
 
   const queryClient = useQueryClient();
 
@@ -46,12 +46,12 @@
     {#if userStore.user}
       <Button variant="secondary" onclick={() => createPlaylistMutation.mutate()}>
         <PlusIcon size={20} />
-        {#if paneWidth > 17}
+        {#if sidebarWidth > 17}
           <span class="mr-5 hidden md:block">Add Playlist</span>
         {/if}
       </Button>
       <section class="flex flex-col gap-2 h-[67%] w-full">
-        <Library {paneWidth} />
+        <Library {sidebarWidth} />
       </section>
     {/if}
   </div>
