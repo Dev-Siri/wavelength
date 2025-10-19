@@ -1,14 +1,20 @@
 <script lang="ts">
   import type { PlaylistTrack } from "$lib/utils/validation/playlist-track";
+  import type { Playlist } from "$lib/utils/validation/playlists";
 
   import TrackItem from "./TrackItem.svelte";
 
   const {
     isRearrangingList,
     music,
-  }: { i: number; isRearrangingList: boolean; music: PlaylistTrack } = $props();
+    playlist,
+  }: {
+    isRearrangingList: boolean;
+    music: PlaylistTrack;
+    playlist: Playlist;
+  } = $props();
 </script>
 
 <div class="w-full {isRearrangingList ? 'pointer-events-none' : ''}">
-  <TrackItem {music} />
+  <TrackItem {music} toggle={{ type: "remove", from: playlist }} />
 </div>

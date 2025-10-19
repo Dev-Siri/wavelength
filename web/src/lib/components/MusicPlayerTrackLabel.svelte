@@ -42,6 +42,7 @@
     </DropdownMenu.Trigger>
     <DropdownMenu.Content class="z-9999" hidden={!playlists?.length}>
       <PlaylistToggleOptions
+        toggle={{ type: "add" }}
         music={{
           ...musicQueueStore.musicPlayingNow,
           isExplicit: false,

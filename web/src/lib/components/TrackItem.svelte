@@ -3,6 +3,7 @@
 
   import type { MusicTrack } from "$lib/utils/validation/music-track";
   import type { VideoType } from "$lib/utils/validation/playlist-track";
+  import type { Playlist } from "$lib/utils/validation/playlists";
 
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
   import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
@@ -14,7 +15,18 @@
   import { Button } from "./ui/button";
   import * as DropdownMenu from "./ui/dropdown-menu";
 
-  const { music }: { music: MusicTrack & { videoType?: VideoType } } = $props();
+  const {
+    music,
+    toggle,
+  }: {
+    music: MusicTrack & { videoType?: VideoType };
+    toggle:
+      | { type: "add" }
+      | {
+          type: "remove";
+          from: Playlist;
+        };
+  } = $props();
 
   function playSong() {
     const queueableTrack = {
@@ -83,6 +95,6 @@
     {/if}
   </div>
   <DropdownMenu.Content>
-    <PlaylistToggleOptions {music} />
+    <PlaylistToggleOptions {music} {toggle} />
   </DropdownMenu.Content>
 </DropdownMenu.Root>

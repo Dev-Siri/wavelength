@@ -4,6 +4,7 @@
   import { z } from "zod";
 
   import type { PlaylistTrack } from "$lib/utils/validation/playlist-track";
+  import type { Playlist } from "$lib/utils/validation/playlists";
 
   import { svelteMutationKeys } from "$lib/constants/keys";
   import { backendClient } from "$lib/utils/query-client.js";
@@ -11,11 +12,11 @@
   import PlaylistTracksListItem from "./PlaylistTracksListItem.svelte";
 
   const {
-    playlistId,
     playlistTracks,
     isRearrangingList,
+    playlist,
   }: {
-    playlistId: string;
+    playlist: Playlist;
     playlistTracks: PlaylistTrack[];
     isRearrangingList: boolean;
   } = $props();
@@ -28,9 +29,9 @@
   let prevItems = $derived([...items]);
 
   const rearrangeItemsMutation = createMutation(() => ({
-    mutationKey: svelteMutationKeys.rearrangePlaylistTracks(playlistId),
+    mutationKey: svelteMutationKeys.rearrangePlaylistTracks(playlist.playlistId),
     mutationFn: () =>
-      backendClient(`/playlists/playlist/${playlistId}/tracks`, z.string(), {
+      backendClient(`/playlists/playlist/${playlist.playlistId}/tracks`, z.string(), {
         method: "PUT",
         body: items.map((_, i) => ({
           playlistTrackId: prevItems[i].playlistTrackId,
@@ -54,14 +55,13 @@
 {#if isRearrangingList}
   <SortableList.Root ondragend={handleSort}>
     {#each items as music, i (`${music.playlistId}-${i}`)}
-      {console.log(`${i}: `, music.playlistTrackId)}
       <SortableList.Item id={music.playlistTrackId} index={i}>
-        <PlaylistTracksListItem {music} {isRearrangingList} {i} />
+        <PlaylistTracksListItem {playlist} {music} {isRearrangingList} />
       </SortableList.Item>
     {/each}
   </SortableList.Root>
 {:else}
   {#each items as music, i}
-    <PlaylistTracksListItem {music} {isRearrangingList} {i} />
+    <PlaylistTracksListItem {playlist} {music} {isRearrangingList} />
   {/each}
 {/if}

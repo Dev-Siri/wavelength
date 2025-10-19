@@ -26,12 +26,12 @@
   }
 
   const artistQuery = createQuery(() => ({
-    queryKey: svelteQueryKeys.artist(page.params.browseId),
+    queryKey: svelteQueryKeys.artist(page.params.browseId ?? ""),
     queryFn: () => backendClient(`/artists/artist/${page.params.browseId}`, artistResponseSchema),
   }));
 
   const artistExtraQuery = createQuery(() => ({
-    queryKey: svelteQueryKeys.artistExtra(page.params.browseId),
+    queryKey: svelteQueryKeys.artistExtra(page.params.browseId ?? ""),
     queryFn: () =>
       backendClient(`/artists/artist/${page.params.browseId}/extra`, artistExtraResponseSchema),
   }));
@@ -121,7 +121,7 @@
         <div class="h-full px-2">
           {#if artist.songs}
             {#each artist.songs.contents as song}
-              <TrackItem music={{ ...song, duration: "" }} />
+              <TrackItem music={{ ...song, duration: "" }} toggle={{ type: "add" }} />
             {/each}
           {/if}
         </div>

@@ -197,11 +197,7 @@
               </header>
               <div class="mt-2 overflow-x-hidden pb-[80%] md:pb-[40%] lg:pb-[20%]">
                 {#key playlistTracks}
-                  <PlaylistTracksList
-                    {playlistTracks}
-                    playlistId={playlist.playlistId}
-                    {isRearrangingList}
-                  />
+                  <PlaylistTracksList {playlistTracks} {playlist} {isRearrangingList} />
                 {/key}
               </div>
             {:else}

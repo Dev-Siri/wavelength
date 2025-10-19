@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { PlusIcon } from "@lucide/svelte";
+  import { MinusIcon, PlusIcon } from "@lucide/svelte";
   import { createMutation, useQueryClient } from "@tanstack/svelte-query";
   import toast from "svelte-french-toast";
   import { z } from "zod";
@@ -12,7 +12,20 @@
 
   import DropdownMenuItem from "./ui/dropdown-menu/dropdown-menu-item.svelte";
 
-  const { music }: { music: MusicTrack } = $props();
+  const {
+    music,
+    toggle,
+  }: {
+    music: MusicTrack;
+    toggle:
+      | {
+          type: "add";
+        }
+      | {
+          type: "remove";
+          from: Playlist;
+        };
+  } = $props();
 
   const queryClient = useQueryClient();
   const playlists = $derived.by(() =>
@@ -37,13 +50,22 @@
   }));
 </script>
 
-{#if playlists?.length}
-  {#each playlists as playlist}
-    <DropdownMenuItem
-      onclick={() => playlistsAddMutation.mutate(playlist.playlistId)}
-      class="flex py-3 gap-2"
-    >
-      <PlusIcon size={20} /> Toggle from "{playlist.name}"
-    </DropdownMenuItem>
-  {/each}
+{#if toggle.type === "add"}
+  {#if playlists?.length}
+    {#each playlists as playlist}
+      <DropdownMenuItem
+        onclick={() => playlistsAddMutation.mutate(playlist.playlistId)}
+        class="flex py-3 gap-2"
+      >
+        <PlusIcon size={20} /> Add to {playlist.name}
+      </DropdownMenuItem>
+    {/each}
+  {/if}
+{:else}
+  <DropdownMenuItem
+    onclick={() => playlistsAddMutation.mutate(toggle.from.playlistId)}
+    class="flex py-3 gap-2 text-red-500"
+  >
+    <MinusIcon size={20} /> Remove from playlist.
+  </DropdownMenuItem>
 {/if}

@@ -44,7 +44,7 @@
   <div class="h-full w-1/2">
     <h2 class="text-2xl mb-3 font-semibold">Songs</h2>
     {#each trackSearchQuery.data.result.slice(0, 7) as music}
-      <TrackItem {music} />
+      <TrackItem {music} toggle={{ type: "add" }} />
     {/each}
   </div>
 {/if}
