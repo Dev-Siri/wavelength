@@ -61,7 +61,7 @@
     {/each}
   </SortableList.Root>
 {:else}
-  {#each items as music, i}
+  {#each items as music}
     <PlaylistTracksListItem {playlist} {music} {isRearrangingList} />
   {/each}
 {/if}
