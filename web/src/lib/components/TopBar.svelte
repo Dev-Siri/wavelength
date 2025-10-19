@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { DownloadIcon } from "@lucide/svelte";
+  import { DownloadIcon, HouseIcon } from "@lucide/svelte";
 
   import userStore from "$lib/stores/user.svelte.js";
 
@@ -12,7 +12,10 @@
 <header
   class="flex items-center z-50 justify-between py-3 bg-black absolute right-0 left-0 pr-4 rounded-bl-2xl"
 >
-  <div class="w-1/2 pl-2">
+  <div class="flex gap-2 items-center w-1/2 pl-2">
+    <Button href="/" variant="secondary" class="rounded-full">
+      <HouseIcon />
+    </Button>
     <SearchBar />
   </div>
   {#if !userStore.user}
