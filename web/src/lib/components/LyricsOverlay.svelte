@@ -20,7 +20,9 @@
         `/music/track/${musicQueueStore.musicPlayingNow?.videoId}/lyrics`,
         lyricsSchema,
       ),
+    gcTime: Infinity,
     staleTime: Infinity,
+    refetchOnWindowFocus: false,
   }));
 
   let currentLyricMs = $derived(

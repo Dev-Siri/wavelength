@@ -60,7 +60,7 @@
   const playlistThemeColorQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.themeColor(playlistThumbnailUrl),
     queryFn() {
-      if (!playlistThumbnailUrl) return;
+      if (!playlistThumbnailUrl) return { r: 0, g: 0, b: 0 };
 
       return backendClient(`/image/theme-color`, themeColorSchema, {
         searchParams: { imageUrl: playlistThumbnailUrl },
@@ -93,7 +93,7 @@
         <EditPlaylistDetailsDialog initialPlaylist={playlist} />
       </Dialog.Content>
       <div class="relative w-full p-4 pb-2 bg-black h-full mt-4 sm:mt-6 lg:mt-1 rounded-2xl">
-        {#if playlistThemeColorQuery.isSuccess && playlistThemeColorQuery.data}
+        {#if playlistThemeColorQuery.isSuccess}
           <div
             class="absolute duration-200 h-1/2 z-0 inset-0 pointer-events-none"
             style="

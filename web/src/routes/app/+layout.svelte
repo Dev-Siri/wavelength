@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
+  import { QueryClient } from "@tanstack/svelte-query";
   import { Toaster } from "svelte-french-toast";
   import { Pane, Splitpanes } from "svelte-splitpanes";
   import { fly, slide } from "svelte/transition";
@@ -8,6 +8,7 @@
 
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
   import musicQueueStore from "$lib/stores/music-queue.svelte.js";
+  import { createIDBPersister } from "$lib/utils/cache";
 
   import InfoOverlay from "$lib/components/InfoOverlay.svelte";
   import LyricsOverlay from "$lib/components/LyricsOverlay.svelte";
@@ -17,6 +18,7 @@
   import Sidebar from "$lib/components/Sidebar.svelte";
   import TopBar from "$lib/components/TopBar.svelte";
   import * as Tooltip from "$lib/components/ui/tooltip";
+  import { PersistQueryClientProvider } from "@tanstack/svelte-query-persist-client";
 
   interface PaneLimit {
     minSize: number;
@@ -95,9 +97,10 @@
   });
 
   const queryClient = new QueryClient();
+  const persister = createIDBPersister();
 </script>
 
-<QueryClientProvider client={queryClient}>
+<PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
   <Tooltip.Provider>
     <div class="h-screen flex flex-col bg-extra-dark">
       <Splitpanes class="flex-1 overflow-hidden" on:resize={e => (sidebarWidth = e.detail[0].size)}>
@@ -146,4 +149,4 @@
     position="bottom-right"
     toastOptions={{ style: `background-color: #111; color: white;` }}
   />
-</QueryClientProvider>
+</PersistQueryClientProvider>
