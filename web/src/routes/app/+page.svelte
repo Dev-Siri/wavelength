@@ -31,7 +31,7 @@
     Popular Music in {codeToCountryName(regionQuery.isSuccess ? regionQuery.data : DEFAULT_REGION)}
   </h3>
   <div class="flex flex-wrap w-full justify-between">
-    {#if quickPicksQuery.isFetching}
+    {#if quickPicksQuery.isLoading}
       {#each new Array(10)}
         <MusicCardSkeleton />
       {/each}

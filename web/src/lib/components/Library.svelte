@@ -23,7 +23,7 @@
 </script>
 
 <div class="h-full w-full">
-  {#if playlistsQuery.isFetching}
+  {#if playlistsQuery.isLoading}
     <p class="text-center mt-40 font-semibold text-muted-foreground cursor-default">
       Your Library is loading...
     </p>

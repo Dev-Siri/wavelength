@@ -50,7 +50,7 @@
 </script>
 
 {#if musicQueueStore.musicPlayingNow}
-  {#if lyricsQuery.isFetching}
+  {#if lyricsQuery.isLoading}
     <div class="flex flex-col items-center justify-center pt-40 pl-4">
       <LoadingSpinner />
     </div>

@@ -19,7 +19,7 @@
   }));
 </script>
 
-{#if trackSearchQuery.isFetching}
+{#if trackSearchQuery.isLoading}
   <div class="w-2/3">
     <h2 class="text-2xl mb-3 font-semibold">Top Result</h2>
     <div class="w-full bg-muted bg-opacity-40 rounded-2xl pt-4 pb-6 pl-4">

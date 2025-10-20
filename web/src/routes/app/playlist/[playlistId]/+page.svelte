@@ -83,7 +83,7 @@
     in:fly={{ y: 20, duration: 100 }}
     out:fly={{ y: 20, duration: 100 }}
   >
-    {#if playlistQuery.isFetching}
+    {#if playlistQuery.isLoading}
       <div class="h-3/4 w-full flex items-center justify-center">
         <LoadingSpinner />
       </div>
