@@ -55,6 +55,7 @@ class MusicPlayerStore {
       this.bufferSource.stop();
       this.bufferSource.disconnect();
       this.bufferSource = null;
+      await this.audioCtx.suspend();
     }
 
     this.isPlaying = false;
@@ -99,7 +100,9 @@ class MusicPlayerStore {
   };
 
   handleBufferEnd = () => {
-    if (this.repeatMode === "one") return this.playMusic();
+    if (Math.trunc(this.currentTime) !== Math.trunc(this.duration)) return;
+
+    if (this.repeatMode === "one") return this.seek(0);
 
     this.isPlaying = false;
 

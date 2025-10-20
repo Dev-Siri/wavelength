@@ -55,11 +55,11 @@
     bind:this={progressBarElement}
   >
     <div
-      class="h-1 bg-primary rounded-full duration-200"
+      class="h-1 bg-primary rounded-full duration-100"
       style="width: {musicPlayerProgress}%;"
     ></div>
     <div
-      class="absolute h-4 w-4 rounded-full bg-primary hidden duration-200 border border-muted group-hover:inline"
+      class="absolute h-4 w-4 rounded-full bg-primary hidden duration-100 border border-muted group-hover:inline"
       style="margin-left: {musicPlayerProgress - 3}%;"
     ></div>
   </div>
