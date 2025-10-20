@@ -17,9 +17,9 @@
     async function controlMusicVidToSong() {
       if (musicQueueStore.musicPlayingNow?.videoType !== "uvideo") return;
 
-      musicVideoPreview.currentTime = musicPlayerStore.musicCurrentTime;
+      musicVideoPreview.currentTime = musicPlayerStore.currentTime;
 
-      if (musicPlayerStore.isMusicPlaying) {
+      if (musicPlayerStore.isPlaying) {
         musicVideoPreview.play();
       } else {
         musicVideoPreview.pause();

@@ -17,12 +17,12 @@
   import * as Tooltip from "./ui/tooltip";
 
   function changeMusicRepeatMode() {
-    if (musicPlayerStore.musicRepeatMode === "none") {
-      musicPlayerStore.musicRepeatMode = "all";
-    } else if (musicPlayerStore.musicRepeatMode === "all") {
-      musicPlayerStore.musicRepeatMode = "one";
+    if (musicPlayerStore.repeatMode === "none") {
+      musicPlayerStore.repeatMode = "all";
+    } else if (musicPlayerStore.repeatMode === "all") {
+      musicPlayerStore.repeatMode = "one";
     } else {
-      musicPlayerStore.musicRepeatMode = "none";
+      musicPlayerStore.repeatMode = "none";
     }
   }
 
@@ -36,7 +36,7 @@
     let nextIndex = 0;
 
     if (musicQueueStore.musicQueue.length - 1 === songThatWasPlayedIndex) {
-      if (musicPlayerStore.musicRepeatMode === "all") nextIndex = 0;
+      if (musicPlayerStore.repeatMode === "all") nextIndex = 0;
       else return;
     } else {
       nextIndex = songThatWasPlayedIndex + 1;
@@ -56,8 +56,7 @@
     let prevIndex = 0;
 
     if (songThatWasPlayedIndex === 0) {
-      if (musicPlayerStore.musicRepeatMode === "all")
-        prevIndex = musicQueueStore.musicQueue.length - 1;
+      if (musicPlayerStore.repeatMode === "all") prevIndex = musicQueueStore.musicQueue.length - 1;
       else return;
     } else {
       prevIndex = songThatWasPlayedIndex - 1;
@@ -89,11 +88,11 @@
       <Button
         class="rounded-full h-10 w-10 p-1"
         disabled={!musicQueueStore.musicPlayingNow}
-        onclick={musicPlayerStore.isMusicPlaying
+        onclick={musicPlayerStore.isPlaying
           ? musicPlayerStore.pauseMusic
           : musicPlayerStore.playMusic}
       >
-        {#if musicPlayerStore.isMusicPlaying}
+        {#if musicPlayerStore.isPlaying}
           <PauseIcon fill="black" size={20} font-weight="normal" />
         {:else}
           <PlayIcon fill="black" size={20} font-weight="normal" />
@@ -101,7 +100,7 @@
       </Button>
     </Tooltip.Trigger>
     <Tooltip.Content>
-      <p>{musicPlayerStore.isMusicPlaying ? "Pause" : "Play"}</p>
+      <p>{musicPlayerStore.isPlaying ? "Pause" : "Play"}</p>
     </Tooltip.Content>
   </Tooltip.Root>
   <Tooltip.Root>
@@ -122,11 +121,11 @@
   <Tooltip.Root>
     <Tooltip.Trigger>
       <Button class="rounded-full h-10 w-10 p-2" variant="ghost" onclick={changeMusicRepeatMode}>
-        {#if musicPlayerStore.musicRepeatMode === "none"}
+        {#if musicPlayerStore.repeatMode === "none"}
           <div in:fade>
             <RepeatIcon opacity={0.4} font-weight="normal" size={22} />
           </div>
-        {:else if musicPlayerStore.musicRepeatMode === "all"}
+        {:else if musicPlayerStore.repeatMode === "all"}
           <div in:fade>
             <RepeatIcon fill="white" font-weight="normal" size={22} />
           </div>
@@ -138,9 +137,9 @@
       </Button>
     </Tooltip.Trigger>
     <Tooltip.Content>
-      {#if musicPlayerStore.musicRepeatMode === "none"}
+      {#if musicPlayerStore.repeatMode === "none"}
         <p>Enable Repeat All</p>
-      {:else if musicPlayerStore.musicRepeatMode === "all"}
+      {:else if musicPlayerStore.repeatMode === "all"}
         <p>Enable Repeat One</p>
       {:else}
         <p>Disable Repeat</p>

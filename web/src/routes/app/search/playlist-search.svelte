@@ -20,7 +20,7 @@
 </script>
 
 <div class="flex flex-col w-full h-full items-center pb-32 rounded-2xl">
-  {#if playlistSearchQuery.isLoading}
+  {#if playlistSearchQuery.isFetching}
     <TrackItemSkeleton />
     <TrackItemSkeleton />
     <TrackItemSkeleton />

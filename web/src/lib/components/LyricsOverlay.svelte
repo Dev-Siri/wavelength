@@ -11,7 +11,7 @@
 
   let lyricsList: HTMLDivElement | null = $state(null);
 
-  let playerProgressMs = $derived(musicPlayerStore.musicCurrentTime * 1000);
+  let playerProgressMs = $derived(musicPlayerStore.currentTime * 1000);
 
   const lyricsQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.lyrics(musicQueueStore.musicPlayingNow?.videoId ?? ""),
@@ -47,16 +47,10 @@
         });
     }
   });
-
-  function seekToLyricStart(startMs: number) {
-    if (!musicPlayerStore.musicPlayer) return;
-
-    musicPlayerStore.musicPlayer.currentTime = startMs / 1000;
-  }
 </script>
 
 {#if musicQueueStore.musicPlayingNow}
-  {#if lyricsQuery.isLoading}
+  {#if lyricsQuery.isFetching}
     <div class="flex flex-col items-center justify-center pt-40 pl-4">
       <LoadingSpinner />
     </div>
@@ -66,7 +60,7 @@
       {#each lyrics as lyric, i}
         <button
           type="button"
-          onclick={() => seekToLyricStart(lyric.startMs)}
+          onclick={() => musicPlayerStore.seek(lyric.startMs / 1000)}
           class="font-bold text-start text-3xl cursor-pointer duration-200 hover:text-white {playerProgressMs >
             lyric.startMs && playerProgressMs < lyric.startMs + lyric.durMs
             ? 'text-white'

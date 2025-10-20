@@ -83,7 +83,7 @@
     in:fly={{ y: 20, duration: 100 }}
     out:fly={{ y: 20, duration: 100 }}
   >
-    {#if playlistQuery.isLoading}
+    {#if playlistQuery.isFetching}
       <div class="h-3/4 w-full flex items-center justify-center">
         <LoadingSpinner />
       </div>
@@ -215,7 +215,7 @@
           {/if}
         </div>
       </div>
-    {:else}
+    {:else if playlistQuery.isError}
       <div class="h-3/4 w-full flex items-center justify-center">
         <p class="text-5xl font-bold text-center text-balance text-red-500">
           An error occurred while loading the playlist.

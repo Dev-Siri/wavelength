@@ -25,7 +25,7 @@
         musicQueueStore.musicPlayingNow &&
         musicQueueStore.musicPlayingNow?.videoType !== "uvideo"
       )
-        return;
+        return null;
 
       return backendClient("/music/music-video-preview", musicVideoPreviewSchema, {
         searchParams: {

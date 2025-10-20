@@ -9,7 +9,7 @@
 
   import PlaylistCard from "./PlaylistCard.svelte";
 
-  const { paneWidth }: { paneWidth: number } = $props();
+  const { sidebarWidth }: { sidebarWidth: number } = $props();
 
   const playlistsQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.userPlaylists,
@@ -23,7 +23,7 @@
 </script>
 
 <div class="h-full w-full">
-  {#if playlistsQuery.isLoading}
+  {#if playlistsQuery.isFetching}
     <p class="text-center mt-40 font-semibold text-muted-foreground cursor-default">
       Your Library is loading...
     </p>
@@ -37,8 +37,8 @@
         {#each playlistsQuery.data as playlist}
           <PlaylistCard
             {playlist}
-            titleClasses={paneWidth < 11 ? "hidden" : "w-10 overflow-hidden"}
-            imageClasses={paneWidth < 11 ? "h-10 w-10" : "h-9.5 w-14"}
+            titleClasses={sidebarWidth < 11 ? "hidden" : "w-10 overflow-hidden"}
+            imageClasses={sidebarWidth < 11 ? "h-10 w-10" : "h-9.5 w-14"}
             wrapperClick={() =>
               window.innerWidth <= 968 && goto(`/playlist/${playlist.playlistId}`)}
           />

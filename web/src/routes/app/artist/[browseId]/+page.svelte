@@ -42,7 +42,7 @@
   in:fly={{ y: 20, duration: 100 }}
   out:fly={{ y: 20, duration: 100 }}
 >
-  {#if artistQuery.isLoading || artistExtraQuery.isLoading}
+  {#if artistQuery.isFetching || artistExtraQuery.isFetching}
     <div class="h-full pt-[4%] px-5 flex w-full center">
       <Skeleton class="w-48 h-40 rounded-full" />
       <div class="flex flex-col mt-4 w-full gap-2">

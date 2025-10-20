@@ -17,7 +17,7 @@
   }));
 </script>
 
-{#if artistSearchQuery.isLoading}
+{#if artistSearchQuery.isFetching}
   <div class="flex flex-wrap w-full gap-4">
     <ArtistLabelSkeleton />
     <ArtistLabelSkeleton />

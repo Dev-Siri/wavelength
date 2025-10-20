@@ -5,31 +5,31 @@
   let progressBarElement: HTMLDivElement;
 
   let totalMinutes = $derived(
-    Math.floor((musicPlayerStore.musicDuration - musicPlayerStore.musicCurrentTime) / 60),
+    Math.floor((musicPlayerStore.duration - musicPlayerStore.currentTime) / 60),
   );
   let totalSeconds = $derived(
-    Math.floor((musicPlayerStore.musicDuration - musicPlayerStore.musicCurrentTime) % 60),
+    Math.floor((musicPlayerStore.duration - musicPlayerStore.currentTime) % 60),
   );
-  let currentMinutes = $derived(Math.floor(musicPlayerStore.musicCurrentTime / 60));
-  let currentSeconds = $derived(Math.floor(musicPlayerStore.musicCurrentTime % 60));
+  let currentMinutes = $derived(Math.floor(musicPlayerStore.currentTime / 60));
+  let currentSeconds = $derived(Math.floor(musicPlayerStore.currentTime % 60));
   let musicPlayerProgress = $state(0);
 
   $effect(() => {
-    const progress = (musicPlayerStore.musicCurrentTime / musicPlayerStore.musicDuration) * 100;
+    const progress = (musicPlayerStore.currentTime / musicPlayerStore.duration) * 100;
     musicPlayerProgress = isNaN(progress) ? 0 : progress;
   });
 
   async function onProgressBarClick(event: MouseEvent) {
-    if (!progressBarElement || !musicPlayerStore.musicPlayer) return;
+    if (!progressBarElement) return;
 
     const { left, width } = progressBarElement.getBoundingClientRect();
 
     const clickPositionX = event.clientX - left;
     const clickPercentage = (clickPositionX / width) * 100;
 
-    const newTime = (clickPercentage / 100) * musicPlayerStore.musicDuration;
+    const newTime = (clickPercentage / 100) * musicPlayerStore.duration;
 
-    musicPlayerStore.musicPlayer.currentTime = newTime;
+    musicPlayerStore.seek(newTime);
 
     if (
       musicQueueStore.musicPlayingNow?.videoType === "uvideo" &&
@@ -37,7 +37,7 @@
     )
       musicPlayerStore.musicPreviewPlayer.currentTime = newTime;
 
-    const newProgress = (newTime / musicPlayerStore.musicDuration) * 100;
+    const newProgress = (newTime / musicPlayerStore.duration) * 100;
     musicPlayerProgress = isNaN(newProgress) ? 0 : newProgress;
   }
 </script>

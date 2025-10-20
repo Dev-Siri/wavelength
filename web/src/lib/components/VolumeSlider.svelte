@@ -12,11 +12,12 @@
 
     if (storedVolume) {
       const numericalVolume = Number(storedVolume);
-      musicPlayerStore.volume = numericalVolume > 1 ? 1 : numericalVolume;
+      musicPlayerStore.setVolume(numericalVolume > 1 ? 1 : numericalVolume);
     }
   });
 
   $effect(() => {
+    musicPlayerStore.setVolume(musicPlayerStore.volume);
     localStorage.setItem(localStorageKeys.volume, musicPlayerStore.volume.toString());
   });
 </script>
@@ -25,9 +26,9 @@
   <Button
     variant="ghost"
     class="px-3 rounded-full select-none outline-hidden"
-    onclick={() => (musicPlayerStore.isMusicMuted = !musicPlayerStore.isMusicMuted)}
+    onclick={musicPlayerStore.isMuted ? musicPlayerStore.unmute : musicPlayerStore.mute}
   >
-    {#if musicPlayerStore.isMusicMuted}
+    {#if musicPlayerStore.isMuted}
       <VolumeOffIcon size={20} />
     {:else}
       <Volume2Icon size={20} />

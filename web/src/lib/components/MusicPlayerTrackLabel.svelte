@@ -46,7 +46,7 @@
         music={{
           ...musicQueueStore.musicPlayingNow,
           isExplicit: false,
-          duration: durationify(musicPlayerStore.musicDuration),
+          duration: durationify(musicPlayerStore.duration),
         }}
       />
     </DropdownMenu.Content>

@@ -18,7 +18,7 @@
 
 {#if videoSearchQuery.isSuccess}
   <div class="flex flex-wrap w-full gap-4">
-    {#each videoSearchQuery.data as uvideo}
+    {#each videoSearchQuery.data as uvideo (uvideo.videoId)}
       <UVideoCard {uvideo} />
     {/each}
   </div>

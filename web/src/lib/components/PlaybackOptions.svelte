@@ -16,7 +16,7 @@
     setTimeout(() => {
       if (!musicPlayerStore.musicPreviewPlayer) return;
 
-      musicPlayerStore.musicPreviewPlayer.currentTime = musicPlayerStore.musicCurrentTime;
+      musicPlayerStore.musicPreviewPlayer.currentTime = musicPlayerStore.currentTime;
     }, 1500);
   }
 </script>
