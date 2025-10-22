@@ -15,6 +15,7 @@
     queryKey: svelteQueryKeys.region,
     queryFn: () => backendClient("/region", z.string()),
     staleTime: Infinity,
+    gcTime: Infinity,
   }));
 
   const quickPicksQuery = createQuery(() => ({
