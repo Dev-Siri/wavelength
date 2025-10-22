@@ -29,7 +29,7 @@
 
     const newTime = (clickPercentage / 100) * musicPlayerStore.duration;
 
-    musicPlayerStore.currentTime = newTime;
+    musicPlayerStore.seek(newTime);
 
     if (
       musicQueueStore.musicPlayingNow?.videoType === "uvideo" &&

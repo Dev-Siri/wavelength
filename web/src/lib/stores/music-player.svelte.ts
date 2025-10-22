@@ -59,6 +59,13 @@ class MusicPlayerStore {
     });
   };
 
+  seek = (time: number) => {
+    if (!this.musicPlayer) return;
+
+    this.musicPlayer.currentTime = time;
+    this.currentTime = time;
+  };
+
   playMusic = async () => {
     if (this.currentTime === this.duration) this.currentTime = 0;
 

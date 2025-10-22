@@ -35,13 +35,15 @@
 >
   <div class="h-3/4 w-full p-3 relative rounded-2xl">
     <div class="h-full w-full rounded-2xl relative inline-block thumbnail-cover">
-      <Image
-        src={music.thumbnail}
-        alt="Thumbnail"
-        height={192}
-        width={192}
-        class="object-cover shadow-2xl shadow-black h-full w-full rounded-2xl"
-      />
+      {#key music.thumbnail}
+        <Image
+          src={music.thumbnail}
+          alt="Thumbnail"
+          height={192}
+          width={192}
+          class="object-cover shadow-2xl shadow-black h-full w-full rounded-2xl"
+        />
+      {/key}
     </div>
     {#if isHoveringCard}
       <div class="right-5 top-[70%] absolute">
