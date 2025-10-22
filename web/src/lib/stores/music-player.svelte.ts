@@ -32,16 +32,15 @@ class MusicPlayerStore {
       const cachedBlob = new Blob([cachedBuffer]);
       decodedUrl = URL.createObjectURL(cachedBlob);
     } else {
-      const res = await fetch(getStreamUrl(videoId, "audio"));
+      const streamUrl = getStreamUrl(videoId, "audio");
+      decodedUrl = streamUrl;
+      const res = await fetch(streamUrl);
 
       if (!res.ok) return;
 
       const arrayBuffer = await res.arrayBuffer();
 
       await set(cachedBufferKey, arrayBuffer);
-
-      const cachedBlob = new Blob([arrayBuffer]);
-      decodedUrl = URL.createObjectURL(cachedBlob);
     }
 
     musicPlayerStore.source = decodedUrl;

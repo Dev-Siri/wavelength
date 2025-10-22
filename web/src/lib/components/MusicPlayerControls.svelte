@@ -79,7 +79,7 @@
         <RewindIcon fill="white" font-weight="normal" size={24} />
       </Button>
     </Tooltip.Trigger>
-    <Tooltip.Content>
+    <Tooltip.Content class="z-99999">
       <p>Previous</p>
     </Tooltip.Content>
   </Tooltip.Root>
@@ -99,7 +99,7 @@
         {/if}
       </Button>
     </Tooltip.Trigger>
-    <Tooltip.Content>
+    <Tooltip.Content class="z-99999">
       <p>{musicPlayerStore.isPlaying ? "Pause" : "Play"}</p>
     </Tooltip.Content>
   </Tooltip.Root>
@@ -114,7 +114,7 @@
         <FastForwardIcon fill="white" font-weight="normal" size={24} />
       </Button>
     </Tooltip.Trigger>
-    <Tooltip.Content>
+    <Tooltip.Content class="z-99999">
       <p>Next</p>
     </Tooltip.Content>
   </Tooltip.Root>
@@ -136,7 +136,7 @@
         {/if}
       </Button>
     </Tooltip.Trigger>
-    <Tooltip.Content>
+    <Tooltip.Content class="z-99999">
       {#if musicPlayerStore.repeatMode === "none"}
         <p>Enable Repeat All</p>
       {:else if musicPlayerStore.repeatMode === "all"}
