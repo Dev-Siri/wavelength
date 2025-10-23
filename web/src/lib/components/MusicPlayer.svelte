@@ -53,7 +53,7 @@
   });
 
   $effect(() => {
-    if (musicQueueStore.musicPlayingNow)
+    if (musicQueueStore.musicPlayingNow) 
       musicPlayerStore.loadTrack(musicQueueStore.musicPlayingNow.videoId);
   });
 </script>
@@ -67,7 +67,7 @@
     bind:muted={musicPlayerStore.isMuted}
     onpause={() => (musicPlayerStore.isPlaying = false)}
     onplay={() => (musicPlayerStore.isPlaying = true)}
-    oncanplaythrough={() => musicPlayerElement.play()}
+    oncanplaythrough={musicPlayerStore.playMusic}
     onended={handlePlayerEnd}
     ondurationchange={({ currentTarget: { duration } }) => (musicPlayerStore.duration = duration)}
     ontimeupdate={({ currentTarget: { currentTime } }) =>
