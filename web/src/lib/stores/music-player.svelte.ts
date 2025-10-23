@@ -21,6 +21,11 @@ class MusicPlayerStore {
   loadTrack = async (videoId: string) => {
     if (!musicQueueStore.musicPlayingNow) return (navigator.mediaSession.metadata = null);
 
+    if (musicPlayerStore.source) {
+      URL.revokeObjectURL(musicPlayerStore.source);
+      musicPlayerStore.source = null;
+    }
+
     musicPlayerStore.currentTime = 0;
 
     const cachedBufferKey = `cached_audio_buffer-${videoId}`;
