@@ -26,6 +26,7 @@ class MusicPlayerStore {
       musicPlayerStore.source = null;
     }
 
+    musicPlayerStore.duration = 0;
     musicPlayerStore.currentTime = 0;
 
     const cachedBufferKey = `cached_audio_buffer-${videoId}`;
