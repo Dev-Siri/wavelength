@@ -1,4 +1,4 @@
 package constants
 
-const SupportedAudioStreamingFormat string = "bestaudio[ext=mp4]/bestaudio"
-const SupportedVideoStreamingFormat string = "bestvideo[ext=mp4]/bestvideo"
+const SupportedAudioStreamingFormat string = "best"
+const SupportedVideoStreamingFormat string = "bestvideo"
