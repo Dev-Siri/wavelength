@@ -12,7 +12,7 @@ os.makedirs(TMP_DIR, exist_ok=True)
 
 def download_to_tmp(video_id: str, format: str) -> str:
   suffix = "vid" if "bestvideo" in format else "aud"
-  output_path = os.path.join(TMP_DIR, f"{video_id}-{suffix}.mp4")
+  output_path = os.path.join(TMP_DIR, f"{video_id}-{suffix}.%(ext)s")
 
   ydl_opts: dict[str, Any] = {
     "format": format,
@@ -21,12 +21,17 @@ def download_to_tmp(video_id: str, format: str) -> str:
     "cookiefile": get_yt_cookie_path(),
     "nocheckcertificate": True,
     "outtmpl": output_path,
+    "extractor_args": {
+      "youtube": {
+        "player_js_version": "actual"
+      }
+    },
   }
 
   with yt_dlp.YoutubeDL(cast("Any", ydl_opts)) as ytdlp:
-    ytdlp.download([f"https://www.youtube.com/watch?v={video_id}"])
-
-  return output_path
+    info = ytdlp.extract_info(f"https://www.youtube.com/watch?v={video_id}")
+    final_path = ytdlp.prepare_filename(info)
+    return final_path
 
 @app.get("/stream-url")
 def stream_playback(videoId: str = Query(...), format: str = Query(...)):
