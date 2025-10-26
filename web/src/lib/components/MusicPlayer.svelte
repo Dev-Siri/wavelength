@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { get, set } from "idb-keyval";
+
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
+  import { getStreamUrl, getThumbnailUrl } from "$lib/utils/url";
 
   import MusicPlayerControls from "./MusicPlayerControls.svelte";
   import MusicPlayerTrackLabel from "./MusicPlayerTrackLabel.svelte";
@@ -53,8 +56,57 @@
   });
 
   $effect(() => {
-    if (musicQueueStore.musicPlayingNow) 
-      musicPlayerStore.loadTrack(musicQueueStore.musicPlayingNow.videoId);
+    async function loadTrack() {
+      const current = musicQueueStore.musicPlayingNow;
+
+      if (!current) return (navigator.mediaSession.metadata = null);
+
+      if (musicPlayerElement.src) {
+        URL.revokeObjectURL(musicPlayerElement.src);
+        musicPlayerElement.src = "";
+      }
+
+      musicPlayerStore.isPlaying = false;
+      musicPlayerStore.duration = 0;
+      musicPlayerStore.currentTime = 0;
+
+      const cachedBufferKey = `cached_audio_buffer-${current.videoId}`;
+      const cachedBuffer = await get(cachedBufferKey);
+
+      let decodedUrl: string;
+
+      if (cachedBuffer instanceof ArrayBuffer) {
+        const cachedBlob = new Blob([cachedBuffer]);
+        decodedUrl = URL.createObjectURL(cachedBlob);
+      } else {
+        const res = await fetch(getStreamUrl(current.videoId, "audio"));
+
+        if (!res.ok) return;
+
+        const arrayBuffer = await res.arrayBuffer();
+
+        await set(cachedBufferKey, arrayBuffer);
+
+        const cachedBlob = new Blob([arrayBuffer]);
+        decodedUrl = URL.createObjectURL(cachedBlob);
+      }
+
+      musicPlayerElement.src = decodedUrl;
+
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: current.title,
+        artist: current.author,
+        artwork: [
+          {
+            src: getThumbnailUrl(current.videoId),
+            sizes: "256x256",
+            type: "image/jpeg",
+          },
+        ],
+      });
+    }
+
+    loadTrack();
   });
 </script>
 
@@ -63,7 +115,6 @@
     autoplay
     bind:this={musicPlayerElement}
     class="hidden"
-    src={musicPlayerStore.source}
     bind:muted={musicPlayerStore.isMuted}
     onpause={() => (musicPlayerStore.isPlaying = false)}
     onplay={() => (musicPlayerStore.isPlaying = true)}
