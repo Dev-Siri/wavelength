@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"wavelength/constants"
 	"wavelength/env"
 	"wavelength/models"
@@ -18,12 +17,6 @@ func GetHlsStream(ctx *fiber.Ctx) error {
 
 	if videoId == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "Video ID is required.")
-	}
-
-	existingStreamPath := fmt.Sprintf("/tmp/streams/%s-aud.mp4", videoId)
-
-	if _, err := os.Stat(existingStreamPath); err == nil {
-		return servePlayableStream(ctx, existingStreamPath, "audio/mp4")
 	}
 
 	serverUrl := env.GetYtDlpServerUrl()

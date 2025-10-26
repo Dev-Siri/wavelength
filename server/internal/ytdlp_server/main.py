@@ -38,7 +38,7 @@ def get_hls_stream(video_id: str):
     "format": "best[protocol=m3u8_native]",
     "quiet": True,
     "noplaylist": True,
-    # "cookiefile": get_yt_cookie_path(),
+    "cookiefile": get_yt_cookie_path(),
     "nocheckcertificate": True,
     "source_address": "0.0.0.0",
     "extractor_args": {
