@@ -10,6 +10,15 @@ app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 TMP_DIR = "/tmp/streams"
 os.makedirs(TMP_DIR, exist_ok=True)
 
+def get_yt_cookie_path():
+  ytCookiePath = os.getenv("YT_COOKIE_PATH")
+
+  if ytCookiePath is None:
+    print("No YT_COOKIE_PATH set. Exiting...")
+    exit(1)
+
+  return ytCookiePath
+
 def download_to_tmp(video_id: str, format: str) -> str:
   suffix = "vid" if "bestvideo" in format else "aud"
   output_path = os.path.join(TMP_DIR, f"{video_id}-{suffix}.%(ext)s")
@@ -21,11 +30,6 @@ def download_to_tmp(video_id: str, format: str) -> str:
     "cookiefile": get_yt_cookie_path(),
     "nocheckcertificate": True,
     "outtmpl": output_path,
-    "extractor_args": {
-      "youtube": {
-        "player_js_version": "actual"
-      }
-    },
   }
 
   with yt_dlp.YoutubeDL(cast("Any", ydl_opts)) as ytdlp:
@@ -41,12 +45,6 @@ def get_hls_stream(video_id: str):
     "cookiefile": get_yt_cookie_path(),
     "nocheckcertificate": True,
     "source_address": "0.0.0.0",
-    "extractor_args": {
-      "youtube": {
-        "player_client": ["default", "tv"],
-        "player_js_version": "actual"
-      }
-    },
   }
 
   with yt_dlp.YoutubeDL(cast("Any", ydl_opts)) as ytdlp:
