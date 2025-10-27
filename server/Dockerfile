@@ -36,7 +36,9 @@ COPY --from=builder /usr/src/app/internal /app/internal
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN /usr/local/pypy3.11-v7.3.20-linux64/bin/pypy3 -m ensurepip && \
-    /usr/local/pypy3.11-v7.3.20-linux64/bin/pypy3 -m pip install -r /app/internal/ytdlp_server/requirements.txt
+    /usr/local/pypy3.11-v7.3.20-linux64/bin/pypy3 -m pip install -U pip && \
+    /usr/local/pypy3.11-v7.3.20-linux64/bin/pypy3 -m pip install -r /app/internal/ytdlp_server/requirements.txt && \
+    /usr/local/pypy3.11-v7.3.20-linux64/bin/pypy3 -m pip install -U yt-dlp
     
 ENV GEOIP_MMDB_PATH=/app/lib/GeoLite2-Country.mmdb
 ENV YT_DLP_SERVER_URL=http://localhost:8000
