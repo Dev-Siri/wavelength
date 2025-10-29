@@ -1,6 +1,5 @@
 from typing import Any, cast
 from fastapi import FastAPI, Query
-from env import get_yt_cookie_path
 from fastapi.responses import PlainTextResponse, JSONResponse
 import os
 import yt_dlp
