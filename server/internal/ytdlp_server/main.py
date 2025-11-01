@@ -1,6 +1,6 @@
 from typing import Any, cast
 from fastapi import FastAPI, Query
-from fastapi.responses import PlainTextResponse, JSONResponse
+from fastapi.responses import PlainTextResponse
 import os
 import yt_dlp
 
@@ -25,9 +25,7 @@ def download_to_tmp(video_id: str, format: str) -> str:
   ydl_opts: dict[str, Any] = {
     "format": format,
     "quiet": True,
-    "noplaylist": True,
     "cookiefile": get_yt_cookie_path(),
-    "nocheckcertificate": True,
     "outtmpl": output_path,
   }
 
@@ -36,29 +34,7 @@ def download_to_tmp(video_id: str, format: str) -> str:
     final_path = ytdlp.prepare_filename(info)
     return final_path
   
-def get_hls_stream(video_id: str):
-  ydl_opts: dict[str, Any] = {
-    "format": "best[protocol=m3u8_native]",
-    "quiet": True,
-    "noplaylist": True,
-    "cookiefile": get_yt_cookie_path(),
-    "nocheckcertificate": True,
-    "source_address": "0.0.0.0",
-  }
-
-  with yt_dlp.YoutubeDL(cast("Any", ydl_opts)) as ytdlp:
-    info = ytdlp.extract_info(f"https://www.youtube.com/watch?v={video_id}", download=False)
-    return info.get("formats")
-
 @app.get("/stream-url")
 def stream_playback(videoId: str = Query(...), format: str = Query(...)):
   file_path = download_to_tmp(videoId, format)
   return PlainTextResponse(file_path)
-
-@app.get("/stream-hls")
-def hls_stream_playback(videoId: str = Query(...)):
-  streams = get_hls_stream(videoId)
-
-  if not streams:
-    return JSONResponse({ "message": "No streams found." }, 404)
-  return JSONResponse({ "streams": streams })
