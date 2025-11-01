@@ -25,7 +25,7 @@ func GetVideoStream(ctx *fiber.Ctx) error {
 	}
 
 	serverUrl := env.GetYtDlpServerUrl()
-	streamUrl := fmt.Sprintf("%s/stream-url?videoId=%s&format=%s", serverUrl, videoId, constants.SupportedVideoStreamingFormat)
+	streamUrl := fmt.Sprintf("%s/stream-url?videoId=%s&format=%s&intent=vid", serverUrl, videoId, constants.SupportedStreamingFormat)
 	response, err := http.Get(streamUrl)
 
 	if err != nil {

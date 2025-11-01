@@ -18,9 +18,8 @@ def get_yt_cookie_path():
 
   return ytCookiePath
 
-def download_to_tmp(video_id: str, format: str) -> str:
-  suffix = "vid" if "bestvideo" in format else "aud"
-  output_path = os.path.join(TMP_DIR, f"{video_id}-{suffix}.%(ext)s")
+def download_to_tmp(video_id: str, format: str, intent: str) -> str:
+  output_path = os.path.join(TMP_DIR, f"{video_id}-{intent}.%(ext)s")
 
   ydl_opts: dict[str, Any] = {
     "format": format,
@@ -35,6 +34,6 @@ def download_to_tmp(video_id: str, format: str) -> str:
     return final_path
   
 @app.get("/stream-url")
-def stream_playback(videoId: str = Query(...), format: str = Query(...)):
-  file_path = download_to_tmp(videoId, format)
+def stream_playback(videoId: str = Query(...), format: str = Query(...), intent: str = Query(...)):
+  file_path = download_to_tmp(videoId, format, intent)
   return PlainTextResponse(file_path)

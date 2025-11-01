@@ -25,7 +25,7 @@ func GetAudioStream(ctx *fiber.Ctx) error {
 	}
 
 	serverUrl := env.GetYtDlpServerUrl()
-	streamUrl := fmt.Sprintf("%s/stream-url?videoId=%s&format=%s", serverUrl, videoId, constants.SupportedAudioStreamingFormat)
+	streamUrl := fmt.Sprintf("%s/stream-url?videoId=%s&format=%s&intent=aud", serverUrl, videoId, constants.SupportedStreamingFormat)
 	response, err := http.Get(streamUrl)
 
 	if err != nil {
