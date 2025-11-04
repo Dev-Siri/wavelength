@@ -2,9 +2,7 @@
 
 <img src="./images/brand.png" />
 
-Wavelength is a cross-platform music app. It wraps Rapid API's YT Music API and YouTube's official v3 API. Available for both the web, written in TypeScript (SvelteKit) and mobile, written in Dart (Flutter), with the backend code written in Go, deployed to [render.com](https://render.com) using a standardized Docker environment. Uses a PostgreSQL Database, hosted on Neon.
-
-I made the same mistake like before and overcomplicated the tech stack.
+WaveLength is a cross-platform music app that wraps Rapid API's YouTube Music API and YouTube's official v3 API.
 
 ## Getting Started
 
@@ -14,7 +12,11 @@ Clone the project.
 $ git clone https://github.com/Dev-Siri/wavelength
 ```
 
-Go to the web application and run it with dev mode. Make sure you create a `.env.local` file and enter your own credentials as shown in `.env.example`
+> NOTE: Each of these applications have their .env.example (with the server having .env.docker too), make sure you fill these variables before running them.
+
+## Web
+
+Navigate to the `/web` directory, and run the SvelteKit app with dev mode
 
 ```sh
 $ cd web
@@ -23,37 +25,57 @@ $ bun dev
 $ pnpm dev
 ```
 
-For the Flutter app, navigate to `/mobile`. Make sure you have Flutter and the native tools like Android Studio/XCode installed on your system beforehand.
-Make sure to create a `.env` file (NOT `.env.local`) for mobile as well and enter your own credentials as shown in `.env.example` for mobile.
+## Mobile
 
-Then you can run the dev command.
-
+Navigate to the `/mobile` directory. Make sure you have [Flutter](https://flutter.dev). You'll also need the native tooling for the platform you're running on: Android requires [Android-Studio](https://developer.android.com/studio) and additional command-line tools and packages installed. iOS requires XCode to be installed on your Mac.
+Then you can start the application in dev mode:
 ```sh
 $ flutter run
 ```
 
-Finally to get the application running for real, navigate to `/server` and start the Go server. Again, also make sure to fill the environment variables for the server as well, making sure that they are correct for both the docker and regular environments.
+## Server
 
-Please note however that if you're compiling the binary yourself, (As shown in `1.`) you need to download additional binaries for the application to work. Namely, you'll need the `yt-dlp` binary and the `GeoLite2-Country.mmdb` database.
+Navigate to `/server`. Here you'll need a couple of things. One of these are YouTube credentials. Follow the instructions from [yt-dlp](https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp)'s wiki page and make sure that you are using a burner YouTube account to not be at risk of termination. You should be retrieving the cookies in Netscape format.
 
-You can download `yt-dlp` from their releases [here](https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp).
+### Building The Docker Image
 
-To download the GeoLite2-Country database, you'll need to register for a free MaxMind account [here](https://maxmind.com/en/geolite2/signup), after which you can download specifically the "GeoLite2-Country" database.
+Make sure you have Docker installed on your system.
+The cookies from the `cookies.txt` file need to be converted to base64. You can use this command to get it's base64 form:
+```sh
+$ base64 -i <cookie.txt-file-path>
+```
 
-Once you've got the binaries, create a directory `lib` and place both the GeoLite2 Database and the yt-dlp binary. Finally you can run the second command.
+Once you have gotten the base64 string of the cookies, you need to specify it in your environment, the `.env.docker` file.
+Finally you can build the docker image, then run it, specifying the `PORT` and `--env-file`.
 
 ```sh
-# 1. Run it directly.
-$ go run main.go
-# OR: Compile to a binary, then run it.
-$ go build -v -trimpath -ldflags=-s -ldflags=-w -buildvcs=false -o ./bin/wavelength .
-$ ./bin/wavelength
-
-# 3. Better yet, build the docker image, then run it.
-# The builder will automatically fetch the required dependent binaries
-# So you don't need to download them on your own.
 $ docker build . -t wavelength/server
 $ docker run -p 8080:8080 -e PORT=8080 --env-file=.env.docker wavelength/server
+```
+
+### Manual Setup
+
+You will need Go 1.22+ installed on your system, and the GeoLite2-Country database from [MaxMind](https://maxmind.com/en). Get it by registering for a free MaxMind account [here](https://maxmind.com/en/geolite2/signup), after which you can download specifically the `GeoLite2-Country` database.
+Create a directory named `lib` and place the database file in it. Create another directory named `secrets` and place the `cookies.txt` file that you extracted earlier in it.
+
+Then navigate deeper to `internal/ytdlp_server`, and start the `yt-dlp` server, providing it the path to your cookies file.
+> [PyPy](https://pypy.org) is used in these example, it is recommended for better performance over standard CPython.
+```sh
+# Install the required packages with pip before you run it.
+$ pypy3 -m pip install -r requirements.txt
+# Then you can run it.
+$ YT_COOKIE_PATH=../../secrets/cookies.txt pypy3 -m uvicorn main:app --host 0.0.0.0 --port 8000
+```
+
+After this, you can navigate back to `/server` and finally run the Go server:
+```sh
+# Run it directly.
+$ go run main.go
+# OR: Compile the server to a binary, then run it.
+$ go build -v -trimpath -ldflags=-s -ldflags=-w -buildvcs=false -o ./bin/wavelength .
+$ ./bin/wavelength
+# OR: Run it using `air` if you have it installed.
+$ air
 ```
 
 ## License
