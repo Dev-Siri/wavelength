@@ -31,7 +31,7 @@ class AudioCache {
 
   static Future<void> save(String trackId, List<int> bytes) async {
     final file = await _getFile(trackId);
-    file.writeAsBytes(bytes);
+    await file.writeAsBytes(bytes);
   }
 
   static Future<String?> get(String trackId) async {
