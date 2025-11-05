@@ -14,6 +14,7 @@ import "package:wavelength/screens/library.dart";
 import "package:wavelength/screens/explore.dart";
 import "package:wavelength/screens/playing_now.dart";
 import "package:wavelength/screens/playlist.dart";
+import "package:wavelength/screens/settings.dart";
 import "package:wavelength/transitions.dart";
 
 final router = GoRouter(
@@ -94,6 +95,7 @@ final router = GoRouter(
             );
           },
         ),
+        GoRoute(path: "/settings", builder: (_, __) => const Settings()),
       ],
       builder: (context, state, child) {
         return Root(uri: state.uri.toString(), child: child);

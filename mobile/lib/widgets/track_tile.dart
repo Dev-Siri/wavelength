@@ -1,3 +1,5 @@
+import "dart:io";
+
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
@@ -43,93 +45,85 @@ class TrackTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final innerUi = Container(
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
       padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade900,
-        borderRadius: BorderRadius.circular(15),
-      ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CupertinoButton(
-            onPressed: () => _playTrack(context),
-            padding: EdgeInsets.zero,
-            sizeStyle: CupertinoButtonSize.small,
-            child: Row(
-              children: [
-                BlocBuilder<MusicPlayerTrackBloc, MusicPlayerTrackState>(
-                  builder: (context, state) {
-                    final isThisTrackPlaying =
-                        state is MusicPlayerTrackPlayingNowState &&
-                        state.playingNowTrack.videoId == track.videoId;
+          const SizedBox(width: 5),
+          BlocBuilder<MusicPlayerTrackBloc, MusicPlayerTrackState>(
+            builder: (context, state) {
+              final isThisTrackPlaying =
+                  state is MusicPlayerTrackPlayingNowState &&
+                  state.playingNowTrack.videoId == track.videoId;
 
-                    return Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Opacity(
-                          opacity: isThisTrackPlaying ? 0.2 : 1,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: CachedNetworkImage(
-                              imageUrl: track.thumbnail,
-                              height: 50,
-                              width: 50,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        if (isThisTrackPlaying)
-                          const MiniMusicVisualizer(
-                            color: Colors.white,
-                            animate: true,
-                            width: 4,
-                            height: 15,
-                          ),
-                      ],
-                    );
-                  },
-                ),
-                const SizedBox(width: 10),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width / 2,
-                      child: Text(
-                        track.title,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                        ),
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  Opacity(
+                    opacity: isThisTrackPlaying ? 0.2 : 1,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                        imageUrl: track.thumbnail,
+                        fit: BoxFit.cover,
+                        height: 50,
+                        width: 50,
                       ),
                     ),
-                    const SizedBox(height: 3),
-                    Row(
-                      children: [
-                        if (track.isExplicit)
-                          const Padding(
-                            padding: EdgeInsets.only(right: 5),
-                            child: ExplicitIndicator(),
-                          ),
-                        Text(
-                          track.author,
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            height: 1,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
+                  ),
+                  if (isThisTrackPlaying)
+                    const MiniMusicVisualizer(
+                      color: Colors.white,
+                      animate: true,
+                      width: 4,
+                      height: 15,
                     ),
-                  ],
-                ),
-              ],
-            ),
+                ],
+              );
+            },
           ),
+          const SizedBox(width: 10),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: (MediaQuery.of(context).size.width / 1.4) - 50,
+                child: Text(
+                  decodeHtmlSpecialChars(track.title),
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Row(
+                children: [
+                  if (track.isExplicit)
+                    const Padding(
+                      padding: EdgeInsets.only(right: 5),
+                      child: ExplicitIndicator(),
+                    ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width / 2,
+                    child: Text(
+                      track.author,
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 14,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const Spacer(),
           CupertinoButton(
             onPressed: () => context.read<AppBottomSheetBloc>().add(
               AppBottomSheetOpenEvent(
@@ -153,6 +147,20 @@ class TrackTile extends StatelessWidget {
           ),
         ],
       ),
+    );
+
+    if (Platform.isIOS) {
+      return CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: () => _playTrack(context),
+        child: innerUi,
+      );
+    }
+
+    return MaterialButton(
+      padding: EdgeInsets.zero,
+      onPressed: () => _playTrack(context),
+      child: innerUi,
     );
   }
 }

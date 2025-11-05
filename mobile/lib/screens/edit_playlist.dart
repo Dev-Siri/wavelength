@@ -3,9 +3,11 @@ import "dart:io";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:flutter_svg/svg.dart";
 import "package:go_router/go_router.dart";
 import "package:image_picker/image_picker.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
+import "package:vector_graphics/vector_graphics.dart";
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/uploadthing_file.dart";
 import "package:wavelength/api/repositories/image_repo.dart";
@@ -146,7 +148,12 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         leading: BackButton(onPressed: () => context.pop()),
-        title: const Text("Edit"),
+        centerTitle: true,
+        title: const SvgPicture(
+          AssetBytesLoader("assets/vectors/lambda.svg.vec"),
+          height: 45,
+          width: 45,
+        ),
       ),
       backgroundColor: Colors.black,
       body: MusicPlayerPresenceAdjuster(

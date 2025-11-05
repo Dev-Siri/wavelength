@@ -126,83 +126,80 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: ListView(
-        children: [
-          const SizedBox(height: 20),
-          TextField(
-            onChanged: _onSearchChanged,
-            style: const TextStyle(color: Colors.black),
-            cursorColor: Colors.blue,
-            autocorrect: false,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              hintText: "Search for ${_getInputHintText()}...",
-              hintStyle: const TextStyle(
-                color: Colors.grey,
-                fontWeight: FontWeight.w900,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(0),
-                borderSide: BorderSide.none,
-              ),
-              prefixIcon: const Padding(
-                padding: EdgeInsets.only(left: 6),
-                child: Icon(LucideIcons.compass, color: Colors.grey),
+    return ListView(
+      children: [
+        const SizedBox(height: 20),
+        TextField(
+          onChanged: _onSearchChanged,
+          style: const TextStyle(color: Colors.black),
+          cursorColor: Colors.blue,
+          autocorrect: false,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
+            hintText: "Search for ${_getInputHintText()}...",
+            hintStyle: const TextStyle(
+              color: Colors.grey,
+              fontWeight: FontWeight.w900,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(0),
+              borderSide: BorderSide.none,
+            ),
+            prefixIcon: const Padding(
+              padding: EdgeInsets.only(left: 6),
+              child: Icon(LucideIcons.compass, color: Colors.grey),
+            ),
+          ),
+        ),
+        Row(
+          spacing: 4,
+          children: [
+            ChoiceChip(
+              label: const Text("Tracks"),
+              selectedColor: Colors.white,
+              selected: _searchType == SearchType.tracks,
+              onSelected: (_) => _changeSearchType(SearchType.tracks),
+            ),
+            ChoiceChip(
+              label: const Text("Videos"),
+              selectedColor: Colors.white,
+              selected: _searchType == SearchType.videos,
+              onSelected: (_) => _changeSearchType(SearchType.videos),
+            ),
+            ChoiceChip(
+              label: const Text("Artist"),
+              selectedColor: Colors.white,
+              selected: _searchType == SearchType.artists,
+              onSelected: (_) => _changeSearchType(SearchType.artists),
+            ),
+            ChoiceChip(
+              label: const Text("Playlists"),
+              selectedColor: Colors.white,
+              selected: _searchType == SearchType.playlists,
+              onSelected: (_) => _changeSearchType(SearchType.playlists),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        if (_searchType == SearchType.playlists)
+          const PlaylistsSearchPresenter(),
+        if (_searchType == SearchType.tracks) const TracksSearchPresenter(),
+        if (_searchType == SearchType.videos) const VideosSearchPresenter(),
+        if (_searchType == SearchType.artists) const ArtistsSearchPresenter(),
+        if (_searchQuery == "" && _searchType != SearchType.playlists)
+          Padding(
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).size.height / 4,
+            ),
+            child: const Center(
+              child: Text(
+                "Try searching for something.",
+                style: TextStyle(fontSize: 20),
               ),
             ),
           ),
-          Row(
-            spacing: 4,
-            children: [
-              ChoiceChip(
-                label: const Text("Tracks"),
-                selectedColor: Colors.white,
-                selected: _searchType == SearchType.tracks,
-                onSelected: (_) => _changeSearchType(SearchType.tracks),
-              ),
-              ChoiceChip(
-                label: const Text("Videos"),
-                selectedColor: Colors.white,
-                selected: _searchType == SearchType.videos,
-                onSelected: (_) => _changeSearchType(SearchType.videos),
-              ),
-              ChoiceChip(
-                label: const Text("Artist"),
-                selectedColor: Colors.white,
-                selected: _searchType == SearchType.artists,
-                onSelected: (_) => _changeSearchType(SearchType.artists),
-              ),
-              ChoiceChip(
-                label: const Text("Playlists"),
-                selectedColor: Colors.white,
-                selected: _searchType == SearchType.playlists,
-                onSelected: (_) => _changeSearchType(SearchType.playlists),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          if (_searchType == SearchType.playlists)
-            const PlaylistsSearchPresenter(),
-          if (_searchType == SearchType.tracks) const TracksSearchPresenter(),
-          if (_searchType == SearchType.videos) const VideosSearchPresenter(),
-          if (_searchType == SearchType.artists) const ArtistsSearchPresenter(),
-          if (_searchQuery == "" && _searchType != SearchType.playlists)
-            Padding(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height / 4,
-              ),
-              child: const Center(
-                child: Text(
-                  "Try searching for something.",
-                  style: TextStyle(fontSize: 20),
-                ),
-              ),
-            ),
-        ],
-      ),
+      ],
     );
   }
 }

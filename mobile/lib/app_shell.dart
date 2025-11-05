@@ -108,6 +108,7 @@ class _AppShellState extends State<AppShell> {
         return Padding(
           padding: const EdgeInsets.only(top: 8),
           child: Scaffold(
+            resizeToAvoidBottomInset: false,
             appBar: const SharedAppBar(),
             drawer: const UserInfoDrawer(),
             body: MusicPlayerPresenceAdjuster(

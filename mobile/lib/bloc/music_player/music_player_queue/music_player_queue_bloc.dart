@@ -1,9 +1,11 @@
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:just_audio/just_audio.dart";
 import "package:just_audio_background/just_audio_background.dart";
+import "package:wavelength/audio/background_bytes_audio_source.dart";
 import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_event.dart";
 import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_state.dart";
 import "package:wavelength/bloc/music_player/music_player_singleton.dart";
+import "package:wavelength/cache.dart";
 import "package:wavelength/utils/url.dart";
 
 class MusicPlayerQueueBloc
@@ -25,22 +27,33 @@ class MusicPlayerQueueBloc
     await player.clearAudioSources();
 
     for (final queueableMusic in event.newQueue) {
-      await player.addAudioSource(
-        AudioSource.uri(
-          Uri.parse(
-            getTrackPlaybackUrl(
-              queueableMusic.videoId,
-              StreamPlaybackType.audio,
+      final cachedQueueableMusic = await AudioCache.get(queueableMusic.videoId);
+
+      if (cachedQueueableMusic != null) {
+        await player.setAudioSource(
+          AudioSource.file(
+            cachedQueueableMusic,
+            tag: MediaItem(
+              id: queueableMusic.videoId,
+              title: queueableMusic.title,
+              album: queueableMusic.author,
+              artUri: Uri.parse(queueableMusic.thumbnail),
             ),
           ),
-          tag: MediaItem(
-            id: queueableMusic.videoId,
-            title: queueableMusic.title,
-            album: queueableMusic.author,
-            artUri: Uri.parse(queueableMusic.thumbnail),
+        );
+      } else {
+        await player.addAudioSource(
+          BackgroundBytesAudioSource(
+            queueableMusic.videoId,
+            tag: MediaItem(
+              id: queueableMusic.videoId,
+              title: queueableMusic.title,
+              album: queueableMusic.author,
+              artUri: Uri.parse(queueableMusic.thumbnail),
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
   }
 

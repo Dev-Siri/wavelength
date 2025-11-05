@@ -4,8 +4,13 @@ import "package:wavelength/api/models/playlist_tracks_length.dart";
 
 class PlaylistLengthText extends StatelessWidget {
   final PlaylistTracksLength playlistTracksLength;
+  final int trackDownloadedCount;
 
-  const PlaylistLengthText({super.key, required this.playlistTracksLength});
+  const PlaylistLengthText({
+    super.key,
+    required this.playlistTracksLength,
+    required this.trackDownloadedCount,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +24,20 @@ class PlaylistLengthText extends StatelessWidget {
     final lesserUnitText = minutes > 59 ? "min" : "sec";
     final songText = playlistTracksLength.songCount == 1 ? "song" : "songs";
 
+    String savedText = "No saves";
+
+    if (trackDownloadedCount == 0) {
+      savedText = "No saves";
+    } else if (trackDownloadedCount == playlistTracksLength.songCount) {
+      savedText = "Saved";
+    } else {
+      savedText = "$trackDownloadedCount saved";
+    }
+
     if (playlistTracksLength.songCount > 0 &&
         playlistTracksLength.songDurationSecond > 0) {
       return Text(
-        "${playlistTracksLength.songCount} $songText, $greaterUnitValue $greaterUnitText $lesserUnitValue $lesserUnitText",
+        "${playlistTracksLength.songCount} $songText, $greaterUnitValue $greaterUnitText $lesserUnitValue $lesserUnitText ($savedText)",
       );
     }
 

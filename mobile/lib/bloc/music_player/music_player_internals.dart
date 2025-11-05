@@ -76,8 +76,6 @@ class MusicPlayerInternals {
                 musicPlayerDurationState is MusicPlayerDurationAvailableState
                 ? musicPlayerDurationState.currentDuration
                 : Duration.zero,
-            // The stream gets multiplied by 2 everytime its queried, yet that extra space is actually empty.
-            // So its halved here just to account for that. Happens on all streams, so its not dangerous to do this.
             totalDuration: duration,
           ),
         );

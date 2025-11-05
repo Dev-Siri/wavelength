@@ -68,41 +68,43 @@ class AddToPlaylistBottomSheet extends StatelessWidget {
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
-          child: Column(
-            children: state.playlists.map((playlist) {
-              final title = Text(
-                playlist.name,
-                style: const TextStyle(color: Colors.white),
-              );
-              final subtitle = Text(
-                "Add to this playlist.",
-                style: TextStyle(color: Colors.grey.shade600),
-              );
+          child: SingleChildScrollView(
+            child: Column(
+              children: state.playlists.map((playlist) {
+                final title = Text(
+                  playlist.name,
+                  style: const TextStyle(color: Colors.white),
+                );
+                final subtitle = Text(
+                  "Add to this playlist.",
+                  style: TextStyle(color: Colors.grey.shade600),
+                );
 
-              return ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(20)),
-                child: Platform.isIOS
-                    ? CupertinoListTile(
-                        onTap: () => _toggleTrackFromPlaylist(
-                          context,
-                          playlist.playlistId,
+                return ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  child: Platform.isIOS
+                      ? CupertinoListTile(
+                          onTap: () => _toggleTrackFromPlaylist(
+                            context,
+                            playlist.playlistId,
+                          ),
+                          leading: const Icon(LucideIcons.listMusic),
+                          padding: const EdgeInsets.all(20),
+                          title: title,
+                          subtitle: subtitle,
+                        )
+                      : ListTile(
+                          onTap: () => _toggleTrackFromPlaylist(
+                            context,
+                            playlist.playlistId,
+                          ),
+                          leading: const Icon(LucideIcons.listMusic),
+                          title: title,
+                          subtitle: subtitle,
                         ),
-                        leading: const Icon(LucideIcons.listMusic),
-                        padding: const EdgeInsets.all(20),
-                        title: title,
-                        subtitle: subtitle,
-                      )
-                    : ListTile(
-                        onTap: () => _toggleTrackFromPlaylist(
-                          context,
-                          playlist.playlistId,
-                        ),
-                        leading: const Icon(LucideIcons.listMusic),
-                        title: title,
-                        subtitle: subtitle,
-                      ),
-              );
-            }).toList(),
+                );
+              }).toList(),
+            ),
           ),
         );
       },

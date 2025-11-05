@@ -4,9 +4,11 @@ import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:flutter_svg/svg.dart";
 import "package:go_router/go_router.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:shimmer_animation/shimmer_animation.dart";
+import "package:vector_graphics/vector_graphics.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/representations/queueable_music.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
@@ -26,6 +28,7 @@ import "package:wavelength/bloc/playlist_length/playlist_length_state.dart";
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_bloc.dart";
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_event.dart";
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_state.dart";
+import "package:wavelength/cache.dart";
 import "package:wavelength/screens/edit_playlist.dart";
 import "package:wavelength/utils/parse.dart";
 import "package:wavelength/widgets/brand_cover_image.dart";
@@ -46,6 +49,7 @@ class PlaylistScreen extends StatefulWidget {
 
 class _PlaylistScreenState extends State<PlaylistScreen> {
   final _playlistThemeColorBloc = PlaylistThemeColorBloc();
+  int _playlistTrackDownloadedCount = 0;
 
   @override
   void initState() {
@@ -102,6 +106,11 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             leading: BackButton(onPressed: () => context.pop()),
+            title: const SvgPicture(
+              AssetBytesLoader("assets/vectors/lambda.svg.vec"),
+              height: 45,
+              width: 45,
+            ),
             actions: [
               if (Platform.isIOS)
                 CupertinoButton(
@@ -216,6 +225,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                 return PlaylistLengthText(
                                   playlistTracksLength:
                                       state.playlistTracksLength,
+                                  trackDownloadedCount:
+                                      _playlistTrackDownloadedCount,
                                 );
                               },
                             ),
@@ -241,7 +252,18 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                     ],
                   ),
                 ),
-                BlocBuilder<PlaylistBloc, PlaylistState>(
+                BlocConsumer<PlaylistBloc, PlaylistState>(
+                  listener: (context, state) async {
+                    if (state is! PlaylistSuccessState) return;
+                    final downloadCount =
+                        await AudioCache.countDownloadedTracksInPlaylist(
+                          state.songs.map((song) => song.videoId).toList(),
+                        );
+
+                    setState(
+                      () => _playlistTrackDownloadedCount = downloadCount,
+                    );
+                  },
                   builder: (context, state) {
                     if (state is! PlaylistSuccessState) {
                       return Padding(

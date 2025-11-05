@@ -2,7 +2,7 @@ name: wavelength
 description: "Call this a glorified YT Music Wrapper."
 publish_to: "none"
 
-version: 1.0.0+1
+version: 1.1.1
 
 environment:
   sdk: ^3.8.0-24.0.dev
@@ -22,8 +22,8 @@ dependencies:
   just_audio: ^0.10.4
   flutter_svg: ^2.0.17
   vector_graphics: ^1.1.18
-  country_flags: ^3.0.0
   html_unescape: ^2.0.0
+  path_provider: ^2.1.5
   geolocator: ^11.0.0
   geocoding: ^2.1.0
   image_picker: ^1.2.0

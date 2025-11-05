@@ -15,6 +15,7 @@ import "package:wavelength/bloc/music_player/music_player_track/music_player_tra
 import "package:mini_music_visualizer/mini_music_visualizer.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
 import "package:wavelength/utils/parse.dart";
+import "package:wavelength/utils/url.dart";
 import "package:wavelength/widgets/add_to_playlist_bottom_sheet.dart";
 
 class TopTrackResult extends StatelessWidget {
@@ -42,103 +43,111 @@ class TopTrackResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final innerUi = Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: BlocBuilder<MusicPlayerTrackBloc, MusicPlayerTrackState>(
+            builder: (context, state) {
+              final isCurrentTrackPlaying =
+                  state is MusicPlayerTrackPlayingNowState &&
+                  state.playingNowTrack.videoId == track.videoId;
+
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  Opacity(
+                    opacity: isCurrentTrackPlaying ? 0.5 : 1,
+                    child: CachedNetworkImage(
+                      imageUrl: getTrackThumbnail(track.videoId),
+                      height: 80,
+                      width: 80,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  if (isCurrentTrackPlaying)
+                    const MiniMusicVisualizer(
+                      color: Colors.white,
+                      animate: true,
+                      width: 4,
+                      height: 15,
+                    ),
+                ],
+              );
+            },
+          ),
+        ),
+        const SizedBox(width: 20),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                decodeHtmlSpecialChars(track.title),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  height: 1.1,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                track.author,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                  height: 1.1,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () => context.read<AppBottomSheetBloc>().add(
+                      AppBottomSheetOpenEvent(
+                        context: context,
+                        isScrollControlled: true,
+                        useRootNavigator: true,
+                        builder: (context) => AddToPlaylistBottomSheet(
+                          track: Track(
+                            videoId: track.videoId,
+                            title: track.title,
+                            thumbnail: track.thumbnail,
+                            author: track.author,
+                            duration: track.duration,
+                            isExplicit: track.isExplicit,
+                          ),
+                          videoType: VideoType.track,
+                        ),
+                      ),
+                    ),
+                    child: const Icon(
+                      LucideIcons.circlePlus,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+
     return Container(
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-        color: Colors.grey.shade900,
+        color: const Color.fromARGB(255, 23, 23, 23),
         borderRadius: BorderRadius.circular(15),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: CachedNetworkImage(imageUrl: track.thumbnail),
-          ),
-          const SizedBox(width: 20),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  decodeHtmlSpecialChars(track.title),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 26,
-                    height: 1.1,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  track.author,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                    height: 1.1,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () => _playTrack(context),
-                      child:
-                          BlocBuilder<
-                            MusicPlayerTrackBloc,
-                            MusicPlayerTrackState
-                          >(
-                            builder: (context, state) {
-                              if (state is MusicPlayerTrackPlayingNowState &&
-                                  state.playingNowTrack.videoId ==
-                                      track.videoId) {
-                                return const MiniMusicVisualizer(
-                                  color: Colors.white,
-                                  animate: true,
-                                  width: 4,
-                                  height: 15,
-                                );
-                              }
-
-                              return const Icon(
-                                LucideIcons.play,
-                                color: Colors.white,
-                              );
-                            },
-                          ),
-                    ),
-                    CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () => context.read<AppBottomSheetBloc>().add(
-                        AppBottomSheetOpenEvent(
-                          context: context,
-                          isScrollControlled: true,
-                          useRootNavigator: true,
-                          builder: (context) => AddToPlaylistBottomSheet(
-                            track: Track(
-                              videoId: track.videoId,
-                              title: track.title,
-                              thumbnail: track.thumbnail,
-                              author: track.author,
-                              duration: track.duration,
-                              isExplicit: track.isExplicit,
-                            ),
-                            videoType: VideoType.track,
-                          ),
-                        ),
-                      ),
-                      child: const Icon(
-                        LucideIcons.circlePlus,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
+      child: CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: () => _playTrack(context),
+        child: innerUi,
       ),
     );
   }

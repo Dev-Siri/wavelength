@@ -1,10 +1,10 @@
 import "dart:io";
 
-import "package:country_flags/country_flags.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_svg/flutter_svg.dart";
+import "package:go_router/go_router.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:vector_graphics/vector_graphics.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
@@ -79,12 +79,22 @@ class UserInfoDrawer extends StatelessWidget {
                             children: [
                               BlocBuilder<LocationBloc, LocationState>(
                                 builder: (context, state) {
-                                  return ClipRRect(
-                                    borderRadius: BorderRadius.circular(50),
-                                    child: CountryFlag.fromCountryCode(
-                                      state.countryCode,
-                                      height: 25,
-                                      width: 25,
+                                  if (Platform.isIOS) {
+                                    return CupertinoButton(
+                                      onPressed: () =>
+                                          context.push("/settings"),
+                                      child: const Icon(
+                                        LucideIcons.settings,
+                                        color: Colors.white,
+                                      ),
+                                    );
+                                  }
+
+                                  return IconButton(
+                                    onPressed: () => context.push("/settings"),
+                                    icon: const Icon(
+                                      LucideIcons.settings,
+                                      color: Colors.white,
                                     ),
                                   );
                                 },

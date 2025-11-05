@@ -61,18 +61,8 @@ class TracksSearchPresenter extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.only(bottom: 10, left: 2),
-              child: Text(
-                "Top Result",
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900),
-              ),
-            ),
             TopTrackResult(track: state.tracks[0]),
-            const Padding(
-              padding: EdgeInsets.only(top: 10, bottom: 10, left: 2),
-              child: Text("More Tracks", style: TextStyle(fontSize: 14)),
-            ),
+            const SizedBox(height: 10),
             for (final track in state.tracks.skip(1))
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
