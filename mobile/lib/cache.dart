@@ -19,7 +19,7 @@ class AudioCache {
   }
 
   static Future<File> _getFile(String trackId) async {
-    final dir = await getTemporaryDirectory();
+    final dir = await getApplicationDocumentsDirectory();
 
     return File("${dir.path}/stream_$trackId.mp4");
   }
