@@ -106,6 +106,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             leading: BackButton(onPressed: () => context.pop()),
+            centerTitle: true,
             title: const SvgPicture(
               AssetBytesLoader("assets/vectors/lambda.svg.vec"),
               height: 45,
