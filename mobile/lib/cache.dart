@@ -51,7 +51,7 @@ class AudioCache {
   }
 
   static Future<void> clear() async {
-    final dir = await getTemporaryDirectory();
+    final dir = await getApplicationDocumentsDirectory();
 
     await for (final file in dir.list()) {
       if (file is File && file.path.endsWith(".mp4")) await file.delete();
@@ -69,7 +69,7 @@ class AudioCache {
   }
 
   static Future<int> calculateStorageUsage() async {
-    final dir = await getTemporaryDirectory();
+    final dir = await getApplicationDocumentsDirectory();
     int accumulatedSize = 0;
 
     await for (final file in dir.list()) {
@@ -84,7 +84,7 @@ class AudioCache {
   static Future<int> countDownloadedTracksInPlaylist(
     List<String> playlistTrackIds,
   ) async {
-    final dir = await getTemporaryDirectory();
+    final dir = await getApplicationDocumentsDirectory();
     int count = 0;
 
     await for (final file in dir.list()) {
