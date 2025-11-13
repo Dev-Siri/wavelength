@@ -10,7 +10,7 @@
   $effect(() => {
     musicPlayerStore.musicPreviewPlayer = musicVideoPreview;
 
-    musicVideoPreview.src = getStreamUrl(musicVideoId, "video");
+    if (musicVideoId) musicVideoPreview.src = getStreamUrl(musicVideoId, "video");
   });
 
   $effect(() => {
