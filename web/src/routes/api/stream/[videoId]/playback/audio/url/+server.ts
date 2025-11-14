@@ -1,8 +1,12 @@
+import { YOUTUBE_BASE64_COOKIES } from "$env/static/private";
 import { error, json } from "@sveltejs/kit";
 import { Tydle } from "@wvlen/tydle";
 
+import { parseNetscapeCookies } from "$lib/utils/format";
+
 export async function GET({ getClientAddress, params: { videoId } }) {
   const tydle = new Tydle({
+    authCookies: parseNetscapeCookies(YOUTUBE_BASE64_COOKIES),
     sourceAddress: getClientAddress(),
   });
 
@@ -26,14 +30,12 @@ export async function GET({ getClientAddress, params: { videoId } }) {
       return json({ success: true, data: stream.source.url });
     }
 
-    throw new Error(
-      "URL was not found in source, playing this stream requires signature deciphering.",
-    );
-  } catch (err) {
-    console.error(err);
     return error(500, {
       success: false,
-      message: "Failed to get audio stream.",
+      message: "URL was not found in source, playing this stream requires signature deciphering.",
     });
+  } catch (err) {
+    console.error(err);
+    throw err;
   }
 }

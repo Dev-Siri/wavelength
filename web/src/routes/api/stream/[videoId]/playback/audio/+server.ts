@@ -1,8 +1,12 @@
 import { error } from "@sveltejs/kit";
 import { Tydle } from "@wvlen/tydle";
 
+import { YOUTUBE_BASE64_COOKIES } from "$env/static/private";
+import { parseNetscapeCookies } from "$lib/utils/format.js";
+
 export async function GET({ getClientAddress, params: { videoId } }) {
   const tydle = new Tydle({
+    authCookies: parseNetscapeCookies(YOUTUBE_BASE64_COOKIES),
     sourceAddress: getClientAddress(),
   });
 
