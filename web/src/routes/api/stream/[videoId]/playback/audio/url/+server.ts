@@ -1,8 +1,10 @@
 import { error, json } from "@sveltejs/kit";
 import { Tydle } from "@wvlen/tydle";
 
-export async function GET({ params: { videoId } }) {
-  const tydle = new Tydle();
+export async function GET({ getClientAddress, params: { videoId } }) {
+  const tydle = new Tydle({
+    sourceAddress: getClientAddress(),
+  });
 
   try {
     const { streams } = await tydle.fetchStreams(videoId);
