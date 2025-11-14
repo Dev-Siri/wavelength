@@ -7,13 +7,19 @@ export async function GET({ getClientAddress, params: { videoId } }) {
   });
 
   try {
-    const { streams } = await tydle.fetchStreams(videoId);
+    const manifest = await tydle.fetchManifest(videoId);
+    const videoInfo = await tydle.fetchVideoInfoFromManifest(manifest);
+    console.log({ videoInfo, manifest });
+    const { streams } = await tydle.fetchStreamsFromManifest(manifest);
+    console.log(streams);
     // Filters out for an audio-only stream that does not require signature deciphering.
     const stream = streams
       .filter(stream => "url" in stream.source && stream.quality?.includes("audio_quality"))
       .sort((a, b) => b.tbr - a.tbr)[0];
 
-    console.log(streams);
+    if (!streams.length) {
+      return error(404, { success: false, message: "No streams found." });
+    }
 
     if ("url" in stream.source) {
       return json({ success: true, data: stream.source.url });
