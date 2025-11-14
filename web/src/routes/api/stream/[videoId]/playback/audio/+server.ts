@@ -10,6 +10,7 @@ export async function GET({ params: { videoId } }) {
     const stream = streams
       .filter(stream => "url" in stream.source && stream.quality?.includes("audio_quality"))
       .sort((a, b) => b.tbr - a.tbr)[0];
+    console.log(streams);
 
     if ("url" in stream.source) {
       return fetch(stream.source.url);
