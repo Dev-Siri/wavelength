@@ -8,9 +8,9 @@ export async function GET({ getClientAddress, params: { videoId } }) {
 
   try {
     const manifest = await tydle.fetchManifest(videoId);
-    console.log({ manifest });
+    console.log("manifest:", JSON.stringify(manifest, null, 2));
     const videoInfo = await tydle.fetchVideoInfoFromManifest(manifest);
-    console.log({ videoInfo });
+    console.log("videoinfo:", JSON.stringify(videoInfo, null, 2));
     const { streams } = await tydle.fetchStreamsFromManifest(manifest);
     console.log(streams);
     // Filters out for an audio-only stream that does not require signature deciphering.
