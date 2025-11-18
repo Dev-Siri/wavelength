@@ -5,7 +5,3 @@ String getTrackThumbnail(String videoId) {
 }
 
 enum StreamPlaybackType { audio, video }
-
-String getTrackPlaybackUrl(String videoId, StreamPlaybackType type) {
-  return "$backendUrl/stream/playback/$videoId/${type.name}";
-}

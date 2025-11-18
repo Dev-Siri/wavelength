@@ -9,7 +9,7 @@ class MusicPlayerSingleton {
   late final AudioPlayer _player;
 
   MusicPlayerSingleton._internal() {
-    _player = AudioPlayer(androidOffloadSchedulingEnabled: true);
+    _player = AudioPlayer();
   }
 
   AudioPlayer get player => _player;

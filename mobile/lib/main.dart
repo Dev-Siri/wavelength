@@ -24,6 +24,7 @@ import "package:just_audio_background/just_audio_background.dart";
 import "package:wavelength/bloc/playlist_length/playlist_length_bloc.dart";
 import "package:wavelength/bloc/quick_picks/quick_picks_bloc.dart";
 import "package:wavelength/constants.dart";
+import 'package:wavelength/src/rust/frb_generated.dart';
 import "package:wavelength/router.dart";
 
 Future<void> main() async {
@@ -44,6 +45,7 @@ Future<void> main() async {
     preloadArtwork: true,
   );
 
+  await RustLib.init();
   runApp(const App());
 }
 

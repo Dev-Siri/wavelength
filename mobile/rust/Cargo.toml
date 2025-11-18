@@ -1,0 +1,16 @@
+[package]
+name = "rust_lib_wavelength"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+tydle = { version = "0.1.9", default-features = false }
+anyhow = "1.0.100"
+flutter_rust_bridge = "=2.11.1"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }

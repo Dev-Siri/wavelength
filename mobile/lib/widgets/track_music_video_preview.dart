@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:video_player/video_player.dart";
-import "package:wavelength/utils/url.dart";
+import "package:wavelength/src/rust/api/tydle_caller.dart";
 
 class TrackMusicVideoPreview extends StatefulWidget {
   final String musicVideoId;
@@ -17,10 +17,11 @@ class _TrackMusicVideoPreviewState extends State<TrackMusicVideoPreview> {
   @override
   void initState() {
     super.initState();
-    final url = getTrackPlaybackUrl(
-      widget.musicVideoId,
-      StreamPlaybackType.video,
-    );
+    _fetchAndSetPreview();
+  }
+
+  Future<void> _fetchAndSetPreview() async {
+    final url = await fetchHighestVideoStreamUrl(videoId: widget.musicVideoId);
     _controller =
         VideoPlayerController.networkUrl(
             Uri.parse(url),

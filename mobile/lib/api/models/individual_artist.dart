@@ -49,36 +49,29 @@ class IndividualArtist {
       subscriberCount: json["subscriberCount"] as String,
       songs:
           ((json["songs"] as List?)
-                  ?.map(
-                    (songJson) => IndividualArtistSong(
-                      browseId: songJson["browseId"] as String,
-                      titleHeader: songJson["titleHeader"] as String,
-                      contents:
-                          ((songJson["contents"] as List?)
-                                  ?.map(
-                                    (
-                                      songContentsJson,
-                                    ) => IndividualArtistSongTrack(
-                                      videoId:
-                                          songContentsJson["videoId"] as String,
-                                      title:
-                                          songContentsJson["title"] as String,
-                                      thumbnail:
-                                          songContentsJson["thumbnail"]
-                                              as String,
-                                      author:
-                                          songContentsJson["author"] as String,
-                                      isExplicit:
-                                          songContentsJson["isExplicit"]
-                                              as bool,
-                                    ),
-                                  )
-                                  .toList() ??
-                              List.empty()),
-                    ),
-                  )
-                  .toList() ??
-              List.empty()),
+              ?.map(
+                (songJson) => IndividualArtistSong(
+                  browseId: songJson["browseId"] as String,
+                  titleHeader: songJson["titleHeader"] as String,
+                  contents:
+                      ((songJson["contents"] as List?)
+                          ?.map(
+                            (songContentsJson) => IndividualArtistSongTrack(
+                              videoId: songContentsJson["videoId"] as String,
+                              title: songContentsJson["title"] as String,
+                              thumbnail:
+                                  songContentsJson["thumbnail"] as String,
+                              author: songContentsJson["author"] as String,
+                              isExplicit:
+                                  songContentsJson["isExplicit"] as bool,
+                            ),
+                          )
+                          .toList() ??
+                      List.empty()),
+                ),
+              )
+              .toList() ??
+          List.empty()),
     );
   }
 }

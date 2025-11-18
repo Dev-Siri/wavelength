@@ -1,10 +1,9 @@
 import "dart:io";
-import "dart:typed_data";
+import "package:http/http.dart" as http;
 import "package:path_provider/path_provider.dart";
 import "package:shared_preferences/shared_preferences.dart";
-import "package:wavelength/api/models/api_response.dart";
-import "package:wavelength/api/repositories/streams_repo.dart";
 import "package:wavelength/constants.dart";
+import "package:wavelength/src/rust/api/tydle_caller.dart";
 
 class AudioCache {
   /// This methods check whether the user has enabled the option in settings
@@ -59,13 +58,15 @@ class AudioCache {
   }
 
   static Future<bool> downloadAndCache(String trackId) async {
-    final stream = await StreamsRepo.fetchTrackStream(videoId: trackId);
+    try {
+      final streamUrl = await fetchHighestAudioStreamUrl(videoId: trackId);
+      final stream = await http.get(Uri.parse(streamUrl));
 
-    if (stream is! ApiResponseSuccess<Uint8List>) return false;
-
-    await save(trackId, stream.data);
-
-    return true;
+      await save(trackId, stream.bodyBytes);
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   static Future<int> calculateStorageUsage() async {

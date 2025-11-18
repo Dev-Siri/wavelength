@@ -5,8 +5,8 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_svg/flutter_svg.dart";
 import "package:go_router/go_router.dart";
-import "package:vector_graphics/vector_graphics.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
+import "package:vector_graphics/vector_graphics.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
@@ -105,46 +105,50 @@ class _AppShellState extends State<AppShell> {
   Widget build(BuildContext context) {
     return BlocBuilder<MusicPlayerTrackBloc, MusicPlayerTrackState>(
       builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            appBar: const SharedAppBar(),
-            drawer: const UserInfoDrawer(),
-            body: MusicPlayerPresenceAdjuster(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: BlocConsumer<AuthBloc, AuthState>(
-                  listener: (context, state) {
-                    if (state is AuthStateAuthorized) {
-                      context.read<LibraryBloc>().add(
-                        LibraryPlaylistsFetchEvent(email: state.user.email),
-                      );
-                    }
-                  },
-                  builder: (_, __) => widget.child,
+        return MediaQuery.removeViewInsets(
+          removeBottom: true,
+          context: context,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Scaffold(
+              resizeToAvoidBottomInset: false,
+              appBar: const SharedAppBar(),
+              drawer: const UserInfoDrawer(),
+              body: MusicPlayerPresenceAdjuster(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: BlocConsumer<AuthBloc, AuthState>(
+                    listener: (context, state) {
+                      if (state is AuthStateAuthorized) {
+                        context.read<LibraryBloc>().add(
+                          LibraryPlaylistsFetchEvent(email: state.user.email),
+                        );
+                      }
+                    },
+                    builder: (_, __) => widget.child,
+                  ),
                 ),
               ),
+              bottomNavigationBar: Platform.isIOS
+                  ? CupertinoTabBar(
+                      height: 80,
+                      activeColor: Colors.white,
+                      inactiveColor: Colors.grey.shade600,
+                      currentIndex: _activeRouteIndex,
+                      iconSize: 25,
+                      onTap: _onScreenChange,
+                      items: _getBottomNavItems(),
+                    )
+                  : BottomNavigationBar(
+                      showSelectedLabels: false,
+                      showUnselectedLabels: false,
+                      selectedItemColor: Colors.white,
+                      unselectedItemColor: Colors.grey.shade600,
+                      currentIndex: _activeRouteIndex,
+                      onTap: _onScreenChange,
+                      items: _getBottomNavItems(),
+                    ),
             ),
-            bottomNavigationBar: Platform.isIOS
-                ? CupertinoTabBar(
-                    height: 80,
-                    activeColor: Colors.white,
-                    inactiveColor: Colors.grey.shade600,
-                    currentIndex: _activeRouteIndex,
-                    iconSize: 25,
-                    onTap: _onScreenChange,
-                    items: _getBottomNavItems(),
-                  )
-                : BottomNavigationBar(
-                    showSelectedLabels: false,
-                    showUnselectedLabels: false,
-                    selectedItemColor: Colors.white,
-                    unselectedItemColor: Colors.grey.shade600,
-                    currentIndex: _activeRouteIndex,
-                    onTap: _onScreenChange,
-                    items: _getBottomNavItems(),
-                  ),
           ),
         );
       },
