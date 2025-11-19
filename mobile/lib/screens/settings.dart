@@ -5,7 +5,6 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_svg/svg.dart";
 import "package:go_router/go_router.dart";
-import "package:shared_preferences/shared_preferences.dart";
 import "package:vector_graphics/vector_graphics.dart";
 import "package:wavelength/bloc/location/location_bloc.dart";
 import "package:wavelength/bloc/location/location_state.dart";
@@ -21,12 +20,10 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-  bool _isAutoCacheStreamsEnabled = true;
   int _streamCacheFilesOccupiedSize = 0;
 
   @override
   void initState() {
-    _fetchExistingAutoCacheStreamState();
     _fetchStreamCacheOccupiedSize();
     super.initState();
   }
@@ -35,31 +32,6 @@ class _SettingsState extends State<Settings> {
     final usedBytes = await AudioCache.calculateStorageUsage();
 
     setState(() => _streamCacheFilesOccupiedSize = usedBytes);
-  }
-
-  Future<void> _fetchExistingAutoCacheStreamState() async {
-    final sharedPrefs = await SharedPreferences.getInstance();
-    final existingState = sharedPrefs.getBool(
-      settingsOptionEnableAutoCacheStreams,
-    );
-
-    if (existingState == null) {
-      sharedPrefs.setBool(
-        settingsOptionEnableAutoCacheStreams,
-        settingsOptionEnableAutoCacheStreamsDefaultValue,
-      );
-    }
-
-    setState(() {
-      _isAutoCacheStreamsEnabled = existingState ?? true;
-    });
-  }
-
-  Future<void> _updateAutoCacheStreamsState(bool enabled) async {
-    setState(() => _isAutoCacheStreamsEnabled = enabled);
-
-    final sharedPrefs = await SharedPreferences.getInstance();
-    sharedPrefs.setBool(settingsOptionEnableAutoCacheStreams, enabled);
   }
 
   Future<void> _clearDownloadedTracks() async {
@@ -108,47 +80,6 @@ class _SettingsState extends State<Settings> {
                     ),
                     child: Column(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const SizedBox(
-                              width: 270,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Automatic Downloads",
-                                    style: TextStyle(fontSize: 16),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Text(
-                                    "May use additional storage.",
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Switch.adaptive(
-                              value: _isAutoCacheStreamsEnabled,
-                              activeTrackColor: Colors.blue,
-                              onChanged: _updateAutoCacheStreamsState,
-                            ),
-                          ],
-                        ),
-                        Container(
-                          height: 1,
-                          color: Colors.grey.shade800,
-                          margin: const EdgeInsets.only(
-                            right: 10,
-                            top: 10,
-                            bottom: 10,
-                          ),
-                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,

@@ -1,22 +1,9 @@
 import "dart:io";
 import "package:http/http.dart" as http;
 import "package:path_provider/path_provider.dart";
-import "package:shared_preferences/shared_preferences.dart";
-import "package:wavelength/constants.dart";
 import "package:wavelength/src/rust/api/tydle_caller.dart";
 
 class AudioCache {
-  /// This methods check whether the user has enabled the option in settings
-  /// which permits auto-saving streams with the help of this class. Use is external.
-  static Future<bool> isAutoCachingPermitted() async {
-    final sharedPrefs = await SharedPreferences.getInstance();
-    final isPermitted = sharedPrefs.getBool(
-      settingsOptionEnableAutoCacheStreams,
-    );
-
-    return isPermitted ?? settingsOptionEnableAutoCacheStreamsDefaultValue;
-  }
-
   static Future<File> _getFile(String trackId) async {
     final dir = await getApplicationDocumentsDirectory();
 

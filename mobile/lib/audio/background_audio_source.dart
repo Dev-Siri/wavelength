@@ -7,9 +7,6 @@ import "package:wavelength/src/rust/api/tydle_caller.dart";
 
 class BackgroundAudioSource extends StreamAudioSource {
   final String _trackId;
-  final BytesBuilder _buffer = BytesBuilder(copy: false);
-  bool _didSave = false;
-
   String? _url;
   Uint8List? _bytesSource;
 
@@ -66,28 +63,12 @@ class BackgroundAudioSource extends StreamAudioSource {
 
     final contentLength = req.contentLength ?? totalLength;
 
-    final stream = req.stream.asyncExpand((chunk) async* {
-      if (!_didSave) {
-        _buffer.add(chunk);
-
-        if (_fullLength != null && _buffer.length == _fullLength) {
-          _didSave = true;
-
-          if (await AudioCache.isAutoCachingPermitted()) {
-            await AudioCache.save(_trackId, _buffer.takeBytes());
-          }
-        }
-      }
-
-      yield chunk;
-    });
-
     return StreamAudioResponse(
       sourceLength: totalLength,
       contentLength: contentLength,
       offset: start ?? 0,
       contentType: req.headers["content-type"] ?? "audio/mp4",
-      stream: stream,
+      stream: req.stream,
     );
   }
 }

@@ -8,10 +8,6 @@ const hivePlaylistsKey = "playlists";
 const hiveLyricsKey = "lyrics";
 const hiveStreamsKey = "yt_streams";
 
-const settingsOptionEnableAutoCacheStreams =
-    "settings:enable_auto_cache_streams";
-const settingsOptionEnableAutoCacheStreamsDefaultValue = true;
-
 const countryCodeMap = {
   "AF": "Afghanistan",
   "AL": "Albania",
