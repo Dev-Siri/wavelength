@@ -7,6 +7,7 @@ export async function GET({ getClientAddress, params: { videoId } }) {
   const tydle = new Tydle({
     authCookies: parseNetscapeCookies(atob(YOUTUBE_BASE64_COOKIES)),
     sourceAddress: getClientAddress(),
+    defaultClient: "android",
   });
 
   try {
