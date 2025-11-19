@@ -8,11 +8,16 @@ import "package:flutter_svg/svg.dart";
 import "package:go_router/go_router.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:shimmer_animation/shimmer_animation.dart";
+import "package:uuid/v4.dart";
 import "package:vector_graphics/vector_graphics.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/representations/queueable_music.dart";
+import "package:wavelength/api/models/stream_download.dart";
+import "package:wavelength/api/models/track.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
 import "package:wavelength/bloc/auth/auth_state.dart";
+import "package:wavelength/bloc/download/download_bloc.dart";
+import "package:wavelength/bloc/download/download_event.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/library/library_state.dart";
 import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_bloc.dart";
@@ -82,6 +87,36 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
     context.read<MusicPlayerTrackBloc>().add(
       MusicPlayerTrackLoadEvent(queueableMusic: queueableSongs.first),
     );
+  }
+
+  void _downloadAllTracks(List<PlaylistTrack> playlistTracks) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: Colors.blue,
+        content: Text(
+          "Downloading playlist...",
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+
+    for (final track in playlistTracks) {
+      context.read<DownloadBloc>().add(
+        DownloadAddToQueueEvent(
+          newDownload: StreamDownload(
+            downloadId: const UuidV4().generate(),
+            metadata: Track(
+              videoId: track.videoId,
+              title: track.title,
+              thumbnail: track.thumbnail,
+              author: track.author,
+              duration: track.duration,
+              isExplicit: track.isExplicit,
+            ),
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -316,6 +351,11 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                   isInitiallyPrivate: !playlist.isPublic,
                                 );
                               },
+                            ),
+                            const Spacer(),
+                            IconButton(
+                              onPressed: () => _downloadAllTracks(state.songs),
+                              icon: const Icon(LucideIcons.bookmark, size: 24),
                             ),
                           ],
                         ),

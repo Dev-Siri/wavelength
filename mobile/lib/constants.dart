@@ -8,6 +8,9 @@ const hivePlaylistsKey = "playlists";
 const hiveLyricsKey = "lyrics";
 const hiveStreamsKey = "yt_streams";
 
+const settingsOptionPreferWifiForDownloads = "settings:prefer_wifi_for_streams";
+const settingsOptionPreferWifiForDownloadsDefaultValue = true;
+
 const countryCodeMap = {
   "AF": "Afghanistan",
   "AL": "Albania",

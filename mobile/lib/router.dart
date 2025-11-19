@@ -8,6 +8,7 @@ import "package:wavelength/bloc/search/tracks/tracks_bloc.dart";
 import "package:wavelength/bloc/search/videos/videos_bloc.dart";
 import "package:wavelength/root.dart";
 import "package:wavelength/screens/artist.dart";
+import "package:wavelength/screens/downloads.dart";
 import "package:wavelength/screens/edit_playlist.dart";
 import "package:wavelength/screens/home.dart";
 import "package:wavelength/screens/library.dart";
@@ -95,7 +96,11 @@ final router = GoRouter(
             );
           },
         ),
-        GoRoute(path: "/settings", builder: (_, __) => const Settings()),
+        GoRoute(
+          path: "/downloads",
+          builder: (_, __) => const DownloadsScreen(),
+        ),
+        GoRoute(path: "/settings", builder: (_, __) => const SettingsScreen()),
       ],
       builder: (context, state, child) {
         return Root(uri: state.uri.toString(), child: child);

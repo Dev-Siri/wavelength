@@ -5,6 +5,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_svg/svg.dart";
 import "package:go_router/go_router.dart";
+import "package:shared_preferences/shared_preferences.dart";
 import "package:vector_graphics/vector_graphics.dart";
 import "package:wavelength/bloc/location/location_bloc.dart";
 import "package:wavelength/bloc/location/location_state.dart";
@@ -12,18 +13,20 @@ import "package:wavelength/cache.dart";
 import "package:wavelength/constants.dart";
 import "package:wavelength/utils/format.dart";
 
-class Settings extends StatefulWidget {
-  const Settings({super.key});
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
 
   @override
-  State<Settings> createState() => _SettingsState();
+  State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsState extends State<Settings> {
+class _SettingsScreenState extends State<SettingsScreen> {
+  bool _isPreferWifiForDownloadsEnabled = true;
   int _streamCacheFilesOccupiedSize = 0;
 
   @override
   void initState() {
+    _fetchExistingPreferWifiDownloadsState();
     _fetchStreamCacheOccupiedSize();
     super.initState();
   }
@@ -32,6 +35,31 @@ class _SettingsState extends State<Settings> {
     final usedBytes = await AudioCache.calculateStorageUsage();
 
     setState(() => _streamCacheFilesOccupiedSize = usedBytes);
+  }
+
+  Future<void> _fetchExistingPreferWifiDownloadsState() async {
+    final sharedPrefs = await SharedPreferences.getInstance();
+    final existingState = sharedPrefs.getBool(
+      settingsOptionPreferWifiForDownloads,
+    );
+
+    if (existingState == null) {
+      sharedPrefs.setBool(
+        settingsOptionPreferWifiForDownloads,
+        settingsOptionPreferWifiForDownloadsDefaultValue,
+      );
+    }
+
+    setState(() {
+      _isPreferWifiForDownloadsEnabled = existingState ?? true;
+    });
+  }
+
+  Future<void> _updatePreferWifiDownloadsState(bool enabled) async {
+    setState(() => _isPreferWifiForDownloadsEnabled = enabled);
+
+    final sharedPrefs = await SharedPreferences.getInstance();
+    sharedPrefs.setBool(settingsOptionPreferWifiForDownloads, enabled);
   }
 
   Future<void> _clearDownloadedTracks() async {
@@ -80,6 +108,47 @@ class _SettingsState extends State<Settings> {
                     ),
                     child: Column(
                       children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              width: 270,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Prefer Wi-Fi Downloads",
+                                    style: TextStyle(fontSize: 16),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    "Downloads paused on mobile data.",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Switch.adaptive(
+                              value: _isPreferWifiForDownloadsEnabled,
+                              activeTrackColor: Colors.blue,
+                              onChanged: _updatePreferWifiDownloadsState,
+                            ),
+                          ],
+                        ),
+                        Container(
+                          height: 1,
+                          color: Colors.grey.shade800,
+                          margin: const EdgeInsets.only(
+                            right: 10,
+                            top: 10,
+                            bottom: 10,
+                          ),
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,

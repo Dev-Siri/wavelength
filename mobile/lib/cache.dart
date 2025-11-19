@@ -44,12 +44,33 @@ class AudioCache {
     }
   }
 
-  static Future<bool> downloadAndCache(String trackId) async {
+  static Future<bool> downloadAndCache(
+    String trackId, {
+    void Function(int received, int total)? onProgress,
+  }) async {
     try {
       final streamUrl = await fetchHighestAudioStreamUrl(videoId: trackId);
-      final stream = await http.get(Uri.parse(streamUrl));
+      final req = http.Request("GET", Uri.parse(streamUrl));
+      final client = http.Client();
 
-      await save(trackId, stream.bodyBytes);
+      final response = await client.send(req);
+      final total = response.contentLength ?? 0;
+
+      final file = await _getFile(trackId);
+      final sink = file.openWrite();
+
+      int received = 0;
+
+      await for (final chunk in response.stream) {
+        received += chunk.length;
+        sink.add(chunk);
+
+        if (onProgress != null && total > 0) onProgress(received, total);
+      }
+
+      await sink.close();
+      client.close();
+
       return true;
     } catch (_) {
       return false;

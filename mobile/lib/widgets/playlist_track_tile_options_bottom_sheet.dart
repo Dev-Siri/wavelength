@@ -4,12 +4,16 @@ import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
+import "package:uuid/v4.dart";
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/playlist_track.dart";
+import "package:wavelength/api/models/stream_download.dart";
 import "package:wavelength/api/models/track.dart";
 import "package:wavelength/api/repositories/track_repo.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
+import "package:wavelength/bloc/download/download_bloc.dart";
+import "package:wavelength/bloc/download/download_event.dart";
 import "package:wavelength/bloc/playlist/playlist_bloc.dart";
 import "package:wavelength/bloc/playlist/playlist_event.dart";
 import "package:wavelength/cache.dart";
@@ -76,7 +80,7 @@ class _PlaylistTrackTileOptionsBottomSheetState
     ),
   );
 
-  Future<void> _handleDownloadCacheTileTap(BuildContext context) async {
+  void _handleDownloadCacheTileTap(BuildContext context) {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
 
@@ -87,32 +91,16 @@ class _PlaylistTrackTileOptionsBottomSheetState
       ),
     );
 
-    navigator.pop();
-
-    final success = await AudioCache.downloadAndCache(widget.track.videoId);
-
-    if (success) {
-      scaffoldMessenger.showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.green,
-          content: Text(
-            "Saved track to your phone.",
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-      );
-      return;
-    }
-
-    scaffoldMessenger.showSnackBar(
-      const SnackBar(
-        backgroundColor: Colors.red,
-        content: Text(
-          "Failed to download track.",
-          style: TextStyle(color: Colors.white),
+    context.read<DownloadBloc>().add(
+      DownloadAddToQueueEvent(
+        newDownload: StreamDownload(
+          downloadId: const UuidV4().generate(),
+          metadata: widget.track,
         ),
       ),
     );
+
+    navigator.pop();
   }
 
   Future<void> _fetchTrackAlreadyDownloaded() async {
