@@ -1,12 +1,10 @@
 import { YOUTUBE_BASE64_COOKIES } from "$env/static/private";
 import { error, json } from "@sveltejs/kit";
-import { Tydle } from "@wvlen/tydle";
-
-import { parseNetscapeCookies } from "$lib/utils/format";
+import { parseNetscapeCookies, Tydle } from "@wvlen/tydle";
 
 export async function GET({ getClientAddress, params: { videoId } }) {
   const tydle = new Tydle({
-    authCookies: parseNetscapeCookies(YOUTUBE_BASE64_COOKIES),
+    authCookies: parseNetscapeCookies(atob(YOUTUBE_BASE64_COOKIES)),
     sourceAddress: getClientAddress(),
   });
 
@@ -19,7 +17,7 @@ export async function GET({ getClientAddress, params: { videoId } }) {
     console.log(streams);
     // Filters out for an audio-only stream that does not require signature deciphering.
     const stream = streams
-      .filter(stream => "url" in stream.source && stream.quality?.includes("audio_quality"))
+      .filter(stream => "url" in stream.source && stream.codec.acodec && !stream.codec.vcodec)
       .sort((a, b) => b.tbr - a.tbr)[0];
 
     if (!streams.length) {
