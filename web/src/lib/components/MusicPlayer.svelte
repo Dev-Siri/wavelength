@@ -26,13 +26,14 @@
     }
   }
 
-  function onStateChange(event: any) {
+  async function onStateChange(event: any) {
     const playerState = event.data;
 
     switch (playerState) {
       // Extra handlers to sync the state with the player
       // In case a non-application event causes the video's state to change.
       case musicPlayerStates.playing:
+        musicPlayerStore.duration = (await musicPlayerStore.musicPlayer?.getDuration()) ?? 0;
         musicPlayerStore.isPlaying = true;
         break;
       case musicPlayerStates.paused:
@@ -109,7 +110,6 @@
       await musicPlayerStore.musicPlayer.loadVideoById(musicQueueStore.musicPlayingNow.videoId);
 
       musicPlayerStore.isPlaying = true;
-      musicPlayerStore.duration = await musicPlayerStore.musicPlayer.getDuration();
     }
 
     handleMusicPlayingNowChange();
