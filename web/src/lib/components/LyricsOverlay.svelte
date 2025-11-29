@@ -7,6 +7,8 @@
 
   import { svelteQueryKeys } from "$lib/constants/keys";
   import { createQuery } from "@tanstack/svelte-query";
+  import { get, set } from "idb-keyval";
+  import z from "zod";
   import LoadingSpinner from "./LoadingSpinner.svelte";
 
   let lyricsList: HTMLDivElement | null = $state(null);
@@ -15,11 +17,24 @@
 
   const lyricsQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.lyrics(musicQueueStore.musicPlayingNow?.videoId ?? ""),
-    queryFn: () =>
-      backendClient(
-        `/music/track/${musicQueueStore.musicPlayingNow?.videoId}/lyrics`,
-        lyricsSchema,
-      ),
+    async queryFn() {
+      const cachedLyrics = await get(`lyrics-${musicQueueStore.musicPlayingNow?.videoId}`);
+
+      if (!cachedLyrics) {
+        const lyrics = await backendClient(
+          `/music/track/${musicQueueStore.musicPlayingNow?.videoId}/lyrics`,
+          lyricsSchema,
+        );
+
+        await set(`lyrics-${musicQueueStore.musicPlayingNow?.videoId}`, JSON.stringify(lyrics));
+        return lyrics;
+      }
+
+      const parsedLyricsString = z.string().parse(cachedLyrics);
+      const lyrics = lyricsSchema.parse(parsedLyricsString);
+
+      return lyrics;
+    },
     gcTime: Infinity,
     staleTime: Infinity,
     refetchOnWindowFocus: false,
