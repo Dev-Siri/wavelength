@@ -13,7 +13,7 @@
 
   let lyricsList: HTMLDivElement | null = $state(null);
 
-  let playerProgressMs = $derived(musicPlayerStore.currentTime * 1000);
+  let playerProgress = $derived((musicPlayerStore.progress / 100) * musicPlayerStore.duration);
 
   const lyricsQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.lyrics(musicQueueStore.musicPlayingNow?.videoId ?? ""),
@@ -41,7 +41,7 @@
   }));
 
   let currentLyricMs = $derived(
-    lyricsQuery.data?.find(lyric => lyric.startMs > playerProgressMs) ?? [],
+    lyricsQuery.data?.find(lyric => lyric.startMs > playerProgress) ?? [],
   );
 
   $effect(() => {
@@ -75,11 +75,11 @@
       {#each lyrics as lyric, i}
         <button
           type="button"
-          onclick={() => musicPlayerStore.seek(lyric.startMs / 1000)}
-          class="font-bold text-start text-3xl cursor-pointer duration-200 hover:text-white {playerProgressMs >
-            lyric.startMs && playerProgressMs < lyric.startMs + lyric.durMs
+          onclick={() => musicPlayerStore.musicPlayer?.seekTo(lyric.startMs / 1000, true)}
+          class="font-bold text-start text-3xl cursor-pointer duration-200 hover:text-white {playerProgress >
+            lyric.startMs && playerProgress < lyric.startMs + lyric.durMs
             ? 'text-white'
-            : playerProgressMs > lyric.startMs
+            : playerProgress > lyric.startMs
               ? 'text-gray-300'
               : 'text-gray-500'} {i + 1 === lyrics.length ? 'mb-2' : ''}"
           id="lyric-{lyric.startMs}"

@@ -1,28 +1,84 @@
 <script lang="ts">
+  import createYouTubePlayer from "youtube-player";
+
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
-  import { getStreamUrl } from "$lib/utils/url";
 
   const { musicVideoId }: { musicVideoId: string } = $props();
 
-  let musicVideoPreview: HTMLVideoElement;
+  let musicVideoPreview: HTMLDivElement;
+
+  async function viewRandomChunks() {
+    if (
+      musicQueueStore.musicPlayingNow?.videoType === "uvideo" ||
+      !musicPlayerStore.musicPreviewPlayer
+    )
+      return;
+
+    const currentTime = await musicPlayerStore.musicPreviewPlayer.getCurrentTime();
+    const duration = await musicPlayerStore.musicPreviewPlayer.getDuration();
+
+    if (currentTime >= duration - 20)
+      await musicPlayerStore.musicPreviewPlayer.loadVideoById(musicVideoId, 10);
+
+    await musicPlayerStore.musicPreviewPlayer.seekTo(currentTime + 10, true);
+    await musicPlayerStore.musicPreviewPlayer.playVideo();
+  }
 
   $effect(() => {
-    musicPlayerStore.musicPreviewPlayer = musicVideoPreview;
+    const ytPlayer = createYouTubePlayer(musicVideoPreview, {
+      playerVars: {
+        controls: 0,
+        loop: 1,
+        playsinline: 0,
+        modestbranding: 1,
+        rel: 0,
+        iv_load_policy: 3,
+        disablekb: 1,
+        fs: 0,
+      },
+    });
 
-    if (musicVideoId) musicVideoPreview.src = getStreamUrl(musicVideoId, "video");
+    musicPlayerStore.musicPreviewPlayer = ytPlayer;
+    let interval: number;
+
+    async function loadVideo() {
+      const playerDuration = (await musicPlayerStore.musicPlayer?.getCurrentTime()) ?? 0;
+
+      await ytPlayer.loadVideoById(
+        musicVideoId,
+        musicQueueStore.musicPlayingNow?.videoType === "uvideo" ? playerDuration : 10,
+      );
+
+      interval = setInterval(viewRandomChunks, 5000);
+
+      await ytPlayer.mute();
+    }
+
+    loadVideo();
+
+    return () => {
+      clearInterval(interval);
+      ytPlayer.destroy();
+    };
   });
 
   $effect(() => {
     async function controlMusicVidToSong() {
-      if (musicQueueStore.musicPlayingNow?.videoType !== "uvideo") return;
+      if (
+        musicQueueStore.musicPlayingNow?.videoType !== "uvideo" ||
+        !musicPlayerStore.musicPreviewPlayer
+      )
+        return;
 
-      musicVideoPreview.currentTime = musicPlayerStore.currentTime;
+      const playerDuration = (await musicPlayerStore.musicPlayer?.getCurrentTime()) ?? 0;
 
       if (musicPlayerStore.isPlaying) {
-        musicVideoPreview.play();
+        musicPlayerStore.musicPreviewPlayer.seekTo(playerDuration, true);
+        musicPlayerStore.musicPreviewPlayer.playVideo();
       } else {
-        musicVideoPreview.pause();
+        musicPlayerStore.musicPreviewPlayer.seekTo(playerDuration, true);
+        musicPlayerStore.musicPreviewPlayer.pauseVideo();
       }
     }
 
@@ -30,16 +86,11 @@
   });
 </script>
 
-<video
+<div
   class="absolute h-[140%] -mt-24 w-full opacity-10 pointer-events-none left-0 right-0 duration-200"
   id="preview-player"
-  height="100%"
-  width="100%"
-  muted
-  loop
   bind:this={musicVideoPreview}
->
-</video>
+></div>
 
 <style>
   #preview-player::after,

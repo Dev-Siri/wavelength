@@ -13,10 +13,10 @@
 
     fn();
 
-    setTimeout(() => {
-      if (!musicPlayerStore.musicPreviewPlayer) return;
+    setTimeout(async () => {
+      const currentTime = (await musicPlayerStore.musicPlayer?.getCurrentTime()) ?? 0;
 
-      musicPlayerStore.musicPreviewPlayer.currentTime = musicPlayerStore.currentTime;
+      musicPlayerStore.musicPreviewPlayer?.seekTo(currentTime, true);
     }, 1500);
   }
 </script>

@@ -1,130 +1,131 @@
 <script lang="ts">
-  import { get, set } from "idb-keyval";
+  import createYouTubePlayer from "youtube-player";
 
+  import { musicPlayerStates } from "$lib/constants/music-player";
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
-  import { getStreamUrl, getThumbnailUrl } from "$lib/utils/url";
 
   import MusicPlayerControls from "./MusicPlayerControls.svelte";
   import MusicPlayerTrackLabel from "./MusicPlayerTrackLabel.svelte";
   import PlaybackOptions from "./PlaybackOptions.svelte";
 
-  let musicPlayerElement: HTMLAudioElement;
+  let musicPlayerElement: HTMLDivElement;
 
-  function handlePlayerEnd() {
-    if (musicPlayerStore.repeatMode === "one") return musicPlayerStore.playMusic();
+  async function trackProgress() {
+    if (!musicPlayerStore.musicPlayer || !musicPlayerStore.isPlaying) return;
 
-    if (!musicQueueStore.musicPlayingNow) return;
+    const [currentTime, duration] = await Promise.all([
+      musicPlayerStore.musicPlayer.getCurrentTime(),
+      musicPlayerStore.musicPlayer.getDuration(),
+    ]);
 
-    musicPlayerStore.isPlaying = false;
+    if (duration > 0) {
+      const progress = (currentTime / duration) * 100;
 
-    const songThatWasPlayedIndex = musicQueueStore.musicQueue.findIndex(
-      track => musicQueueStore.musicPlayingNow?.title === track.title,
-    );
-
-    const wasSongTheLastInQueue = musicQueueStore.musicQueue.length - 1 === songThatWasPlayedIndex;
-
-    let nextIndex = 0;
-
-    if (wasSongTheLastInQueue) {
-      nextIndex = 0;
-    } else {
-      nextIndex = songThatWasPlayedIndex + 1;
+      musicPlayerStore.progress = progress;
     }
+  }
 
-    if (musicPlayerStore.repeatMode === "all" || !wasSongTheLastInQueue)
-      musicQueueStore.musicPlayingNow = musicQueueStore.musicQueue[nextIndex];
+  function onStateChange(event: any) {
+    const playerState = event.data;
+
+    switch (playerState) {
+      // Extra handlers to sync the state with the player
+      // In case a non-application event causes the video's state to change.
+      case musicPlayerStates.playing:
+        musicPlayerStore.isPlaying = true;
+        break;
+      case musicPlayerStates.paused:
+        musicPlayerStore.isPlaying = false;
+        break;
+      case musicPlayerStates.ended:
+        if (musicPlayerStore.repeatMode === "one") {
+          musicPlayerStore.playMusic();
+          break;
+        }
+
+        if (!musicQueueStore.musicPlayingNow) break;
+
+        musicPlayerStore.isPlaying = false;
+
+        const songThatWasPlayedIndex = musicQueueStore.musicQueue.findIndex(
+          track => musicQueueStore.musicPlayingNow?.title === track.title,
+        );
+        const wasSongTheLastInQueue =
+          musicQueueStore.musicQueue.length - 1 === songThatWasPlayedIndex;
+
+        let nextIndex = 0;
+
+        if (wasSongTheLastInQueue) {
+          nextIndex = 0;
+        } else {
+          nextIndex = songThatWasPlayedIndex + 1;
+        }
+
+        if (musicPlayerStore.repeatMode === "all" || !wasSongTheLastInQueue)
+          musicQueueStore.musicPlayingNow = musicQueueStore.musicQueue[nextIndex];
+    }
   }
 
   $effect(() => {
-    musicPlayerStore.musicPlayer = musicPlayerElement;
+    const youtubePlayer = createYouTubePlayer(musicPlayerElement, {
+      playerVars: {
+        autoplay: 0,
+      },
+    });
+
+    musicPlayerStore.musicPlayer = youtubePlayer;
+
+    const interval = setInterval(trackProgress, 250);
+
+    youtubePlayer.on("stateChange", onStateChange);
 
     function musicPlayerShortcuts(event: KeyboardEvent) {
       if (event.key !== " " || (document.activeElement && document.activeElement !== document.body))
         return;
 
       if (musicPlayerStore.isPlaying) {
-        musicPlayerElement.pause();
+        musicPlayerStore.pauseMusic();
       } else {
-        musicPlayerElement.play();
+        musicPlayerStore.playMusic();
       }
     }
 
     window.addEventListener("keypress", musicPlayerShortcuts);
 
-    return () => window.removeEventListener("keypress", musicPlayerShortcuts);
+    return () => {
+      window.removeEventListener("keypress", musicPlayerShortcuts);
+      clearInterval(interval);
+      youtubePlayer.destroy();
+    };
   });
 
   $effect(() => {
-    async function loadTrack() {
-      const current = musicQueueStore.musicPlayingNow;
+    async function handleMusicPlayingNowChange() {
+      if (!musicPlayerStore.musicPlayer || !musicQueueStore.musicPlayingNow) return;
 
-      if (!current) return (navigator.mediaSession.metadata = null);
+      musicPlayerStore.progress = 0;
 
-      if (musicPlayerElement.src) {
-        URL.revokeObjectURL(musicPlayerElement.src);
-        musicPlayerElement.src = "";
-      }
+      await musicPlayerStore.musicPlayer.loadVideoById(musicQueueStore.musicPlayingNow.videoId);
 
-      musicPlayerStore.isPlaying = false;
-      musicPlayerStore.duration = 0;
-      musicPlayerStore.currentTime = 0;
-
-      const cachedBufferKey = `cached_audio_buffer-${current.videoId}`;
-      const cachedBuffer = await get(cachedBufferKey);
-
-      let decodedUrl: string;
-
-      if (cachedBuffer instanceof ArrayBuffer) {
-        const cachedBlob = new Blob([cachedBuffer]);
-        decodedUrl = URL.createObjectURL(cachedBlob);
-      } else {
-        const res = await fetch(getStreamUrl(current.videoId, "audio"));
-
-        if (!res.ok) return;
-
-        const arrayBuffer = await res.arrayBuffer();
-
-        await set(cachedBufferKey, arrayBuffer);
-
-        const cachedBlob = new Blob([arrayBuffer]);
-        decodedUrl = URL.createObjectURL(cachedBlob);
-      }
-
-      musicPlayerElement.src = decodedUrl;
-
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: current.title,
-        artist: current.author,
-        artwork: [
-          {
-            src: getThumbnailUrl(current.videoId),
-            sizes: "256x256",
-            type: "image/jpeg",
-          },
-        ],
-      });
+      musicPlayerStore.isPlaying = true;
+      musicPlayerStore.duration = await musicPlayerStore.musicPlayer.getDuration();
     }
 
-    loadTrack();
+    handleMusicPlayingNowChange();
+  });
+
+  $effect(() => {
+    if (musicPlayerStore.isMuted) {
+      musicPlayerStore.musicPlayer?.mute();
+    } else {
+      musicPlayerStore.musicPlayer?.unMute();
+    }
   });
 </script>
 
 <div class="flex bg-black h-full w-full pl-3">
-  <audio
-    autoplay
-    bind:this={musicPlayerElement}
-    class="hidden"
-    bind:muted={musicPlayerStore.isMuted}
-    onpause={() => (musicPlayerStore.isPlaying = false)}
-    onplay={() => (musicPlayerStore.isPlaying = true)}
-    oncanplaythrough={musicPlayerStore.playMusic}
-    onended={handlePlayerEnd}
-    ondurationchange={({ currentTarget: { duration } }) => (musicPlayerStore.duration = duration)}
-    ontimeupdate={({ currentTarget: { currentTime } }) =>
-      (musicPlayerStore.currentTime = currentTime)}
-    bind:volume={musicPlayerStore.volume}
-  ></audio>
+  <div class="hidden" bind:this={musicPlayerElement}></div>
   <section class="flex h-full w-1/3 items-center">
     <MusicPlayerTrackLabel />
   </section>
