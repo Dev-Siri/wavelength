@@ -21,8 +21,5 @@ if [ -n "$YOUTUBE_COOKIES_B64" ]; then
   echo "$YOUTUBE_COOKIES_B64" | base64 -d > /app/secrets/youtube_cookies.txt
 fi
 
-# Run the Python yt-dlp server.
-cd /app/internal/ytdlp_server
-/usr/local/pypy3.11-v7.3.20-linux64/bin/pypy3 -m uvicorn main:app --host 0.0.0.0 --port 8000 &
 # Run the Go application.
 /usr/local/bin/app
