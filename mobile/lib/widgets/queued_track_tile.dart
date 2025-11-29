@@ -1,7 +1,6 @@
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
 import "package:wavelength/api/models/stream_download.dart";
-import "package:wavelength/utils/parse.dart";
 
 class QueuedTrackTile extends StatelessWidget {
   final StreamDownload queuedDownload;
@@ -38,14 +37,14 @@ class QueuedTrackTile extends StatelessWidget {
                     SizedBox(
                       width: (MediaQuery.sizeOf(context).width / 2) + 40,
                       child: Text(
-                        decodeHtmlSpecialChars(queuedDownload.metadata.title),
+                        queuedDownload.metadata.title,
                         style: const TextStyle(fontSize: 16),
                       ),
                     ),
                     SizedBox(
                       width: (MediaQuery.sizeOf(context).width / 2),
                       child: Text(
-                        decodeHtmlSpecialChars(queuedDownload.metadata.author),
+                        queuedDownload.metadata.author,
                         style: const TextStyle(
                           fontSize: 12,
                           color: Colors.grey,

@@ -84,7 +84,7 @@ class TopTrackResult extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                decodeHtmlSpecialChars(track.title),
+                track.title,
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,

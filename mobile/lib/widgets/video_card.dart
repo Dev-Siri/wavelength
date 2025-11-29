@@ -47,12 +47,21 @@ class VideoCard extends StatelessWidget {
   }
 
   Future<void> _showPlaylistAdditionDialog(BuildContext context) async {
-    final bottomSheetBloc = context.read<AppBottomSheetBloc>();
+    final callBottomSheet = generateBottomSheetFn(context);
     final durationResponse = await TrackRepo.fetchTrackDuration(
       trackId: video.videoId,
     );
 
     if (durationResponse is ApiResponseSuccess<int>) {
+      callBottomSheet(durationResponse.data);
+    }
+  }
+
+  // To avoid using context across async gaps, I guess you can call it a hack.
+  void Function(int) generateBottomSheetFn(BuildContext context) {
+    final bottomSheetBloc = context.read<AppBottomSheetBloc>();
+
+    return (duration) {
       bottomSheetBloc.add(
         AppBottomSheetOpenEvent(
           context: context,
@@ -64,17 +73,16 @@ class VideoCard extends StatelessWidget {
               title: video.title,
               thumbnail: getTrackThumbnail(video.videoId),
               author: video.author,
-              duration: durationify(Duration(seconds: durationResponse.data)),
+              duration: durationify(Duration(seconds: duration)),
               isExplicit: false,
             ),
             videoType: VideoType.track,
           ),
         ),
       );
-    }
+    };
   }
 
-  // showModalBottomSheet(
   @override
   Widget build(BuildContext context) {
     final thumbnail = CachedNetworkImage(
@@ -83,8 +91,6 @@ class VideoCard extends StatelessWidget {
       width: double.infinity,
       fit: BoxFit.cover,
     );
-
-    final title = decodeHtmlSpecialChars(video.title);
 
     return Stack(
       children: [
@@ -112,9 +118,9 @@ class VideoCard extends StatelessWidget {
                   style: const TextStyle(fontSize: 18, color: Colors.white),
                   children: [
                     TextSpan(
-                      text: title.length > 50
-                          ? "${title.substring(0, 50)}..."
-                          : title,
+                      text: video.title.length > 50
+                          ? "${video.title.substring(0, 50)}..."
+                          : video.title,
                     ),
                     TextSpan(
                       text: " - ${video.author}",

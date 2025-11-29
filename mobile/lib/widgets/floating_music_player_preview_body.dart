@@ -48,7 +48,7 @@ class FloatingMusicPlayerPreviewBody extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  decodeHtmlSpecialChars(playingNowTrack.title),
+                  playingNowTrack.title,
                   style: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,

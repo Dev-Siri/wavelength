@@ -7,7 +7,6 @@ import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/repositories/track_repo.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
-import "package:wavelength/utils/parse.dart";
 import "package:wavelength/utils/url.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_event.dart";
@@ -95,7 +94,6 @@ class _PlayingNowPreviewPresenterState
             ? Colors.white
             : Colors.black;
 
-        final trackTitle = decodeHtmlSpecialChars(track.title);
         final videoPreviewId = track.videoType == VideoType.track
             ? _musicVideoId
             : track.videoId;
@@ -137,7 +135,7 @@ class _PlayingNowPreviewPresenterState
                                   width:
                                       MediaQuery.of(context).size.width / 1.5,
                                   child: Text(
-                                    trackTitle,
+                                    track.title,
                                     style: TextStyle(
                                       fontSize: 18,
                                       height: 1.1,

@@ -131,7 +131,7 @@ class PlaylistTrackTile extends StatelessWidget {
               SizedBox(
                 width: (MediaQuery.of(context).size.width / 1.4) - 50,
                 child: Text(
-                  decodeHtmlSpecialChars(playlistTrack.title),
+                  playlistTrack.title,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,

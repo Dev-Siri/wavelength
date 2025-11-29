@@ -92,7 +92,7 @@ class TrackTile extends StatelessWidget {
               SizedBox(
                 width: (MediaQuery.of(context).size.width / 1.4) - 50,
                 child: Text(
-                  decodeHtmlSpecialChars(track.title),
+                  track.title,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,

@@ -1,6 +1,7 @@
 package music_controllers
 
 import (
+	"html"
 	"wavelength/api"
 	"wavelength/models"
 	"wavelength/models/responses"
@@ -31,7 +32,7 @@ func SearchYouTubeVideos(ctx *fiber.Ctx) error {
 	for _, item := range searchResults.Items {
 		video := models.YouTubeVideo{
 			VideoId:   item.Id.VideoId,
-			Title:     item.Snippet.Title,
+			Title:     html.UnescapeString(item.Snippet.Title),
 			Thumbnail: utils.GetHighestPossibleThumbnailUrl(item.Snippet.Thumbnails),
 			Author:    item.Snippet.ChannelTitle,
 		}

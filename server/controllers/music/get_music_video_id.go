@@ -2,6 +2,7 @@ package music_controllers
 
 import (
 	"fmt"
+	"html"
 	"wavelength/api"
 	"wavelength/models"
 	"wavelength/models/responses"
@@ -56,7 +57,7 @@ func GetMusicVideoPreviewId(ctx *fiber.Ctx) error {
 	titles := make([]string, len(videos))
 
 	for i, v := range videos {
-		titles[i] = v.Title + " " + v.Channel
+		titles[i] = html.UnescapeString(v.Title) + " " + v.Channel
 	}
 
 	matches := fuzzy.Find(keyword, titles)
