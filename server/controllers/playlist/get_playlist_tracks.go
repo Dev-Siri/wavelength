@@ -1,6 +1,7 @@
 package playlist_controllers
 
 import (
+	"html"
 	"wavelength/db"
 	"wavelength/models"
 	"wavelength/models/responses"
@@ -54,6 +55,8 @@ func GetPlaylistTracks(ctx *fiber.Ctx) error {
 		); err != nil {
 			return fiber.NewError(fiber.StatusInternalServerError, "Failed to get playlist tracks: "+err.Error())
 		}
+
+		playlistTrack.Title = html.UnescapeString(playlistTrack.Title)
 
 		playlistTracks = append(playlistTracks, playlistTrack)
 	}
