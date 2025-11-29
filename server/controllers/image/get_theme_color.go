@@ -41,12 +41,10 @@ func GetThemeColor(ctx *fiber.Ctx) error {
 
 	color := dominantcolor.Find(img)
 
-	return ctx.JSON(&responses.Success[models.ThemeColor]{
-		Success: true,
-		Data: models.ThemeColor{
+	return ctx.JSON(responses.Success(
+		models.ThemeColor{
 			R: color.R,
 			G: color.G,
 			B: color.B,
-		},
-	})
+		}))
 }

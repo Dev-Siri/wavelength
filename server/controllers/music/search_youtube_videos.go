@@ -40,8 +40,5 @@ func SearchYouTubeVideos(ctx *fiber.Ctx) error {
 		youtubeVideos = append(youtubeVideos, video)
 	}
 
-	return ctx.JSON(responses.Success[[]models.YouTubeVideo]{
-		Success: true,
-		Data:    youtubeVideos,
-	})
+	return ctx.JSON(responses.Success(youtubeVideos))
 }

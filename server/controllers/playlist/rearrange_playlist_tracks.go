@@ -51,8 +51,5 @@ func RearrangePlaylistTracks(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Transaction commit failed: "+err.Error())
 	}
 
-	return ctx.JSON(responses.Success[string]{
-		Success: true,
-		Data:    "Playlist positions updated successfully.",
-	})
+	return ctx.JSON(responses.Success("Playlist positions updated successfully."))
 }

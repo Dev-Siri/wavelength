@@ -17,10 +17,7 @@ func GetArtistExtraById(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get extra artist details from YouTube: "+err.Error())
 	}
 
-	return ctx.JSON(responses.Success[models.ArtistExtra]{
-		Success: true,
-		Data: models.ArtistExtra{
-			Thumbnail: response.Items[0].Snippet.Thumbnails.High.Url,
-		},
-	})
+	return ctx.JSON(responses.Success(models.ArtistExtra{
+		Thumbnail: response.Items[0].Snippet.Thumbnails.High.Url,
+	}))
 }

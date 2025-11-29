@@ -54,10 +54,7 @@ func AddRemovePlaylistTrack(ctx *fiber.Ctx) error {
 			return fiber.NewError(fiber.StatusInternalServerError, "Failed to remove track: "+err.Error())
 		}
 
-		return ctx.JSON(responses.Success[string]{
-			Success: true,
-			Data:    "Removed song from playlist successfully.",
-		})
+		return ctx.JSON(responses.Success("Removed song from playlist successfully."))
 	}
 
 	var totalSongCount int
@@ -100,8 +97,5 @@ func AddRemovePlaylistTrack(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to add track: "+err.Error())
 	}
 
-	return ctx.JSON(responses.Success[string]{
-		Success: true,
-		Data:    "Added song to playlist successfully.",
-	})
+	return ctx.JSON(responses.Success("Added song to playlist successfully."))
 }

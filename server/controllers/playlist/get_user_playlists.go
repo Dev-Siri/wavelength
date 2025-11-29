@@ -52,8 +52,5 @@ func GetUserPlaylists(ctx *fiber.Ctx) error {
 		playlists = append(playlists, playlist)
 	}
 
-	return ctx.JSON(responses.Success[[]models.Playlist]{
-		Success: true,
-		Data:    playlists,
-	})
+	return ctx.JSON(responses.Success(playlists))
 }

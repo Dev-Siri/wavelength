@@ -39,8 +39,5 @@ func CreatePlaylist(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to create new playlist for user: "+err.Error())
 	}
 
-	return ctx.JSON(responses.Success[string]{
-		Success: true,
-		Data:    "Created new playlist for " + email,
-	})
+	return ctx.JSON(responses.Success("Created new playlist for " + email))
 }

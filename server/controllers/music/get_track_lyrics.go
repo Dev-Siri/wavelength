@@ -84,8 +84,5 @@ func GetTrackLyrics(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get lyrics: "+err.Error())
 	}
 
-	return ctx.JSON(responses.Success[[]api_models.Lyric]{
-		Success: true,
-		Data:    lyrics,
-	})
+	return ctx.JSON(responses.Success(lyrics))
 }

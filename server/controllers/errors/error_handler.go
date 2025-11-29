@@ -18,16 +18,13 @@ func ErrorHandler(ctx *fiber.Ctx, err error) error {
 
 		switch code {
 		case fiber.StatusMethodNotAllowed:
-			return ctx.JSON(responses.Error{Message: "Method not allowed."})
+			return ctx.JSON(responses.Error("Method not allowed."))
 		case fiber.StatusNotFound:
-			return ctx.JSON(responses.Error{Message: message})
+			return ctx.JSON(responses.Error(message))
 		}
 	}
 
 	go logging.Logger.Error(message, zap.Error(err))
 
-	return ctx.Status(code).JSON(responses.Error{
-		Success: false,
-		Message: message,
-	})
+	return ctx.Status(code).JSON(responses.Error(message))
 }

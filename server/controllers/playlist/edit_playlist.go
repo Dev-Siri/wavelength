@@ -63,8 +63,5 @@ func EditPlaylist(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to edit playlist: "+err.Error())
 	}
 
-	return ctx.JSON(responses.Success[string]{
-		Success: true,
-		Data:    "Edited playlist with ID " + playlistId + " successfully.",
-	})
+	return ctx.JSON(responses.Success("Edited playlist with ID " + playlistId + " successfully."))
 }

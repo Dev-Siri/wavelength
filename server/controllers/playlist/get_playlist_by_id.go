@@ -55,8 +55,5 @@ func GetPlaylistById(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusNotFound, "Playlist not found.")
 	}
 
-	return ctx.JSON(responses.Success[*models.Playlist]{
-		Success: true,
-		Data:    playlist,
-	})
+	return ctx.JSON(responses.Success(playlist))
 }

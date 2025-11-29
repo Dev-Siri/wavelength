@@ -28,8 +28,5 @@ func GetMusicDuration(ctx *fiber.Ctx) error {
 
 	durationSeconds := utils.ParseDuration(response.Items[0].ContentDetails.Duration)
 
-	return ctx.JSON(responses.Success[int]{
-		Success: true,
-		Data:    durationSeconds,
-	})
+	return ctx.JSON(responses.Success(durationSeconds))
 }

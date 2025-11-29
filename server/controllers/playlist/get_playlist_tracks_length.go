@@ -116,11 +116,8 @@ func GetPlaylistTracksLength(ctx *fiber.Ctx) error {
 		totalDurationSeconds += utils.ParseDurationToSeconds(duration)
 	}
 
-	return ctx.JSON(responses.Success[models.PlaylistTracksLength]{
-		Success: true,
-		Data: models.PlaylistTracksLength{
-			SongCount:          songCount,
-			SongDurationSecond: totalDurationSeconds,
-		},
-	})
+	return ctx.JSON(responses.Success(models.PlaylistTracksLength{
+		SongCount:          songCount,
+		SongDurationSecond: totalDurationSeconds,
+	}))
 }

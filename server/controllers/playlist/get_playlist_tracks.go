@@ -61,8 +61,5 @@ func GetPlaylistTracks(ctx *fiber.Ctx) error {
 		playlistTracks = append(playlistTracks, playlistTrack)
 	}
 
-	return ctx.JSON(responses.Success[[]models.PlaylistTrack]{
-		Success: true,
-		Data:    playlistTracks,
-	})
+	return ctx.JSON(responses.Success(playlistTracks))
 }

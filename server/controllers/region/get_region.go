@@ -25,12 +25,7 @@ func createDefaultResponse(ctx *fiber.Ctx, err error) error {
 		Expires:  infiniteTime,
 	})
 
-	return ctx.JSON(
-		&responses.Success[string]{
-			Success: true,
-			Data:    constants.DefaultRegion,
-		},
-	)
+	return ctx.JSON(responses.Success(constants.DefaultRegion))
 }
 
 func GetRegion(ctx *fiber.Ctx) error {
@@ -63,10 +58,5 @@ func GetRegion(ctx *fiber.Ctx) error {
 		})
 	}
 
-	return ctx.JSON(
-		&responses.Success[string]{
-			Success: true,
-			Data:    region,
-		},
-	)
+	return ctx.JSON(responses.Success(region))
 }

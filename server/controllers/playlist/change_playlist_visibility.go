@@ -49,8 +49,5 @@ func ChangePlaylistVisibility(ctx *fiber.Ctx) error {
 		changedVisibility = "public"
 	}
 
-	return ctx.JSON(responses.Success[string]{
-		Success: true,
-		Data:    "Visibility of playlist with ID " + playlistId + " changed to " + changedVisibility,
-	})
+	return ctx.JSON(responses.Success("Visibility of playlist with ID " + playlistId + " changed to " + changedVisibility))
 }
