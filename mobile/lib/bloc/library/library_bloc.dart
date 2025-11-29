@@ -1,5 +1,6 @@
 import "dart:async";
 
+import "package:connectivity_plus/connectivity_plus.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:hive/hive.dart";
 import "package:wavelength/api/models/api_response.dart";
@@ -23,6 +24,14 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
 
     if (cachedPlaylists != null) {
       emit(LibraryFetchSuccessState(playlists: cachedPlaylists));
+    }
+
+    final connectivity = Connectivity();
+    final connectivityStatus = await connectivity.checkConnectivity();
+
+    // Device is offline, avoid fetching.
+    if (connectivityStatus.contains(ConnectivityResult.none)) {
+      return;
     }
 
     final response = await PlaylistsRepo.fetchUserPlaylists(email: event.email);

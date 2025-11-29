@@ -105,50 +105,47 @@ class _AppShellState extends State<AppShell> {
   Widget build(BuildContext context) {
     return BlocBuilder<MusicPlayerTrackBloc, MusicPlayerTrackState>(
       builder: (context, state) {
-        return MediaQuery.removeViewInsets(
-          removeBottom: true,
-          context: context,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Scaffold(
-              resizeToAvoidBottomInset: false,
-              appBar: const SharedAppBar(),
-              drawer: const UserInfoDrawer(),
-              body: MusicPlayerPresenceAdjuster(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: BlocConsumer<AuthBloc, AuthState>(
-                    listener: (context, state) {
-                      if (state is AuthStateAuthorized) {
-                        context.read<LibraryBloc>().add(
-                          LibraryPlaylistsFetchEvent(email: state.user.email),
-                        );
-                      }
-                    },
-                    builder: (_, __) => widget.child,
-                  ),
+        return Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            appBar: const SharedAppBar(),
+            drawer: const UserInfoDrawer(),
+            body: MusicPlayerPresenceAdjuster(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: BlocConsumer<AuthBloc, AuthState>(
+                  listener: (context, state) {
+                    if (state is AuthStateAuthorized) {
+                      context.read<LibraryBloc>().add(
+                        LibraryPlaylistsFetchEvent(email: state.user.email),
+                      );
+                    }
+                  },
+                  builder: (_, __) => widget.child,
                 ),
               ),
-              bottomNavigationBar: Platform.isIOS
-                  ? CupertinoTabBar(
-                      height: 80,
-                      activeColor: Colors.white,
-                      inactiveColor: Colors.grey.shade600,
-                      currentIndex: _activeRouteIndex,
-                      iconSize: 25,
-                      onTap: _onScreenChange,
-                      items: _getBottomNavItems(),
-                    )
-                  : BottomNavigationBar(
-                      showSelectedLabels: false,
-                      showUnselectedLabels: false,
-                      selectedItemColor: Colors.white,
-                      unselectedItemColor: Colors.grey.shade600,
-                      currentIndex: _activeRouteIndex,
-                      onTap: _onScreenChange,
-                      items: _getBottomNavItems(),
-                    ),
             ),
+            bottomNavigationBar: Platform.isIOS
+                ? CupertinoTabBar(
+                    height: 80,
+                    activeColor: Colors.white,
+                    inactiveColor: Colors.grey.shade600,
+                    currentIndex: _activeRouteIndex,
+                    iconSize: 25,
+                    onTap: _onScreenChange,
+                    items: _getBottomNavItems(),
+                  )
+                : BottomNavigationBar(
+                    type: BottomNavigationBarType.fixed,
+                    showSelectedLabels: false,
+                    showUnselectedLabels: false,
+                    selectedItemColor: Colors.white,
+                    unselectedItemColor: Colors.grey.shade600,
+                    currentIndex: _activeRouteIndex,
+                    onTap: _onScreenChange,
+                    items: _getBottomNavItems(),
+                  ),
           ),
         );
       },

@@ -40,7 +40,7 @@ class UserInfoDrawer extends StatelessWidget {
                     return Transform.translate(
                       offset: const Offset(-15, 0),
                       child: SizedBox(
-                        width: MediaQuery.of(context).size.width / 2.3,
+                        width: MediaQuery.sizeOf(context).width / 2.3,
                         child: Text.rich(
                           TextSpan(
                             text: "Hello, ",

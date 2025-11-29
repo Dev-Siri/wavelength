@@ -62,7 +62,7 @@ class AddToPlaylistBottomSheet extends StatelessWidget {
 
         return Container(
           height:
-              MediaQuery.of(context).size.height *
+              MediaQuery.sizeOf(context).height *
               0.4, // 40% of the screen's height.
           width: double.infinity,
           decoration: const BoxDecoration(

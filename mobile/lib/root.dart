@@ -38,6 +38,7 @@ class _RootState extends State<Root> {
     final isOnPlayingNowScreen = stringUri.startsWith("/playing-now");
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           widget.child,
@@ -47,8 +48,8 @@ class _RootState extends State<Root> {
               child: Padding(
                 padding: EdgeInsets.only(
                   bottom: isOutsideAppShell
-                      ? MediaQuery.of(context).size.height * 0.05
-                      : MediaQuery.of(context).size.height * 0.125,
+                      ? MediaQuery.sizeOf(context).height * 0.05
+                      : MediaQuery.sizeOf(context).height * 0.125,
                 ),
                 child: BlocBuilder<AppBottomSheetBloc, AppBottomSheetState>(
                   builder: (context, state) {

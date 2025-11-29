@@ -90,7 +90,7 @@ class TrackTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: (MediaQuery.of(context).size.width / 1.4) - 50,
+                width: (MediaQuery.sizeOf(context).width / 1.4) - 50,
                 child: Text(
                   track.title,
                   overflow: TextOverflow.ellipsis,
@@ -109,7 +109,7 @@ class TrackTile extends StatelessWidget {
                       child: ExplicitIndicator(),
                     ),
                   SizedBox(
-                    width: MediaQuery.of(context).size.width / 2,
+                    width: MediaQuery.sizeOf(context).width / 2,
                     child: Text(
                       track.author,
                       style: const TextStyle(

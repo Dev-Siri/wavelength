@@ -129,7 +129,7 @@ class PlaylistTrackTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: (MediaQuery.of(context).size.width / 1.4) - 50,
+                width: (MediaQuery.sizeOf(context).width / 1.4) - 50,
                 child: Text(
                   playlistTrack.title,
                   overflow: TextOverflow.ellipsis,
@@ -148,7 +148,7 @@ class PlaylistTrackTile extends StatelessWidget {
                       child: ExplicitIndicator(),
                     ),
                   SizedBox(
-                    width: MediaQuery.of(context).size.width / 2,
+                    width: MediaQuery.sizeOf(context).width / 2,
                     child: Text(
                       playlistTrack.author,
                       style: const TextStyle(

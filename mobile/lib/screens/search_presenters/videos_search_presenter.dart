@@ -31,7 +31,7 @@ class VideosSearchPresenter extends StatelessWidget {
                 Center(
                   child: Padding(
                     padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height / 3.5,
+                      top: MediaQuery.sizeOf(context).height / 3.5,
                     ),
                     child: const ErrorMessageDialog(
                       message:
@@ -46,7 +46,7 @@ class VideosSearchPresenter extends StatelessWidget {
         if (state.videos.isEmpty) {
           return Padding(
             padding: EdgeInsets.only(
-              top: MediaQuery.of(context).size.height / 4,
+              top: MediaQuery.sizeOf(context).height / 4,
             ),
             child: const Center(
               child: Text(

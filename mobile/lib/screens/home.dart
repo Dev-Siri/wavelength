@@ -53,7 +53,7 @@ class HomeScreen extends StatelessWidget {
                               for (int i = 0; i < 8; i++)
                                 SizedBox(
                                   width:
-                                      (MediaQuery.of(context).size.width - 20) /
+                                      (MediaQuery.sizeOf(context).width - 20) /
                                       2,
                                   child: const Padding(
                                     padding: EdgeInsets.all(5),
@@ -66,7 +66,7 @@ class HomeScreen extends StatelessWidget {
                             Center(
                               child: Padding(
                                 padding: EdgeInsets.only(
-                                  top: MediaQuery.of(context).size.height / 3,
+                                  top: MediaQuery.sizeOf(context).height / 3,
                                 ),
                                 child: const ErrorMessageDialog(
                                   message:
@@ -82,7 +82,7 @@ class HomeScreen extends StatelessWidget {
                         state is! QuickPicksSuccessState ||
                         state.songs.isEmpty) {
                       return SizedBox(
-                        height: MediaQuery.of(context).size.height / 2,
+                        height: MediaQuery.sizeOf(context).height / 2,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -130,7 +130,7 @@ class HomeScreen extends StatelessWidget {
                       children: [
                         for (final song in state.songs)
                           SizedBox(
-                            width: (MediaQuery.of(context).size.width - 20) / 2,
+                            width: (MediaQuery.sizeOf(context).width - 20) / 2,
                             child: Padding(
                               padding: const EdgeInsets.all(5),
                               child: QuickPickSongCard(quickPicksItem: song),

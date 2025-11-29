@@ -1,4 +1,4 @@
-const backendUrl = "https://wavelength-524g.onrender.com";
+const backendUrl = "http://localhost:8080";
 const ytImgApiUrl = "https://img.youtube.com";
 const defaultLocale = "US";
 const envFile = ".env";

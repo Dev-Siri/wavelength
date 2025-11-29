@@ -132,8 +132,7 @@ class _PlayingNowPreviewPresenterState
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width / 1.5,
+                                  width: MediaQuery.sizeOf(context).width / 1.5,
                                   child: Text(
                                     track.title,
                                     style: TextStyle(

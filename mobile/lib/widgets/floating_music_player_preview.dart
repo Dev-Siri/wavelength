@@ -37,7 +37,7 @@ class _FloatingMusicPlayerPreviewState
 
     final dx = details.localPosition.dx - _longPressStart!.dx;
 
-    final width = MediaQuery.of(context).size.width;
+    final width = MediaQuery.sizeOf(context).width;
     final percentDelta = dx / width; // -1.0 (full left) to +1.0 (full right)
 
     setState(
@@ -92,7 +92,7 @@ class _FloatingMusicPlayerPreviewState
               color: Colors.grey.shade900,
             ),
             height: 80,
-            width: MediaQuery.of(context).size.width - 20,
+            width: MediaQuery.sizeOf(context).width - 20,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(15),
               child: Stack(

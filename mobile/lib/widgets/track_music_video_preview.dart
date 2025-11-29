@@ -40,15 +40,15 @@ class _TrackMusicVideoPreviewState extends State<TrackMusicVideoPreview> {
     if (_controller == null) return const SizedBox.shrink();
 
     return Positioned.fill(
-      bottom: (MediaQuery.of(context).size.height / 10) + 30,
+      bottom: (MediaQuery.sizeOf(context).height / 10) + 30,
       child: Opacity(
         opacity: 0.25,
         child: IgnorePointer(
           child: FittedBox(
             fit: BoxFit.cover,
             child: SizedBox(
-              height: MediaQuery.of(context).size.width * 9 / 16,
-              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.sizeOf(context).width * 9 / 16,
+              width: MediaQuery.sizeOf(context).width,
               child: VideoPlayer(_controller!),
             ),
           ),

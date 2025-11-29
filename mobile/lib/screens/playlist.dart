@@ -245,7 +245,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                   return Padding(
                                     padding: EdgeInsets.only(
                                       right:
-                                          (MediaQuery.of(context).size.width -
+                                          (MediaQuery.sizeOf(context).width -
                                               30) /
                                           2,
                                     ),
@@ -304,7 +304,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                     if (state is! PlaylistSuccessState) {
                       return Padding(
                         padding: EdgeInsets.only(
-                          top: (MediaQuery.of(context).size.height / 4) - 150,
+                          top: (MediaQuery.sizeOf(context).height / 4) - 150,
                         ),
                         child: const Center(child: LoadingIndicator()),
                       );

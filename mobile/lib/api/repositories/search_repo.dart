@@ -4,6 +4,7 @@ import "package:http/http.dart" as http;
 import "package:flutter/foundation.dart";
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/artist.dart";
+import "package:wavelength/api/models/search_recommendations.dart";
 import "package:wavelength/api/models/track.dart";
 import "package:wavelength/api/models/video.dart";
 import "package:wavelength/constants.dart";
@@ -107,6 +108,38 @@ class SearchRepo {
 
         return ApiResponseError(message: decodedJson["message"] as String);
       }, utf8BodyDecoded);
+
+      return decodedResponse;
+    } catch (e) {
+      return ApiResponseError(message: e.toString());
+    }
+  }
+
+  static Future<ApiResponse<SearchRecommendations>> fetchSearchRecommendations({
+    required String query,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$backendUrl/music/search/search-recommendations?q=$query"),
+      );
+      final utf8BodyDecoded = utf8.decode(response.bodyBytes);
+      final decodedResponse =
+          await compute<String, ApiResponse<SearchRecommendations>>((
+            stringResponse,
+          ) {
+            final decodedJson = jsonDecode(stringResponse);
+            final isSuccessful = decodedJson["success"] as bool;
+
+            if (isSuccessful) {
+              final data = decodedJson["data"];
+
+              return ApiResponseSuccess(
+                data: SearchRecommendations.fromJson(data),
+              );
+            }
+
+            return ApiResponseError(message: decodedJson["message"] as String);
+          }, utf8BodyDecoded);
 
       return decodedResponse;
     } catch (e) {

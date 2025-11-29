@@ -9,7 +9,7 @@ class LoadingIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: MediaQuery.of(context).size.width / 8,
+        horizontal: MediaQuery.sizeOf(context).width / 8,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -17,7 +17,7 @@ class LoadingIndicator extends StatelessWidget {
           const SvgPicture(AssetBytesLoader("assets/vectors/lambda.svg.vec")),
           Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width / 6,
+              horizontal: MediaQuery.sizeOf(context).width / 6,
             ),
             child: LinearProgressIndicator(
               borderRadius: BorderRadius.circular(100),

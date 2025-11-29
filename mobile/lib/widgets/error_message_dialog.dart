@@ -33,7 +33,7 @@ class ErrorMessageDialog extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       padding: const EdgeInsets.all(20),
-      width: MediaQuery.of(context).size.width - 100,
+      width: MediaQuery.sizeOf(context).width - 100,
       child: Column(
         children: [
           const Icon(Icons.error),

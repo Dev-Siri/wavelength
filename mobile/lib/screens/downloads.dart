@@ -103,9 +103,12 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
               return Column(
                 children: [
                   if (_isDownloadStalledForWifi)
-                    const Text(
-                      "Downloads are paused because Wi-Fi is not available. If you prefer downloading over mobile data anyway, disable the setting for Wi-Fi only downloads.",
-                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: Text(
+                        "Downloads are paused because Wi-Fi is not available. If you prefer downloading over mobile data anyway, disable the setting for Wi-Fi only downloads.",
+                        style: TextStyle(fontSize: 18, color: Colors.grey),
+                      ),
                     ),
 
                   ...state.inQueue.map(

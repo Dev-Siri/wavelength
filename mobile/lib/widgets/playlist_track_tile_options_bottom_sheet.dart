@@ -117,7 +117,7 @@ class _PlaylistTrackTileOptionsBottomSheetState
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.20, // 20% of the screen
+      height: MediaQuery.sizeOf(context).height * 0.20, // 20% of the screen
       width: double.infinity,
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
       child: Column(
