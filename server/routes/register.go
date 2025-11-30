@@ -8,4 +8,5 @@ func RegisterRoutes(app *fiber.App) {
 	registerMusicRoutes(app)
 	registerRegionRoutes(app)
 	registerPlaylistRoutes(app)
+	registerMetaRoutes(app)
 }

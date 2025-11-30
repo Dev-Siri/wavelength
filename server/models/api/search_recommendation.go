@@ -1,6 +1,6 @@
 package api_models
 
-type SearchRecommendationQuery = string
+type SearchRecommendationQuery string
 
 type SearchRecommendationItem struct {
 	Thumbnail  string `json:"thumbnail"`
