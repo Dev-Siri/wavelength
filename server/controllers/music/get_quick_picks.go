@@ -2,7 +2,7 @@ package music_controllers
 
 import (
 	"wavelength/api"
-	"wavelength/models/responses"
+	"wavelength/models"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -20,5 +20,5 @@ func GetQuickPicks(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get your recommended feed.")
 	}
 
-	return ctx.JSON(responses.Success(quickPicks.Results))
+	return ctx.JSON(models.Success(quickPicks.Results))
 }

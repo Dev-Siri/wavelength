@@ -9,8 +9,8 @@ import (
 	"wavelength/constants"
 	type_constants "wavelength/constants/types"
 	"wavelength/env"
+	"wavelength/models"
 	api_models "wavelength/models/api"
-	"wavelength/models/responses"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -84,5 +84,5 @@ func GetTrackLyrics(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get lyrics: "+err.Error())
 	}
 
-	return ctx.JSON(responses.Success(lyrics))
+	return ctx.JSON(models.Success(lyrics))
 }

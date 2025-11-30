@@ -2,7 +2,7 @@ package artist_controllers
 
 import (
 	"wavelength/api"
-	"wavelength/models/responses"
+	"wavelength/models"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -21,5 +21,5 @@ func SearchArtists(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while searching for artists: "+err.Error())
 	}
 
-	return ctx.JSON(responses.Success(searchResults))
+	return ctx.JSON(models.Success(searchResults))
 }

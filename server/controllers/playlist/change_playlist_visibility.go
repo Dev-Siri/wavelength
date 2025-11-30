@@ -2,7 +2,7 @@ package playlist_controllers
 
 import (
 	"wavelength/db"
-	"wavelength/models/responses"
+	"wavelength/models"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -49,5 +49,5 @@ func ChangePlaylistVisibility(ctx *fiber.Ctx) error {
 		changedVisibility = "public"
 	}
 
-	return ctx.JSON(responses.Success("Visibility of playlist with ID " + playlistId + " changed to " + changedVisibility))
+	return ctx.JSON(models.Success("Visibility of playlist with ID " + playlistId + " changed to " + changedVisibility))
 }

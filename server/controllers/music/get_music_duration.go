@@ -2,7 +2,7 @@ package music_controllers
 
 import (
 	"wavelength/api"
-	"wavelength/models/responses"
+	"wavelength/models"
 	"wavelength/utils"
 
 	"github.com/gofiber/fiber/v2"
@@ -28,5 +28,5 @@ func GetMusicDuration(ctx *fiber.Ctx) error {
 
 	durationSeconds := utils.ParseDuration(response.Items[0].ContentDetails.Duration)
 
-	return ctx.JSON(responses.Success(durationSeconds))
+	return ctx.JSON(models.Success(durationSeconds))
 }

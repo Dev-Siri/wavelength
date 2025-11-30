@@ -5,7 +5,6 @@ import (
 	"wavelength/api"
 	"wavelength/logging"
 	"wavelength/models"
-	"wavelength/models/responses"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -55,7 +54,7 @@ func GetMusicSearchRecommendations(ctx *fiber.Ctx) error {
 		suggestedLinks = append(suggestedLinks, suggestedLink)
 	}
 
-	return ctx.JSON(responses.Success(models.SearchRecommendations{
+	return ctx.JSON(models.Success(models.SearchRecommendations{
 		MatchingQueries: response.Query,
 		MatchingLinks:   suggestedLinks,
 	}))

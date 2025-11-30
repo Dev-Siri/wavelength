@@ -3,7 +3,7 @@ package playlist_controllers
 import (
 	"strconv"
 	"wavelength/db"
-	"wavelength/models/responses"
+	"wavelength/models"
 	"wavelength/models/schemas"
 
 	"github.com/gofiber/fiber/v2"
@@ -63,5 +63,5 @@ func EditPlaylist(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to edit playlist: "+err.Error())
 	}
 
-	return ctx.JSON(responses.Success("Edited playlist with ID " + playlistId + " successfully."))
+	return ctx.JSON(models.Success("Edited playlist with ID " + playlistId + " successfully."))
 }

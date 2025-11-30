@@ -2,7 +2,7 @@ package playlist_controllers
 
 import (
 	"wavelength/db"
-	"wavelength/models/responses"
+	"wavelength/models"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -39,5 +39,5 @@ func CreatePlaylist(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to create new playlist for user: "+err.Error())
 	}
 
-	return ctx.JSON(responses.Success("Created new playlist for " + email))
+	return ctx.JSON(models.Success("Created new playlist for " + email))
 }

@@ -3,7 +3,6 @@ package playlist_controllers
 import (
 	"wavelength/db"
 	"wavelength/models"
-	"wavelength/models/responses"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -52,5 +51,5 @@ func GetUserPlaylists(ctx *fiber.Ctx) error {
 		playlists = append(playlists, playlist)
 	}
 
-	return ctx.JSON(responses.Success(playlists))
+	return ctx.JSON(models.Success(playlists))
 }

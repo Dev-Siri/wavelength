@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"wavelength/db"
-	"wavelength/models/responses"
+	"wavelength/models"
 	"wavelength/models/schemas"
 	"wavelength/validation"
 
@@ -54,7 +54,7 @@ func AddRemovePlaylistTrack(ctx *fiber.Ctx) error {
 			return fiber.NewError(fiber.StatusInternalServerError, "Failed to remove track: "+err.Error())
 		}
 
-		return ctx.JSON(responses.Success("Removed song from playlist successfully."))
+		return ctx.JSON(models.Success("Removed song from playlist successfully."))
 	}
 
 	var totalSongCount int
@@ -97,5 +97,5 @@ func AddRemovePlaylistTrack(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to add track: "+err.Error())
 	}
 
-	return ctx.JSON(responses.Success("Added song to playlist successfully."))
+	return ctx.JSON(models.Success("Added song to playlist successfully."))
 }

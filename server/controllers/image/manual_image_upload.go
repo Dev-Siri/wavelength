@@ -10,7 +10,6 @@ import (
 	"wavelength/constants"
 	"wavelength/env"
 	"wavelength/models"
-	"wavelength/models/responses"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -118,7 +117,7 @@ func ManualImageUpload(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while uploading the image.")
 	}
 
-	return ctx.Status(fiber.StatusCreated).JSON(responses.Success(
+	return ctx.Status(fiber.StatusCreated).JSON(models.Success(
 		models.UploadThingManualFileUploadResponse{
 			Url:  data.Url,
 			Key:  data.Key,

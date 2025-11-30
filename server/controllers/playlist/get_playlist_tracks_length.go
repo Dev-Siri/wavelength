@@ -6,7 +6,6 @@ import (
 	"sync"
 	"wavelength/db"
 	"wavelength/models"
-	"wavelength/models/responses"
 	"wavelength/utils"
 
 	"github.com/gofiber/fiber/v2"
@@ -116,7 +115,7 @@ func GetPlaylistTracksLength(ctx *fiber.Ctx) error {
 		totalDurationSeconds += utils.ParseDurationToSeconds(duration)
 	}
 
-	return ctx.JSON(responses.Success(models.PlaylistTracksLength{
+	return ctx.JSON(models.Success(models.PlaylistTracksLength{
 		SongCount:          songCount,
 		SongDurationSecond: totalDurationSeconds,
 	}))

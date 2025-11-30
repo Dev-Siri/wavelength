@@ -3,7 +3,6 @@ package music_controllers
 import (
 	"wavelength/api"
 	"wavelength/models"
-	"wavelength/models/responses"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -23,7 +22,7 @@ func GetMusicTrackStats(ctx *fiber.Ctx) error {
 
 	stats := response.Items[0].Statistics
 
-	return ctx.JSON(responses.Success(models.MusicTrackStats{
+	return ctx.JSON(models.Success(models.MusicTrackStats{
 		ViewCount:    stats.ViewCount,
 		LikeCount:    stats.LikeCount,
 		CommentCount: stats.CommentCount,

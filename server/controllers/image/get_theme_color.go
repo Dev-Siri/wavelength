@@ -6,7 +6,6 @@ import (
 	_ "image/png"
 	"net/http"
 	"wavelength/models"
-	"wavelength/models/responses"
 	"wavelength/utils"
 
 	"github.com/cenkalti/dominantcolor"
@@ -41,7 +40,7 @@ func GetThemeColor(ctx *fiber.Ctx) error {
 
 	color := dominantcolor.Find(img)
 
-	return ctx.JSON(responses.Success(
+	return ctx.JSON(models.Success(
 		models.ThemeColor{
 			R: color.R,
 			G: color.G,

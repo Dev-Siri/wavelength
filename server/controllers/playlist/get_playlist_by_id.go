@@ -3,7 +3,6 @@ package playlist_controllers
 import (
 	"wavelength/db"
 	"wavelength/models"
-	"wavelength/models/responses"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -55,5 +54,5 @@ func GetPlaylistById(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusNotFound, "Playlist not found.")
 	}
 
-	return ctx.JSON(responses.Success(playlist))
+	return ctx.JSON(models.Success(playlist))
 }

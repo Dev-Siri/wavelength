@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"wavelength/constants"
 	"wavelength/models"
-	"wavelength/models/responses"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -29,7 +28,7 @@ func GetVersionStatus(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get version status from GitHub.")
 	}
 
-	return ctx.JSON(responses.Success(models.VersionStatus{
+	return ctx.JSON(models.Success(models.VersionStatus{
 		LatestVersion: requiredResponse.TagName[1:],
 	}))
 }

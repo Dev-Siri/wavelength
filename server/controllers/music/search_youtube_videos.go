@@ -4,7 +4,6 @@ import (
 	"html"
 	"wavelength/api"
 	"wavelength/models"
-	"wavelength/models/responses"
 	"wavelength/utils"
 
 	"github.com/gofiber/fiber/v2"
@@ -40,5 +39,5 @@ func SearchYouTubeVideos(ctx *fiber.Ctx) error {
 		youtubeVideos = append(youtubeVideos, video)
 	}
 
-	return ctx.JSON(responses.Success(youtubeVideos))
+	return ctx.JSON(models.Success(youtubeVideos))
 }

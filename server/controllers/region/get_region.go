@@ -6,7 +6,7 @@ import (
 	"wavelength/constants"
 	"wavelength/db"
 	"wavelength/logging"
-	"wavelength/models/responses"
+	"wavelength/models"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -25,7 +25,7 @@ func createDefaultResponse(ctx *fiber.Ctx, err error) error {
 		Expires:  infiniteTime,
 	})
 
-	return ctx.JSON(responses.Success(constants.DefaultRegion))
+	return ctx.JSON(models.Success(constants.DefaultRegion))
 }
 
 func GetRegion(ctx *fiber.Ctx) error {
@@ -58,5 +58,5 @@ func GetRegion(ctx *fiber.Ctx) error {
 		})
 	}
 
-	return ctx.JSON(responses.Success(region))
+	return ctx.JSON(models.Success(region))
 }

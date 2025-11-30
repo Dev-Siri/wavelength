@@ -4,7 +4,6 @@ import (
 	"html"
 	"wavelength/db"
 	"wavelength/models"
-	"wavelength/models/responses"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -61,5 +60,5 @@ func GetPlaylistTracks(ctx *fiber.Ctx) error {
 		playlistTracks = append(playlistTracks, playlistTrack)
 	}
 
-	return ctx.JSON(responses.Success(playlistTracks))
+	return ctx.JSON(models.Success(playlistTracks))
 }

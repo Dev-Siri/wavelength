@@ -5,7 +5,6 @@ import (
 	"html"
 	"wavelength/api"
 	"wavelength/models"
-	"wavelength/models/responses"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/sahilm/fuzzy"
@@ -71,7 +70,7 @@ func GetMusicVideoPreviewId(ctx *fiber.Ctx) error {
 		selectedVideo = videos[0]
 	}
 
-	return ctx.JSON(responses.Success(models.MusicVideoPreviewId{
+	return ctx.JSON(models.Success(models.MusicVideoPreviewId{
 		VideoId: selectedVideo.VideoID,
 	}))
 }

@@ -2,7 +2,7 @@ package artist_controllers
 
 import (
 	"wavelength/api"
-	"wavelength/models/responses"
+	"wavelength/models"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -16,5 +16,5 @@ func GetArtistById(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get artist details from YouTube: "+err.Error())
 	}
 
-	return ctx.JSON(responses.Success(response))
+	return ctx.JSON(models.Success(response))
 }
