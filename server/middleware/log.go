@@ -7,13 +7,13 @@ import (
 	"go.uber.org/zap"
 )
 
-func LogMiddleware(c *fiber.Ctx) error {
+func LogMiddleware(ctx *fiber.Ctx) error {
 	go logging.Logger.Info("Incoming Request.",
-		zap.String("Method", c.Method()),
-		zap.String("URL", c.OriginalURL()),
+		zap.String("method", ctx.Method()),
+		zap.String("url", ctx.OriginalURL()),
+		zap.String("userAgent", string(ctx.Request().Header.UserAgent())),
+		zap.String("clientIp", ctx.IP()),
 	)
 
-	err := c.Next()
-
-	return err
+	return ctx.Next()
 }
