@@ -14,7 +14,6 @@ import "package:wavelength/bloc/music_player/music_player_track/music_player_tra
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:mini_music_visualizer/mini_music_visualizer.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
-import "package:wavelength/utils/parse.dart";
 import "package:wavelength/utils/url.dart";
 import "package:wavelength/widgets/add_to_playlist_bottom_sheet.dart";
 
@@ -28,7 +27,6 @@ class TopTrackResult extends StatelessWidget {
       videoId: track.videoId,
       title: track.title,
       thumbnail: track.thumbnail,
-      duration: parseToDuration(track.duration),
       author: track.author,
       videoType: VideoType.track,
     );

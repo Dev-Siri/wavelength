@@ -20,6 +20,7 @@ import "package:wavelength/screens/search_presenters/playlists_search_presenter.
 import "package:wavelength/screens/search_presenters/tracks_search_presenter.dart";
 import "package:wavelength/bloc/public_playlists/public_playlists_event.dart";
 import "package:wavelength/screens/search_presenters/videos_search_presenter.dart";
+import "package:wavelength/widgets/search_suggested_link.dart";
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -35,6 +36,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   SearchType _searchType = SearchType.tracks;
   String _searchQuery = "";
   List<String> _suggestions = [];
+  List<SearchRecommendationItem> _suggestedLinks = [];
 
   // These track whether the data for one particular _searchQuery has already been fetched.
   // Later it is used to prevent refetching on searchType change but same _searchQuery.
@@ -140,148 +142,148 @@ class _ExploreScreenState extends State<ExploreScreen> {
     setState(() {
       if (response is ApiResponseSuccess<SearchRecommendations>) {
         _suggestions = response.data.matchingQueries;
+        _suggestedLinks = response.data.matchingLinks;
       } else {
         _suggestions = [];
+        _suggestedLinks = [];
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        const SizedBox(height: 20),
-        Autocomplete(
-          optionsBuilder: (textEditingValue) => _suggestions,
-          optionsViewBuilder: (context, onSelected, options) {
-            return Column(
-              children: options.map((option) {
-                final innerUi = Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(width: 1, color: Colors.grey.shade800),
-                    ),
-                  ),
-                  width: double.maxFinite,
-                  padding: const EdgeInsets.all(15),
-                  child: Text(
-                    option,
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                );
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      behavior: HitTestBehavior.translucent,
+      child: ListView(
+        children: [
+          const SizedBox(height: 20),
+          Autocomplete(
+            optionsBuilder: (textEditingValue) => _suggestions,
+            optionsViewBuilder: (context, onSelected, options) {
+              return Column(
+                children: [
+                  ...options.take(4).map((option) {
+                    final innerUi = Container(
+                      width: double.maxFinite,
+                      padding: const EdgeInsets.all(15),
+                      child: Text(
+                        option,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    );
 
-                return ClipRRect(
-                  borderRadius: option == options.last
-                      ? const BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
-                        )
-                      : BorderRadius.zero,
-                  child: Platform.isIOS
-                      ? CupertinoButton.filled(
-                          onPressed: () => onSelected(option),
-                          padding: EdgeInsets.zero,
-                          color: Colors.black,
-                          child: innerUi,
-                        )
-                      : MaterialButton(
-                          onPressed: () => onSelected(option),
-                          padding: EdgeInsets.zero,
-                          color: Colors.black,
-                          child: innerUi,
-                        ),
-                );
-              }).toList(),
-            );
-          },
-          onSelected: (option) {
-            setState(() => _searchQuery = option);
-            _onSearchChanged(option);
-            _updateSuggestions(option);
-          },
-          fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
-            return TextField(
-              controller: controller,
-              focusNode: focusNode,
-              onChanged: (value) {
-                _onSearchChanged(value);
-                _updateSuggestions(value);
-              },
-              style: const TextStyle(color: Colors.black),
-              cursorColor: Colors.blue,
-              autocorrect: false,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                hintText: "Search for ${_getInputHintText()}...",
-                hintStyle: const TextStyle(
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w900,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(0),
-                  borderSide: BorderSide.none,
-                ),
-                prefixIcon: const Padding(
-                  padding: EdgeInsets.only(left: 6),
-                  child: Icon(LucideIcons.compass, color: Colors.grey),
-                ),
-              ),
-            );
-          },
-        ),
-        Row(
-          spacing: 4,
-          children: [
-            ChoiceChip(
-              label: const Text("Tracks"),
-              selectedColor: Colors.white,
-              selected: _searchType == SearchType.tracks,
-              onSelected: (_) => _changeSearchType(SearchType.tracks),
-            ),
-            ChoiceChip(
-              label: const Text("Videos"),
-              selectedColor: Colors.white,
-              selected: _searchType == SearchType.videos,
-              onSelected: (_) => _changeSearchType(SearchType.videos),
-            ),
-            ChoiceChip(
-              label: const Text("Artist"),
-              selectedColor: Colors.white,
-              selected: _searchType == SearchType.artists,
-              onSelected: (_) => _changeSearchType(SearchType.artists),
-            ),
-            ChoiceChip(
-              label: const Text("Playlists"),
-              selectedColor: Colors.white,
-              selected: _searchType == SearchType.playlists,
-              onSelected: (_) => _changeSearchType(SearchType.playlists),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        if (_searchType == SearchType.playlists)
-          const PlaylistsSearchPresenter(),
-        if (_searchType == SearchType.tracks) const TracksSearchPresenter(),
-        if (_searchType == SearchType.videos) const VideosSearchPresenter(),
-        if (_searchType == SearchType.artists) const ArtistsSearchPresenter(),
-        if (_searchQuery == "" &&
-            _searchType != SearchType.playlists &&
-            !_areArtistsFetched &&
-            !_areTracksFetched &&
-            !_areVideosFetched)
-          Padding(
-            padding: EdgeInsets.only(
-              top: MediaQuery.sizeOf(context).height / 4,
-            ),
-            child: const Center(
-              child: Text(
-                "Try searching for something.",
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
+                    return Platform.isIOS
+                        ? CupertinoButton.filled(
+                            onPressed: () => onSelected(option),
+                            padding: EdgeInsets.zero,
+                            color: const Color.fromARGB(255, 26, 26, 26),
+                            borderRadius: BorderRadius.zero,
+                            child: innerUi,
+                          )
+                        : MaterialButton(
+                            onPressed: () => onSelected(option),
+                            padding: EdgeInsets.zero,
+                            color: const Color.fromARGB(255, 26, 26, 26),
+                            child: innerUi,
+                          );
+                  }),
+                  ..._suggestedLinks.take(2).map((suggestedLink) {
+                    return SearchSuggestedLink(suggestedLink: suggestedLink);
+                  }),
+                ],
+              );
+            },
+            onSelected: (option) {
+              setState(() => _searchQuery = option);
+              _onSearchChanged(option);
+              _updateSuggestions(option);
+            },
+            fieldViewBuilder:
+                (context, controller, focusNode, onFieldSubmitted) {
+                  return TextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    onChanged: (value) {
+                      _onSearchChanged(value);
+                      _updateSuggestions(value);
+                    },
+                    style: const TextStyle(color: Colors.black),
+                    cursorColor: Colors.blue,
+                    autocorrect: false,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: "Search for ${_getInputHintText()}...",
+                      hintStyle: const TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(0),
+                        borderSide: BorderSide.none,
+                      ),
+                      prefixIcon: const Padding(
+                        padding: EdgeInsets.only(left: 6),
+                        child: Icon(LucideIcons.compass, color: Colors.grey),
+                      ),
+                    ),
+                  );
+                },
           ),
-      ],
+          Row(
+            spacing: 4,
+            children: [
+              ChoiceChip(
+                label: const Text("Tracks"),
+                selectedColor: Colors.white,
+                selected: _searchType == SearchType.tracks,
+                onSelected: (_) => _changeSearchType(SearchType.tracks),
+              ),
+              ChoiceChip(
+                label: const Text("Videos"),
+                selectedColor: Colors.white,
+                selected: _searchType == SearchType.videos,
+                onSelected: (_) => _changeSearchType(SearchType.videos),
+              ),
+              ChoiceChip(
+                label: const Text("Artist"),
+                selectedColor: Colors.white,
+                selected: _searchType == SearchType.artists,
+                onSelected: (_) => _changeSearchType(SearchType.artists),
+              ),
+              ChoiceChip(
+                label: const Text("Playlists"),
+                selectedColor: Colors.white,
+                selected: _searchType == SearchType.playlists,
+                onSelected: (_) => _changeSearchType(SearchType.playlists),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          if (_searchType == SearchType.playlists)
+            const PlaylistsSearchPresenter(),
+          if (_searchType == SearchType.tracks) const TracksSearchPresenter(),
+          if (_searchType == SearchType.videos) const VideosSearchPresenter(),
+          if (_searchType == SearchType.artists) const ArtistsSearchPresenter(),
+          if (_searchQuery == "" &&
+              _searchType != SearchType.playlists &&
+              !_areArtistsFetched &&
+              !_areTracksFetched &&
+              !_areVideosFetched)
+            Padding(
+              padding: EdgeInsets.only(
+                top: MediaQuery.sizeOf(context).height / 4,
+              ),
+              child: const Center(
+                child: Text(
+                  "Try searching for something.",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

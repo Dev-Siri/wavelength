@@ -64,21 +64,22 @@ class _PlaylistTileState extends State<PlaylistTile> {
     final Widget innerUi = Padding(
       padding: const EdgeInsets.all(5),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (widget.playlist.coverImage != null)
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: CachedNetworkImage(
                 imageUrl: widget.playlist.coverImage!,
-                height: 50,
-                width: 50,
+                height: 60,
+                width: 60,
                 fit: BoxFit.cover,
               ),
             )
           else
             Container(
-              height: 50,
-              width: 50,
+              height: 60,
+              width: 60,
               decoration: BoxDecoration(
                 color: Colors.black,
                 borderRadius: BorderRadius.circular(15),
@@ -92,7 +93,7 @@ class _PlaylistTileState extends State<PlaylistTile> {
               Text(
                 widget.playlist.name,
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   overflow: TextOverflow.ellipsis,
@@ -104,7 +105,7 @@ class _PlaylistTileState extends State<PlaylistTile> {
                 style: const TextStyle(
                   color: Colors.grey,
                   height: 1,
-                  fontSize: 14,
+                  fontSize: 16,
                 ),
               ),
             ],
@@ -135,8 +136,6 @@ class _PlaylistTileState extends State<PlaylistTile> {
     if (Platform.isIOS) {
       return CupertinoButton(
         padding: EdgeInsets.zero,
-        borderRadius: BorderRadius.circular(15),
-        color: Colors.grey.shade900,
         onPressed: () =>
             context.push("/playlist/${widget.playlist.playlistId}"),
         child: innerUi,
@@ -144,8 +143,6 @@ class _PlaylistTileState extends State<PlaylistTile> {
     } else {
       return MaterialButton(
         padding: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        color: Colors.grey.shade900,
         onPressed: () =>
             context.push("/playlist/${widget.playlist.playlistId}"),
         child: innerUi,

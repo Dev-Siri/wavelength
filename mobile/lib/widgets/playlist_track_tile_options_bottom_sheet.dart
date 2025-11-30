@@ -80,7 +80,13 @@ class _PlaylistTrackTileOptionsBottomSheetState
     ),
   );
 
-  void _handleDownloadCacheTileTap(BuildContext context) {
+  Future<void> _handleDownloadCacheTileTap(BuildContext context) async {
+    if (_trackAlreadyDownloaded) {
+      await AudioCache.deleteTrack(widget.track.videoId);
+      setState(() => _trackAlreadyDownloaded = false);
+      return;
+    }
+
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
 
@@ -126,7 +132,7 @@ class _PlaylistTrackTileOptionsBottomSheetState
             borderRadius: BorderRadius.circular(20),
             child: Platform.isIOS
                 ? CupertinoListTile(
-                    onTap: () => _handleRemoveTileTap(),
+                    onTap: _handleRemoveTileTap,
                     leading: const Icon(LucideIcons.trash, color: Colors.red),
                     padding: const EdgeInsets.all(20),
                     title: const Text(
@@ -135,7 +141,7 @@ class _PlaylistTrackTileOptionsBottomSheetState
                     ),
                   )
                 : ListTile(
-                    onTap: () => _handleRemoveTileTap(),
+                    onTap: _handleRemoveTileTap,
                     leading: const Icon(LucideIcons.trash, color: Colors.red),
                     title: const Text(
                       "Remove from playlist.",
@@ -147,22 +153,42 @@ class _PlaylistTrackTileOptionsBottomSheetState
             borderRadius: BorderRadius.circular(20),
             child: Platform.isIOS
                 ? CupertinoListTile(
-                    onTap: _trackAlreadyDownloaded
-                        ? null
-                        : () => _handleDownloadCacheTileTap(context),
-                    leading: const Icon(LucideIcons.cloudDownload),
+                    onTap: () => _handleDownloadCacheTileTap(context),
+                    leading: Icon(
+                      LucideIcons.cloudDownload,
+                      color: _trackAlreadyDownloaded
+                          ? Colors.red
+                          : Colors.white,
+                    ),
                     padding: const EdgeInsets.all(20),
                     title: Text(
-                      _trackAlreadyDownloaded ? "Saved." : "Save offline.",
+                      _trackAlreadyDownloaded
+                          ? "Remove save."
+                          : "Save offline.",
+                      style: TextStyle(
+                        color: _trackAlreadyDownloaded
+                            ? Colors.red
+                            : Colors.white,
+                      ),
                     ),
                   )
                 : ListTile(
-                    onTap: _trackAlreadyDownloaded
-                        ? null
-                        : () => _handleDownloadCacheTileTap(context),
-                    leading: const Icon(LucideIcons.cloudDownload),
+                    onTap: () => _handleDownloadCacheTileTap(context),
+                    leading: Icon(
+                      LucideIcons.cloudDownload,
+                      color: _trackAlreadyDownloaded
+                          ? Colors.red
+                          : Colors.white,
+                    ),
                     title: Text(
-                      _trackAlreadyDownloaded ? "Saved." : "Save offline.",
+                      _trackAlreadyDownloaded
+                          ? "Remove save."
+                          : "Save offline.",
+                      style: TextStyle(
+                        color: _trackAlreadyDownloaded
+                            ? Colors.red
+                            : Colors.white,
+                      ),
                     ),
                   ),
           ),

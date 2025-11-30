@@ -90,6 +90,38 @@ class AudioCache {
     return accumulatedSize;
   }
 
+  static Future<bool> isTrackDownloaded(String trackId) async {
+    final dir = await getApplicationDocumentsDirectory();
+
+    await for (final file in dir.list()) {
+      if (!file.path.endsWith(".mp4")) continue;
+
+      if (trackId ==
+          file.uri.pathSegments.last
+              .replaceFirst("stream_", "")
+              .replaceFirst(".mp4", "")) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  static Future<void> deleteTrack(String trackId) async {
+    final dir = await getApplicationDocumentsDirectory();
+
+    await for (final file in dir.list()) {
+      if (!file.path.endsWith(".mp4")) continue;
+
+      if (trackId ==
+          file.uri.pathSegments.last
+              .replaceFirst("stream_", "")
+              .replaceFirst(".mp4", "")) {
+        await file.delete();
+      }
+    }
+  }
+
   static Future<int> countDownloadedTracksInPlaylist(
     List<String> playlistTrackIds,
   ) async {

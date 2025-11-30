@@ -19,9 +19,9 @@ class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
         title: const Padding(
           padding: EdgeInsets.only(top: 3),
           child: SvgPicture(
-            AssetBytesLoader("assets/vectors/logo.svg.vec"),
-            height: 60,
-            width: 100,
+            AssetBytesLoader("assets/vectors/lambda.svg.vec"),
+            height: 45,
+            width: 45,
           ),
         ),
         leading: const UserLeadingIcon(),

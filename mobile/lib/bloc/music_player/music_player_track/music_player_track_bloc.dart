@@ -27,7 +27,9 @@ class MusicPlayerTrackBloc
   ) async {
     final player = _musicPlayer.player;
 
-    emit(MusicPlayerTrackLoadingState());
+    emit(
+      MusicPlayerTrackPlayingNowState(playingNowTrack: event.queueableMusic),
+    );
 
     try {
       await player.setAudioSource(
@@ -43,9 +45,6 @@ class MusicPlayerTrackBloc
       );
 
       await player.play();
-      emit(
-        MusicPlayerTrackPlayingNowState(playingNowTrack: event.queueableMusic),
-      );
     } catch (err) {
       emit(MusicPlayerTrackEmptyState());
     }

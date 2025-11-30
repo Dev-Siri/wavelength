@@ -37,7 +37,6 @@ class VideoCard extends StatelessWidget {
             videoId: video.videoId,
             title: video.title,
             thumbnail: getTrackThumbnail(video.videoId),
-            duration: Duration(seconds: durationResponse.data),
             author: video.author,
             videoType: VideoType.uvideo,
           ),

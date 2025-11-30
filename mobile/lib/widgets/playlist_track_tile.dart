@@ -16,12 +16,12 @@ import "package:wavelength/bloc/music_player/music_player_queue/music_player_que
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
-import "package:wavelength/utils/parse.dart";
+import "package:wavelength/cache.dart";
 import "package:wavelength/utils/url.dart";
 import "package:wavelength/widgets/explicit_indicator.dart";
 import "package:wavelength/widgets/playlist_track_tile_options_bottom_sheet.dart";
 
-class PlaylistTrackTile extends StatelessWidget {
+class PlaylistTrackTile extends StatefulWidget {
   final List<PlaylistTrack> allPlaylistTracks;
   final PlaylistTrack playlistTrack;
 
@@ -31,25 +31,45 @@ class PlaylistTrackTile extends StatelessWidget {
     required this.allPlaylistTracks,
   });
 
+  @override
+  State<PlaylistTrackTile> createState() => _PlaylistTrackTileState();
+}
+
+class _PlaylistTrackTileState extends State<PlaylistTrackTile> {
+  bool _isTrackDownloaded = false;
+
+  @override
+  void initState() {
+    _fetchTrackDownloadStatus();
+    super.initState();
+  }
+
+  Future<void> _fetchTrackDownloadStatus() async {
+    if (!mounted) return;
+    final isDownloaded = await AudioCache.isTrackDownloaded(
+      widget.playlistTrack.videoId,
+    );
+
+    setState(() => _isTrackDownloaded = isDownloaded);
+  }
+
   void _playSong(BuildContext context) {
     final queueableMusic = QueueableMusic(
-      videoId: playlistTrack.videoId,
-      title: playlistTrack.title,
-      thumbnail: getTrackThumbnail(playlistTrack.videoId),
-      duration: parseToDuration(playlistTrack.duration),
-      author: playlistTrack.author,
-      videoType: playlistTrack.videoType,
+      videoId: widget.playlistTrack.videoId,
+      title: widget.playlistTrack.title,
+      thumbnail: getTrackThumbnail(widget.playlistTrack.videoId),
+      author: widget.playlistTrack.author,
+      videoType: widget.playlistTrack.videoType,
     );
 
     context.read<MusicPlayerQueueBloc>().add(
       MusicPlayerReplaceQueueEvent(
-        newQueue: allPlaylistTracks
+        newQueue: widget.allPlaylistTracks
             .map(
               (track) => QueueableMusic(
                 videoId: track.videoId,
                 title: track.title,
                 thumbnail: getTrackThumbnail(track.videoId),
-                duration: parseToDuration(track.duration),
                 author: track.author,
                 videoType: track.videoType,
               ),
@@ -68,15 +88,15 @@ class PlaylistTrackTile extends StatelessWidget {
         AppBottomSheetOpenEvent(
           context: context,
           builder: (_) => PlaylistTrackTileOptionsBottomSheet(
-            playlistId: playlistTrack.playlistId,
-            videoType: playlistTrack.videoType,
+            playlistId: widget.playlistTrack.playlistId,
+            videoType: widget.playlistTrack.videoType,
             track: Track(
-              videoId: playlistTrack.videoId,
-              title: playlistTrack.title,
-              thumbnail: playlistTrack.thumbnail,
-              author: playlistTrack.author,
-              duration: playlistTrack.duration,
-              isExplicit: playlistTrack.isExplicit,
+              videoId: widget.playlistTrack.videoId,
+              title: widget.playlistTrack.title,
+              thumbnail: widget.playlistTrack.thumbnail,
+              author: widget.playlistTrack.author,
+              duration: widget.playlistTrack.duration,
+              isExplicit: widget.playlistTrack.isExplicit,
             ),
           ),
         ),
@@ -95,7 +115,7 @@ class PlaylistTrackTile extends StatelessWidget {
             builder: (context, state) {
               final isThisTrackPlaying =
                   state is MusicPlayerTrackPlayingNowState &&
-                  state.playingNowTrack.videoId == playlistTrack.videoId;
+                  state.playingNowTrack.videoId == widget.playlistTrack.videoId;
 
               return Stack(
                 alignment: Alignment.center,
@@ -105,7 +125,7 @@ class PlaylistTrackTile extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: CachedNetworkImage(
-                        imageUrl: playlistTrack.thumbnail,
+                        imageUrl: widget.playlistTrack.thumbnail,
                         fit: BoxFit.cover,
                         height: 50,
                         width: 50,
@@ -131,18 +151,18 @@ class PlaylistTrackTile extends StatelessWidget {
               SizedBox(
                 width: (MediaQuery.sizeOf(context).width / 1.4) - 50,
                 child: Text(
-                  playlistTrack.title,
+                  widget.playlistTrack.title,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: Colors.white,
+                    color: _isTrackDownloaded ? Colors.white : Colors.grey,
                   ),
                 ),
               ),
               Row(
                 children: [
-                  if (playlistTrack.isExplicit)
+                  if (widget.playlistTrack.isExplicit)
                     const Padding(
                       padding: EdgeInsets.only(right: 5),
                       child: ExplicitIndicator(),
@@ -150,7 +170,7 @@ class PlaylistTrackTile extends StatelessWidget {
                   SizedBox(
                     width: MediaQuery.sizeOf(context).width / 2,
                     child: Text(
-                      playlistTrack.author,
+                      widget.playlistTrack.author,
                       style: const TextStyle(
                         color: Colors.grey,
                         fontSize: 14,
@@ -164,7 +184,7 @@ class PlaylistTrackTile extends StatelessWidget {
           ),
           const Spacer(),
           Text(
-            playlistTrack.duration.toString(),
+            widget.playlistTrack.duration.toString(),
             style: const TextStyle(color: Colors.grey, fontSize: 14),
           ),
           Padding(
