@@ -47,9 +47,15 @@ class SearchSuggestedLink extends StatelessWidget {
           width: MediaQuery.sizeOf(context).width - 200,
           child: Text(suggestedLink.title, overflow: TextOverflow.ellipsis),
         ),
-        subtitle: Text(
-          suggestedLink.subtitle,
-          style: const TextStyle(color: Colors.grey),
+        subtitle: SizedBox(
+          width: MediaQuery.sizeOf(context).width - 200,
+          child: Text(
+            suggestedLink.subtitle,
+            style: const TextStyle(
+              color: Colors.grey,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ),
       ),
     );
