@@ -1,4 +1,5 @@
 import { PUBLIC_BACKEND_URL } from "$env/static/public";
+import userStore from "$lib/stores/user.svelte";
 
 import { apiResponseSchema, type ApiResponse } from "./validation/api-response";
 
@@ -28,10 +29,18 @@ async function queryClient<T extends z.ZodTypeAny>(
   dataSchema: T,
   { method = "GET", body, searchParams, headers }: Partial<Options> = {},
 ): Promise<z.infer<T>> {
+  const authToken = await userStore.getAuthToken();
+  const authHeaders: Record<string, string> = authToken
+    ? {
+        Authorization: `Bearer ${authToken}`,
+      }
+    : {};
+
   const url = new URL(endpoint, baseUrl);
   const requestHeaders: Record<string, string> = {
     "Content-Type": "application/json",
     ...headers,
+    ...authHeaders,
   };
 
   if (searchParams)
@@ -61,7 +70,7 @@ async function queryClient<T extends z.ZodTypeAny>(
 }
 
 function createQueryClient(baseUrl: string) {
-  return <T extends z.ZodTypeAny>(
+  return async <T extends z.ZodTypeAny>(
     endpoint: string,
     dataSchema: T,
     options: Partial<Options> = {},

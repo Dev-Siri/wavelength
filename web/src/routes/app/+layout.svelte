@@ -19,6 +19,7 @@
   import TopBar from "$lib/components/TopBar.svelte";
   import * as Tooltip from "$lib/components/ui/tooltip";
   import { PersistQueryClientProvider } from "@tanstack/svelte-query-persist-client";
+  import type { PageData } from "./$types";
 
   interface PaneLimit {
     minSize: number;
@@ -31,7 +32,7 @@
     content: number;
   }
 
-  const { children }: { children?: Snippet } = $props();
+  const { children, data }: { children?: Snippet; data: PageData } = $props();
 
   let screenSize: number | null = $state(null);
   let sidebarWidth = $state(20);

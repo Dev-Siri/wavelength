@@ -1,6 +1,7 @@
 export const localStorageKeys = {
   volume: "volume",
   recentSearches: "recent-searches",
+  authToken: "auth-token",
 } as const;
 
 export const svelteQueryKeys = {

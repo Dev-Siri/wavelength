@@ -20,10 +20,6 @@
     mutationFn: () =>
       backendClient(`/playlists/user/${userStore.user?.email}`, z.string(), {
         method: "POST",
-        searchParams: {
-          authorName: userStore.user?.name,
-          authorImage: userStore.user?.image,
-        },
       }),
     onError: () => toast.error("Failed to create playlist."),
     onSuccess() {
