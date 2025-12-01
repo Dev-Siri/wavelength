@@ -1,12 +1,17 @@
 import "dart:io";
 
+import "package:connectivity_plus/connectivity_plus.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_svg/flutter_svg.dart";
 import "package:go_router/go_router.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
+import "package:package_info_plus/package_info_plus.dart";
 import "package:vector_graphics/vector_graphics.dart";
+import "package:wavelength/api/models/api_response.dart";
+import "package:wavelength/api/models/version_status.dart";
+import "package:wavelength/api/repositories/meta_repo.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
@@ -21,6 +26,7 @@ import "package:wavelength/bloc/music_player/music_player_track/music_player_tra
 import "package:wavelength/widgets/music_player_presence_adjuster.dart";
 import "package:wavelength/widgets/playlist_creation_bottom_sheet.dart";
 import "package:wavelength/widgets/shared_app_bar.dart";
+import "package:wavelength/widgets/update_version_dialog.dart";
 import "package:wavelength/widgets/user_info_drawer.dart";
 
 class AppShell extends StatefulWidget {
@@ -39,6 +45,7 @@ class _AppShellState extends State<AppShell> {
   void initState() {
     context.read<LocationBloc>().add(LocationFetchEvent());
     context.read<AuthBloc>().add(AuthLocalUserFetchEvent());
+    _checkVersionStatus();
 
     super.initState();
   }
@@ -98,6 +105,31 @@ class _AppShellState extends State<AppShell> {
             builder: (context) => const PlaylistCreationBottomSheet(),
           ),
         );
+    }
+  }
+
+  Future<void> _checkVersionStatus() async {
+    void showUpdateVersionDialog(String currentVersion, String latestVersion) =>
+        showDialog(
+          context: context,
+          builder: (context) => UpdateVersionDialog(
+            currentVersion: currentVersion,
+            latestVersion: latestVersion,
+          ),
+        );
+
+    final connectivity = Connectivity();
+    final connectivityResult = await connectivity.checkConnectivity();
+
+    if (connectivityResult.contains(ConnectivityResult.none)) return;
+
+    final versionStatus = await MetaRepo.fetchVersionStatus();
+    final packageInfo = await PackageInfo.fromPlatform();
+    final appVersion = packageInfo.version;
+
+    if (versionStatus is ApiResponseSuccess<VersionStatus> &&
+        versionStatus.data.latestVersion != appVersion) {
+      showUpdateVersionDialog(appVersion, versionStatus.data.latestVersion);
     }
   }
 
