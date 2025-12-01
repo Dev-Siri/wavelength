@@ -8,10 +8,32 @@ import (
 )
 
 func ChangePlaylistVisibility(ctx *fiber.Ctx) error {
+	authUser, ok := ctx.Locals("authUser").(models.AuthUser)
+
+	if !ok {
+		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
+	}
+
 	playlistId := ctx.Params("playlistId")
 
 	if playlistId == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "Playlist ID is required.")
+	}
+
+	row := db.Database.QueryRow(`
+		SELECT author_google_email FROM playlists
+		WHERE playlist_id = $1
+		LIMIT 1;
+	`, playlistId)
+
+	var playlistActualAuthorEmail string
+
+	if err := row.Scan(&playlistActualAuthorEmail); err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, "Failed to scan database row: "+err.Error())
+	}
+
+	if playlistActualAuthorEmail != authUser.Email {
+		return fiber.NewError(fiber.StatusUnauthorized, "Visibility change cannot be performed because the authorized user is not the author of the playlist.")
 	}
 
 	rows, err := db.Database.Query(`

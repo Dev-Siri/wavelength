@@ -10,15 +10,14 @@ import (
 
 func CreatePlaylist(ctx *fiber.Ctx) error {
 	email := ctx.Params("email")
-	authorName := ctx.Query("authorName")
-	authorImage := ctx.Query("authorImage")
+	authUser, ok := ctx.Locals("authUser").(models.AuthUser)
+
+	if !ok {
+		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
+	}
 
 	if email == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "Email is required.")
-	}
-
-	if authorName == "" || authorImage == "" {
-		return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized.")
 	}
 
 	playlistId := uuid.NewString()
@@ -33,7 +32,7 @@ func CreatePlaylist(ctx *fiber.Ctx) error {
 			cover_image
 		)
 		VALUES ( $1, $2, $3, $4, $5, $6 );
-	`, playlistId, "New Playlist", email, authorName, authorImage, nil)
+	`, playlistId, "New Playlist", email, authUser.DisplayName, authUser.PhotoUrl, nil)
 
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to create new playlist for user: "+err.Error())

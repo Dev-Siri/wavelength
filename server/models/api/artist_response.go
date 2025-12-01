@@ -1,11 +1,11 @@
 package api_models
 
 type ArtistResponse struct {
-	Title           string               `json:"title"`
-	Description     string               `json:"description"`
-	Thumbnail       string               `json:"thumbnail"`
-	SubscriberCount string               `json:"subscriberCount"`
-	Songs           []ArtistResponseSong `json:"songs"`
+	Title           string             `json:"title"`
+	Description     string             `json:"description"`
+	Thumbnail       string             `json:"thumbnail"`
+	SubscriberCount string             `json:"subscriberCount"`
+	TopSongs        ArtistResponseSong `json:"top songs"`
 }
 
 type ArtistResponseSong struct {

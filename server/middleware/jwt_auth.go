@@ -3,6 +3,7 @@ package middleware
 import (
 	"strings"
 	"wavelength/env"
+	"wavelength/models"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -34,5 +35,14 @@ func JwtAuthMiddleware(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
 	}
 
+	claims, ok := token.Claims.(jwt.MapClaims)
+
+	if !ok || !token.Valid {
+		return fiber.NewError(fiber.StatusUnauthorized, "Invalid token claims.")
+	}
+
+	authUser := models.ClaimsToAuthUser(claims)
+
+	ctx.Locals("authUser", authUser)
 	return ctx.Next()
 }
