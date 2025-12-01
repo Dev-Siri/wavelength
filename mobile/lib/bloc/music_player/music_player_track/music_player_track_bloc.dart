@@ -1,5 +1,6 @@
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:just_audio_background/just_audio_background.dart";
+import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/audio/background_audio_source.dart";
 import "package:wavelength/bloc/music_player/music_player_singleton.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
@@ -46,6 +47,10 @@ class MusicPlayerTrackBloc
 
       await player.play();
     } catch (err) {
+      DiagnosticsRepo.reportError(
+        error: err.toString(),
+        source: "MusicPlayerTrackBloc._loadTrack",
+      );
       emit(MusicPlayerTrackEmptyState());
     }
   }

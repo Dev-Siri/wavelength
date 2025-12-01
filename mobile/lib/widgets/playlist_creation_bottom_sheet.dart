@@ -25,8 +25,7 @@ class _PlaylistCreationBottomSheetState
     extends State<PlaylistCreationBottomSheet> {
   Future<void> _createPlaylist({
     required String userEmail,
-    required String username,
-    required String userImage,
+    required String authToken,
   }) async {
     final appBottomSheet = context.read<AppBottomSheetBloc>();
     final appBottomSheetCloseEvent = AppBottomSheetCloseEvent(context: context);
@@ -34,12 +33,11 @@ class _PlaylistCreationBottomSheetState
     final libraryBloc = context.read<LibraryBloc>();
 
     final response = await PlaylistsRepo.createPlaylist(
+      authToken: authToken,
       email: userEmail,
-      image: userImage,
-      username: username,
     );
 
-    if (response is ApiResponseSuccess) {
+    if (response is ApiResponseSuccess<String>) {
       messenger.showSnackBar(
         const SnackBar(
           backgroundColor: Colors.green,
@@ -49,7 +47,9 @@ class _PlaylistCreationBottomSheetState
           ),
         ),
       );
-      libraryBloc.add(LibraryPlaylistsFetchEvent(email: userEmail));
+      libraryBloc.add(
+        LibraryPlaylistsFetchEvent(email: userEmail, authToken: authToken),
+      );
     } else {
       messenger.showSnackBar(
         const SnackBar(
@@ -96,8 +96,7 @@ class _PlaylistCreationBottomSheetState
                     ? CupertinoListTile(
                         onTap: () => _createPlaylist(
                           userEmail: state.user.email,
-                          username: state.user.displayName ?? "",
-                          userImage: state.user.photoUrl ?? "",
+                          authToken: state.authToken,
                         ),
                         leading: const Icon(LucideIcons.listMusic),
                         padding: const EdgeInsets.all(20),
@@ -107,8 +106,7 @@ class _PlaylistCreationBottomSheetState
                     : ListTile(
                         onTap: () => _createPlaylist(
                           userEmail: state.user.email,
-                          username: state.user.displayName ?? "",
-                          userImage: state.user.photoUrl ?? "",
+                          authToken: state.authToken,
                         ),
                         leading: const Icon(LucideIcons.listMusic),
                         title: title,

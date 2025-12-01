@@ -20,7 +20,10 @@ class LibraryScreen extends StatelessWidget {
           color: Colors.white,
           onRefresh: () async => state is AuthStateAuthorized
               ? context.read<LibraryBloc>().add(
-                  LibraryPlaylistsFetchEvent(email: state.user.email),
+                  LibraryPlaylistsFetchEvent(
+                    email: state.user.email,
+                    authToken: state.authToken,
+                  ),
                 )
               : null,
           child: ListView(

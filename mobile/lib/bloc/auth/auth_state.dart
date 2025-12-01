@@ -10,6 +10,7 @@ class AuthStateUnauthorized extends AuthState {}
 
 class AuthStateAuthorized extends AuthState {
   final LocalGoogleSignInAccount user;
+  final String authToken;
 
-  AuthStateAuthorized({required this.user});
+  AuthStateAuthorized({required this.user, required this.authToken});
 }

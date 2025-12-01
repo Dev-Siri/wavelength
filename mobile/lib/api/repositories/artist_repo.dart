@@ -5,6 +5,7 @@ import "package:http/http.dart" as http;
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/artist_extra.dart";
 import "package:wavelength/api/models/individual_artist.dart";
+import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/constants.dart";
 
 class ArtistRepo {
@@ -34,7 +35,12 @@ class ArtistRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "ArtistRepo.fetchArtist",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 
@@ -63,7 +69,12 @@ class ArtistRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "ArtistRepo.fetchArtistExtra",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 }

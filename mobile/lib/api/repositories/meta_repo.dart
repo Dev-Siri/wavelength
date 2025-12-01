@@ -4,6 +4,7 @@ import "package:flutter/foundation.dart";
 import "package:http/http.dart" as http;
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/version_status.dart";
+import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/constants.dart";
 
 class MetaRepo {
@@ -28,7 +29,12 @@ class MetaRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "MetaRepo.fetchVersionStatus",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 }

@@ -4,6 +4,7 @@ import "package:http/http.dart" as http;
 import "package:flutter/foundation.dart";
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/quick_picks_item.dart";
+import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/constants.dart";
 
 class QuickPicksRepo {
@@ -41,7 +42,12 @@ class QuickPicksRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "QuickPicksRepo.fetchQuickPicks",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 }

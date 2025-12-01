@@ -12,6 +12,8 @@ const hiveStreamsKey = "yt_streams";
 const settingsOptionPreferWifiForDownloads = "settings:prefer_wifi_for_streams";
 const settingsOptionPreferWifiForDownloadsDefaultValue = true;
 
+const wavelengthDiagnosticPlatformName = "wavelength-flutter_app";
+
 const countryCodeMap = {
   "AF": "Afghanistan",
   "AL": "Albania",

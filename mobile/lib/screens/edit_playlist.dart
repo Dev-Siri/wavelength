@@ -83,9 +83,9 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
     final messenger = ScaffoldMessenger.of(context);
     final appBottomSheet = context.read<AppBottomSheetBloc>();
     final appBottomSheetCloseEvent = AppBottomSheetCloseEvent(context: context);
-    final authBloc = context.read<AuthBloc>();
     final libraryBloc = context.read<LibraryBloc>();
     final playlistBloc = context.read<PlaylistBloc>();
+    final authBlocState = context.read<AuthBloc>().state;
 
     final coverImageUrl = await _handleFileUpload();
 
@@ -109,10 +109,11 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
     );
 
     if (response is ApiResponseSuccess &&
-        authBloc.state is AuthStateAuthorized) {
+        authBlocState is AuthStateAuthorized) {
       libraryBloc.add(
         LibraryPlaylistsFetchEvent(
-          email: (authBloc.state as AuthStateAuthorized).user.email,
+          email: authBlocState.user.email,
+          authToken: authBlocState.authToken,
         ),
       );
       playlistBloc.add(PlaylistFetchEvent(playlistId: widget.playlistId));

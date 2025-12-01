@@ -34,7 +34,10 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
       return;
     }
 
-    final response = await PlaylistsRepo.fetchUserPlaylists(email: event.email);
+    final response = await PlaylistsRepo.fetchUserPlaylists(
+      email: event.email,
+      authToken: event.authToken,
+    );
 
     if (response is ApiResponseSuccess<List<Playlist>>) {
       await box.put(event.email, response.data);

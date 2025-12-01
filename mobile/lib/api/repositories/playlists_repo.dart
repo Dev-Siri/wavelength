@@ -6,15 +6,18 @@ import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/playlist.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/playlist_tracks_length.dart";
+import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/constants.dart";
 
 class PlaylistsRepo {
   static Future<ApiResponse<List<Playlist>>> fetchUserPlaylists({
     required String email,
+    required String authToken,
   }) async {
     try {
       final response = await http.get(
         Uri.parse("$backendUrl/playlists/user/$email"),
+        headers: {"Authorization": "Bearer $authToken"},
       );
       final utf8BodyDecoded = utf8.decode(response.bodyBytes);
       final decodedResponse =
@@ -39,7 +42,12 @@ class PlaylistsRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "PlaylistsRepo.fetchUserPlaylists",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 
@@ -73,7 +81,12 @@ class PlaylistsRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "PlaylistsRepo.fetchPublicPlaylists",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 
@@ -109,7 +122,12 @@ class PlaylistsRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "PlaylistsRepo.fetchPlaylistTracks",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 
@@ -138,20 +156,23 @@ class PlaylistsRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "PlaylistsRepo.fetchPlaylistTracksLength",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 
   static Future<ApiResponse<String>> createPlaylist({
+    required String authToken,
     required String email,
-    required String username,
-    required String image,
   }) async {
     try {
       final response = await http.post(
-        Uri.parse(
-          "$backendUrl/playlists/user/$email?authorName=$username&authorImage=$image",
-        ),
+        Uri.parse("$backendUrl/playlists/user/$email"),
+        headers: {"Authorization": "Bearer $authToken"},
       );
 
       final decodedResponse = await compute<String, ApiResponse<String>>((
@@ -169,16 +190,23 @@ class PlaylistsRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "PlaylistsRepo.createPlaylist",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 
   static Future<ApiResponse<String>> deletePlaylist({
     required String playlistId,
+    required String authToken,
   }) async {
     try {
       final response = await http.delete(
         Uri.parse("$backendUrl/playlists/playlist/$playlistId"),
+        headers: {"Authorization": "Bearer $authToken"},
       );
 
       final decodedResponse = await compute<String, ApiResponse<String>>((
@@ -196,7 +224,12 @@ class PlaylistsRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "PlaylistsRepo.deletePlaylist",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 
@@ -227,7 +260,12 @@ class PlaylistsRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "PlaylistsRepo.editPlaylist",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 
@@ -254,7 +292,12 @@ class PlaylistsRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "PlaylistsRepo.togglePlaylistVisibility",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 }

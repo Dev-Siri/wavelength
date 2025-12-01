@@ -150,7 +150,10 @@ class _AppShellState extends State<AppShell> {
                   listener: (context, state) {
                     if (state is AuthStateAuthorized) {
                       context.read<LibraryBloc>().add(
-                        LibraryPlaylistsFetchEvent(email: state.user.email),
+                        LibraryPlaylistsFetchEvent(
+                          email: state.user.email,
+                          authToken: state.authToken,
+                        ),
                       );
                     }
                   },

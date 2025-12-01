@@ -4,6 +4,7 @@ import "package:flutter/cupertino.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:just_audio/just_audio.dart";
 import "package:just_audio_background/just_audio_background.dart";
+import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_event.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_state.dart";
@@ -21,6 +22,7 @@ class MusicPlayerInternals {
   StreamSubscription? _stateSub;
   StreamSubscription? _currentIndexSub;
   StreamSubscription? _durationSub;
+  StreamSubscription? _errorSub;
 
   MusicPlayerInternals() : _player = MusicPlayerSingleton().player;
 
@@ -29,6 +31,13 @@ class MusicPlayerInternals {
     final musicPlayerDurationBloc = context.read<MusicPlayerDurationBloc>();
     final musicPlayerPlaystateBloc = context.read<MusicPlayerPlaystateBloc>();
     final musicPlayerTrackBloc = context.read<MusicPlayerTrackBloc>();
+
+    _errorSub = _player.errorStream.listen((error) {
+      DiagnosticsRepo.reportError(
+        error: error.toString(),
+        source: "(listener) just_audio: AudioPlayer.errorStream",
+      );
+    });
 
     _positionSub = _player.positionStream.listen((position) async {
       final musicPlayerDurationState = musicPlayerDurationBloc.state;
@@ -97,5 +106,6 @@ class MusicPlayerInternals {
     _stateSub?.cancel();
     _currentIndexSub?.cancel();
     _durationSub?.cancel();
+    _errorSub?.cancel();
   }
 }

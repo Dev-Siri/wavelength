@@ -7,6 +7,7 @@ import "package:wavelength/api/models/artist.dart";
 import "package:wavelength/api/models/search_recommendations.dart";
 import "package:wavelength/api/models/track.dart";
 import "package:wavelength/api/models/video.dart";
+import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/constants.dart";
 
 class SearchRepo {
@@ -41,7 +42,12 @@ class SearchRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "SearchRepo.fetchTracksByQuery",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 
@@ -76,7 +82,12 @@ class SearchRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "SearchRepo.fetchVideosByQuery",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 
@@ -111,7 +122,12 @@ class SearchRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "SearchRepo.fetchArtistsByQuery",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 
@@ -143,7 +159,12 @@ class SearchRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "SearchRepo.fetchSearchRecommendations",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 }

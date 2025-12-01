@@ -28,9 +28,13 @@ class _PlaylistTileState extends State<PlaylistTile> {
   Future<void> _deletePlaylist({required String userEmail}) async {
     final messenger = ScaffoldMessenger.of(context);
     final libraryBloc = context.read<LibraryBloc>();
+    final authBlocState = context.read<AuthBloc>().state;
+
+    if (authBlocState is! AuthStateAuthorized) return;
 
     final response = await PlaylistsRepo.deletePlaylist(
       playlistId: widget.playlist.playlistId,
+      authToken: authBlocState.authToken,
     );
 
     if (response is ApiResponseSuccess) {
@@ -44,7 +48,12 @@ class _PlaylistTileState extends State<PlaylistTile> {
         ),
       );
 
-      libraryBloc.add(LibraryPlaylistsFetchEvent(email: userEmail));
+      libraryBloc.add(
+        LibraryPlaylistsFetchEvent(
+          email: userEmail,
+          authToken: authBlocState.authToken,
+        ),
+      );
       return;
     }
 

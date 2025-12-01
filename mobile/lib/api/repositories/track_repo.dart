@@ -7,6 +7,7 @@ import "package:wavelength/api/models/lyric.dart";
 import "package:wavelength/api/models/music_video_preview.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/track.dart";
+import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/constants.dart";
 
 class TrackRepo {
@@ -38,7 +39,12 @@ class TrackRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "TrackRepo.fetchTrackMusicVideo",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 
@@ -77,7 +83,12 @@ class TrackRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "TrackRepo.toggleTrackFromPlaylist",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 
@@ -107,7 +118,12 @@ class TrackRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "TrackRepo.fetchTrackLyrics",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 
@@ -135,7 +151,12 @@ class TrackRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "TrackRepo.fetchTrackDuration",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 }

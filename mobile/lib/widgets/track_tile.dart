@@ -6,9 +6,11 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:mini_music_visualizer/mini_music_visualizer.dart";
+import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/representations/queueable_music.dart";
 import "package:wavelength/api/models/track.dart";
+import "package:wavelength/api/repositories/track_repo.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
 import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_bloc.dart";
@@ -16,6 +18,7 @@ import "package:wavelength/bloc/music_player/music_player_queue/music_player_que
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
+import "package:wavelength/utils/parse.dart";
 import "package:wavelength/widgets/add_to_playlist_bottom_sheet.dart";
 import "package:wavelength/widgets/explicit_indicator.dart";
 
@@ -38,6 +41,47 @@ class TrackTile extends StatelessWidget {
     );
     context.read<MusicPlayerTrackBloc>().add(
       MusicPlayerTrackLoadEvent(queueableMusic: queueableMusic),
+    );
+  }
+
+  Future<void> _addTrackToPlaylist(BuildContext context) async {
+    void createBottomSheetOpenEvent(WidgetBuilder builder) {
+      final appBottomSheetBloc = context.read<AppBottomSheetBloc>();
+
+      appBottomSheetBloc.add(
+        AppBottomSheetOpenEvent(
+          context: context,
+          isScrollControlled: true,
+          useRootNavigator: true,
+          builder: builder,
+        ),
+      );
+    }
+
+    String duration = track.duration;
+
+    if (duration == "") {
+      final durationResponse = await TrackRepo.fetchTrackDuration(
+        trackId: track.videoId,
+      );
+
+      if (durationResponse is! ApiResponseSuccess<int>) return;
+
+      duration = durationify(Duration(seconds: durationResponse.data));
+    }
+
+    createBottomSheetOpenEvent(
+      (context) => AddToPlaylistBottomSheet(
+        track: Track(
+          videoId: track.videoId,
+          title: track.title,
+          thumbnail: track.thumbnail,
+          author: track.author,
+          duration: duration,
+          isExplicit: track.isExplicit,
+        ),
+        videoType: VideoType.track,
+      ),
     );
   }
 
@@ -123,24 +167,7 @@ class TrackTile extends StatelessWidget {
           ),
           const Spacer(),
           CupertinoButton(
-            onPressed: () => context.read<AppBottomSheetBloc>().add(
-              AppBottomSheetOpenEvent(
-                context: context,
-                isScrollControlled: true,
-                useRootNavigator: true,
-                builder: (context) => AddToPlaylistBottomSheet(
-                  track: Track(
-                    videoId: track.videoId,
-                    title: track.title,
-                    thumbnail: track.thumbnail,
-                    author: track.author,
-                    duration: track.duration,
-                    isExplicit: track.isExplicit,
-                  ),
-                  videoType: VideoType.track,
-                ),
-              ),
-            ),
+            onPressed: () => _addTrackToPlaylist(context),
             child: const Icon(LucideIcons.circlePlus, color: Colors.white),
           ),
         ],

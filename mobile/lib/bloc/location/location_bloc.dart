@@ -3,6 +3,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:geocoding/geocoding.dart";
 import "package:geolocator/geolocator.dart";
 import "package:shared_preferences/shared_preferences.dart";
+import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/bloc/location/location_event.dart";
 import "package:wavelength/bloc/location/location_state.dart";
 import "package:wavelength/constants.dart";
@@ -49,7 +50,11 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       emit(LocationState(countryCode: countryCode));
 
       if (countryCode != locale) sharedPrefs.setString("user_cc", countryCode);
-    } catch (_) {
+    } catch (err) {
+      DiagnosticsRepo.reportError(
+        error: err.toString(),
+        source: "LocationBloc._fetchLocation",
+      );
       emit(const LocationState(countryCode: defaultLocale));
     }
   }

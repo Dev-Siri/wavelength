@@ -4,6 +4,7 @@ import "package:flutter/foundation.dart";
 import "package:http/http.dart" as http;
 import "package:wavelength/api/models/playlist_theme_color.dart";
 import "package:wavelength/api/models/api_response.dart";
+import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/constants.dart";
 import "package:image_picker/image_picker.dart";
 import "package:wavelength/api/models/uploadthing_file.dart";
@@ -33,7 +34,12 @@ class ImageRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "ImageRepo.fetchImageThemeColor",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 
@@ -66,7 +72,12 @@ class ImageRepo {
 
       return decodedResponse;
     } catch (e) {
-      return ApiResponseError(message: e.toString());
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "ImageRepo.uploadImage",
+      );
+      return ApiResponseError(message: errorString);
     }
   }
 }

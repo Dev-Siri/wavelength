@@ -1,18 +1,17 @@
-import "dart:io";
-
 import "package:cached_network_image/cached_network_image.dart";
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:flutter_svg/svg.dart";
 import "package:go_router/go_router.dart";
-import "package:lucide_icons_flutter/lucide_icons.dart";
-import "package:url_launcher/url_launcher.dart";
+import "package:vector_graphics/vector_graphics.dart";
+import "package:wavelength/api/models/track.dart";
 import "package:wavelength/bloc/artist/artist_bloc.dart";
 import "package:wavelength/bloc/artist/artist_event.dart";
 import "package:wavelength/bloc/artist/artist_state.dart";
 import "package:wavelength/widgets/error_message_dialog.dart";
 import "package:wavelength/widgets/loading_indicator.dart";
 import "package:wavelength/widgets/music_player_presence_adjuster.dart";
+import "package:wavelength/widgets/track_tile.dart";
 
 class ArtistScreen extends StatefulWidget {
   final String browseId;
@@ -32,21 +31,18 @@ class _ArtistScreenState extends State<ArtistScreen> {
     super.initState();
   }
 
-  Future<void> _openArtistOnYouTube() async {
-    final url = "https://youtube.com/channel/${widget.browseId}";
-    final Uri uri = Uri.parse(url);
-
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.inAppWebView);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(onPressed: () => context.pop()),
         backgroundColor: Colors.transparent,
+        leading: BackButton(onPressed: () => context.pop()),
+        centerTitle: true,
+        title: const SvgPicture(
+          AssetBytesLoader("assets/vectors/lambda.svg.vec"),
+          height: 45,
+          width: 45,
+        ),
       ),
       body: MusicPlayerPresenceAdjuster(
         child: BlocBuilder<ArtistBloc, ArtistState>(
@@ -78,8 +74,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
               );
             }
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+            return ListView(
               children: [
                 Center(
                   child: CircleAvatar(
@@ -108,55 +103,25 @@ class _ArtistScreenState extends State<ArtistScreen> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 35,
-                    vertical: 5,
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 10, left: 10),
+                  child: Text(
+                    "Top Songs",
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
                   ),
-                  child: Platform.isIOS
-                      ? CupertinoButton(
-                          onPressed: _openArtistOnYouTube,
-                          color: Colors.red,
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(LucideIcons.youtube, color: Colors.white),
-                              SizedBox(width: 10),
-                              Text(
-                                "View artist on YouTube.",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        )
-                      : MaterialButton(
-                          onPressed: _openArtistOnYouTube,
-                          color: Colors.red,
-                          padding: const EdgeInsets.all(12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(
-                                LucideIcons.youtube,
-                                color: Colors.white,
-                                size: 25,
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                "View artist on YouTube.",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
                 ),
+                ...state.artist.topSongs.map((final song) {
+                  return TrackTile(
+                    track: Track(
+                      videoId: song.videoId,
+                      title: song.title,
+                      thumbnail: song.thumbnail,
+                      author: song.author,
+                      duration: "",
+                      isExplicit: song.isExplicit,
+                    ),
+                  );
+                }),
               ],
             );
           },
