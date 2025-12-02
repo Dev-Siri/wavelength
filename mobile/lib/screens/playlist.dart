@@ -87,7 +87,9 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
     );
   }
 
-  void _downloadAllTracks(List<PlaylistTrack> playlistTracks) {
+  Future<void> _downloadAllTracks(List<PlaylistTrack> playlistTracks) async {
+    final downloadBloc = context.read<DownloadBloc>();
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         backgroundColor: Colors.blue,
@@ -99,7 +101,11 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
     );
 
     for (final track in playlistTracks) {
-      context.read<DownloadBloc>().add(
+      if (await AudioCache.isTrackDownloaded(track.playlistTrackId)) {
+        continue;
+      }
+
+      downloadBloc.add(
         DownloadAddToQueueEvent(
           newDownload: StreamDownload(
             downloadId: const UuidV4().generate(),
