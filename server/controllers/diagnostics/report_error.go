@@ -17,7 +17,9 @@ func ReportError(ctx *fiber.Ctx) error {
 	}
 
 	logging.Logger.Error("Client-side application reported an error",
-		zap.Any("diagnostic", applicationDiagnostic),
+		zap.String("error", applicationDiagnostic.Error),
+		zap.String("source", applicationDiagnostic.Source),
+		zap.String("platform", applicationDiagnostic.Platform),
 	)
 
 	ctx.Status(fiber.StatusNoContent)
