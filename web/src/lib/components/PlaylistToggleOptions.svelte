@@ -34,14 +34,26 @@
 
   const playlistsAddMutation = createMutation(() => ({
     mutationKey: svelteMutationKeys.addToPlaylists,
-    mutationFn: (playlistId: string) =>
-      backendClient(`/playlists/playlist/${playlistId}/tracks`, z.string(), {
+    async mutationFn(playlistId: string) {
+      let duration = music.duration;
+
+      if (duration === "") {
+        const fetchedDuration = await backendClient(
+          `/music/track/${music.videoId}/duration`,
+          z.number(),
+        );
+        duration = fetchedDuration.toString();
+      }
+
+      return backendClient(`/playlists/playlist/${playlistId}/tracks`, z.string(), {
         method: "POST",
         body: {
           ...music,
+          duration,
           videoType: "track",
         },
-      }),
+      });
+    },
     onError: () => toast.error("Failed to update playlist."),
     onSuccess(data, playlistId) {
       toast.success(data);

@@ -1,79 +1,115 @@
 <script lang="ts">
-  import { XIcon } from "@lucide/svelte";
+  import { goto } from "$app/navigation";
+  import { backendClient } from "$lib/utils/query-client";
+  import {
+    searchRecommendationsSchema,
+    type SearchRecommendations,
+  } from "$lib/utils/validation/search-recommendations";
 
-  import { localStorageKeys } from "$lib/constants/keys.js";
-  import { isRecentSearchesArray } from "$lib/utils/validation/recent-searches-schema.js";
+  let searchSuggestionsList: HTMLDivElement | null = $state(null);
+  let {
+    q,
+    isInputFocused,
+    searchInput,
+    onFocus,
+    onBlur,
+  }: {
+    q: string;
+    isInputFocused: boolean;
+    searchInput: HTMLInputElement | null;
+    onFocus?: () => void;
+    onBlur?: () => void;
+  } = $props();
 
-  let { q }: { q: string } = $props();
-
-  let searchTerms = $state<string[]>([]);
-  let filteredSearchTerms = $derived(
-    q ? searchTerms.filter(term => term.includes(q.toLowerCase())) : searchTerms,
-  );
+  let searchResults: SearchRecommendations = $state({
+    matchingLinks: [],
+    matchingQueries: [],
+  });
 
   $effect(() => {
-    function fetchRecentSearches() {
-      const recentSearches = localStorage.getItem(localStorageKeys.recentSearches);
+    async function fetchRecentSearches() {
+      const recentSearches = await backendClient(
+        "/music/search/search-recommendations",
+        searchRecommendationsSchema,
+        {
+          searchParams: { q },
+        },
+      );
 
-      if (!recentSearches) return;
-
-      const jsonRecentSearches = JSON.parse(recentSearches);
-      const parsedRecentSearches = isRecentSearchesArray(jsonRecentSearches);
-
-      if (parsedRecentSearches) searchTerms = jsonRecentSearches;
+      searchResults = recentSearches;
     }
 
     fetchRecentSearches();
   });
 
-  function handleRemoveTermFromRecents(
-    e: MouseEvent & {
-      currentTarget: EventTarget & HTMLButtonElement;
-    },
-    searchTerm: string,
-  ) {
-    e.stopPropagation();
-    e.preventDefault();
+  $effect(() => {
+    function keyboardSuggestionNavigationHandler(e: KeyboardEvent) {
+      if (!isInputFocused) return;
 
-    searchTerms = searchTerms.filter(term => term !== searchTerm);
+      if (e.key === "ArrowDown") searchSuggestionsList?.focus();
+    }
 
-    localStorage.setItem(localStorageKeys.recentSearches, JSON.stringify(searchTerms));
+    document.addEventListener("keydown", keyboardSuggestionNavigationHandler);
+
+    return () => document.removeEventListener("keydown", keyboardSuggestionNavigationHandler);
+  });
+
+  let activeIndex = $state(0);
+
+  function handleSearchSuggestionListKeyDown(e: KeyboardEvent) {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      activeIndex = Math.min(activeIndex + 1, searchResults.matchingQueries.length - 1);
+    }
+
+    if (e.key === "ArrowUp") {
+      if (activeIndex === 0) searchInput?.focus();
+
+      e.preventDefault();
+      activeIndex = Math.max(activeIndex - 1, 0);
+    }
+
+    if (e.key === "Enter") {
+      const term = searchResults.matchingQueries[activeIndex];
+      if (term) goto(`/app/search?q=${encodeURIComponent(term)}`);
+    }
   }
 </script>
 
-<div class="bg-black border-2 border-secondary rounded-xl w-full overflow-hidden shadow-2xl">
-  {#if filteredSearchTerms.length}
-    <div class="py-4">
-      <p class="px-4 text-xl font-semibold mb-4">Recent Searches</p>
-      <ul class="flex flex-col items-center">
-        {#each filteredSearchTerms.slice(0, 5) as searchTerm}
-          <li
-            class="flex justify-center relative items-center h-full w-full backdrop-opacity-20 z-9999"
+<div class="bg-black border-secondary rounded-xl w-full overflow-hidden shadow-2xl">
+  {#if searchResults.matchingLinks.length || searchResults.matchingQueries.length}
+    <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+    <div
+      role="list"
+      class="flex flex-col items-center py-4 outline-none"
+      bind:this={searchSuggestionsList}
+      onkeydown={handleSearchSuggestionListKeyDown}
+      onfocus={onFocus}
+      onblur={onBlur}
+      tabindex="0"
+    >
+      {#each searchResults.matchingQueries.slice(0, 3) as searchTerm, i}
+        <li
+          class="flex justify-center relative items-center h-full w-full backdrop-opacity-20 z-9999"
+          class:bg-secondary={i === activeIndex}
+        >
+          <a
+            href="/app/search?q={encodeURIComponent(searchTerm)}"
+            class="h-full w-full p-4 hover:bg-secondary duration-200"
           >
-            <a
-              href="/app/search?q={encodeURIComponent(searchTerm)}"
-              class="h-full w-full p-4 hover:bg-secondary duration-200"
-            >
-              {#each searchTerm.split("") as char, i}
-                {#if char === q[i]}
-                  <span class="font-semibold">{char}</span>
-                {:else}
-                  {char}
-                {/if}
-              {/each}
-              <button
-                type="button"
-                class="absolute inset-0 top-1/6 left-[92%] h-fit w-fit rounded-full p-2 cursor-pointer hover:bg-red-500 duration-200"
-                onclick={e => handleRemoveTermFromRecents(e, searchTerm)}
-              >
-                <XIcon size={20} />
-              </button>
-            </a>
-          </li>
-        {/each}
-      </ul>
+            {#each searchTerm.split("") as char, i}
+              {#if char === q[i]}
+                <span class="font-semibold">{char}</span>
+              {:else}
+                {char}
+              {/if}
+            {/each}
+          </a>
+        </li>
+      {/each}
     </div>
   {:else}
-    <p class="text-center text-gray-400 p-4">Try searching for songs, artists and videos...</p>
+    <p class="text-center text-muted-foreground p-4">Search something to get recommendations.</p>
   {/if}
 </div>

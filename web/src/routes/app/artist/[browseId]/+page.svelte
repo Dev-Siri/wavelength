@@ -89,13 +89,12 @@
           </div>
         </div>
         <div class="flex gap-2 items-center ml-4">
-          {#if artist.songs}
+          {#if artist.topSongs.length}
             <Button
               class="rounded-full w-fit py-6"
               onclick={() =>
-                artist.songs &&
                 playArtistsSongs(
-                  artist.songs.contents.map(track => ({
+                  artist.topSongs.map(track => ({
                     ...track,
                     videoType: "track",
                   })),
@@ -115,12 +114,10 @@
             <ArrowUpRightIcon />
           </Button>
         </div>
-        {#if artist.songs?.titleHeader}
-          <p class="px-4 py-2 text-4xl font-bold">{artist.songs.titleHeader}</p>
-        {/if}
         <div class="h-full px-2">
-          {#if artist.songs}
-            {#each artist.songs.contents as song}
+          {#if artist.topSongs.length}
+            <h4 class="p-2 font-bold text-xl">Top Songs</h4>
+            {#each artist.topSongs as song}
               <TrackItem music={{ ...song, duration: "" }} toggle={{ type: "add" }} />
             {/each}
           {/if}

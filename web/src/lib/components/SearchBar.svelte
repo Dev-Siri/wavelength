@@ -2,9 +2,7 @@
   import { page } from "$app/state";
   import { SearchIcon } from "@lucide/svelte";
 
-  import { localStorageKeys } from "$lib/constants/keys.js";
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
-  import { isRecentSearchesArray } from "$lib/utils/validation/recent-searches-schema.js";
 
   import SearchSuggestions from "./SearchSuggestions.svelte";
 
@@ -12,7 +10,8 @@
 
   let isInputFocused = $state(false);
   let isHoveringOverSuggestions = $state(false);
-  let searchInput: HTMLInputElement;
+  let isSuggestionsFocused = $state(false);
+  let searchInput: HTMLInputElement | null = $state(null);
   let q = $state(page.url.pathname.includes("/search") ? queryParam : "");
 
   $effect(() => {
@@ -30,7 +29,7 @@
         !document.activeElement.isContentEditable
       ) {
         e.preventDefault();
-        searchInput.focus();
+        searchInput?.focus();
       }
     }
 
@@ -39,50 +38,48 @@
     return () => document.removeEventListener("keydown", focusHandler);
   });
 
-  function handleStoringSearchTerms() {
-    const storedSearches = localStorage.getItem(localStorageKeys.recentSearches);
-    const parsedSearches = JSON.parse(storedSearches || "[]");
-
-    if (!isRecentSearchesArray(parsedSearches)) return;
-
-    if (parsedSearches.includes(q)) return;
-
-    const newSearches = [q, ...parsedSearches.slice(0, 20)];
-    localStorage.setItem(localStorageKeys.recentSearches, JSON.stringify(newSearches));
-  }
+  const focusSuggestions = () => (isSuggestionsFocused = true);
+  const unfocusSuggestions = () => (isSuggestionsFocused = false);
 </script>
 
-{#if (isInputFocused || isHoveringOverSuggestions) && !musicPlayerStore.visiblePanel}
-  <div
-    class="absolute inset-0 top-full left-[5%] w-1/2 -ml-14 z-9999"
-    role="list"
-    onmouseenter={() => (isHoveringOverSuggestions = true)}
-    onmouseleave={() => (isHoveringOverSuggestions = false)}
+<div class="relative w-full">
+  {#if (isInputFocused || isHoveringOverSuggestions || isSuggestionsFocused) && !musicPlayerStore.visiblePanel}
+    <div
+      class="absolute inset-0 top-full w-full z-9999"
+      role="list"
+      onmouseenter={() => (isHoveringOverSuggestions = true)}
+      onmouseleave={() => (isHoveringOverSuggestions = false)}
+    >
+      <SearchSuggestions
+        {q}
+        {isInputFocused}
+        {searchInput}
+        onFocus={focusSuggestions}
+        onBlur={unfocusSuggestions}
+      />
+    </div>
+  {/if}
+  <form
+    action="/app/search"
+    method="GET"
+    class="flex relative p-2 duration-200 w-full rounded-full border-2 border-secondary items-center bg-secondary gap-2 pl-4"
+    class:focused-input={isInputFocused}
   >
-    <SearchSuggestions {q} />
-  </div>
-{/if}
-<form
-  action="/app/search"
-  method="GET"
-  class="flex relative p-2 duration-200 w-full rounded-full border-2 border-secondary items-center bg-secondary gap-2 pl-4"
-  class:focused-input={isInputFocused}
-  onsubmit={handleStoringSearchTerms}
->
-  <SearchIcon size={20} />
-  <input
-    type="text"
-    name="q"
-    placeholder="What do you want to play?"
-    class="bg-transparent outline-hidden w-full"
-    autocomplete="off"
-    id="search-input"
-    bind:value={q}
-    bind:this={searchInput}
-    onfocus={() => (isInputFocused = true)}
-    onblur={() => (isInputFocused = false)}
-  />
-</form>
+    <SearchIcon size={20} />
+    <input
+      type="text"
+      name="q"
+      placeholder="What do you want to play?"
+      class="bg-transparent outline-hidden w-full"
+      autocomplete="off"
+      id="search-input"
+      bind:value={q}
+      bind:this={searchInput}
+      onfocus={() => (isInputFocused = true)}
+      onblur={() => (isInputFocused = false)}
+    />
+  </form>
+</div>
 
 <style lang="postcss">
   @reference "tailwindcss";
