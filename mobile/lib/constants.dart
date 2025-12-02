@@ -1,4 +1,4 @@
-const backendUrl = "http://localhost:8080";
+const backendUrl = "https://wavelength-524g.onrender.com";
 const ytImgApiUrl = "https://img.youtube.com";
 const appUpdateUrl = "https://mavelength.vercel.app/downloads";
 const defaultLocale = "US";
