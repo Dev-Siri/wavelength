@@ -1,5 +1,5 @@
 import { PUBLIC_BACKEND_URL } from "$env/static/public";
-import userStore from "$lib/stores/user.svelte";
+import { getAuthToken } from "$lib/stores/user.svelte";
 
 import { apiResponseSchema, type ApiResponse } from "./validation/api-response";
 
@@ -29,7 +29,7 @@ async function queryClient<T extends z.ZodTypeAny>(
   dataSchema: T,
   { method = "GET", body, searchParams, headers }: Partial<Options> = {},
 ): Promise<z.infer<T>> {
-  const authToken = await userStore.getAuthToken();
+  const authToken = await getAuthToken();
   const authHeaders: Record<string, string> = authToken
     ? {
         Authorization: `Bearer ${authToken}`,
