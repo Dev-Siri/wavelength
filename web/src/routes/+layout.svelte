@@ -4,7 +4,7 @@
   import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit";
   import "../app.css";
 
-  import userStore, { getAuthToken } from "$lib/stores/user.svelte.js";
+  import userStore from "$lib/stores/user.svelte.js";
 
   import type { User } from "@auth/sveltekit";
   import type { Snippet } from "svelte";
@@ -16,16 +16,8 @@
   const { children, data }: { children: Snippet; data: LayoutData } = $props();
 
   $effect(() => {
-    async function setupSession() {
-      userStore.user = data.session?.user as User | null;
-
-      if (userStore.authToken || !data.session?.user) return;
-
-      const token = await getAuthToken(data.session?.user);
-      userStore.authToken = token;
-    }
-
-    setupSession();
+    userStore.user = data.session?.user as User | null;
+    userStore.authToken = data.authToken as string | null;
   });
 </script>
 
