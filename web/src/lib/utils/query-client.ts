@@ -34,7 +34,7 @@ async function queryClient<T extends z.ZodTypeAny>(
 
   const authHeaders: Record<string, string> = userStore.authToken
     ? {
-        Authorization: userStore.authToken,
+        Authorization: `Bearer ${userStore.authToken}`,
       }
     : {};
   const requestHeaders: Record<string, string> = {
@@ -69,7 +69,7 @@ async function queryClient<T extends z.ZodTypeAny>(
 
     return validatedResponse.data;
   } catch (error: unknown) {
-    fetch(`${PUBLIC_BACKEND_URL}/diagnostics/report-error`, {
+    await fetch(`${PUBLIC_BACKEND_URL}/diagnostics/report-error`, {
       method: "POST",
       body: JSON.stringify({
         error: JSON.stringify(error),
