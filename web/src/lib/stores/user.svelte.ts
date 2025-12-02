@@ -7,11 +7,10 @@ import { backendClient } from "$lib/utils/query-client";
 
 class UserStore {
   user = $state<User | null>(null);
+  authToken = $state<string | null>(null);
 }
 
-export async function getAuthToken() {
-  if (!userStore.user) return;
-
+export async function getAuthToken(user: User) {
   const storedAuthToken = localStorage.getItem(localStorageKeys.authToken);
 
   if (storedAuthToken) return storedAuthToken;
@@ -19,10 +18,10 @@ export async function getAuthToken() {
   const createdAuthToken = await backendClient("/auth/token", z.string(), {
     method: "POST",
     body: {
-      id: userStore.user.id,
-      email: userStore.user.email,
-      displayName: userStore.user.name,
-      photoUrl: userStore.user.image,
+      id: user.id,
+      email: user.email,
+      displayName: user.name,
+      photoUrl: user.image,
     },
   });
 

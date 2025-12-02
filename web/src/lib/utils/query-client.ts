@@ -1,10 +1,10 @@
 import { PUBLIC_BACKEND_URL } from "$env/static/public";
+
 import { WAVELENGTH_PLATFORM_KEY } from "$lib/constants/keys";
-import { getAuthToken } from "$lib/stores/user.svelte";
-
-import { apiResponseSchema, type ApiResponse } from "./validation/api-response";
-
 import type { z } from "zod";
+
+import userStore from "$lib/stores/user.svelte";
+import { apiResponseSchema, type ApiResponse } from "./validation/api-response";
 
 type Method =
   | "GET"
@@ -31,9 +31,16 @@ async function queryClient<T extends z.ZodTypeAny>(
   { method = "GET", body, searchParams, headers }: Partial<Options> = {},
 ): Promise<z.infer<T>> {
   const url = new URL(endpoint, baseUrl);
+
+  const authHeaders: Record<string, string> = userStore.authToken
+    ? {
+        Authorization: userStore.authToken,
+      }
+    : {};
   const requestHeaders: Record<string, string> = {
     "Content-Type": "application/json",
     ...headers,
+    ...authHeaders,
   };
 
   if (searchParams)
@@ -79,22 +86,7 @@ function createQueryClient(baseUrl: string) {
     endpoint: string,
     dataSchema: T,
     options: Partial<Options> = {},
-  ) => {
-    const authToken = await getAuthToken();
-    const authHeaders: Record<string, string> = authToken
-      ? {
-          Authorization: `Bearer ${authToken}`,
-        }
-      : {};
-
-    return queryClient<T>(baseUrl, endpoint, dataSchema, {
-      ...options,
-      headers: {
-        ...options.headers,
-        ...authHeaders,
-      },
-    });
-  };
+  ) => queryClient<T>(baseUrl, endpoint, dataSchema, options);
 }
 
 export const backendClient = createQueryClient(PUBLIC_BACKEND_URL);

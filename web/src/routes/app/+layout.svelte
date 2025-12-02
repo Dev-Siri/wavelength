@@ -5,6 +5,7 @@
   import { fly, slide } from "svelte/transition";
 
   import type { Snippet } from "svelte";
+  import type { PageData } from "./$types";
 
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
   import musicQueueStore from "$lib/stores/music-queue.svelte.js";
@@ -19,7 +20,6 @@
   import TopBar from "$lib/components/TopBar.svelte";
   import * as Tooltip from "$lib/components/ui/tooltip";
   import { PersistQueryClientProvider } from "@tanstack/svelte-query-persist-client";
-  import type { PageData } from "./$types";
 
   interface PaneLimit {
     minSize: number;
