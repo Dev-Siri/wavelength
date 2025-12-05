@@ -90,20 +90,22 @@ class App extends StatelessWidget {
           ),
         ),
       ],
-      child: MaterialApp.router(
-        title: "Wavelength",
-        routerConfig: router,
-        themeMode: ThemeMode.dark,
-        theme: ThemeData(
-          colorScheme: const ColorScheme.dark(),
-          primaryColor: Colors.white,
-          scaffoldBackgroundColor: Colors.black,
-          appBarTheme: const AppBarTheme(backgroundColor: Colors.black),
-          fontFamily: "Geist",
-          fontFamilyFallback: const ["AppleColorEmoji", "NotoColorEmoji"],
-          textSelectionTheme: TextSelectionThemeData(
-            selectionColor: Colors.blue.withAlpha(102),
-            selectionHandleColor: Colors.blue,
+      child: SafeArea(
+        child: MaterialApp.router(
+          title: "Wavelength",
+          routerConfig: router,
+          themeMode: ThemeMode.dark,
+          theme: ThemeData(
+            colorScheme: const ColorScheme.dark(),
+            primaryColor: Colors.white,
+            scaffoldBackgroundColor: Colors.black,
+            appBarTheme: const AppBarTheme(backgroundColor: Colors.black),
+            fontFamily: "Geist",
+            fontFamilyFallback: const ["AppleColorEmoji", "NotoColorEmoji"],
+            textSelectionTheme: TextSelectionThemeData(
+              selectionColor: Colors.blue.withAlpha(102),
+              selectionHandleColor: Colors.blue,
+            ),
           ),
         ),
       ),
