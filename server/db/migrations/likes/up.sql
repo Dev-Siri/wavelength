@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS "likes" (
+  like_id CHAR(36) PRIMARY KEY,
+  video_id VARCHAR(11) NOT NULL,
+  email VARCHAR(255) NOT NULL
+);

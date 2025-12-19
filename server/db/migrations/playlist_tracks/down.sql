@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS "playlist_tracks";
+DROP TYPE IF EXISTS video_type RESTRICT;
