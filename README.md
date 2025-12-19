@@ -29,6 +29,7 @@ $ pnpm dev
 
 Navigate to the `/mobile` directory. Make sure you have [Flutter](https://flutter.dev). You'll also need the native tooling for the platform you're running on: Android requires [Android-Studio](https://developer.android.com/studio) and additional command-line tools and packages installed. iOS requires XCode to be installed on your Mac.
 Then you can start the application in dev mode:
+
 ```sh
 $ flutter run
 ```
@@ -40,13 +41,7 @@ Navigate to `/server`. Here you'll need a couple of things. One of these are You
 ### Building The Docker Image
 
 Make sure you have Docker installed on your system.
-The cookies from the `cookies.txt` file need to be converted to base64. You can use this command to get it's base64 form:
-```sh
-$ base64 -i <cookie.txt-file-path>
-```
-
-Once you have gotten the base64 string of the cookies, you need to specify it in your environment, the `.env.docker` file.
-Finally you can build the docker image, then run it, specifying the `PORT` and `--env-file`.
+Then you can build the docker image, and run it, specifying the `PORT` and `--env-file`.
 
 ```sh
 $ docker build . -t wavelength/server
@@ -56,18 +51,10 @@ $ docker run -p 8080:8080 -e PORT=8080 --env-file=.env.docker wavelength/server
 ### Manual Setup
 
 You will need Go 1.22+ installed on your system, and the GeoLite2-Country database from [MaxMind](https://maxmind.com/en). Get it by registering for a free MaxMind account [here](https://maxmind.com/en/geolite2/signup), after which you can download specifically the `GeoLite2-Country` database.
-Create a directory named `lib` and place the database file in it. Create another directory named `secrets` and place the `cookies.txt` file that you extracted earlier in it.
-
-Then navigate deeper to `internal/ytdlp_server`, and start the `yt-dlp` server, providing it the path to your cookies file.
-> [PyPy](https://pypy.org) is used in these example, it is recommended for better performance over standard CPython.
-```sh
-# Install the required packages with pip before you run it.
-$ pypy3 -m pip install -r requirements.txt
-# Then you can run it.
-$ YT_COOKIE_PATH=../../secrets/cookies.txt pypy3 -m uvicorn main:app --host 0.0.0.0 --port 8000
-```
+Create a directory named `lib` and place the database file in it.
 
 After this, you can navigate back to `/server` and finally run the Go server:
+
 ```sh
 # Run it directly.
 $ go run main.go

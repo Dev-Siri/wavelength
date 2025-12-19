@@ -15,11 +15,5 @@ if [ -n "$MAXMIND_ACCOUNT_ID" ] && [ -n "$MAXMIND_LICENSE_KEY" ]; then
   rm -f /tmp/GeoLite2-Country.tar.gz
 fi
 
-if [ -n "$YOUTUBE_COOKIES_B64" ]; then
-  echo "Decoding YouTube cookies from YOUTUBE_COOKIES_B64..."
-  mkdir -p /app/secrets
-  echo "$YOUTUBE_COOKIES_B64" | base64 -d > /app/secrets/youtube_cookies.txt
-fi
-
 # Run the Go application.
 /usr/local/bin/app
