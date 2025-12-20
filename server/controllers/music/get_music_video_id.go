@@ -3,6 +3,7 @@ package music_controllers
 import (
 	"fmt"
 	"html"
+	"strings"
 	"wavelength/api"
 	"wavelength/models"
 
@@ -29,13 +30,13 @@ func GetMusicVideoPreviewId(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Artist (artist) search param is required.")
 	}
 
-	q := fmt.Sprintf("%s - %s official music video", artist, songTitle)
+	q := fmt.Sprintf("%s %s -#shorts", artist, songTitle)
 	response, err := api.YouTubeV3Client.Search.List([]string{"id", "snippet"}).
 		Q(q).
 		VideoCategoryId("10").
-		MaxResults(10).
+		MaxResults(15).
 		Type("video").
-		Order("viewCount").
+		Order("relevance").
 		Do()
 
 	if err != nil {
@@ -52,14 +53,20 @@ func GetMusicVideoPreviewId(ctx *fiber.Ctx) error {
 		})
 	}
 
-	keyword := fmt.Sprintf("%s - %s official lyric video", artist, songTitle)
+	if len(videos) == 0 {
+		return fiber.NewError(fiber.StatusNotFound, "No suitable music video found")
+	}
+
+	keyword := fmt.Sprintf("%s %s official music video", artist, songTitle)
 	titles := make([]string, len(videos))
 
 	for i, v := range videos {
-		titles[i] = html.UnescapeString(v.Title) + " " + v.Channel
+		titles[i] = strings.ToLower(
+			html.UnescapeString(v.Title) + " " + v.Channel,
+		)
 	}
 
-	matches := fuzzy.Find(keyword, titles)
+	matches := fuzzy.Find(strings.ToLower(keyword), titles)
 
 	var selectedVideo models.SearchableYouTubeVideo
 
