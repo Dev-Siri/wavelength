@@ -28,10 +28,10 @@ class MusicPlayerPlaystateBloc
     Emitter<MusicPlayerPlaystateState> emit,
   ) async {
     if (state is MusicPlayerPlaystatePausedState) {
-      _musicPlayer.player.play();
+      await _musicPlayer.player.play();
       emit(MusicPlayerPlaystatePlayingState());
     } else if (state is MusicPlayerPlaystatePlayingState) {
-      _musicPlayer.player.pause();
+      await _musicPlayer.player.pause();
       emit(MusicPlayerPlaystatePausedState());
     }
   }

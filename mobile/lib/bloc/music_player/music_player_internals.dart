@@ -4,16 +4,20 @@ import "package:flutter/cupertino.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:just_audio/just_audio.dart";
 import "package:just_audio_background/just_audio_background.dart";
+import "package:wavelength/api/models/playlist_track.dart";
+import "package:wavelength/api/models/representations/queueable_music.dart";
 import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_event.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_state.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_event.dart";
-import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_bloc.dart";
+import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_bloc.dart";
+import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_event.dart";
 import "package:wavelength/bloc/music_player/music_player_singleton.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
+import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
 
 class MusicPlayerInternals {
   final AudioPlayer _player;
@@ -22,15 +26,42 @@ class MusicPlayerInternals {
   StreamSubscription? _stateSub;
   StreamSubscription? _currentIndexSub;
   StreamSubscription? _durationSub;
+  StreamSubscription? _loopModeSub;
   StreamSubscription? _errorSub;
+  StreamSubscription? _processingStateSub;
 
   MusicPlayerInternals() : _player = MusicPlayerSingleton().player;
 
+  Future<void> _handlePlaybackEnd() async {
+    final currentIndex = _player.currentIndex ?? 0;
+
+    switch (_player.loopMode) {
+      case LoopMode.one:
+        await _player.seek(Duration.zero, index: currentIndex);
+        await _player.play();
+        break;
+      case LoopMode.all:
+        if (_player.hasNext) {
+          await _player.seekToNext();
+        } else {
+          await _player.seek(Duration.zero, index: 0);
+        }
+        await _player.play();
+        break;
+      case LoopMode.off:
+        if (_player.hasNext) {
+          await _player.seekToNext();
+          await _player.play();
+        }
+        break;
+    }
+  }
+
   void init(BuildContext context) {
-    final musicPlayerQueueBloc = context.read<MusicPlayerQueueBloc>();
     final musicPlayerDurationBloc = context.read<MusicPlayerDurationBloc>();
     final musicPlayerPlaystateBloc = context.read<MusicPlayerPlaystateBloc>();
     final musicPlayerTrackBloc = context.read<MusicPlayerTrackBloc>();
+    final musicPlayerRepeatModeBloc = context.read<MusicPlayerRepeatModeBloc>();
 
     _errorSub = _player.errorStream.listen((error) {
       DiagnosticsRepo.reportError(
@@ -54,23 +85,25 @@ class MusicPlayerInternals {
       );
     });
 
-    _currentIndexSub = _player.currentIndexStream.listen((index) {
-      if (index == null) return;
+    _currentIndexSub = _player.sequenceStateStream.listen((state) {
+      final source = state.currentSource;
 
-      final currentSource = _player.sequence[index];
-      final tag = currentSource.tag;
+      if (source == null) return;
 
+      final tag = source.tag;
       if (tag is! MediaItem) return;
-
-      final playingTrackIndex = musicPlayerQueueBloc.state.tracksInQueue
-          .indexWhere((track) => track.videoId == tag.id);
-
-      if (playingTrackIndex == -1) return;
 
       musicPlayerTrackBloc.add(
         MusicPlayerTrackAutoLoadEvent(
-          queueableMusic:
-              musicPlayerQueueBloc.state.tracksInQueue[playingTrackIndex],
+          queueableMusic: QueueableMusic(
+            videoId: tag.id,
+            title: tag.title,
+            thumbnail: tag.artUri?.toString() ?? "",
+            author: tag.artist ?? "",
+            videoType: tag.extras?["videoType"] == "track"
+                ? VideoType.track
+                : VideoType.uvideo,
+          ),
         ),
       );
     });
@@ -94,11 +127,34 @@ class MusicPlayerInternals {
     _stateSub = _player.playerStateStream.listen((state) async {
       if (state.playing) {
         musicPlayerPlaystateBloc.add(MusicPlayerPlaystatePlayEvent());
-        return;
+      } else {
+        musicPlayerPlaystateBloc.add(MusicPlayerPlaystatePauseEvent());
       }
-
-      musicPlayerPlaystateBloc.add(MusicPlayerPlaystatePauseEvent());
     });
+
+    _loopModeSub = _player.loopModeStream.listen((loopMode) {
+      switch (loopMode) {
+        case LoopMode.off:
+          musicPlayerRepeatModeBloc.add(MusicPlayerRepeatModeOffEvent());
+          break;
+        case LoopMode.all:
+          musicPlayerRepeatModeBloc.add(MusicPlayerRepeatModeAllEvent());
+          break;
+        case LoopMode.one:
+          musicPlayerRepeatModeBloc.add(MusicPlayerRepeatModeOneEvent());
+          break;
+      }
+    });
+
+    _processingStateSub = _player.processingStateStream
+        .where(
+          (s) => s == ProcessingState.idle || s == ProcessingState.completed,
+        )
+        .listen((_) async {
+          if (musicPlayerTrackBloc.state is MusicPlayerTrackPlayingNowState) {
+            await _handlePlaybackEnd();
+          }
+        });
   }
 
   void dispose() {
@@ -107,5 +163,7 @@ class MusicPlayerInternals {
     _currentIndexSub?.cancel();
     _durationSub?.cancel();
     _errorSub?.cancel();
+    _loopModeSub?.cancel();
+    _processingStateSub?.cancel();
   }
 }

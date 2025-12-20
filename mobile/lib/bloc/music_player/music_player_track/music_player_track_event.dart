@@ -11,7 +11,8 @@ class MusicPlayerTrackAutoLoadEvent extends MusicPlayerTrackEvent {
 }
 
 class MusicPlayerTrackLoadEvent extends MusicPlayerTrackEvent {
+  final List<QueueableMusic>? queueContext;
   final QueueableMusic queueableMusic;
 
-  MusicPlayerTrackLoadEvent({required this.queueableMusic});
+  MusicPlayerTrackLoadEvent({required this.queueableMusic, this.queueContext});
 }

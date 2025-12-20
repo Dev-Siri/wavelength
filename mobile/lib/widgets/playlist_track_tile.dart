@@ -11,8 +11,6 @@ import "package:wavelength/api/models/representations/queueable_music.dart";
 import "package:wavelength/api/models/track.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
-import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_bloc.dart";
-import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
@@ -50,7 +48,7 @@ class _PlaylistTrackTileState extends State<PlaylistTrackTile> {
       widget.playlistTrack.videoId,
     );
 
-    setState(() => _isTrackDownloaded = isDownloaded);
+    if (mounted) setState(() => _isTrackDownloaded = isDownloaded);
   }
 
   void _playSong(BuildContext context) {
@@ -62,24 +60,23 @@ class _PlaylistTrackTileState extends State<PlaylistTrackTile> {
       videoType: widget.playlistTrack.videoType,
     );
 
-    context.read<MusicPlayerQueueBloc>().add(
-      MusicPlayerReplaceQueueEvent(
-        newQueue: widget.allPlaylistTracks
-            .map(
-              (track) => QueueableMusic(
-                videoId: track.videoId,
-                title: track.title,
-                thumbnail: getTrackThumbnail(track.videoId),
-                author: track.author,
-                videoType: track.videoType,
-              ),
-            )
-            .toList(),
-      ),
-    );
+    final queue = widget.allPlaylistTracks
+        .map(
+          (track) => QueueableMusic(
+            videoId: track.videoId,
+            title: track.title,
+            thumbnail: getTrackThumbnail(track.videoId),
+            author: track.author,
+            videoType: track.videoType,
+          ),
+        )
+        .toList();
 
     context.read<MusicPlayerTrackBloc>().add(
-      MusicPlayerTrackLoadEvent(queueableMusic: queueableMusic),
+      MusicPlayerTrackLoadEvent(
+        queueableMusic: queueableMusic,
+        queueContext: queue,
+      ),
     );
   }
 

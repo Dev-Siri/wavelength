@@ -2,14 +2,15 @@ import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:just_audio_background/just_audio_background.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/representations/queueable_music.dart";
 import "package:wavelength/api/models/track.dart";
+import "package:wavelength/audio/background_audio_source.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
-import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_bloc.dart";
-import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_event.dart";
+import "package:wavelength/bloc/music_player/music_player_singleton.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:mini_music_visualizer/mini_music_visualizer.dart";
@@ -22,7 +23,8 @@ class TopTrackResult extends StatelessWidget {
 
   const TopTrackResult({super.key, required this.track});
 
-  void _playTrack(BuildContext context) {
+  Future<void> _playTrack(BuildContext context) async {
+    final trackBloc = context.read<MusicPlayerTrackBloc>();
     final queueableMusic = QueueableMusic(
       videoId: track.videoId,
       title: track.title,
@@ -31,12 +33,20 @@ class TopTrackResult extends StatelessWidget {
       videoType: VideoType.track,
     );
 
-    context.read<MusicPlayerQueueBloc>().add(
-      MusicPlayerQueueAddToQueueEvent(queueableMusic: queueableMusic),
+    await MusicPlayerSingleton().player.addAudioSource(
+      BackgroundAudioSource(
+        track.videoId,
+        tag: MediaItem(
+          id: track.videoId,
+          title: track.title,
+          artist: track.author,
+          artUri: Uri.parse(track.thumbnail),
+          extras: {"videoType": "track"},
+        ),
+      ),
     );
-    context.read<MusicPlayerTrackBloc>().add(
-      MusicPlayerTrackLoadEvent(queueableMusic: queueableMusic),
-    );
+
+    trackBloc.add(MusicPlayerTrackLoadEvent(queueableMusic: queueableMusic));
   }
 
   @override

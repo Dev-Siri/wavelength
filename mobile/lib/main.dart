@@ -16,7 +16,6 @@ import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/location/location_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_bloc.dart";
-import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_bloc.dart";
@@ -63,7 +62,6 @@ class App extends StatelessWidget {
         BlocProvider(create: (_) => MusicPlayerTrackBloc()),
         BlocProvider(create: (_) => MusicPlayerVolumeBloc()),
         BlocProvider(create: (_) => MusicPlayerRepeatModeBloc()),
-        BlocProvider(create: (_) => MusicPlayerQueueBloc()),
         // Playlist blocs
         BlocProvider(create: (_) => PlaylistBloc()),
         BlocProvider(create: (_) => PlaylistLengthBloc()),

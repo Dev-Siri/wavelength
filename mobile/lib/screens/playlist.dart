@@ -20,8 +20,6 @@ import "package:wavelength/bloc/download/download_bloc.dart";
 import "package:wavelength/bloc/download/download_event.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/library/library_state.dart";
-import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_bloc.dart";
-import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:wavelength/bloc/playlist/playlist_bloc.dart";
@@ -79,11 +77,11 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
         )
         .toList();
 
-    context.read<MusicPlayerQueueBloc>().add(
-      MusicPlayerReplaceQueueEvent(newQueue: queueableSongs),
-    );
     context.read<MusicPlayerTrackBloc>().add(
-      MusicPlayerTrackLoadEvent(queueableMusic: queueableSongs.first),
+      MusicPlayerTrackLoadEvent(
+        queueableMusic: queueableSongs.first,
+        queueContext: queueableSongs,
+      ),
     );
   }
 
@@ -101,7 +99,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
     );
 
     for (final track in playlistTracks) {
-      if (await AudioCache.isTrackDownloaded(track.playlistTrackId)) {
+      if (await AudioCache.isTrackDownloaded(track.videoId)) {
         continue;
       }
 

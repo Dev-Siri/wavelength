@@ -20,10 +20,9 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   google_sign_in: ^6.2.2
   just_audio_background: ^0.0.1-beta.17
-  just_audio: ^0.10.4
+  just_audio: ^0.10.5
   flutter_svg: ^2.0.17
   vector_graphics: ^1.1.18
-  html_unescape: ^2.0.0
   path_provider: ^2.1.5
   uuid: ^4.5.2
   geolocator: ^11.0.0

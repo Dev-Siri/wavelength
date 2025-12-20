@@ -3,17 +3,20 @@ import "dart:io";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:just_audio/just_audio.dart";
+import "package:just_audio_background/just_audio_background.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
+import "package:wavelength/api/models/playlist_track.dart";
+import "package:wavelength/api/models/representations/queueable_music.dart";
+import "package:wavelength/audio/background_audio_source.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_event.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_state.dart";
-import "package:wavelength/bloc/music_player/music_player_queue/music_player_queue_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_bloc.dart";
-import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_event.dart";
 import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_state.dart";
+import "package:wavelength/bloc/music_player/music_player_singleton.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
-import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
 import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_event.dart";
 import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_state.dart";
@@ -21,66 +24,76 @@ import "package:wavelength/bloc/music_player/music_player_volume/music_player_vo
 class MusicPlayerPlayOptions extends StatelessWidget {
   const MusicPlayerPlayOptions({super.key});
 
-  void _playPreviousTrack(BuildContext context) {
-    final musicPlayerTrackBloc = context.read<MusicPlayerTrackBloc>();
-    final musicPlayerMusicQueueBloc = context.read<MusicPlayerQueueBloc>();
+  Future<void> _playNext(BuildContext context) async {
+    final trackBloc = context.read<MusicPlayerTrackBloc>();
+    final player = MusicPlayerSingleton().player;
 
-    final musicPlayerTrackState = musicPlayerTrackBloc.state;
-    final musicPlayerMusicQueueState = musicPlayerMusicQueueBloc.state;
+    final sourceIndex = player.nextIndex ?? 0;
+    await player.seekToNext();
 
-    if (musicPlayerTrackState is! MusicPlayerTrackPlayingNowState) return;
+    final source = player.audioSources[sourceIndex];
+    if (source is! BackgroundAudioSource) return;
 
-    final currentTrackIndexInQueue = musicPlayerMusicQueueBloc
-        .state
-        .tracksInQueue
-        .indexOf(musicPlayerTrackState.playingNowTrack);
+    final tag = source.tag;
+    if (tag is! MediaItem) return;
 
-    if (currentTrackIndexInQueue == -1 ||
-        musicPlayerMusicQueueState.tracksInQueue.isEmpty) {
-      return;
-    }
-
-    final prevTrackPos = currentTrackIndexInQueue - 1 < 0
-        ? musicPlayerMusicQueueState.tracksInQueue.length - 1
-        : currentTrackIndexInQueue - 1;
-
-    musicPlayerTrackBloc.add(
-      MusicPlayerTrackLoadEvent(
-        queueableMusic: musicPlayerMusicQueueState.tracksInQueue[prevTrackPos],
+    trackBloc.add(
+      MusicPlayerTrackAutoLoadEvent(
+        queueableMusic: QueueableMusic(
+          videoId: tag.id,
+          title: tag.title,
+          thumbnail: tag.artUri?.toString() ?? "",
+          author: tag.artist ?? "",
+          videoType: tag.extras?["videoType]"] == "track"
+              ? VideoType.track
+              : VideoType.uvideo,
+        ),
       ),
     );
   }
 
-  void _playNextTrack(BuildContext context) {
-    final musicPlayerTrackBloc = context.read<MusicPlayerTrackBloc>();
-    final musicPlayerMusicQueueBloc = context.read<MusicPlayerQueueBloc>();
+  Future<void> _playPrevious(BuildContext context) async {
+    final trackBloc = context.read<MusicPlayerTrackBloc>();
+    final player = MusicPlayerSingleton().player;
 
-    final musicPlayerTrackState = musicPlayerTrackBloc.state;
-    final musicPlayerMusicQueueState = musicPlayerMusicQueueBloc.state;
+    final sourceIndex = player.previousIndex ?? 0;
+    await player.seekToPrevious();
 
-    if (musicPlayerTrackState is! MusicPlayerTrackPlayingNowState) return;
+    final source = player.audioSources[sourceIndex];
+    if (source is! BackgroundAudioSource) return;
 
-    final currentTrackIndexInQueue = musicPlayerMusicQueueBloc
-        .state
-        .tracksInQueue
-        .indexOf(musicPlayerTrackState.playingNowTrack);
+    final tag = source.tag;
+    if (tag is! MediaItem) return;
 
-    if (currentTrackIndexInQueue == -1 ||
-        musicPlayerMusicQueueState.tracksInQueue.isEmpty) {
-      return;
-    }
-
-    final nextTrackPos =
-        currentTrackIndexInQueue + 1 >=
-            musicPlayerMusicQueueState.tracksInQueue.length
-        ? 0
-        : currentTrackIndexInQueue + 1;
-
-    musicPlayerTrackBloc.add(
-      MusicPlayerTrackLoadEvent(
-        queueableMusic: musicPlayerMusicQueueState.tracksInQueue[nextTrackPos],
+    trackBloc.add(
+      MusicPlayerTrackAutoLoadEvent(
+        queueableMusic: QueueableMusic(
+          videoId: tag.id,
+          title: tag.title,
+          thumbnail: tag.artUri?.toString() ?? "",
+          author: tag.artist ?? "",
+          videoType: tag.extras?["videoType]"] == "track"
+              ? VideoType.track
+              : VideoType.uvideo,
+        ),
       ),
     );
+  }
+
+  Future<void> _changeRepeatMode() async {
+    final player = MusicPlayerSingleton().player;
+
+    switch (player.loopMode) {
+      case LoopMode.off:
+        await player.setLoopMode(LoopMode.all);
+        break;
+      case LoopMode.all:
+        await player.setLoopMode(LoopMode.one);
+        break;
+      case LoopMode.one:
+        await player.setLoopMode(LoopMode.off);
+        break;
+    }
   }
 
   @override
@@ -140,14 +153,14 @@ class MusicPlayerPlayOptions extends StatelessWidget {
                 side: BorderSide(color: Colors.transparent),
               ),
               padding: const EdgeInsets.all(14),
-              onPressed: () => _playPreviousTrack(context),
+              onPressed: () => _playPrevious(context),
               child: previousButtonInnerUi,
             )
           else
             CupertinoButton(
               borderRadius: BorderRadius.circular(100),
               padding: const EdgeInsets.all(14),
-              onPressed: () => _playPreviousTrack(context),
+              onPressed: () => _playPrevious(context),
               child: previousButtonInnerUi,
             ),
           const SizedBox(width: 15),
@@ -182,21 +195,19 @@ class MusicPlayerPlayOptions extends StatelessWidget {
                 side: BorderSide(color: Colors.transparent),
               ),
               padding: const EdgeInsets.all(14),
-              onPressed: () => _playNextTrack(context),
+              onPressed: () => _playNext(context),
               child: nextButtonInnerUi,
             )
           else
             CupertinoButton(
               borderRadius: BorderRadius.circular(100),
               padding: const EdgeInsets.all(14),
-              onPressed: () => _playNextTrack(context),
+              onPressed: () => _playNext(context),
               child: nextButtonInnerUi,
             ),
           const Spacer(),
           GestureDetector(
-            onTap: () => context.read<MusicPlayerRepeatModeBloc>().add(
-              MusicPlayerRepeatModeChangeRepeatModeEvent(),
-            ),
+            onTap: _changeRepeatMode,
             child:
                 BlocBuilder<
                   MusicPlayerRepeatModeBloc,

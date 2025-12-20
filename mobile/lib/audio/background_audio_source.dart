@@ -71,4 +71,7 @@ class BackgroundAudioSource extends StreamAudioSource {
       stream: req.stream,
     );
   }
+
+  @override
+  String toString() => "BackgroundAudioSource(\"$_trackId\", tag: $tag)";
 }

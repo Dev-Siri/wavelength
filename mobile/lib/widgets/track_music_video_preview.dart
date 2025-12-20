@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:video_player/video_player.dart";
+import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/src/rust/api/tydle_caller.dart";
 
 class TrackMusicVideoPreview extends StatefulWidget {
@@ -21,18 +22,27 @@ class _TrackMusicVideoPreviewState extends State<TrackMusicVideoPreview> {
   }
 
   Future<void> _fetchAndSetPreview() async {
-    final url = await fetchHighestVideoStreamUrl(videoId: widget.musicVideoId);
-    _controller =
-        VideoPlayerController.networkUrl(
-            Uri.parse(url),
-            videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
-          )
-          ..initialize()
-          ..setLooping(true)
-          ..setVolume(0)
-          ..play();
-    // Display the first frame.
-    setState(() {});
+    try {
+      final url = await fetchHighestVideoStreamUrl(
+        videoId: widget.musicVideoId,
+      );
+      _controller =
+          VideoPlayerController.networkUrl(
+              Uri.parse(url),
+              videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+            )
+            ..initialize()
+            ..setLooping(true)
+            ..setVolume(0)
+            ..play();
+      // Display the first frame.
+      if (mounted) setState(() {});
+    } catch (err) {
+      DiagnosticsRepo.reportError(
+        error: err.toString(),
+        source: "_TrackMusicVideoPreviewState._fetchAndSetPreview",
+      );
+    }
   }
 
   @override

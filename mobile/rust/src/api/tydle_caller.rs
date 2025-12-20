@@ -46,7 +46,7 @@ pub async fn fetch_highest_video_stream_url(video_id: String) -> Result<String> 
         .collect::<Vec<_>>();
 
     let Some(stream) = video_streams.first().cloned() else {
-        bail!("Failed to get any audio streams.");
+        bail!("Failed to get any video streams.");
     };
 
     let YtStreamSource::URL(source) = stream.source else {

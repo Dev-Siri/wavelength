@@ -29,6 +29,8 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
 
     if (cachedPlaylistTracks != null) {
       emit(PlaylistSuccessState(songs: cachedPlaylistTracks));
+    } else if (connectivityResult.contains(ConnectivityResult.none)) {
+      return emit(PlaylistErrorState());
     }
 
     if (connectivityResult.contains(ConnectivityResult.wifi) ||
