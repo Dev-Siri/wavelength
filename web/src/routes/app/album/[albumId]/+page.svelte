@@ -16,10 +16,20 @@
   import Button from "$lib/components/ui/button/button.svelte";
   import { PlayIcon } from "@lucide/svelte";
 
+  let pageTitle = $state("Album");
+
   const albumDetailsQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.album(page.params.albumId ?? ""),
     queryFn: () => backendClient(`/albums/album/${page.params.albumId}`, albumDetailsSchema),
   }));
+
+  $effect(() => {
+    if (albumDetailsQuery.isSuccess) {
+      pageTitle = `${albumDetailsQuery.data.title} by ${albumDetailsQuery.data.albumAuthor}`;
+    } else {
+      pageTitle = "Album Load Failed.";
+    }
+  });
 
   function playAlbum(songs: QueueableMusic[]) {
     musicQueueStore.addToQueue(...songs);
@@ -27,6 +37,10 @@
     musicPlayerStore.playMusic();
   }
 </script>
+
+<svelte:head>
+  <title>{pageTitle}</title>
+</svelte:head>
 
 <div
   class="flex flex-col h-full w-full bg-black rounded-2xl overflow-y-auto pb-[16%]"
