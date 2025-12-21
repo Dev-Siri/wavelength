@@ -114,7 +114,7 @@
             {#if musicQueueStore.musicPlayingNow && musicPlayerStore.visiblePanel}
               <div
                 class="absolute inset-x-0 top-[10.5%] bottom-0 z-80 rounded-2xl flex flex-col overflow-hidden"
-                in:fly={{ y: 20, duration: 100 }}
+                in:fly={{ y: 20, duration: 250 }}
                 out:fly={{ y: 20, duration: 100 }}
               >
                 <InfoOverlay>
@@ -135,7 +135,7 @@
         </Pane>
         {#if musicQueueStore.isMusicQueueVisible}
           <Pane {...sizes.queue} class="z-9999">
-            <div in:slide={{ duration: 100 }} out:slide={{ duration: 100 }} class="h-full w-full">
+            <div in:slide={{ duration: 250 }} out:slide={{ duration: 100 }} class="h-full w-full">
               <MusicQueueDisplay />
             </div>
           </Pane>

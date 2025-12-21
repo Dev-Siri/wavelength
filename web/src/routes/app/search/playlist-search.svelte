@@ -5,6 +5,7 @@
   import { backendClient } from "$lib/utils/query-client";
   import { playlistsSchema } from "$lib/utils/validation/playlists";
 
+  import NoResults from "$lib/components/NoResults.svelte";
   import PlaylistCard from "$lib/components/PlaylistCard.svelte";
   import TrackItemSkeleton from "$lib/components/skeletons/TrackItemSkeleton.svelte";
 
@@ -30,7 +31,9 @@
         <PlaylistCard imageClasses="h-10 w-11" {playlist} />
       {/each}
     {:else}
-      <span class="text-2xl text-balance mt-[20%]"> No public playlists found.</span>
+      <div class="mt-[14%]">
+        <NoResults />
+      </div>
     {/if}
   {/if}
 </div>

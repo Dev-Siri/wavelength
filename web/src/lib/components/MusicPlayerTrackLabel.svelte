@@ -7,7 +7,7 @@
   import { svelteQueryKeys } from "$lib/constants/keys";
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
-  import { durationify, parseHtmlEntities } from "$lib/utils/format.js";
+  import { durationify } from "$lib/utils/format.js";
   import { getThumbnailUrl } from "$lib/utils/url";
 
   import Image from "./Image.svelte";
@@ -53,7 +53,7 @@
   </DropdownMenu.Root>
   <div class="hidden sm:block">
     <p class="text-md ml-2 text-primary">
-      {parseHtmlEntities(musicQueueStore.musicPlayingNow.title)}
+      {musicQueueStore.musicPlayingNow.title}
     </p>
     <p class="text-xs ml-2 text-muted-foreground">{musicQueueStore.musicPlayingNow.author}</p>
   </div>

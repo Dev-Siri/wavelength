@@ -5,6 +5,8 @@
   import { backendClient } from "$lib/utils/query-client";
   import { youtubeVideosSchema } from "$lib/utils/validation/youtube-video";
 
+  import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
+  import NoResults from "$lib/components/NoResults.svelte";
   import UVideoCard from "$lib/components/UVideoCard.svelte";
 
   const { q }: { q: string } = $props();
@@ -17,9 +19,17 @@
 </script>
 
 {#if videoSearchQuery.isSuccess}
-  <div class="flex flex-wrap w-full gap-4">
-    {#each videoSearchQuery.data as uvideo (uvideo.videoId)}
-      <UVideoCard {uvideo} />
-    {/each}
+  {#if videoSearchQuery.data.length}
+    <div class="flex flex-wrap w-full gap-4">
+      {#each videoSearchQuery.data as uvideo}
+        <UVideoCard {uvideo} />
+      {/each}
+    </div>
+  {:else}
+    <NoResults />
+  {/if}
+{:else}
+  <div class="flex flex-col h-full pt-[20%] w-full items-center justify-center">
+    <LoadingSpinner />
   </div>
 {/if}

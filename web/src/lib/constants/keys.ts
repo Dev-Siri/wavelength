@@ -12,6 +12,7 @@ export const svelteQueryKeys = {
   userPlaylists: ["user-playlists"],
   region: ["region"],
   quickPicks: ["quick-picks"],
+  album: (albumId: string) => ["album", albumId],
   playlist: (playlistId: string) => ["playlist", playlistId],
   playlistTrack: (playlistId: string) => ["playlist-track", playlistId],
   playlistTrackLength: (playlistId: string) => ["playlist-track-length", playlistId],

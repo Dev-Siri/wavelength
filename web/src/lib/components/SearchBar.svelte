@@ -4,6 +4,7 @@
 
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
 
+  import { goto } from "$app/navigation";
   import SearchSuggestions from "./SearchSuggestions.svelte";
 
   const queryParam = page.url.searchParams.get("q") ?? "";
@@ -40,6 +41,13 @@
 
   const focusSuggestions = () => (isSuggestionsFocused = true);
   const unfocusSuggestions = () => (isSuggestionsFocused = false);
+
+  function handleSearch(e: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) {
+    e.preventDefault();
+
+    const searchType = page.url.searchParams.get("type") ?? "tracks";
+    goto(`/app/search?q=${encodeURIComponent(q)}&type=${encodeURIComponent(searchType)}`);
+  }
 </script>
 
 <div class="relative w-full">
@@ -64,6 +72,7 @@
     method="GET"
     class="flex relative p-2 duration-200 w-full rounded-full border-2 border-secondary items-center bg-secondary gap-2 pl-4"
     class:focused-input={isInputFocused}
+    onsubmit={handleSearch}
   >
     <SearchIcon size={20} />
     <input

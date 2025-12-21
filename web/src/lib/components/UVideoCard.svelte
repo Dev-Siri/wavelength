@@ -10,7 +10,6 @@
   import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
   import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
-  import { parseHtmlEntities } from "$lib/utils/format.js";
   import { backendClient } from "$lib/utils/query-client.js";
   import { getThumbnailUrl } from "$lib/utils/url";
 
@@ -65,28 +64,32 @@
 
 <DropdownMenu.Root>
   <button type="button" class="relative rounded-2xl group" onclick={playYtVideo}>
-    <Image
-      src={uvideo.thumbnail}
-      height={250}
-      width={310}
-      alt="YT Video Thumbnail"
-      class="rounded-2xl h-[200px] object-cover opacity-75 group-hover:opacity-100 duration-200"
-    />
+    {#key uvideo.thumbnail}
+      <Image
+        src={uvideo.thumbnail}
+        height={300}
+        width={360}
+        alt="YouTube Video Thumbnail"
+        class="rounded-2xl h-[200px] object-cover opacity-75 group-hover:opacity-100 duration-200"
+      />
+    {/key}
     <div class="fade-shadow"></div>
     <Tooltip.Root>
       <Tooltip.Trigger
-        class="absolute bottom-0 w-full right-0 p-4 text-xl text-left font-semibold opacity-100 z-40"
+        class="absolute bottom-0 w-full right-0 p-4 text-xl text-left  opacity-100 z-40"
       >
         <p class="text-start">
-          {parseHtmlEntities(
-            uvideo.title.length > 40
-              ? `${uvideo.title.slice(0, 39) ?? ""}..`
-              : (uvideo.title ?? ""),
-          )}
+          {#each (uvideo.title.length > 50 ? `${uvideo.title.slice(0, 49) ?? ""}..` : (uvideo.title ?? "")).split(" ") as titleWord}
+            {#if titleWord.startsWith("#")}
+              <span class="text-blue-500">{titleWord}{" "}</span>
+            {:else}
+              {titleWord}{" "}
+            {/if}
+          {/each}
         </p>
       </Tooltip.Trigger>
       <Tooltip.Content>
-        <p>{parseHtmlEntities(uvideo.title ?? "")}</p>
+        <p>{uvideo.title ?? ""}</p>
       </Tooltip.Content>
     </Tooltip.Root>
     <div
@@ -97,7 +100,7 @@
       <DropdownMenu.Trigger>
         <button
           type="button"
-          class="flex items-center ml-2 hover:text-white duration-200 justify-center px-1 text-muted-foreground"
+          class="flex items-center cursor-pointer ml-2 hover:text-white duration-200 justify-center px-1 text-muted-foreground"
         >
           <EllipsisIcon />
         </button>
@@ -114,7 +117,7 @@
           onclick={() => addToPlaylistMutation.mutate(playlist.playlistId)}
           class="flex py-3 gap-2"
         >
-          <PlusIcon size={20} /> Add or Remove from Playlist "{playlist.name}"
+          <PlusIcon size={20} /> Add to {playlist.name}
         </DropdownMenu.Item>
       {/each}
     </DropdownMenu.Content>

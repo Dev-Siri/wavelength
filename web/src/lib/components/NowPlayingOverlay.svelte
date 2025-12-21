@@ -8,7 +8,7 @@
   } from "@lucide/svelte";
 
   import musicQueueStore from "$lib/stores/music-queue.svelte";
-  import { compactify, parseHtmlEntities } from "$lib/utils/format.js";
+  import { compactify } from "$lib/utils/format.js";
   import { backendClient } from "$lib/utils/query-client.js";
   import { getThumbnailUrl } from "$lib/utils/url";
 
@@ -65,7 +65,7 @@
           ? 'text-4xl'
           : 'text-6xl'} font-semibold tracking-tight transition-colors first:mt-0 text-balance w-full"
       >
-        {parseHtmlEntities(musicQueueStore.musicPlayingNow.title)}
+        {musicQueueStore.musicPlayingNow.title}
       </h1>
       <p class="text-muted-foreground text-2xl ml-1">
         {musicQueueStore.musicPlayingNow.author}

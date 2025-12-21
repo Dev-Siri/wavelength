@@ -23,9 +23,3 @@ export function parseDurationToSeconds(duration: string) {
 
   return minutesInSeconds + seconds;
 }
-
-export function parseHtmlEntities(htmlString: string) {
-  const parser = new DOMParser();
-  const decodedString = parser.parseFromString(htmlString, "text/html").body.textContent;
-  return decodedString;
-}

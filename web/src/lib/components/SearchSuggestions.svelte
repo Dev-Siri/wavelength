@@ -109,7 +109,5 @@
         </li>
       {/each}
     </div>
-  {:else}
-    <p class="text-center text-muted-foreground p-4">Search something to get recommendations.</p>
   {/if}
 </div>

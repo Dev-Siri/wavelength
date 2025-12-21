@@ -80,7 +80,7 @@
 <Dialog.Root>
   <div
     class="flex flex-col h-full w-full bg-black rounded-2xl overflow-y-auto"
-    in:fly={{ y: 20, duration: 100 }}
+    in:fly={{ y: 20, duration: 250 }}
     out:fly={{ y: 20, duration: 100 }}
   >
     {#if playlistQuery.isLoading}

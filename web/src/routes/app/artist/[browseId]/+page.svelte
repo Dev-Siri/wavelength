@@ -39,7 +39,7 @@
 
 <div
   class="h-full w-full bg-black rounded-2xl"
-  in:fly={{ y: 20, duration: 100 }}
+  in:fly={{ y: 20, duration: 250 }}
   out:fly={{ y: 20, duration: 100 }}
 >
   {#if artistQuery.isLoading || artistExtraQuery.isLoading}
