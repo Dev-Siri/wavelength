@@ -1,6 +1,5 @@
 import tailwindAnimate from "tailwindcss-animate";
 import defaultTheme from "tailwindcss/defaultTheme";
-import { withUt } from "uploadthing/tw";
 
 import type { Config } from "tailwindcss";
 
@@ -92,4 +91,4 @@ const config: Config = {
   plugins: [tailwindAnimate],
 };
 
-export default withUt(config);
+export default config;

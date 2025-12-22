@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "uploadthing/tw/v4";
 
 @config "../tailwind.config.ts";
 
