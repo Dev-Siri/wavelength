@@ -83,13 +83,11 @@
         <div class="pr-[18%]"></div>
       {/if}
     </div>
-    {#if music.duration !== ""}
-      <DropdownMenu.Trigger class="h-full">
-        <Button variant="ghost" class="flex items-center justify-center px-1 text-muted-foreground">
-          <EllipsisIcon />
-        </Button>
-      </DropdownMenu.Trigger>
-    {/if}
+    <DropdownMenu.Trigger class="h-full">
+      <Button variant="ghost" class="flex items-center justify-center px-1 text-muted-foreground">
+        <EllipsisIcon />
+      </Button>
+    </DropdownMenu.Trigger>
   </div>
   <DropdownMenu.Content>
     <PlaylistToggleOptions {music} {toggle} />

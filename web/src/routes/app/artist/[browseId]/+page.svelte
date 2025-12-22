@@ -13,6 +13,7 @@
     artistResponseSchema,
   } from "$lib/utils/validation/artist-response";
 
+  import AlbumTile from "$lib/components/AlbumTile.svelte";
   import Image from "$lib/components/Image.svelte";
   import TrackItem from "$lib/components/TrackItem.svelte";
   import { Button } from "$lib/components/ui/button";
@@ -38,7 +39,7 @@
 </script>
 
 <div
-  class="h-full w-full bg-black rounded-2xl"
+  class="h-full w-full bg-black px-2 rounded-2xl pb-[15%]"
   in:fly={{ y: 20, duration: 250 }}
   out:fly={{ y: 20, duration: 100 }}
 >
@@ -114,14 +115,36 @@
             <ArrowUpRightIcon />
           </Button>
         </div>
-        <div class="h-full px-2">
+        <section>
           {#if artist.topSongs.length}
-            <h4 class="p-2 font-bold text-xl">Top Songs</h4>
-            {#each artist.topSongs as song}
-              <TrackItem music={{ ...song, duration: "" }} toggle={{ type: "add" }} />
-            {/each}
+            <h4 class="p-2 mb-2 font-bold text-3xl">Top Songs</h4>
+            <div class="px-2">
+              {#each artist.topSongs as song}
+                <TrackItem music={{ ...song, duration: "" }} toggle={{ type: "add" }} />
+              {/each}
+            </div>
           {/if}
-        </div>
+        </section>
+        <section>
+          {#if artist.albums.length}
+            <h4 class="p-2 mb-2 font-bold text-3xl">Albums</h4>
+            <div class="flex flex-col gap-4 px-2">
+              {#each artist.albums as album}
+                <AlbumTile {album} />
+              {/each}
+            </div>
+          {/if}
+        </section>
+        <section>
+          {#if artist.singlesAndEps.length}
+            <h4 class="p-2 mb-2 font-bold text-3xl">Singles & EPs</h4>
+            <div class="flex flex-col gap-4 px-2">
+              {#each artist.singlesAndEps as singlesAndEp}
+                <AlbumTile album={singlesAndEp} />
+              {/each}
+            </div>
+          {/if}
+        </section>
       </div>
     </Dialog.Root>
   {/if}

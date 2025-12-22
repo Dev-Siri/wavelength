@@ -24,7 +24,8 @@
       {#if album.isExplicit}
         <ExplicitIndicator />
       {/if}
-      <span class="text-muted-foreground"> Album by </span>
+      {album.albumType}
+      <span class="text-muted-foreground"> by </span>
       {album.author} <span class="text-muted-foreground">•</span>
       {album.releaseDate}
     </p>

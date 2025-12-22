@@ -30,7 +30,11 @@ func main() {
 	}
 
 	if db.Database != nil {
-		defer db.Database.Close()
+		defer func() {
+			if err := db.Database.Close(); err != nil {
+				logging.Logger.Fatal("Failed to close database connection.", zap.Error(err))
+			}
+		}()
 	}
 
 	if err := api.InitializeYouTubeClients(env.GetGoogleApiKey()); err != nil {

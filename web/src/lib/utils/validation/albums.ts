@@ -4,6 +4,7 @@ import { albumTrackSchema } from "./album-track";
 
 export const albumSchema = z.object({
   albumId: z.string(),
+  albumType: z.enum(["Album", "EP", "Single"]),
   title: z.string(),
   thumbnail: z.string(),
   author: z.string(),
