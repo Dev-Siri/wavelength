@@ -1,6 +1,4 @@
 <script lang="ts">
-  import dollarBill from "$lib/assets/dollar-bill.svg";
-
   import LandingHeader from "$lib/components/LandingHeader.svelte";
   import SineWaveAnimation from "$lib/components/SineWaveAnimation.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
@@ -31,21 +29,18 @@
     </div>
     <div class="flex flex-col items-center mb-10 -mt-10">
       <p class="flex items-center gap-1.5 text-lg sm:text-2xl text-wrap">
+        It's the
         <span class="mr-1 -mt-1">
           <SpotifyGlyph
             height={screenWidth < 475 ? 100 : 120}
             width={screenWidth < 475 ? 100 : 120}
           />
-        </span>
-        without the
-        <img src={dollarBill} alt="Dollar Bill" class="inline h-6 min-[475px]:h-10 ml-1 -mr-1" />,
-        <span class="ml-1">built on</span>
-        <span class="inline ml-1">
-          <YouTubeLogo height={screenWidth < 475 ? 35 : 40} width={screenWidth < 475 ? 35 : 40} />
-        </span>
+        </span>that doesn't beg you for your money.
       </p>
       <p class="text-lg sm:text-2xl text-balance w-full -mt-4">
-        if its on youtube, its available for your
+        if its on <span class="inline ml-1">
+          <YouTubeLogo height={screenWidth < 475 ? 35 : 40} width={screenWidth < 475 ? 35 : 40} />
+        </span>, its available for your
         <span class="underline-animate">playlist</span>.
       </p>
     </div>
