@@ -32,7 +32,7 @@
       {:else if likeTracksCountQuery.isSuccess}
         <p class="text-xs text-muted-foreground">
           {likeTracksCountQuery.data === 0 ? "No" : likeTracksCountQuery.data}
-          {likeTracksCountQuery.data === 1 ? "song" : "songs"}.
+          {likeTracksCountQuery.data === 1 ? "song" : "songs"}
         </p>
       {:else}
         <p class="text-xs text-muted-foreground">Loading...</p>
