@@ -12,6 +12,10 @@ export const svelteQueryKeys = {
   userPlaylists: ["user-playlists"],
   region: ["region"],
   quickPicks: ["quick-picks"],
+  likes: ["likes"],
+  likesLength: ["likes-length"],
+  likeCount: ["like-count"],
+  isTrackLiked: (trackId: string) => ["is-track-liked", trackId],
   album: (albumId: string) => ["album", albumId],
   playlist: (playlistId: string) => ["playlist", playlistId],
   playlistTrack: (playlistId: string) => ["playlist-track", playlistId],
@@ -33,4 +37,5 @@ export const svelteMutationKeys = {
   updatePlaylist: (playlistId: string) => ["update-playlist", playlistId],
   deletePlaylist: (playlistId: string) => ["delete-playlist", playlistId],
   rearrangePlaylistTracks: (playlistId: string) => ["rearrange-playlist-items", playlistId],
+  likeTrack: (trackId: string) => ["like-track", trackId],
 } as const;

@@ -5,7 +5,6 @@
   import { fly, slide } from "svelte/transition";
 
   import type { Snippet } from "svelte";
-  import type { PageData } from "./$types";
 
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
   import musicQueueStore from "$lib/stores/music-queue.svelte.js";
@@ -23,6 +22,7 @@
 
   interface PaneLimit {
     minSize: number;
+    size?: number;
     maxSize: number;
   }
 
@@ -32,15 +32,16 @@
     content: number;
   }
 
-  const { children, data }: { children?: Snippet; data: PageData } = $props();
+  const { children }: { children?: Snippet } = $props();
 
   let screenSize: number | null = $state(null);
   let sidebarWidth = $state(20);
 
   const defaultSizes: PaneSizes = {
     sidebar: {
-      minSize: 6.5,
-      maxSize: 28,
+      minSize: 20,
+      size: 25,
+      maxSize: 30,
     },
     queue: {
       maxSize: 25,

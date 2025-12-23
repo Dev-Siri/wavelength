@@ -14,7 +14,7 @@
 
   import EditPlaylistDetailsDialog from "./EditPlaylistDetailsDialog.svelte";
   import Image from "./Image.svelte";
-  import { buttonVariants } from "./ui/button";
+  import Button from "./ui/button/button.svelte";
   import * as Dialog from "./ui/dialog";
   import * as DropdownMenu from "./ui/dropdown-menu";
   import * as Tooltip from "./ui/tooltip";
@@ -22,13 +22,11 @@
   const {
     playlist,
     titleClasses = "",
-    imageClasses = "w-14 h-10",
     wrapperClasses = "",
     wrapperClick = () => {},
   }: {
     playlist: Playlist;
     titleClasses?: string;
-    imageClasses?: string;
     wrapperClasses?: string;
     wrapperClick?: () => void;
   } = $props();
@@ -67,22 +65,20 @@
   tabindex={0}
   onkeydown={wrapperClick}
   onclick={wrapperClick}
-  class="{buttonVariants({
-    variant: 'ghost',
-  })} flex group cursor-pointer justify-start w-full gap-2 pl-1 pr-2 h-12 {wrapperClasses}"
+  class="flex group cursor-pointer items-center justify-start p-2.5 pr-3 bg-[#111] hover:bg-[#1c1c1c] duration-200 my-0.5 rounded-xl w-full gap-2 {wrapperClasses}"
 >
-  <button type="button" class="relative {imageClasses}" onclick={playPlaylist}>
+  <Button variant="outline" class="relative p-0 h-15 w-15 aspect-square" onclick={playPlaylist}>
     {#if coverImage}
       <Image
         src={coverImage}
         alt="Playlist Cover"
-        height={40}
-        width={40}
-        class="rounded-md h-full w-full object-cover group-hover:opacity-50 duration-200"
+        height={80}
+        width={80}
+        class="rounded-md h-15 w-15 aspect-square object-cover group-hover:opacity-50 duration-200"
       />
     {:else}
       <div
-        class="bg-primary-foreground rounded-md h-10 group-hover:opacity-50 duration-200 w-[40px]"
+        class="bg-primary-foreground rounded-md h-15 group-hover:opacity-50 duration-200 w-15"
       ></div>
     {/if}
     <PlayIcon
@@ -90,7 +86,7 @@
       size={14}
       fill="white"
     />
-  </button>
+  </Button>
   <a
     class="w-full {titleClasses}"
     href="/app/playlist/{playlistId}"
@@ -113,7 +109,10 @@
   </a>
   <Dialog.Root>
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger class="ml-auto cursor-pointer {titleClasses}">
+      <DropdownMenu.Trigger
+        class="ml-auto cursor-pointer hover:bg-muted duration-200 h-fit w-fit p-1 rounded-full"
+        aria-label="Playlist Options"
+      >
         <EllipsisIcon class="text-muted-foreground" size={18} />
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>

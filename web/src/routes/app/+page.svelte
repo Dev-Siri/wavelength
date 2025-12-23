@@ -27,7 +27,7 @@
   }));
 </script>
 
-<div class="p-6 h-screen w-full pb-[20%] overflow-auto">
+<div class="p-6 bg-black h-screen w-full pb-[20%] overflow-auto">
   <h3 class="scroll-m-20 text-3xl tracking-tight my-4 text-balance">
     Popular Music in {codeToCountryName(regionQuery.isSuccess ? regionQuery.data : DEFAULT_REGION)}
   </h3>

@@ -7,6 +7,7 @@
   import { backendClient } from "$lib/utils/query-client.js";
   import { playlistsSchema } from "$lib/utils/validation/playlists.js";
 
+  import LikedTracksLink from "./LikedTracksLink.svelte";
   import PlaylistCard from "./PlaylistCard.svelte";
 
   const { sidebarWidth }: { sidebarWidth: number } = $props();
@@ -33,14 +34,14 @@
     </p>
   {:else if playlistsQuery.isSuccess}
     {#if playlistsQuery.data}
+      <LikedTracksLink />
       {#key playlistsQuery.data}
         {#each playlistsQuery.data as playlist}
           <PlaylistCard
             {playlist}
             titleClasses={sidebarWidth < 11 ? "hidden" : "w-10 overflow-hidden"}
-            imageClasses={sidebarWidth < 11 ? "h-10 w-10" : "h-9.5 w-14"}
             wrapperClick={() =>
-              window.innerWidth <= 968 && goto(`/playlist/${playlist.playlistId}`)}
+              window.innerWidth <= 968 && goto(`/app/playlist/${playlist.playlistId}`)}
           />
         {/each}
       {/key}

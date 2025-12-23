@@ -1,4 +1,4 @@
-package playlist_controllers
+package music_controllers
 
 import (
 	"context"
@@ -10,11 +10,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func GetPlaylistTracksLength(ctx *fiber.Ctx) error {
-	playlistId := ctx.Params("playlistId")
+func GetLikedTracksLength(ctx *fiber.Ctx) error {
+	authUser, ok := ctx.Locals("authUser").(models.AuthUser)
 
-	if playlistId == "" {
-		return fiber.NewError(fiber.StatusBadRequest, "Playlist ID is required.")
+	if !ok {
+		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
 	}
 
 	durationsChan := make(chan []string, 1)
@@ -29,8 +29,8 @@ func GetPlaylistTracksLength(ctx *fiber.Ctx) error {
 
 		rows, err := db.Database.QueryContext(
 			context.Background(),
-			`SELECT duration FROM playlist_tracks WHERE playlist_id = $1`,
-			playlistId,
+			`SELECT duration FROM "likes" WHERE email = $1`,
+			authUser.Email,
 		)
 
 		if err != nil {
@@ -60,8 +60,8 @@ func GetPlaylistTracksLength(ctx *fiber.Ctx) error {
 
 		if err := db.Database.QueryRowContext(
 			context.Background(),
-			`SELECT COUNT(*) FROM playlist_tracks WHERE playlist_id = $1`,
-			playlistId,
+			`SELECT COUNT(*) FROM "likes" WHERE email = $1`,
+			authUser.Email,
 		).Scan(&songCount); err != nil {
 			errChan <- err
 			return
@@ -97,7 +97,7 @@ func GetPlaylistTracksLength(ctx *fiber.Ctx) error {
 			receivedCount = true
 		case err, ok := <-errChan:
 			if ok {
-				return fiber.NewError(fiber.StatusInternalServerError, "Failed to fetch playlist play length with ID: "+playlistId+": "+err.Error())
+				return fiber.NewError(fiber.StatusInternalServerError, "Failed to fetch likes play length: "+err.Error())
 			}
 		}
 
@@ -113,6 +113,7 @@ func GetPlaylistTracksLength(ctx *fiber.Ctx) error {
 		totalDurationSeconds += utils.ParseDurationToSeconds(duration)
 	}
 
+	// Versatile schema.
 	return ctx.JSON(models.Success(models.PlaylistTracksLength{
 		SongCount:          songCount,
 		SongDurationSecond: totalDurationSeconds,

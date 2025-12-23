@@ -9,12 +9,10 @@
   import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
   import userStore from "$lib/stores/user.svelte.js";
   import { backendClient } from "$lib/utils/query-client.js";
-  import {
-    playlistTrackLengthSchema,
-    playlistTracksSchema,
-  } from "$lib/utils/validation/playlist-track";
+  import { playlistTracksSchema } from "$lib/utils/validation/playlist-track";
   import { playlistSchema } from "$lib/utils/validation/playlists.js";
   import { themeColorSchema } from "$lib/utils/validation/theme-color";
+  import { trackLengthSchema } from "$lib/utils/validation/track-length";
 
   import ChangePlaylistVisibilityButton from "$lib/components/ChangePlaylistVisibilityButton.svelte";
   import EditPlaylistDetailsDialog from "$lib/components/EditPlaylistDetailsDialog.svelte";
@@ -49,10 +47,7 @@
   const playlistPlaylengthQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.playlistTrackLength(page.params.playlistId ?? ""),
     queryFn: () =>
-      backendClient(
-        `/playlists/playlist/${page.params.playlistId}/length`,
-        playlistTrackLengthSchema,
-      ),
+      backendClient(`/playlists/playlist/${page.params.playlistId}/length`, trackLengthSchema),
   }));
 
   let playlistThumbnailUrl = $derived(playlistQuery.data?.coverImage ?? "");
@@ -193,7 +188,7 @@
                   </Tooltip.Content>
                 </Tooltip.Root>
                 <p class="flex-2">Title</p>
-                <ClockIcon size={18} class="mr-[62px]" />
+                <ClockIcon size={18} class="mr-28" />
               </header>
               <div class="mt-2 overflow-x-hidden pb-[80%] md:pb-[40%] lg:pb-[20%]">
                 {#key playlistTracks}

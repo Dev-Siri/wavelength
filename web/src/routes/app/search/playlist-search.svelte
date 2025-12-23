@@ -28,7 +28,7 @@
   {:else if playlistSearchQuery.isSuccess}
     {#if playlistSearchQuery.data.length}
       {#each playlistSearchQuery.data as playlist}
-        <PlaylistCard imageClasses="h-10 w-11" {playlist} />
+        <PlaylistCard {playlist} />
       {/each}
     {:else}
       <div class="mt-[14%]">
