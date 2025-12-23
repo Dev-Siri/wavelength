@@ -73,8 +73,7 @@
       });
     },
     onError: () => toast.error("Failed to like track."),
-    onSuccess(data) {
-      toast.success(data);
+    onSuccess() {
       isTrackLikedQuery.refetch();
       queryClient.invalidateQueries({
         queryKey: [...svelteQueryKeys.likeCount, ...svelteQueryKeys.likes],
