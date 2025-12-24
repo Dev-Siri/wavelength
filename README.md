@@ -36,7 +36,7 @@ $ flutter run
 
 ## Server
 
-Navigate to `/server`. Here you'll need a couple of things. One of these are YouTube credentials. Follow the instructions from [yt-dlp](https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp)'s wiki page and make sure that you are using a burner YouTube account to not be at risk of termination. You should be retrieving the cookies in Netscape format.
+Navigate to `/server`.
 
 ### Building The Docker Image
 
