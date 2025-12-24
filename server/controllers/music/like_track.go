@@ -27,17 +27,14 @@ func LikeTrack(ctx *fiber.Ctx) error {
 	// Check if already liked.
 	var likesCount int
 
-	row, err := db.Database.Query(`
+	row := db.Database.QueryRow(`
 		SELECT COUNT(*) FROM "likes"
 		WHERE email = $1 AND video_id = $2;
 	`, authUser.Email, parsedBody.VideoId)
 
-	row.Next()
 	if err := row.Scan(&likesCount); err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to read like data count: "+err.Error())
 	}
-
-	defer row.Close()
 
 	if likesCount > 0 {
 		// Perform unlike instead.
@@ -61,7 +58,7 @@ func LikeTrack(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Liked track to add isn't in proper shape.")
 	}
 
-	_, err = db.Database.Exec(`
+	_, err := db.Database.Exec(`
 		INSERT INTO "likes" (
 			like_id,
 			email,

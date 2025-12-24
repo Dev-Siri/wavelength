@@ -16,16 +16,11 @@ func GetLikedTrackCount(ctx *fiber.Ctx) error {
 
 	var likeCount int
 
-	row, err := db.Database.Query(`
+	row := db.Database.QueryRow(`
 		SELECT COUNT(*) FROM "likes"
 		WHERE email = $1;
 	`, authUser.Email)
 
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to read like count from database: "+err.Error())
-	}
-
-	row.Next()
 	if err := row.Scan(&likeCount); err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to read like count: "+err.Error())
 	}

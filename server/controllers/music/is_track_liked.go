@@ -23,21 +23,14 @@ func IsTrackLiked(ctx *fiber.Ctx) error {
 	// Check if already liked.
 	var likesCount int
 
-	row, err := db.Database.Query(`
+	row := db.Database.QueryRow(`
 		SELECT COUNT(*) FROM "likes"
 		WHERE email = $1 AND video_id = $2;
 	`, authUser.Email, videoId)
 
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to read like count from database: "+err.Error())
-	}
-
-	row.Next()
 	if err := row.Scan(&likesCount); err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to read like data count: "+err.Error())
 	}
-
-	defer row.Close()
 
 	isLiked := likesCount > 0
 
