@@ -188,7 +188,7 @@ class _PlaylistTrackTileState extends State<PlaylistTrackTile> {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: GestureDetector(
               onTap: () => _showPlaylistTrackOptions(context),
-              child: const Icon(LucideIcons.ellipsis, color: Colors.grey),
+              child: const Icon(LucideIcons.ellipsis400, color: Colors.grey),
             ),
           ),
         ],

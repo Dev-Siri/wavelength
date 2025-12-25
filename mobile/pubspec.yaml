@@ -35,7 +35,7 @@ dependencies:
   mini_music_visualizer: ^1.1.4
   url_launcher: ^6.3.2
   flutter_bloc: ^9.0.0
-  lucide_icons_flutter: ^1.2.7
+  lucide_icons_flutter: ^3.1.9
   cupertino_icons: ^1.0.8
   video_player: ^2.10.0
   rust_lib_wavelength:

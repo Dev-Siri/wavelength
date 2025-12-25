@@ -225,7 +225,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       ),
                       prefixIcon: const Padding(
                         padding: EdgeInsets.only(left: 6),
-                        child: Icon(LucideIcons.compass, color: Colors.grey),
+                        child: Icon(LucideIcons.compass400, color: Colors.grey),
                       ),
                     ),
                   );

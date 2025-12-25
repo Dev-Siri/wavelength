@@ -134,7 +134,7 @@ class TopTrackResult extends StatelessWidget {
                       ),
                     ),
                     child: const Icon(
-                      LucideIcons.circlePlus,
+                      LucideIcons.circlePlus400,
                       color: Colors.white,
                     ),
                   ),

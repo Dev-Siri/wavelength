@@ -3,9 +3,11 @@ import "dart:convert";
 import "package:http/http.dart" as http;
 import "package:flutter/foundation.dart";
 import "package:wavelength/api/models/api_response.dart";
+import "package:wavelength/api/models/liked_track.dart";
 import "package:wavelength/api/models/lyric.dart";
 import "package:wavelength/api/models/music_video_preview.dart";
 import "package:wavelength/api/models/playlist_track.dart";
+import "package:wavelength/api/models/playlist_tracks_length.dart";
 import "package:wavelength/api/models/track.dart";
 import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/constants.dart";
@@ -155,6 +157,114 @@ class TrackRepo {
       DiagnosticsRepo.reportError(
         error: errorString,
         source: "TrackRepo.fetchTrackDuration",
+      );
+      return ApiResponseError(message: errorString);
+    }
+  }
+
+  static Future<ApiResponse<int>> fetchTrackLikeCount({
+    required String authToken,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$backendUrl/music/track/likes/count"),
+        headers: {"Authorization": "Bearer $authToken"},
+      );
+      final decodedResponse = await compute<String, ApiResponse<int>>((
+        durationResponse,
+      ) {
+        final decodedJson = jsonDecode(durationResponse);
+        final isSuccessful = decodedJson["success"] as bool;
+
+        if (isSuccessful) {
+          final likeCount = decodedJson["data"] as int;
+
+          return ApiResponseSuccess(data: likeCount);
+        }
+
+        return ApiResponseError(message: decodedJson["message"] as String);
+      }, response.body);
+
+      return decodedResponse;
+    } catch (e) {
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "TrackRepo.fetchTrackLikeCount",
+      );
+      return ApiResponseError(message: errorString);
+    }
+  }
+
+  static Future<ApiResponse<List<LikedTrack>>> fetchLikedTracks({
+    required String authToken,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$backendUrl/music/track/likes"),
+        headers: {"Authorization": "Bearer $authToken"},
+      );
+      final decodedResponse =
+          await compute<String, ApiResponse<List<LikedTrack>>>((
+            durationResponse,
+          ) {
+            final decodedJson = jsonDecode(durationResponse);
+            final isSuccessful = decodedJson["success"] as bool;
+
+            if (isSuccessful) {
+              final likedTracks = decodedJson["data"] as List;
+
+              return ApiResponseSuccess(
+                data: likedTracks
+                    .map((final likedTrack) => LikedTrack.fromJson(likedTrack))
+                    .toList(),
+              );
+            }
+
+            return ApiResponseError(message: decodedJson["message"] as String);
+          }, response.body);
+
+      return decodedResponse;
+    } catch (e) {
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "TrackRepo.fetchLikedTracks",
+      );
+      return ApiResponseError(message: errorString);
+    }
+  }
+
+  static Future<ApiResponse<PlaylistTracksLength>> fetchLikedTracksLength({
+    required String authToken,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$backendUrl/music/track/likes/length"),
+        headers: {"Authorization": "Bearer $authToken"},
+      );
+      final decodedResponse =
+          await compute<String, ApiResponse<PlaylistTracksLength>>((
+            stringResponse,
+          ) {
+            final decodedJson = jsonDecode(stringResponse);
+            final isSuccessful = decodedJson["success"] as bool;
+
+            if (isSuccessful) {
+              return ApiResponseSuccess(
+                data: PlaylistTracksLength.fromJson(decodedJson["data"]),
+              );
+            }
+
+            return ApiResponseError(message: decodedJson["message"] as String);
+          }, response.body);
+
+      return decodedResponse;
+    } catch (e) {
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "PlaylistsRepo.fetchLikedTracksLength",
       );
       return ApiResponseError(message: errorString);
     }

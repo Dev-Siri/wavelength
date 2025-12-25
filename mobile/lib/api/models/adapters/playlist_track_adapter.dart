@@ -1,7 +1,7 @@
 import "package:hive/hive.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 
-VideoType _safeVideoType(int index) {
+VideoType safeVideoType(int index) {
   if (index >= 0 && index < VideoType.values.length) {
     return VideoType.values[index];
   }
@@ -24,7 +24,7 @@ class PlaylistTrackAdapter extends TypeAdapter<PlaylistTrack> {
       author: reader.readString(),
       duration: reader.readString(),
       videoId: reader.readString(),
-      videoType: _safeVideoType(reader.readInt()),
+      videoType: safeVideoType(reader.readInt()),
       playlistId: reader.readString(),
     );
   }

@@ -76,7 +76,7 @@ class _PlaylistVisibilityToggleState extends State<PlaylistVisibilityToggle> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Icon(
-          _isPrivate ? LucideIcons.lock : LucideIcons.globe,
+          _isPrivate ? LucideIcons.lock400 : LucideIcons.globe400,
           size: 16,
           color: Colors.white,
         ),

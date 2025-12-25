@@ -25,7 +25,7 @@ class DownloadNotificationButton extends StatelessWidget {
             child: IconButton(
               padding: EdgeInsets.zero,
               color: Colors.grey.shade400,
-              icon: const Icon(LucideIcons.download, size: 18),
+              icon: const Icon(LucideIcons.download400, size: 18),
               onPressed: () => context.push("/downloads"),
             ),
           ),

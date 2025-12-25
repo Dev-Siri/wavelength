@@ -29,7 +29,7 @@ class UserLeadingIcon extends StatelessWidget {
                           ),
                         )
                       : const Icon(
-                          LucideIcons.user,
+                          LucideIcons.user400,
                           color: Colors.white,
                           size: 28,
                         ),
@@ -52,7 +52,7 @@ class UserLeadingIcon extends StatelessWidget {
                           ),
                         )
                       : const Icon(
-                          LucideIcons.user,
+                          LucideIcons.user400,
                           color: Colors.white,
                           size: 28,
                         ),

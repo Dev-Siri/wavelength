@@ -85,7 +85,7 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
                         Padding(
                           padding: EdgeInsets.only(left: 80, bottom: 80),
                           child: Icon(
-                            LucideIcons.bookmarkCheck,
+                            LucideIcons.bookmarkCheck400,
                             color: Colors.blue,
                             size: 50,
                           ),

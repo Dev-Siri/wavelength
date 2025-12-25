@@ -8,6 +8,8 @@ const hivePlaylistsTracksKey = "playlists_tracks";
 const hivePlaylistsKey = "playlists";
 const hiveLyricsKey = "lyrics";
 const hiveStreamsKey = "yt_streams";
+const hiveLikesKey = "likes";
+const hiveLikeCountKey = "like_count";
 
 const settingsOptionPreferWifiForDownloads = "settings:prefer_wifi_for_streams";
 const settingsOptionPreferWifiForDownloadsDefaultValue = true;

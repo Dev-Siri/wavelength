@@ -140,7 +140,7 @@ class VideoCard extends StatelessWidget {
                   ? CupertinoButton(
                       onPressed: () => _showPlaylistAdditionDialog(context),
                       child: const Icon(
-                        LucideIcons.circlePlus,
+                        LucideIcons.circlePlus400,
                         color: Colors.white,
                         size: 24,
                       ),
@@ -151,7 +151,7 @@ class VideoCard extends StatelessWidget {
                         padding: EdgeInsets.zero,
                         minWidth: 20,
                         onPressed: () => _showPlaylistAdditionDialog(context),
-                        child: const Icon(LucideIcons.circlePlus),
+                        child: const Icon(LucideIcons.circlePlus400),
                       ),
                     ),
             ),

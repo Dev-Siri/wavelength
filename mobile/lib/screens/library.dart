@@ -5,12 +5,28 @@ import "package:wavelength/bloc/auth/auth_state.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/library/library_event.dart";
 import "package:wavelength/bloc/library/library_state.dart";
+import "package:wavelength/bloc/likes/like_count/like_count_bloc.dart";
+import "package:wavelength/bloc/likes/like_count/like_count_event.dart";
 import "package:wavelength/widgets/google_login_button.dart";
+import "package:wavelength/widgets/liked_tracks_link.dart";
 import "package:wavelength/widgets/playlist_tile.dart";
 import "package:wavelength/widgets/skeletons/playlist_tile_skeleton.dart";
 
 class LibraryScreen extends StatelessWidget {
   const LibraryScreen({super.key});
+
+  void _refreshLibrary(
+    BuildContext context, {
+    required String email,
+    required String authToken,
+  }) {
+    context.read<LibraryBloc>().add(
+      LibraryPlaylistsFetchEvent(email: email, authToken: authToken),
+    );
+    context.read<LikeCountBloc>().add(
+      LikeCountFetchEvent(authToken: authToken),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +35,10 @@ class LibraryScreen extends StatelessWidget {
         return RefreshIndicator.adaptive(
           color: Colors.white,
           onRefresh: () async => state is AuthStateAuthorized
-              ? context.read<LibraryBloc>().add(
-                  LibraryPlaylistsFetchEvent(
-                    email: state.user.email,
-                    authToken: state.authToken,
-                  ),
+              ? _refreshLibrary(
+                  context,
+                  email: state.user.email,
+                  authToken: state.authToken,
                 )
               : null,
           child: ListView(
@@ -54,7 +69,7 @@ class LibraryScreen extends StatelessWidget {
                       if (state is! LibraryFetchSuccessState) {
                         return Column(
                           children: [
-                            for (int i = 0; i < 10; i++)
+                            for (int i = 0; i < 6; i++)
                               const Padding(
                                 padding: EdgeInsets.only(bottom: 5),
                                 child: PlaylistTileSkeleton(),
@@ -65,6 +80,7 @@ class LibraryScreen extends StatelessWidget {
 
                       return Column(
                         children: [
+                          const LikedTracksLink(),
                           for (final playlist in state.playlists)
                             Padding(
                               padding: const EdgeInsets.only(bottom: 5),

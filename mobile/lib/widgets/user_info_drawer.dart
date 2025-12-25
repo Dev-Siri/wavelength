@@ -83,7 +83,7 @@ class UserInfoDrawer extends StatelessWidget {
                                       onPressed: () =>
                                           context.push("/settings"),
                                       child: const Icon(
-                                        LucideIcons.settings,
+                                        LucideIcons.settings400,
                                         color: Colors.white,
                                       ),
                                     );
@@ -92,7 +92,7 @@ class UserInfoDrawer extends StatelessWidget {
                                   return IconButton(
                                     onPressed: () => context.push("/settings"),
                                     icon: const Icon(
-                                      LucideIcons.settings,
+                                      LucideIcons.settings400,
                                       color: Colors.white,
                                     ),
                                   );
@@ -104,7 +104,7 @@ class UserInfoDrawer extends StatelessWidget {
                                     AuthLogoutUserEvent(),
                                   ),
                                   child: const Icon(
-                                    LucideIcons.logOut,
+                                    LucideIcons.logOut400,
                                     color: Colors.red,
                                   ),
                                 )
@@ -114,7 +114,7 @@ class UserInfoDrawer extends StatelessWidget {
                                     AuthLogoutUserEvent(),
                                   ),
                                   icon: const Icon(
-                                    LucideIcons.logOut,
+                                    LucideIcons.logOut400,
                                     color: Colors.red,
                                   ),
                                 ),

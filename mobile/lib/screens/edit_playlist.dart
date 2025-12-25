@@ -198,7 +198,7 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
                   ),
                   Column(
                     children: [
-                      const Icon(LucideIcons.image, size: 40),
+                      const Icon(LucideIcons.image400, size: 40),
                       const SizedBox(height: 10),
                       Text(
                         "Click to pick${widget.routeData.coverImage == null ? " " : " a new "}cover image.",

@@ -2,6 +2,8 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 import "package:wavelength/app_shell.dart";
+import "package:wavelength/bloc/likes/liked_tracks/liked_tracks_bloc.dart";
+import "package:wavelength/bloc/likes/liked_tracks_playlength/liked_tracks_playlength_bloc.dart";
 import "package:wavelength/bloc/public_playlists/public_playlists_bloc.dart";
 import "package:wavelength/bloc/search/artists/artists_bloc.dart";
 import "package:wavelength/bloc/search/tracks/tracks_bloc.dart";
@@ -13,6 +15,7 @@ import "package:wavelength/screens/edit_playlist.dart";
 import "package:wavelength/screens/home.dart";
 import "package:wavelength/screens/library.dart";
 import "package:wavelength/screens/explore.dart";
+import "package:wavelength/screens/likes.dart";
 import "package:wavelength/screens/playing_now.dart";
 import "package:wavelength/screens/playlist.dart";
 import "package:wavelength/screens/settings.dart";
@@ -71,6 +74,22 @@ final router = GoRouter(
                       routeData: state.extra as EditPlaylistRouteData,
                     )
                   : const SizedBox.shrink(),
+              transitionsBuilder: pageSlideUpTransition,
+            );
+          },
+        ),
+        GoRoute(
+          path: "/likes",
+          pageBuilder: (_, state) {
+            return CustomTransitionPage(
+              key: state.pageKey,
+              child: MultiBlocProvider(
+                providers: [
+                  BlocProvider(create: (_) => LikedTracksBloc()),
+                  BlocProvider(create: (_) => LikedTracksPlaylengthBloc()),
+                ],
+                child: const LikesScreen(),
+              ),
               transitionsBuilder: pageSlideUpTransition,
             );
           },

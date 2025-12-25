@@ -84,7 +84,7 @@ class FloatingMusicPlayerPreviewBody extends StatelessWidget {
             builder: (context, state) {
               final isMusicPlaying = state is MusicPlayerPlaystatePlayingState;
               final playstateButtonInnerUi = Icon(
-                isMusicPlaying ? LucideIcons.pause : LucideIcons.play,
+                isMusicPlaying ? LucideIcons.pause400 : LucideIcons.play400,
                 color: Colors.white,
                 semanticLabel: isMusicPlaying ? "Pause" : "Play",
               );

@@ -6,6 +6,7 @@ import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:google_sign_in/google_sign_in.dart";
 import "package:hive_flutter/hive_flutter.dart";
+import "package:wavelength/api/models/adapters/liked_track.dart";
 import "package:wavelength/api/models/adapters/lyric_adapter.dart";
 import "package:wavelength/api/models/adapters/playlist_adapter.dart";
 import "package:wavelength/api/models/adapters/playlist_track_adapter.dart";
@@ -13,6 +14,7 @@ import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
 import "package:wavelength/bloc/download/download_bloc.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
+import "package:wavelength/bloc/likes/like_count/like_count_bloc.dart";
 import "package:wavelength/bloc/location/location_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_bloc.dart";
@@ -36,6 +38,7 @@ Future<void> main() async {
   Hive.registerAdapter(PlaylistTrackAdapter());
   Hive.registerAdapter(LyricAdapter());
   Hive.registerAdapter(PlaylistAdapter());
+  Hive.registerAdapter(LikedTrackAdapter());
 
   await JustAudioBackground.init(
     androidNotificationChannelId: "dev.siri.wavelength.channel.audio",
@@ -71,6 +74,7 @@ class App extends StatelessWidget {
         BlocProvider(create: (_) => QuickPicksBloc()),
         BlocProvider(create: (_) => LocationBloc()),
         BlocProvider(create: (_) => LibraryBloc()),
+        BlocProvider(create: (_) => LikeCountBloc()),
         BlocProvider(
           create: (_) => AuthBloc(
             GoogleSignIn(

@@ -6,17 +6,13 @@ class PlaylistTileSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Padding(
       padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade900,
-        borderRadius: BorderRadius.circular(15),
-      ),
       child: Row(
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: Shimmer(child: const SizedBox(height: 50, width: 50)),
+            borderRadius: BorderRadius.circular(10),
+            child: Shimmer(child: const SizedBox(height: 60, width: 60)),
           ),
           const SizedBox(width: 10),
           Column(

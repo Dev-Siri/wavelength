@@ -19,6 +19,8 @@ import "package:wavelength/bloc/auth/auth_event.dart";
 import "package:wavelength/bloc/auth/auth_state.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/library/library_event.dart";
+import "package:wavelength/bloc/likes/like_count/like_count_bloc.dart";
+import "package:wavelength/bloc/likes/like_count/like_count_event.dart";
 import "package:wavelength/bloc/location/location_bloc.dart";
 import "package:wavelength/bloc/location/location_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
@@ -63,17 +65,17 @@ class _AppShellState extends State<AppShell> {
       tooltip: "Home",
     ),
     const BottomNavigationBarItem(
-      icon: Icon(LucideIcons.compass),
+      icon: Icon(LucideIcons.compass400),
       label: "",
       tooltip: "Explore",
     ),
     const BottomNavigationBarItem(
-      icon: Icon(LucideIcons.library),
+      icon: Icon(LucideIcons.library400),
       label: "",
       tooltip: "Your Library",
     ),
     const BottomNavigationBarItem(
-      icon: Icon(LucideIcons.plus),
+      icon: Icon(LucideIcons.plus400),
       label: "",
       tooltip: "Create",
     ),
@@ -154,6 +156,9 @@ class _AppShellState extends State<AppShell> {
                           email: state.user.email,
                           authToken: state.authToken,
                         ),
+                      );
+                      context.read<LikeCountBloc>().add(
+                        LikeCountFetchEvent(authToken: state.authToken),
                       );
                     }
                   },

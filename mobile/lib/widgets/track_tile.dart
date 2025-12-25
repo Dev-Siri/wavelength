@@ -178,7 +178,7 @@ class TrackTile extends StatelessWidget {
           const Spacer(),
           CupertinoButton(
             onPressed: () => _addTrackToPlaylist(context),
-            child: const Icon(LucideIcons.circlePlus, color: Colors.white),
+            child: const Icon(LucideIcons.circlePlus400, color: Colors.white),
           ),
         ],
       ),

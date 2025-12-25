@@ -104,7 +104,7 @@ class MusicPlayerPlayOptions extends StatelessWidget {
             final isPaused = state is MusicPlayerPlaystatePausedState;
 
             return Icon(
-              isPaused ? LucideIcons.play : LucideIcons.pause,
+              isPaused ? LucideIcons.play400 : LucideIcons.pause400,
               color: Colors.black,
               size: 24,
             );
@@ -112,13 +112,13 @@ class MusicPlayerPlayOptions extends StatelessWidget {
         );
 
     final previousButtonInnerUi = const Icon(
-      LucideIcons.skipBack,
+      LucideIcons.skipBack400,
       color: Colors.white,
       size: 22,
     );
 
     final nextButtonInnerUi = const Icon(
-      LucideIcons.skipForward,
+      LucideIcons.skipForward400,
       color: Colors.white,
       size: 22,
     );
@@ -139,7 +139,7 @@ class MusicPlayerPlayOptions extends StatelessWidget {
                       : MusicPlayerVolumeMuteEvent(),
                 ),
                 child: Icon(
-                  isMuted ? LucideIcons.volumeX : LucideIcons.volume2,
+                  isMuted ? LucideIcons.volumeX400 : LucideIcons.volume2400,
                 ),
               );
             },
@@ -225,8 +225,8 @@ class MusicPlayerPlayOptions extends StatelessWidget {
                             : 1,
                         child: Icon(
                           state is! MusicPlayerRepeatModeRepeatOneState
-                              ? LucideIcons.repeat
-                              : LucideIcons.repeat1,
+                              ? LucideIcons.repeat400
+                              : LucideIcons.repeat1400,
                           color: Colors.white,
                         ),
                       ),

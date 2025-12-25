@@ -123,7 +123,7 @@ class _PlaylistTileState extends State<PlaylistTile> {
           BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
               return IconButton(
-                icon: const Icon(LucideIcons.trash2, color: Colors.red),
+                icon: const Icon(LucideIcons.trash2400, color: Colors.red),
                 onPressed: () => state is AuthStateAuthorized
                     ? showDialog(
                         context: context,

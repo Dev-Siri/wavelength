@@ -159,7 +159,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                       coverImage: playlist.coverImage,
                     ),
                   ),
-                  child: const Icon(LucideIcons.pencil, color: Colors.white),
+                  child: const Icon(LucideIcons.pencil400, color: Colors.white),
                 )
               else
                 IconButton(
@@ -170,7 +170,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                       coverImage: playlist.coverImage,
                     ),
                   ),
-                  icon: const Icon(LucideIcons.pencil, color: Colors.white),
+                  icon: const Icon(LucideIcons.pencil400, color: Colors.white),
                 ),
             ],
           ),
@@ -229,7 +229,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                           CrossAxisAlignment.center,
                                       children: [
                                         Icon(
-                                          LucideIcons.circleAlert,
+                                          LucideIcons.circleAlert400,
                                           color: Colors.redAccent,
                                           size: 20,
                                         ),
@@ -336,7 +336,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                     _playPlaylistTracks(orderedSongs),
                                 icon: const Padding(
                                   padding: EdgeInsets.all(8),
-                                  child: Icon(LucideIcons.play),
+                                  child: Icon(LucideIcons.play400),
                                 ),
                               ),
                             ),
@@ -361,7 +361,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                 onPressed: () =>
                                     _downloadAllTracks(state.songs),
                                 icon: const Icon(
-                                  LucideIcons.bookmark,
+                                  LucideIcons.bookmark400,
                                   size: 24,
                                 ),
                               ),

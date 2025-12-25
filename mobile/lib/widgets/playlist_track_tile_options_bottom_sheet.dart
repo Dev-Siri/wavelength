@@ -133,7 +133,10 @@ class _PlaylistTrackTileOptionsBottomSheetState
             child: Platform.isIOS
                 ? CupertinoListTile(
                     onTap: _handleRemoveTileTap,
-                    leading: const Icon(LucideIcons.trash, color: Colors.red),
+                    leading: const Icon(
+                      LucideIcons.trash400,
+                      color: Colors.red,
+                    ),
                     padding: const EdgeInsets.all(20),
                     title: const Text(
                       "Remove from playlist.",
@@ -142,7 +145,10 @@ class _PlaylistTrackTileOptionsBottomSheetState
                   )
                 : ListTile(
                     onTap: _handleRemoveTileTap,
-                    leading: const Icon(LucideIcons.trash, color: Colors.red),
+                    leading: const Icon(
+                      LucideIcons.trash400,
+                      color: Colors.red,
+                    ),
                     title: const Text(
                       "Remove from playlist.",
                       style: TextStyle(color: Colors.red),
@@ -155,7 +161,7 @@ class _PlaylistTrackTileOptionsBottomSheetState
                 ? CupertinoListTile(
                     onTap: () => _handleDownloadCacheTileTap(context),
                     leading: Icon(
-                      LucideIcons.cloudDownload,
+                      LucideIcons.cloudDownload400,
                       color: _trackAlreadyDownloaded
                           ? Colors.red
                           : Colors.white,
@@ -175,7 +181,7 @@ class _PlaylistTrackTileOptionsBottomSheetState
                 : ListTile(
                     onTap: () => _handleDownloadCacheTileTap(context),
                     leading: Icon(
-                      LucideIcons.cloudDownload,
+                      LucideIcons.cloudDownload400,
                       color: _trackAlreadyDownloaded
                           ? Colors.red
                           : Colors.white,
