@@ -1,7 +1,7 @@
 FROM golang:1.24.1-bullseye AS builder
 
-RUN apt update && apt install -y --no-install-recommends libvips42 libvips-dev libheif-dev libexif-dev gcc
 WORKDIR /usr/src/app
+RUN apt update && apt install -y --no-install-recommends libvips42 libvips-dev libheif-dev libexif-dev gcc
 
 COPY go.mod go.sum ./
 RUN go mod download
@@ -27,6 +27,8 @@ RUN apt update && apt install -y --no-install-recommends \
 COPY --from=builder /usr/local/bin/gateway /usr/local/bin/gateway
 COPY --from=builder /usr/src/app/services/gateway/static /app/static
 COPY --from=builder /usr/src/app/services/gateway/entrypoint.sh /usr/local/bin/entrypoint.sh
+
+RUN chmod +x /usr/local/bin/gateway
 
 ENV GEOIP_MMDB_PATH=/app/lib/GeoLite2-Country.mmdb
 ENV STATIC_DIR=/app/static
