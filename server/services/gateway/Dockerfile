@@ -9,7 +9,7 @@ RUN go mod download
 COPY . .
 
 ENV CGO_ENABLED=1
-RUN go build -v -trimpath -ldflags=-s -ldflags=-w -buildvcs=false -o /usr/local/bin/gateway /usr/src/app/services/gateway
+RUN go build -v -trimpath -ldflags=-s -ldflags=-w -o /usr/local/bin/gateway /usr/src/app/services/gateway
 
 FROM debian:bookworm-slim
 
