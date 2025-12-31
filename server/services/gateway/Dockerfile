@@ -35,4 +35,4 @@ ENV STATIC_DIR=/app/static
 
 EXPOSE 8080
 
-ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
+ENTRYPOINT [ "/usr/local/bin/gateway" ]
