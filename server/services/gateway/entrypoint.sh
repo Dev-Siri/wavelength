@@ -16,4 +16,9 @@ if [ -n "$MAXMIND_ACCOUNT_ID" ] && [ -n "$MAXMIND_LICENSE_KEY" ]; then
 fi
 
 # Run the Go application.
-exec /usr/local/bin/gateway
+/usr/local/bin/gateway
+EXIT_CODE=$?
+
+echo "gateway exited with code: $EXIT_CODE"
+
+exit $EXIT_CODE
