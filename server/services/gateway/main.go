@@ -41,9 +41,10 @@ func main() {
 		logging.Logger.Fatal("Failed to initialize YouTube clients.", zap.Error(err))
 	}
 
-	// if err := db.InitGeoIP(env.GetGeoIPMMDBPath()); err != nil {
-	// 	logging.Logger.Fatal("Failed to initialize GeoIP Lookup Database.")
-	// }
+	if err := db.InitGeoIP(); err != nil {
+		// Intentional to not use .Fatal to continue the application bootstrapping even after failure.
+		logging.Logger.Error("Failed to initialize GeoIP Lookup Database.")
+	}
 
 	app := fiber.New(fiber.Config{
 		ErrorHandler:            error_controllers.ErrorHandler,

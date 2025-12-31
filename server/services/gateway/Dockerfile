@@ -26,7 +26,6 @@ RUN apt update && apt install -y --no-install-recommends \
 
 COPY --from=builder /usr/local/bin/gateway /usr/local/bin/gateway
 COPY --from=builder /usr/src/app/services/gateway/static /app/static
-COPY --from=builder /usr/src/app/services/gateway/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN chmod +x /usr/local/bin/gateway
 
