@@ -5,6 +5,7 @@ import "package:wavelength/app_shell.dart";
 import "package:wavelength/bloc/likes/liked_tracks/liked_tracks_bloc.dart";
 import "package:wavelength/bloc/likes/liked_tracks_playlength/liked_tracks_playlength_bloc.dart";
 import "package:wavelength/bloc/public_playlists/public_playlists_bloc.dart";
+import "package:wavelength/bloc/search/albums/albums_bloc.dart";
 import "package:wavelength/bloc/search/artists/artists_bloc.dart";
 import "package:wavelength/bloc/search/tracks/tracks_bloc.dart";
 import "package:wavelength/bloc/search/videos/videos_bloc.dart";
@@ -36,6 +37,7 @@ final router = GoRouter(
                   BlocProvider(create: (_) => TracksBloc()),
                   BlocProvider(create: (_) => VideosBloc()),
                   BlocProvider(create: (_) => ArtistsBloc()),
+                  BlocProvider(create: (_) => AlbumsBloc()),
                 ],
                 child: const ExploreScreen(),
               ),

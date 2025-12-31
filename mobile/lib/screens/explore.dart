@@ -9,12 +9,15 @@ import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/search_recommendations.dart";
 import "package:wavelength/api/repositories/search_repo.dart";
 import "package:wavelength/bloc/public_playlists/public_playlists_bloc.dart";
+import "package:wavelength/bloc/search/albums/albums_bloc.dart";
+import "package:wavelength/bloc/search/albums/albums_event.dart";
 import "package:wavelength/bloc/search/artists/artists_bloc.dart";
 import "package:wavelength/bloc/search/artists/artists_event.dart";
 import "package:wavelength/bloc/search/tracks/tracks_bloc.dart";
 import "package:wavelength/bloc/search/tracks/tracks_event.dart";
 import "package:wavelength/bloc/search/videos/videos_bloc.dart";
 import "package:wavelength/bloc/search/videos/videos_event.dart";
+import "package:wavelength/screens/search_presenters/albums_search_presenter.dart";
 import "package:wavelength/screens/search_presenters/artists_search_presenter.dart";
 import "package:wavelength/screens/search_presenters/playlists_search_presenter.dart";
 import "package:wavelength/screens/search_presenters/tracks_search_presenter.dart";
@@ -29,7 +32,7 @@ class ExploreScreen extends StatefulWidget {
   State<ExploreScreen> createState() => _ExploreScreenState();
 }
 
-enum SearchType { playlists, tracks, videos, artists }
+enum SearchType { playlists, tracks, videos, artists, albums }
 
 class _ExploreScreenState extends State<ExploreScreen> {
   Timer? _debounce;
@@ -44,6 +47,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   bool _areVideosFetched = false;
   bool _areTracksFetched = false;
   bool _areArtistsFetched = false;
+  bool _areAlbumsFetched = false;
 
   @override
   void dispose() {
@@ -59,6 +63,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
         return "artists";
       case SearchType.videos:
         return "YouTube videos";
+      case SearchType.albums:
+        return "albums";
       default:
         return "songs";
     }
@@ -71,6 +77,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
         _areVideosFetched = false;
         _areTracksFetched = false;
         _areArtistsFetched = false;
+        _areAlbumsFetched = false;
       }
 
       _searchQuery = query;
@@ -103,6 +110,12 @@ class _ExploreScreenState extends State<ExploreScreen> {
             setState(() => _areArtistsFetched = true);
           }
           break;
+        case SearchType.albums:
+          if (query != "") {
+            context.read<AlbumsBloc>().add(AlbumsFetchEvent(query: query));
+            setState(() => _areAlbumsFetched = true);
+          }
+          break;
       }
     });
   }
@@ -124,6 +137,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
         break;
       case SearchType.artists:
         shouldFetch = !_areArtistsFetched;
+        break;
+      case SearchType.albums:
+        shouldFetch = !_areAlbumsFetched;
         break;
     }
 
@@ -231,34 +247,51 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   );
                 },
           ),
-          Row(
-            spacing: 4,
-            children: [
-              ChoiceChip(
-                label: const Text("Tracks"),
-                selectedColor: Colors.white,
-                selected: _searchType == SearchType.tracks,
-                onSelected: (_) => _changeSearchType(SearchType.tracks),
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: SizedBox(
+              height: 40,
+              width: double.maxFinite,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  ChoiceChip(
+                    label: const Text("Tracks"),
+                    selectedColor: Colors.white,
+                    selected: _searchType == SearchType.tracks,
+                    onSelected: (_) => _changeSearchType(SearchType.tracks),
+                  ),
+                  const SizedBox(width: 4),
+                  ChoiceChip(
+                    label: const Text("Videos"),
+                    selectedColor: Colors.white,
+                    selected: _searchType == SearchType.videos,
+                    onSelected: (_) => _changeSearchType(SearchType.videos),
+                  ),
+                  const SizedBox(width: 4),
+                  ChoiceChip(
+                    label: const Text("Artists"),
+                    selectedColor: Colors.white,
+                    selected: _searchType == SearchType.artists,
+                    onSelected: (_) => _changeSearchType(SearchType.artists),
+                  ),
+                  const SizedBox(width: 4),
+                  ChoiceChip(
+                    label: const Text("Playlists"),
+                    selectedColor: Colors.white,
+                    selected: _searchType == SearchType.playlists,
+                    onSelected: (_) => _changeSearchType(SearchType.playlists),
+                  ),
+                  const SizedBox(width: 4),
+                  ChoiceChip(
+                    label: const Text("Albums"),
+                    selectedColor: Colors.white,
+                    selected: _searchType == SearchType.albums,
+                    onSelected: (_) => _changeSearchType(SearchType.albums),
+                  ),
+                ],
               ),
-              ChoiceChip(
-                label: const Text("Videos"),
-                selectedColor: Colors.white,
-                selected: _searchType == SearchType.videos,
-                onSelected: (_) => _changeSearchType(SearchType.videos),
-              ),
-              ChoiceChip(
-                label: const Text("Artist"),
-                selectedColor: Colors.white,
-                selected: _searchType == SearchType.artists,
-                onSelected: (_) => _changeSearchType(SearchType.artists),
-              ),
-              ChoiceChip(
-                label: const Text("Playlists"),
-                selectedColor: Colors.white,
-                selected: _searchType == SearchType.playlists,
-                onSelected: (_) => _changeSearchType(SearchType.playlists),
-              ),
-            ],
+            ),
           ),
           const SizedBox(height: 10),
           if (_searchType == SearchType.playlists)
@@ -266,11 +299,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
           if (_searchType == SearchType.tracks) const TracksSearchPresenter(),
           if (_searchType == SearchType.videos) const VideosSearchPresenter(),
           if (_searchType == SearchType.artists) const ArtistsSearchPresenter(),
+          if (_searchType == SearchType.albums) const AlbumsSearchPresenter(),
           if (_searchQuery == "" &&
               _searchType != SearchType.playlists &&
               !_areArtistsFetched &&
               !_areTracksFetched &&
-              !_areVideosFetched)
+              !_areVideosFetched &&
+              _areAlbumsFetched)
             Padding(
               padding: EdgeInsets.only(
                 top: MediaQuery.sizeOf(context).height / 4,

@@ -2,6 +2,7 @@ import "dart:convert";
 
 import "package:http/http.dart" as http;
 import "package:flutter/foundation.dart";
+import "package:wavelength/api/models/album.dart";
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/artist.dart";
 import "package:wavelength/api/models/search_recommendations.dart";
@@ -163,6 +164,42 @@ class SearchRepo {
       DiagnosticsRepo.reportError(
         error: errorString,
         source: "SearchRepo.fetchSearchRecommendations",
+      );
+      return ApiResponseError(message: errorString);
+    }
+  }
+
+  static Future<ApiResponse<List<Album>>> fetchAlbumsByQuery({
+    required String query,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$backendUrl/albums/search?q=$query"),
+      );
+
+      final decodedResponse = await compute<String, ApiResponse<List<Album>>>((
+        stringResponse,
+      ) {
+        final decodedJson = jsonDecode(stringResponse);
+        final isSuccessful = decodedJson["success"] as bool;
+
+        if (isSuccessful) {
+          final albums = decodedJson["data"] as List;
+
+          return ApiResponseSuccess(
+            data: albums.map((final album) => Album.fromJson(album)).toList(),
+          );
+        }
+
+        return ApiResponseError(message: decodedJson["message"] as String);
+      }, response.body);
+
+      return decodedResponse;
+    } catch (e) {
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "AlbumRepo.fetchAlbumsByQuery",
       );
       return ApiResponseError(message: errorString);
     }
