@@ -1,0 +1,4 @@
+syntax = "proto3";
+package playlist;
+
+option go_package = "wavelength/server/proto/playlist;playlistpb";

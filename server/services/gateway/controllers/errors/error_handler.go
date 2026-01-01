@@ -2,10 +2,8 @@ package error_controllers
 
 import (
 	"wavelength/services/gateway/models"
-	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
-	"go.uber.org/zap"
 )
 
 func ErrorHandler(ctx *fiber.Ctx, err error) error {
@@ -23,8 +21,6 @@ func ErrorHandler(ctx *fiber.Ctx, err error) error {
 			return ctx.JSON(models.Error(message))
 		}
 	}
-
-	go logging.Logger.Error(message, zap.Error(err))
 
 	return ctx.Status(code).JSON(models.Error(message))
 }

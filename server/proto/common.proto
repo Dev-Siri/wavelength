@@ -1,0 +1,9 @@
+syntax = "proto3";
+package common;
+
+option go_package = "wavelength/proto/commonpb";
+
+enum VideoType {
+  TRACK = 0;
+  UVIDEO = 1;
+}

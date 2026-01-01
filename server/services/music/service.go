@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 	"net"
-	"wavelength/proto/playlistpb"
-	playlist_rpcs "wavelength/services/playlist/rpcs"
+	"wavelength/proto/musicpb"
+	music_rpcs "wavelength/services/music/rpcs"
 	shared_db "wavelength/shared/db"
 	shared_env "wavelength/shared/env"
 	"wavelength/shared/logging"
@@ -46,12 +46,12 @@ func main() {
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(logging.GrpcLoggingInterceptor),
 	)
-	playlistService := playlist_rpcs.NewPlaylistService()
-	playlistpb.RegisterPlaylistServiceServer(grpcServer, playlistService)
+	musicService := music_rpcs.NewMusicService()
+	musicpb.RegisterMusicServiceServer(grpcServer, musicService)
 	reflection.Register(grpcServer)
 
-	logging.Logger.Info("PlaylistService listening on "+addr, zap.String("port", port))
+	logging.Logger.Info("MusicService listening on "+addr, zap.String("port", port))
 	if err := grpcServer.Serve(listener); err != nil {
-		logging.Logger.Error("PlaylistService launch failed.", zap.Error(err))
+		logging.Logger.Error("MusicService launch failed.", zap.Error(err))
 	}
 }

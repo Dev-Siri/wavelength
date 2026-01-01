@@ -4,6 +4,7 @@ package playlist;
 option go_package = "wavelength/server/proto/playlist;playlistpb";
 
 import "google/protobuf/empty.proto";
+import "proto/common.proto";
 
 service PlaylistService {
   rpc GetPublicPlaylists(GetPublicPlaylistsRequest) returns (GetPublicPlaylistsResponse);
@@ -20,11 +21,6 @@ service PlaylistService {
 }
 
 // Data Representations.
-enum VideoType {
-  TRACK = 0;
-  UVIDEO = 1;
-}
-
 message Playlist {
   string playlist_id = 1;
   string name = 2;
@@ -45,7 +41,7 @@ message PlaylistTrack {
   string author = 6;
   string duration = 7;
   string video_id = 8;
-  VideoType video_type = 9;
+  common.VideoType video_type = 9;
   string playlist_id = 10;
 }
 
@@ -90,7 +86,7 @@ message AddRemovePlaylistTrackRequest {
   bool is_explicit = 4;
   string title = 5;
   string video_id = 6;
-  VideoType video_type = 7;
+  common.VideoType video_type = 7;
   string playlist_id = 8;
 }
 

@@ -1,4 +1,4 @@
-package rpcs
+package playlist_rpcs
 
 import "wavelength/proto/playlistpb"
 

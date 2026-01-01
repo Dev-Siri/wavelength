@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"wavelength/services/gateway/api"
+	"wavelength/services/gateway/clients"
 	error_controllers "wavelength/services/gateway/controllers/errors"
 	"wavelength/services/gateway/db"
 	"wavelength/services/gateway/env"
@@ -25,6 +26,14 @@ func main() {
 
 	if err := shared_env.InitEnv(); err != nil {
 		logging.Logger.Fatal("Failed to initialize dotenv for environment variables.", zap.Error(err))
+	}
+
+	if err := clients.InitPlaylistClient(); err != nil {
+		logging.Logger.Fatal("Playlist-service client failed to connect.", zap.Error(err))
+	}
+
+	if err := clients.InitMusicClient(); err != nil {
+		logging.Logger.Fatal("Music-service client failed to connect.", zap.Error(err))
 	}
 
 	if err := shared_db.Connect(); err != nil {

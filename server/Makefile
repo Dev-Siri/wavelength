@@ -10,5 +10,6 @@ generate:
 			--go_opt=paths=source_relative \
 			--go-grpc_opt=paths=source_relative $$f; \
 	  mv $$dir/$${base}.pb.go $$out_dir/; \
-	  mv $$dir/$${base}_grpc.pb.go $$out_dir/; \
+		[ -f "$$dir/$${base}_grpc.pb.go" ] && \
+	  	mv $$dir/$${base}_grpc.pb.go $$out_dir/ || true; \
 	done

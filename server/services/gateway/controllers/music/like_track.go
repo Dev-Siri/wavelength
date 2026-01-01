@@ -2,13 +2,17 @@ package music_controllers
 
 import (
 	"encoding/json"
-	"wavelength/services/gateway/db"
+	"wavelength/proto/commonpb"
+	"wavelength/proto/musicpb"
+	"wavelength/services/gateway/clients"
+	type_constants "wavelength/services/gateway/constants/types"
 	"wavelength/services/gateway/models"
 	"wavelength/services/gateway/models/schemas"
 	"wavelength/services/gateway/validation"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
+	"go.uber.org/zap"
 )
 
 func LikeTrack(ctx *fiber.Ctx) error {
@@ -17,67 +21,44 @@ func LikeTrack(ctx *fiber.Ctx) error {
 	// Versatile schema.
 	var parsedBody schemas.PlaylistTrackAdditionSchema
 	if err := json.Unmarshal(body, &parsedBody); err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to read body: "+err.Error())
+		go logging.Logger.Error("Body read failed.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Body read failed.")
 	}
 
 	if !ok {
 		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
 	}
 
-	// Check if already liked.
-	var likesCount int
-
-	row := db.Database.QueryRow(`
-		SELECT COUNT(*) FROM "likes"
-		WHERE email = $1 AND video_id = $2;
-	`, authUser.Email, parsedBody.VideoId)
-
-	if err := row.Scan(&likesCount); err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to read like data count: "+err.Error())
-	}
-
-	if likesCount > 0 {
-		// Perform unlike instead.
-		_, err := db.Database.Exec(`
-			DELETE FROM "likes"
-			WHERE email = $1 AND video_id = $2;
-		`, authUser.Email, parsedBody.VideoId)
-
-		if err != nil {
-			return fiber.NewError(fiber.StatusInternalServerError, "Failed to unlike track: "+err.Error())
-		}
-
-		ctx.Status(fiber.StatusOK)
-		return ctx.JSON(models.Success("Track removed from likes."))
-	}
-
-	// Perform a like.
-	likeId := uuid.NewString()
-
 	if !validation.IsPlaylistTrackAdditionShapeValid(parsedBody) {
 		return fiber.NewError(fiber.StatusBadRequest, "Liked track to add isn't in proper shape.")
 	}
 
-	_, err := db.Database.Exec(`
-		INSERT INTO "likes" (
-			like_id,
-			email,
-			title,
-			thumbnail,
-			is_explicit,
-			duration,
-			author,
-			video_id,
-			video_type
-		) VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9 );
-	`, likeId, authUser.Email, parsedBody.Title, parsedBody.Thumbnail,
-		parsedBody.IsExplicit, parsedBody.Duration, parsedBody.Author,
-		parsedBody.VideoId, parsedBody.VideoType)
+	var grpcVideoType commonpb.VideoType
 
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to like track: "+err.Error())
+	if parsedBody.VideoType == type_constants.PlaylistTrackTypeUVideo {
+		grpcVideoType = commonpb.VideoType_UVIDEO
+	} else {
+		grpcVideoType = commonpb.VideoType_TRACK
 	}
 
-	ctx.Status(fiber.StatusOK)
+	likedTracksResponse, err := clients.MusicClient.LikeTrack(ctx.Context(), &musicpb.LikeTrackRequest{
+		Author:     parsedBody.Author,
+		Thumbnail:  parsedBody.Thumbnail,
+		Duration:   parsedBody.Duration,
+		IsExplicit: parsedBody.IsExplicit,
+		Title:      parsedBody.Title,
+		VideoType:  grpcVideoType,
+		VideoId:    parsedBody.VideoId,
+		LikerEmail: authUser.Email,
+	})
+	if err != nil {
+		go logging.Logger.Error("MusicService: 'LikeTrack' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Like track failed.")
+	}
+
+	if likedTracksResponse.LikeType == musicpb.LikeTrackResponse_UNLIKE {
+		return ctx.JSON(models.Success("Track removed from likes."))
+	}
+
 	return ctx.JSON(models.Success("Track saved to likes."))
 }

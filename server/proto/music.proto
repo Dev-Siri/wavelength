@@ -1,0 +1,38 @@
+syntax = "proto3";
+package music;
+
+option go_package = "wavelength/server/proto/music;musicpb";
+
+import "proto/common.proto";
+
+service MusicService {
+  rpc LikeTrack(LikeTrackRequest) returns (LikeTrackResponse);
+  rpc GetMusicSearchSuggestions(GetMusicSearchSuggestionsRequest) returns (GetMusicSearchSuggestionsResponse);
+}
+
+message LikeTrackRequest {
+  string author = 1;
+  string thumbnail = 2;
+  string duration = 3;
+  bool is_explicit = 4;
+  string title = 5;
+  common.VideoType video_type = 7;
+  string liker_email = 9;
+  string video_id = 10;
+}
+
+message LikeTrackResponse {
+  enum LikeType {
+    UNLIKE = 0;
+    LIKE = 1;
+  }
+  LikeType like_type = 1;
+}
+
+message GetMusicSearchSuggestionsRequest {
+  string query = 1;
+}
+
+message GetMusicSearchSuggestionsResponse {
+
+}

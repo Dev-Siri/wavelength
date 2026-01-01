@@ -2,6 +2,7 @@ package playlist_controllers
 
 import (
 	"encoding/json"
+	"wavelength/proto/commonpb"
 	"wavelength/proto/playlistpb"
 	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
@@ -34,12 +35,12 @@ func AddRemovePlaylistTrack(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Playlist track to add isn't in proper shape.")
 	}
 
-	var enumVideoType playlistpb.VideoType
+	var enumVideoType commonpb.VideoType
 
 	if parsedBody.VideoType == "uvideo" {
-		enumVideoType = playlistpb.VideoType_UVIDEO
+		enumVideoType = commonpb.VideoType_UVIDEO
 	} else {
-		enumVideoType = playlistpb.VideoType_TRACK
+		enumVideoType = commonpb.VideoType_TRACK
 	}
 
 	toggleResponse, err := clients.PlaylistClient.AddRemovePlaylistTrack(ctx.Context(), &playlistpb.AddRemovePlaylistTrackRequest{
