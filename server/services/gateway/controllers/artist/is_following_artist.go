@@ -1,8 +1,8 @@
 package artist_controllers
 
 import (
-	"wavelength/services/gateway/db"
 	"wavelength/services/gateway/models"
+	shared_db "wavelength/shared/db"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -22,7 +22,7 @@ func IsFollowingArtist(ctx *fiber.Ctx) error {
 
 	var followingCount int
 
-	row := db.Database.QueryRow(`
+	row := shared_db.Database.QueryRow(`
 		SELECT COUNT(*) FROM "follows"
 		WHERE artist_browse_id = $1 AND follower_email = $2;
 	`, browseId, authUser.Email)

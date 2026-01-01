@@ -1,42 +1,31 @@
 package playlist_controllers
 
 import (
-	"wavelength/services/gateway/db"
+	"wavelength/proto/playlistpb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
+	"go.uber.org/zap"
 )
 
 func CreatePlaylist(ctx *fiber.Ctx) error {
-	email := ctx.Params("email")
 	authUser, ok := ctx.Locals("authUser").(models.AuthUser)
 
 	if !ok {
 		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
 	}
 
-	if email == "" {
-		return fiber.NewError(fiber.StatusBadRequest, "Email is required.")
-	}
-
-	playlistId := uuid.NewString()
-
-	_, err := db.Database.Exec(`
-		INSERT INTO playlists (
-			playlist_id,
-			name,
-			author_google_email,
-			author_name,
-			author_image,
-			cover_image
-		)
-		VALUES ( $1, $2, $3, $4, $5, $6 );
-	`, playlistId, "New Playlist", email, authUser.DisplayName, authUser.PhotoUrl, nil)
-
+	_, err := clients.PlaylistClient.CreatePlaylist(ctx.Context(), &playlistpb.CreatePlaylistRequest{
+		AuthorEmail:       authUser.Email,
+		AuthorDisplayName: authUser.DisplayName,
+		AuthorPhotoUrl:    authUser.PhotoUrl,
+	})
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to create new playlist for user: "+err.Error())
+		go logging.Logger.Error("PlaylistService: 'CreatePlaylist' errored", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Failed to create playlist.")
 	}
 
-	return ctx.JSON(models.Success("Created new playlist for " + email))
+	return ctx.JSON(models.Success("Created new playlist for " + authUser.Email))
 }

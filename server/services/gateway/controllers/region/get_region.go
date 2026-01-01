@@ -5,8 +5,8 @@ import (
 	"time"
 	"wavelength/services/gateway/constants"
 	"wavelength/services/gateway/db"
-	"wavelength/services/gateway/logging"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"

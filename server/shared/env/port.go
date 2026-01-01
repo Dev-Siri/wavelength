@@ -1,8 +1,8 @@
-package env
+package shared_env
 
 import (
 	"os"
-	"wavelength/services/gateway/logging"
+	"wavelength/shared/logging"
 )
 
 func GetPORT() string {

@@ -1,0 +1,146 @@
+syntax = "proto3";
+package playlist;
+
+option go_package = "wavelength/server/proto/playlist;playlistpb";
+
+import "google/protobuf/empty.proto";
+
+service PlaylistService {
+  rpc GetPublicPlaylists(GetPublicPlaylistsRequest) returns (GetPublicPlaylistsResponse);
+  rpc GetPlaylistTracksLength(PlaylistTracksLengthRequest) returns (PlaylistTracksLengthResponse);
+  rpc AddRemovePlaylistTrack(AddRemovePlaylistTrackRequest) returns (AddRemovePlaylistTrackResponse);
+  rpc ChangePlaylistVisibility(ChangePlaylistVisibilityRequest) returns (google.protobuf.Empty);
+  rpc RearrangePlaylistTracks(RearrangePlaylistTracksRequest) returns (google.protobuf.Empty);
+  rpc DeletePlaylist(DeletePlaylistRequest) returns (google.protobuf.Empty);
+  rpc GetPlaylistTracks(GetPlaylistTracksRequest) returns (GetPlaylistTracksResponse);
+  rpc GetUserPlaylists(GetUserPlaylistsRequest) returns (GetUserPlaylistsResponse);
+  rpc GetPlaylistById(GetPlaylistByIdRequest) returns (GetPlaylistByIdResponse);
+  rpc EditPlaylist(EditPlaylistRequest) returns (google.protobuf.Empty); 
+  rpc CreatePlaylist(CreatePlaylistRequest) returns (google.protobuf.Empty);
+}
+
+// Data Representations.
+enum VideoType {
+  TRACK = 0;
+  UVIDEO = 1;
+}
+
+message Playlist {
+  string playlist_id = 1;
+  string name = 2;
+  string author_google_email = 3;
+  string author_name = 4;
+  string author_image = 5;
+  string is_public = 6;
+  
+  optional string cover_image = 7;
+}
+
+message PlaylistTrack {
+  string playlist_track_id = 1;
+  string title = 2;
+  string thumbnail = 3;
+  uint32 position_in_playlist = 4;
+  bool is_explicit = 5;
+  string author = 6;
+  string duration = 7;
+  string video_id = 8;
+  VideoType video_type = 9;
+  string playlist_id = 10;
+}
+
+message PlaylistTracksLength {
+  uint32 song_count = 1;
+  uint64 song_duration_second = 2;
+}
+
+// Request/Response messages
+message EditPlaylistRequest {
+  string playlist_id = 1;
+  string name = 2;
+  string cover_image = 3;
+}
+
+message CreatePlaylistRequest {
+  string author_email = 1;
+  string author_display_name = 2;
+  string author_photo_url = 3;
+}
+
+message GetUserPlaylistsRequest {
+  string user_email = 1;
+}
+
+message GetUserPlaylistsResponse {
+  repeated Playlist playlists = 1;
+}
+
+message GetPlaylistByIdRequest {
+  string playlist_id = 1;
+}
+
+message GetPlaylistByIdResponse {
+  Playlist playlist = 1;
+}
+
+message AddRemovePlaylistTrackRequest {
+  string author = 1;
+  string thumbnail = 2;
+  string duration = 3;
+  bool is_explicit = 4;
+  string title = 5;
+  string video_id = 6;
+  VideoType video_type = 7;
+  string playlist_id = 8;
+}
+
+message AddRemovePlaylistTrackResponse {
+  enum PlaylistTrackToggleType {
+    ADD = 0;
+    REMOVE = 1;
+  }
+  PlaylistTrackToggleType toggle_type = 1;
+}
+
+message RearrangePlaylistTracksRequest {
+  message PlaylistTrackPosUpdate {
+    string playlist_track_id = 1;
+    uint32 new_pos = 2;
+  }
+  string playlist_id = 1;
+  repeated PlaylistTrackPosUpdate updates = 2;
+}
+
+message GetPlaylistTracksRequest {
+  string playlist_id = 1;
+}
+
+message GetPlaylistTracksResponse {
+  repeated PlaylistTrack playlists_tracks = 1;
+}
+
+message DeletePlaylistRequest {
+  string playlist_id = 1;
+  string auth_user_email = 2;
+}
+
+message ChangePlaylistVisibilityRequest {
+  string playlist_id = 1;
+  string auth_user_email = 2;
+}
+
+message PlaylistTracksLengthRequest {
+  string playlist_id = 1;
+}
+
+message PlaylistTracksLengthResponse {
+  PlaylistTracksLength playlist_tracks_length = 1;
+}
+
+message GetPublicPlaylistsRequest {
+  string query = 1;
+}
+
+message GetPublicPlaylistsResponse {
+  repeated Playlist playlists = 1;
+}

@@ -1,10 +1,13 @@
 package playlist_controllers
 
 import (
-	"wavelength/services/gateway/db"
+	"wavelength/proto/playlistpb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 func DeletePlaylistById(ctx *fiber.Ctx) error {
@@ -16,29 +19,13 @@ func DeletePlaylistById(ctx *fiber.Ctx) error {
 
 	playlistId := ctx.Params("playlistId")
 
-	row := db.Database.QueryRow(`
-		SELECT author_google_email FROM playlists
-		WHERE playlist_id = $1
-		LIMIT 1;
-	`, playlistId)
-
-	var playlistActualAuthorEmail string
-
-	if err := row.Scan(&playlistActualAuthorEmail); err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to scan database row: "+err.Error())
-	}
-
-	if playlistActualAuthorEmail != authUser.Email {
-		return fiber.NewError(fiber.StatusUnauthorized, "Deletion operation cannot be performed because the authorized user is not the author of the playlist.")
-	}
-
-	_, err := db.Database.Exec(`
-		DELETE FROM playlists
-		WHERE playlist_id = $1;
-	`, playlistId)
-
+	_, err := clients.PlaylistClient.DeletePlaylist(ctx.Context(), &playlistpb.DeletePlaylistRequest{
+		PlaylistId:    playlistId,
+		AuthUserEmail: authUser.Email,
+	})
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to delete playlist: "+err.Error())
+		go logging.Logger.Error("PlaylistService: 'DeletePlaylist' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Playlist deletion failed.")
 	}
 
 	return ctx.JSON(models.Success("Deleted playlist with ID " + playlistId))

@@ -1,12 +1,14 @@
 package playlist_controllers
 
 import (
-	"strconv"
-	"wavelength/services/gateway/db"
+	"wavelength/proto/playlistpb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
 	"wavelength/services/gateway/models/schemas"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 func EditPlaylist(ctx *fiber.Ctx) error {
@@ -22,45 +24,12 @@ func EditPlaylist(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid JSON body: "+err.Error())
 	}
 
-	// Build dynamic update query
-	setClauses := []string{}
-	args := []any{}
-	argPos := 1
-
-	if playlistEditBody.Name != "" {
-		setClauses = append(setClauses, "name = $"+strconv.Itoa(argPos))
-		args = append(args, playlistEditBody.Name)
-		argPos++
-	}
-
-	if playlistEditBody.CoverImage != "" {
-		setClauses = append(setClauses, "cover_image = $"+strconv.Itoa(argPos))
-		args = append(args, playlistEditBody.CoverImage)
-		argPos++
-	}
-
-	if len(setClauses) == 0 {
-		return fiber.NewError(fiber.StatusBadRequest, "No fields provided for update.")
-	}
-
-	query := "UPDATE playlists SET " +
-		func() string {
-			s := ""
-			for i, c := range setClauses {
-				if i > 0 {
-					s += ", "
-				}
-				s += c
-			}
-			return s
-		}() +
-		" WHERE playlist_id = $" + strconv.Itoa(argPos)
-
-	args = append(args, playlistId)
-
-	_, err := db.Database.Exec(query, args...)
+	_, err := clients.PlaylistClient.EditPlaylist(ctx.Context(), &playlistpb.EditPlaylistRequest{
+		PlaylistId: playlistId,
+	})
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to edit playlist: "+err.Error())
+		go logging.Logger.Error("PlaylistService: 'EditPlaylist' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Failed to edit playlist.")
 	}
 
 	return ctx.JSON(models.Success("Edited playlist with ID " + playlistId + " successfully."))

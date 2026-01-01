@@ -1,16 +1,16 @@
 package playlist_controllers
 
 import (
-	"database/sql"
 	"encoding/json"
-	"errors"
-	"wavelength/services/gateway/db"
+	"wavelength/proto/playlistpb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
 	"wavelength/services/gateway/models/schemas"
 	"wavelength/services/gateway/validation"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
+	"go.uber.org/zap"
 )
 
 // POST handler, but actually also can perform a sort of DELETE.
@@ -33,68 +33,32 @@ func AddRemovePlaylistTrack(ctx *fiber.Ctx) error {
 	if !validation.IsPlaylistTrackAdditionShapeValid(parsedBody) {
 		return fiber.NewError(fiber.StatusBadRequest, "Playlist track to add isn't in proper shape.")
 	}
-	var songCount int
-	err := db.Database.QueryRow(`
-		SELECT COUNT(*) 
-		FROM playlist_tracks 
-		WHERE playlist_id = $1 AND video_id = $2`,
-		playlistId, parsedBody.VideoId).Scan(&songCount)
 
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to check existing track: "+err.Error())
+	var enumVideoType playlistpb.VideoType
+
+	if parsedBody.VideoType == "uvideo" {
+		enumVideoType = playlistpb.VideoType_UVIDEO
+	} else {
+		enumVideoType = playlistpb.VideoType_TRACK
 	}
 
-	if songCount > 0 {
-		_, err := db.Database.Exec(`
-			DELETE FROM playlist_tracks 
-			WHERE playlist_id = $1 AND video_id = $2
-		`, playlistId, parsedBody.VideoId)
+	toggleResponse, err := clients.PlaylistClient.AddRemovePlaylistTrack(ctx.Context(), &playlistpb.AddRemovePlaylistTrackRequest{
+		Author:     parsedBody.Author,
+		Thumbnail:  parsedBody.Thumbnail,
+		Duration:   parsedBody.Duration,
+		IsExplicit: parsedBody.IsExplicit,
+		Title:      parsedBody.Title,
+		VideoId:    parsedBody.VideoId,
+		VideoType:  enumVideoType,
+		PlaylistId: playlistId,
+	})
+	if err != nil {
+		go logging.Logger.Error("PlaylistService: 'AddRemovePlaylistTrack' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Playlist track addition/removal failed.")
+	}
 
-		if err != nil {
-			return fiber.NewError(fiber.StatusInternalServerError, "Failed to remove track: "+err.Error())
-		}
-
+	if toggleResponse.ToggleType == playlistpb.AddRemovePlaylistTrackResponse_REMOVE {
 		return ctx.JSON(models.Success("Removed song from playlist successfully."))
-	}
-
-	var totalSongCount int
-	err = db.Database.QueryRow(`
-		SELECT COUNT(*) 
-		FROM playlist_tracks 
-		WHERE playlist_id = $1`,
-		playlistId).Scan(&totalSongCount)
-
-	if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to count playlist tracks: "+err.Error())
-	}
-
-	playlistTrackId := uuid.NewString()
-
-	_, err = db.Database.Exec(`
-		INSERT INTO playlist_tracks (
-			title,
-			thumbnail,
-			duration,
-			is_explicit,
-			author,
-			video_id,
-			video_type,
-			playlist_id, 
-			playlist_track_id, 
-			position_in_playlist
-		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-		parsedBody.Title,
-		parsedBody.Thumbnail,
-		parsedBody.Duration,
-		parsedBody.IsExplicit,
-		parsedBody.Author,
-		parsedBody.VideoId,
-		parsedBody.VideoType,
-		playlistId, playlistTrackId, totalSongCount+1,
-	)
-
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to add track: "+err.Error())
 	}
 
 	return ctx.JSON(models.Success("Added song to playlist successfully."))

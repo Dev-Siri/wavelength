@@ -1,11 +1,14 @@
 package playlist_controllers
 
 import (
-	"wavelength/services/gateway/db"
+	"wavelength/proto/playlistpb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
 	"wavelength/services/gateway/models/schemas"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 func RearrangePlaylistTracks(ctx *fiber.Ctx) error {
@@ -21,34 +24,23 @@ func RearrangePlaylistTracks(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "No positions provided.")
 	}
 
-	tx, err := db.Database.Begin()
-
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to start transaction: "+err.Error())
-	}
-
-	defer tx.Rollback()
-
-	stmt, err := tx.Prepare(`
-		UPDATE playlist_tracks
-		SET position_in_playlist = $1
-		WHERE playlist_id = $2 AND playlist_track_id = $3
-	`)
-
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to prepare statement: "+err.Error())
-	}
-
-	defer stmt.Close()
-
-	for _, pos := range updates {
-		if _, err := stmt.Exec(pos.NewPos, playlistId, pos.PlaylistTrackId); err != nil {
-			return fiber.NewError(fiber.StatusInternalServerError, "Failed to update playlist positions: "+err.Error())
+	grpcUpdates := make([]*playlistpb.RearrangePlaylistTracksRequest_PlaylistTrackPosUpdate, 0)
+	for _, update := range updates {
+		grpcUpdate := playlistpb.RearrangePlaylistTracksRequest_PlaylistTrackPosUpdate{
+			PlaylistTrackId: update.PlaylistTrackId,
+			NewPos:          uint32(update.NewPos),
 		}
+
+		grpcUpdates = append(grpcUpdates, &grpcUpdate)
 	}
 
-	if err := tx.Commit(); err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Transaction commit failed: "+err.Error())
+	_, err := clients.PlaylistClient.RearrangePlaylistTracks(ctx.Context(), &playlistpb.RearrangePlaylistTracksRequest{
+		PlaylistId: playlistId,
+		Updates:    grpcUpdates,
+	})
+	if err != nil {
+		go logging.Logger.Error("PlaylistService: 'RearrangePlaylistTracks' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Playlist rearrangement failed.")
 	}
 
 	return ctx.JSON(models.Success("Playlist positions updated successfully."))

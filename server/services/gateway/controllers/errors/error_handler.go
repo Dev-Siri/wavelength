@@ -1,8 +1,8 @@
 package error_controllers
 
 import (
-	"wavelength/services/gateway/logging"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"

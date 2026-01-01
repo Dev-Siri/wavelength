@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"wavelength/services/gateway/logging"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"

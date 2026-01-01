@@ -1,10 +1,13 @@
 package playlist_controllers
 
 import (
-	"wavelength/services/gateway/db"
+	"wavelength/proto/playlistpb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 func GetPlaylistById(ctx *fiber.Ctx) error {
@@ -14,45 +17,13 @@ func GetPlaylistById(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Playlist ID is required.")
 	}
 
-	rows, err := db.Database.Query(`
-		SELECT
-			playlist_id,
-			name,
-			author_google_email,
-			author_name,
-			author_image,
-			cover_image,
-			is_public
-		FROM playlists
-		WHERE playlist_id = $1
-		LIMIT 1;
-	`, playlistId)
-
+	playlistResponse, err := clients.PlaylistClient.GetPlaylistById(ctx.Context(), &playlistpb.GetPlaylistByIdRequest{
+		PlaylistId: playlistId,
+	})
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get playlist: "+err.Error())
+		go logging.Logger.Error("PlaylistService: 'GetPlaylistById' errored.", zap.Error(err))
+		return ctx.JSON(models.Error("Playlist fetch failed."))
 	}
 
-	var playlist *models.Playlist = nil
-
-	for rows.Next() {
-		playlist = &models.Playlist{}
-
-		if err := rows.Scan(
-			&playlist.PlaylistId,
-			&playlist.Name,
-			&playlist.AuthorGoogleEmail,
-			&playlist.AuthorName,
-			&playlist.AuthorImage,
-			&playlist.CoverImage,
-			&playlist.IsPublic,
-		); err != nil {
-			return fiber.NewError(fiber.StatusInternalServerError, "Failed to get playlist: "+err.Error())
-		}
-	}
-
-	if playlist == nil {
-		return fiber.NewError(fiber.StatusNotFound, "Playlist not found.")
-	}
-
-	return ctx.JSON(models.Success(playlist))
+	return ctx.JSON(models.Success(playlistResponse.Playlist))
 }

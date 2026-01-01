@@ -2,10 +2,10 @@ package artist_controllers
 
 import (
 	"encoding/json"
-	"wavelength/services/gateway/db"
 	"wavelength/services/gateway/models"
 	"wavelength/services/gateway/models/schemas"
 	"wavelength/services/gateway/validation"
+	shared_db "wavelength/shared/db"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -31,7 +31,7 @@ func FollowArtist(ctx *fiber.Ctx) error {
 
 	var followCount int
 
-	row := db.Database.QueryRow(`
+	row := shared_db.Database.QueryRow(`
 		SELECT COUNT(*) FROM "follows"
 		WHERE follower_email = $1 AND artist_browse_id = $2; 
 	`, authUser.Email, parsedBody.BrowseId)
@@ -41,7 +41,7 @@ func FollowArtist(ctx *fiber.Ctx) error {
 	}
 
 	if followCount > 0 {
-		_, err := db.Database.Exec(`
+		_, err := shared_db.Database.Exec(`
 			DELETE FROM "follows"
 			WHERE follower_email = $1 AND artist_browse_id = $2;
 		`, authUser.Email, parsedBody.BrowseId)
@@ -53,7 +53,7 @@ func FollowArtist(ctx *fiber.Ctx) error {
 		return ctx.JSON(models.Success("Successfully unfollowed artist."))
 	}
 
-	_, err := db.Database.Exec(`
+	_, err := shared_db.Database.Exec(`
 			INSERT INTO "follows" (
 				follower_email,
 				follow_id,

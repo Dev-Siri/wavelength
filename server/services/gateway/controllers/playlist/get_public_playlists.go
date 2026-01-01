@@ -1,53 +1,25 @@
 package playlist_controllers
 
 import (
-	"wavelength/services/gateway/db"
+	"wavelength/proto/playlistpb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 func GetPublicPlaylists(ctx *fiber.Ctx) error {
 	query := ctx.Query("q")
 
-	rows, err := db.Database.Query(`
-		SELECT
-			playlist_id,
-			name,
-			author_google_email,
-			author_name,
-			author_image,
-			cover_image,
-			is_public
-		FROM playlists
-		WHERE name ILIKE $1
-		AND is_public = true 
-		LIMIT 10;
-	`, "%"+query+"%")
-
+	publicPlaylistsResponse, err := clients.PlaylistClient.GetPublicPlaylists(ctx.Context(), &playlistpb.GetPublicPlaylistsRequest{
+		Query: query,
+	})
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get public playlists: "+err.Error())
+		go logging.Logger.Error("Public playlists fetch failed.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Public playlists fetch failed.")
 	}
 
-	playlists := make([]models.Playlist, 0)
-
-	for rows.Next() {
-		var playlist models.Playlist
-
-		if err := rows.Scan(
-			&playlist.PlaylistId,
-			&playlist.Name,
-			&playlist.AuthorGoogleEmail,
-			&playlist.AuthorName,
-			&playlist.AuthorImage,
-			&playlist.CoverImage,
-			&playlist.IsPublic,
-		); err != nil {
-			return fiber.NewError(fiber.StatusInternalServerError, "Failed to get public playlists: "+err.Error())
-		}
-
-		playlists = append(playlists, playlist)
-	}
-
-	return ctx.JSON(models.Success(playlists))
+	return ctx.JSON(models.Success(publicPlaylistsResponse.Playlists))
 }

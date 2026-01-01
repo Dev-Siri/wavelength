@@ -1,0 +1,60 @@
+package rpcs
+
+import (
+	"context"
+	"wavelength/proto/playlistpb"
+	shared_db "wavelength/shared/db"
+	"wavelength/shared/logging"
+
+	"go.uber.org/zap"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+)
+
+func (p *PlaylistService) GetPlaylistById(
+	ctx context.Context,
+	request *playlistpb.GetPlaylistByIdRequest,
+) (*playlistpb.GetPlaylistByIdResponse, error) {
+	rows, err := shared_db.Database.Query(`
+		SELECT
+			playlist_id,
+			name,
+			author_google_email,
+			author_name,
+			author_image,
+			cover_image,
+			is_public
+		FROM playlists
+		WHERE playlist_id = $1
+		LIMIT 1;
+	`, request.PlaylistId)
+	if err != nil {
+		go logging.Logger.Error("Playlist fetch failed.", zap.Error(err))
+		return nil, status.Error(codes.Internal, "Playlist fetch failed.")
+	}
+
+	var playlist *playlistpb.Playlist
+
+	for rows.Next() {
+		playlist = &playlistpb.Playlist{}
+
+		if err := rows.Scan(
+			&playlist.PlaylistId,
+			&playlist.Name,
+			&playlist.AuthorGoogleEmail,
+			&playlist.AuthorName,
+			&playlist.AuthorImage,
+			&playlist.CoverImage,
+			&playlist.IsPublic,
+		); err != nil {
+			go logging.Logger.Error("Playlist parse failed.", zap.Error(err))
+			return nil, status.Error(codes.Internal, "Playlist parse failed.")
+		}
+	}
+
+	if playlist == nil {
+		return nil, status.Error(codes.NotFound, "Playlist not found.")
+	}
+
+	return &playlistpb.GetPlaylistByIdResponse{Playlist: playlist}, nil
+}

@@ -2,8 +2,8 @@ package diagnostics_controllers
 
 import (
 	"encoding/json"
-	"wavelength/services/gateway/logging"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"

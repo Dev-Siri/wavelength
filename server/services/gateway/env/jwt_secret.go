@@ -2,7 +2,7 @@ package env
 
 import (
 	"os"
-	"wavelength/services/gateway/logging"
+	"wavelength/shared/logging"
 )
 
 func GetJwtSecret() []byte {

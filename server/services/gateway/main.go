@@ -6,9 +6,11 @@ import (
 	error_controllers "wavelength/services/gateway/controllers/errors"
 	"wavelength/services/gateway/db"
 	"wavelength/services/gateway/env"
-	"wavelength/services/gateway/logging"
 	"wavelength/services/gateway/middleware"
 	"wavelength/services/gateway/routes"
+	shared_db "wavelength/shared/db"
+	shared_env "wavelength/shared/env"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -21,17 +23,17 @@ func main() {
 		log.Fatal("Failed to initialize logger.")
 	}
 
-	if err := env.InitEnv(); err != nil {
+	if err := shared_env.InitEnv(); err != nil {
 		logging.Logger.Fatal("Failed to initialize dotenv for environment variables.", zap.Error(err))
 	}
 
-	if err := db.Connect(env.GetDBUrl()); err != nil {
+	if err := shared_db.Connect(); err != nil {
 		logging.Logger.Fatal("Failed to connect to the database.", zap.Error(err))
 	}
 
-	if db.Database != nil {
+	if shared_db.Database != nil {
 		defer func() {
-			if err := db.Database.Close(); err != nil {
+			if err := shared_db.Database.Close(); err != nil {
 				logging.Logger.Fatal("Failed to close database connection.", zap.Error(err))
 			}
 		}()
@@ -53,7 +55,7 @@ func main() {
 		ProxyHeader:             "CF-Connecting-IP",
 	})
 
-	addr := ":" + env.GetPORT()
+	addr := ":" + shared_env.GetPORT()
 	staticDir := env.GetStaticDir()
 
 	app.Use(cors.New(cors.Config{

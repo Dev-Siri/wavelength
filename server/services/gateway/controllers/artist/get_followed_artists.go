@@ -1,8 +1,8 @@
 package artist_controllers
 
 import (
-	"wavelength/services/gateway/db"
 	"wavelength/services/gateway/models"
+	shared_db "wavelength/shared/db"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -14,7 +14,7 @@ func GetFollowedArtists(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
 	}
 
-	rows, err := db.Database.Query(`
+	rows, err := shared_db.Database.Query(`
 		SELECT
 			follow_id,
 			follower_email,

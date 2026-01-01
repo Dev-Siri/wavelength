@@ -3,8 +3,8 @@ package artist_controllers
 import (
 	"strings"
 	"wavelength/services/gateway/api"
-	"wavelength/services/gateway/logging"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
