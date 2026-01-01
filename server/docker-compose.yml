@@ -1,0 +1,22 @@
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: services/gateway/Dockerfile
+    image: wavelength/services/gateway
+    container_name: gateway
+    ports:
+      - "8080:8000"
+    environment:
+      - PORT=8000
+      - PLAYLIST_CLIENT_URL=playlist:8081
+    depends_on:
+      - playlist
+  playlist:
+    build:
+      context: .
+      dockerfile: services/playlist/Dockerfile
+    image: wavelength/services/playlist
+    container_name: playlist
+    environment:
+      - PORT=8081
