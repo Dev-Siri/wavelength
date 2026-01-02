@@ -2,3 +2,15 @@ syntax = "proto3";
 package playlist;
 
 option go_package = "wavelength/server/proto/playlist;playlistpb";
+
+service YTScraper {
+  rpc GetSearchSuggestions(SearchRequest) returns (SearchResponse);
+}
+
+message SearchRequest {
+  string query = 1;
+}
+
+message SearchResponse {
+  repeated string suggestions = 1;
+}

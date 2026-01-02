@@ -19,7 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	MusicService_LikeTrack_FullMethodName = "/music.MusicService/LikeTrack"
+	MusicService_LikeTrack_FullMethodName                 = "/music.MusicService/LikeTrack"
+	MusicService_IsTrackLiked_FullMethodName              = "/music.MusicService/IsTrackLiked"
+	MusicService_GetLikedTrackCount_FullMethodName        = "/music.MusicService/GetLikedTrackCount"
+	MusicService_GetLikedTracksLength_FullMethodName      = "/music.MusicService/GetLikedTracksLength"
+	MusicService_GetLikedTracks_FullMethodName            = "/music.MusicService/GetLikedTracks"
+	MusicService_GetMusicSearchSuggestions_FullMethodName = "/music.MusicService/GetMusicSearchSuggestions"
 )
 
 // MusicServiceClient is the client API for MusicService service.
@@ -27,6 +32,11 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MusicServiceClient interface {
 	LikeTrack(ctx context.Context, in *LikeTrackRequest, opts ...grpc.CallOption) (*LikeTrackResponse, error)
+	IsTrackLiked(ctx context.Context, in *IsTrackLikedRequest, opts ...grpc.CallOption) (*IsTrackLikedResponse, error)
+	GetLikedTrackCount(ctx context.Context, in *GetLikedTrackCountRequest, opts ...grpc.CallOption) (*GetLikedTrackCountResponse, error)
+	GetLikedTracksLength(ctx context.Context, in *GetLikedTracksLengthRequest, opts ...grpc.CallOption) (*GetLikedTracksLengthResponse, error)
+	GetLikedTracks(ctx context.Context, in *GetLikedTracksRequest, opts ...grpc.CallOption) (*GetLikedTracksResponse, error)
+	GetMusicSearchSuggestions(ctx context.Context, in *GetMusicSearchSuggestionsRequest, opts ...grpc.CallOption) (*GetMusicSearchSuggestionsResponse, error)
 }
 
 type musicServiceClient struct {
@@ -47,11 +57,66 @@ func (c *musicServiceClient) LikeTrack(ctx context.Context, in *LikeTrackRequest
 	return out, nil
 }
 
+func (c *musicServiceClient) IsTrackLiked(ctx context.Context, in *IsTrackLikedRequest, opts ...grpc.CallOption) (*IsTrackLikedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(IsTrackLikedResponse)
+	err := c.cc.Invoke(ctx, MusicService_IsTrackLiked_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *musicServiceClient) GetLikedTrackCount(ctx context.Context, in *GetLikedTrackCountRequest, opts ...grpc.CallOption) (*GetLikedTrackCountResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetLikedTrackCountResponse)
+	err := c.cc.Invoke(ctx, MusicService_GetLikedTrackCount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *musicServiceClient) GetLikedTracksLength(ctx context.Context, in *GetLikedTracksLengthRequest, opts ...grpc.CallOption) (*GetLikedTracksLengthResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetLikedTracksLengthResponse)
+	err := c.cc.Invoke(ctx, MusicService_GetLikedTracksLength_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *musicServiceClient) GetLikedTracks(ctx context.Context, in *GetLikedTracksRequest, opts ...grpc.CallOption) (*GetLikedTracksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetLikedTracksResponse)
+	err := c.cc.Invoke(ctx, MusicService_GetLikedTracks_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *musicServiceClient) GetMusicSearchSuggestions(ctx context.Context, in *GetMusicSearchSuggestionsRequest, opts ...grpc.CallOption) (*GetMusicSearchSuggestionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetMusicSearchSuggestionsResponse)
+	err := c.cc.Invoke(ctx, MusicService_GetMusicSearchSuggestions_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MusicServiceServer is the server API for MusicService service.
 // All implementations must embed UnimplementedMusicServiceServer
 // for forward compatibility.
 type MusicServiceServer interface {
 	LikeTrack(context.Context, *LikeTrackRequest) (*LikeTrackResponse, error)
+	IsTrackLiked(context.Context, *IsTrackLikedRequest) (*IsTrackLikedResponse, error)
+	GetLikedTrackCount(context.Context, *GetLikedTrackCountRequest) (*GetLikedTrackCountResponse, error)
+	GetLikedTracksLength(context.Context, *GetLikedTracksLengthRequest) (*GetLikedTracksLengthResponse, error)
+	GetLikedTracks(context.Context, *GetLikedTracksRequest) (*GetLikedTracksResponse, error)
+	GetMusicSearchSuggestions(context.Context, *GetMusicSearchSuggestionsRequest) (*GetMusicSearchSuggestionsResponse, error)
 	mustEmbedUnimplementedMusicServiceServer()
 }
 
@@ -64,6 +129,21 @@ type UnimplementedMusicServiceServer struct{}
 
 func (UnimplementedMusicServiceServer) LikeTrack(context.Context, *LikeTrackRequest) (*LikeTrackResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method LikeTrack not implemented")
+}
+func (UnimplementedMusicServiceServer) IsTrackLiked(context.Context, *IsTrackLikedRequest) (*IsTrackLikedResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method IsTrackLiked not implemented")
+}
+func (UnimplementedMusicServiceServer) GetLikedTrackCount(context.Context, *GetLikedTrackCountRequest) (*GetLikedTrackCountResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetLikedTrackCount not implemented")
+}
+func (UnimplementedMusicServiceServer) GetLikedTracksLength(context.Context, *GetLikedTracksLengthRequest) (*GetLikedTracksLengthResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetLikedTracksLength not implemented")
+}
+func (UnimplementedMusicServiceServer) GetLikedTracks(context.Context, *GetLikedTracksRequest) (*GetLikedTracksResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetLikedTracks not implemented")
+}
+func (UnimplementedMusicServiceServer) GetMusicSearchSuggestions(context.Context, *GetMusicSearchSuggestionsRequest) (*GetMusicSearchSuggestionsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetMusicSearchSuggestions not implemented")
 }
 func (UnimplementedMusicServiceServer) mustEmbedUnimplementedMusicServiceServer() {}
 func (UnimplementedMusicServiceServer) testEmbeddedByValue()                      {}
@@ -104,6 +184,96 @@ func _MusicService_LikeTrack_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MusicService_IsTrackLiked_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IsTrackLikedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MusicServiceServer).IsTrackLiked(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MusicService_IsTrackLiked_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MusicServiceServer).IsTrackLiked(ctx, req.(*IsTrackLikedRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MusicService_GetLikedTrackCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLikedTrackCountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MusicServiceServer).GetLikedTrackCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MusicService_GetLikedTrackCount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MusicServiceServer).GetLikedTrackCount(ctx, req.(*GetLikedTrackCountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MusicService_GetLikedTracksLength_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLikedTracksLengthRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MusicServiceServer).GetLikedTracksLength(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MusicService_GetLikedTracksLength_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MusicServiceServer).GetLikedTracksLength(ctx, req.(*GetLikedTracksLengthRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MusicService_GetLikedTracks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLikedTracksRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MusicServiceServer).GetLikedTracks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MusicService_GetLikedTracks_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MusicServiceServer).GetLikedTracks(ctx, req.(*GetLikedTracksRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MusicService_GetMusicSearchSuggestions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMusicSearchSuggestionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MusicServiceServer).GetMusicSearchSuggestions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MusicService_GetMusicSearchSuggestions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MusicServiceServer).GetMusicSearchSuggestions(ctx, req.(*GetMusicSearchSuggestionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MusicService_ServiceDesc is the grpc.ServiceDesc for MusicService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +284,26 @@ var MusicService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "LikeTrack",
 			Handler:    _MusicService_LikeTrack_Handler,
+		},
+		{
+			MethodName: "IsTrackLiked",
+			Handler:    _MusicService_IsTrackLiked_Handler,
+		},
+		{
+			MethodName: "GetLikedTrackCount",
+			Handler:    _MusicService_GetLikedTrackCount_Handler,
+		},
+		{
+			MethodName: "GetLikedTracksLength",
+			Handler:    _MusicService_GetLikedTracksLength_Handler,
+		},
+		{
+			MethodName: "GetLikedTracks",
+			Handler:    _MusicService_GetLikedTracks_Handler,
+		},
+		{
+			MethodName: "GetMusicSearchSuggestions",
+			Handler:    _MusicService_GetMusicSearchSuggestions_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

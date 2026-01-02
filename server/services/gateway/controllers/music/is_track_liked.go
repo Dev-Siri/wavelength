@@ -1,10 +1,13 @@
 package music_controllers
 
 import (
-	"wavelength/services/gateway/db"
+	"wavelength/proto/musicpb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 func IsTrackLiked(ctx *fiber.Ctx) error {
@@ -20,19 +23,14 @@ func IsTrackLiked(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
 	}
 
-	// Check if already liked.
-	var likesCount int
-
-	row := db.Database.QueryRow(`
-		SELECT COUNT(*) FROM "likes"
-		WHERE email = $1 AND video_id = $2;
-	`, authUser.Email, videoId)
-
-	if err := row.Scan(&likesCount); err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to read like data count: "+err.Error())
+	isTrackLikedResponse, err := clients.MusicClient.IsTrackLiked(ctx.Context(), &musicpb.IsTrackLikedRequest{
+		LikerEmail: authUser.Email,
+		VideoId:    videoId,
+	})
+	if err != nil {
+		go logging.Logger.Error("MusicService: 'IsTrackLiked' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Liked status check failed.")
 	}
 
-	isLiked := likesCount > 0
-
-	return ctx.JSON(models.Success(isLiked))
+	return ctx.JSON(models.Success(isTrackLikedResponse.IsLiked))
 }

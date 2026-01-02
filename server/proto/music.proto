@@ -7,6 +7,10 @@ import "proto/common.proto";
 
 service MusicService {
   rpc LikeTrack(LikeTrackRequest) returns (LikeTrackResponse);
+  rpc IsTrackLiked(IsTrackLikedRequest) returns (IsTrackLikedResponse);
+  rpc GetLikedTrackCount(GetLikedTrackCountRequest) returns (GetLikedTrackCountResponse);
+  rpc GetLikedTracksLength(GetLikedTracksLengthRequest) returns (GetLikedTracksLengthResponse);
+  rpc GetLikedTracks(GetLikedTracksRequest) returns (GetLikedTracksResponse);
   rpc GetMusicSearchSuggestions(GetMusicSearchSuggestionsRequest) returns (GetMusicSearchSuggestionsResponse);
 }
 
@@ -35,4 +39,37 @@ message GetMusicSearchSuggestionsRequest {
 
 message GetMusicSearchSuggestionsResponse {
 
+}
+
+message IsTrackLikedRequest {
+  string liker_email = 1;
+  string video_id = 2;
+}
+
+message IsTrackLikedResponse {
+  bool is_liked = 1;
+}
+
+message GetLikedTrackCountRequest {
+  string liker_email = 1;
+}
+
+message GetLikedTrackCountResponse {
+  uint32 like_count = 1; 
+}
+
+message GetLikedTracksLengthRequest {
+  string liker_email = 1;
+}
+
+message GetLikedTracksLengthResponse {
+  common.TracksLength liked_tracks_length = 1;
+}
+
+message GetLikedTracksRequest {
+  string liker_email = 1;
+}
+
+message GetLikedTracksResponse {
+  repeated common.LikedTrack liked_tracks = 1;
 }

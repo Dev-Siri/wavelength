@@ -212,6 +212,446 @@ func (x *LikeTrackResponse) GetLikeType() LikeTrackResponse_LikeType {
 	return LikeTrackResponse_UNLIKE
 }
 
+type GetMusicSearchSuggestionsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Query         string                 `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetMusicSearchSuggestionsRequest) Reset() {
+	*x = GetMusicSearchSuggestionsRequest{}
+	mi := &file_proto_music_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetMusicSearchSuggestionsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetMusicSearchSuggestionsRequest) ProtoMessage() {}
+
+func (x *GetMusicSearchSuggestionsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_music_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetMusicSearchSuggestionsRequest.ProtoReflect.Descriptor instead.
+func (*GetMusicSearchSuggestionsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_music_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GetMusicSearchSuggestionsRequest) GetQuery() string {
+	if x != nil {
+		return x.Query
+	}
+	return ""
+}
+
+type GetMusicSearchSuggestionsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetMusicSearchSuggestionsResponse) Reset() {
+	*x = GetMusicSearchSuggestionsResponse{}
+	mi := &file_proto_music_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetMusicSearchSuggestionsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetMusicSearchSuggestionsResponse) ProtoMessage() {}
+
+func (x *GetMusicSearchSuggestionsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_music_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetMusicSearchSuggestionsResponse.ProtoReflect.Descriptor instead.
+func (*GetMusicSearchSuggestionsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_music_proto_rawDescGZIP(), []int{3}
+}
+
+type IsTrackLikedRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	LikerEmail    string                 `protobuf:"bytes,1,opt,name=liker_email,json=likerEmail,proto3" json:"liker_email,omitempty"`
+	VideoId       string                 `protobuf:"bytes,2,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *IsTrackLikedRequest) Reset() {
+	*x = IsTrackLikedRequest{}
+	mi := &file_proto_music_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IsTrackLikedRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IsTrackLikedRequest) ProtoMessage() {}
+
+func (x *IsTrackLikedRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_music_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IsTrackLikedRequest.ProtoReflect.Descriptor instead.
+func (*IsTrackLikedRequest) Descriptor() ([]byte, []int) {
+	return file_proto_music_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *IsTrackLikedRequest) GetLikerEmail() string {
+	if x != nil {
+		return x.LikerEmail
+	}
+	return ""
+}
+
+func (x *IsTrackLikedRequest) GetVideoId() string {
+	if x != nil {
+		return x.VideoId
+	}
+	return ""
+}
+
+type IsTrackLikedResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	IsLiked       bool                   `protobuf:"varint,1,opt,name=is_liked,json=isLiked,proto3" json:"is_liked,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *IsTrackLikedResponse) Reset() {
+	*x = IsTrackLikedResponse{}
+	mi := &file_proto_music_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IsTrackLikedResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IsTrackLikedResponse) ProtoMessage() {}
+
+func (x *IsTrackLikedResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_music_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IsTrackLikedResponse.ProtoReflect.Descriptor instead.
+func (*IsTrackLikedResponse) Descriptor() ([]byte, []int) {
+	return file_proto_music_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *IsTrackLikedResponse) GetIsLiked() bool {
+	if x != nil {
+		return x.IsLiked
+	}
+	return false
+}
+
+type GetLikedTrackCountRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	LikerEmail    string                 `protobuf:"bytes,1,opt,name=liker_email,json=likerEmail,proto3" json:"liker_email,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetLikedTrackCountRequest) Reset() {
+	*x = GetLikedTrackCountRequest{}
+	mi := &file_proto_music_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetLikedTrackCountRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetLikedTrackCountRequest) ProtoMessage() {}
+
+func (x *GetLikedTrackCountRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_music_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetLikedTrackCountRequest.ProtoReflect.Descriptor instead.
+func (*GetLikedTrackCountRequest) Descriptor() ([]byte, []int) {
+	return file_proto_music_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GetLikedTrackCountRequest) GetLikerEmail() string {
+	if x != nil {
+		return x.LikerEmail
+	}
+	return ""
+}
+
+type GetLikedTrackCountResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	LikeCount     uint32                 `protobuf:"varint,1,opt,name=like_count,json=likeCount,proto3" json:"like_count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetLikedTrackCountResponse) Reset() {
+	*x = GetLikedTrackCountResponse{}
+	mi := &file_proto_music_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetLikedTrackCountResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetLikedTrackCountResponse) ProtoMessage() {}
+
+func (x *GetLikedTrackCountResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_music_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetLikedTrackCountResponse.ProtoReflect.Descriptor instead.
+func (*GetLikedTrackCountResponse) Descriptor() ([]byte, []int) {
+	return file_proto_music_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *GetLikedTrackCountResponse) GetLikeCount() uint32 {
+	if x != nil {
+		return x.LikeCount
+	}
+	return 0
+}
+
+type GetLikedTracksLengthRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	LikerEmail    string                 `protobuf:"bytes,1,opt,name=liker_email,json=likerEmail,proto3" json:"liker_email,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetLikedTracksLengthRequest) Reset() {
+	*x = GetLikedTracksLengthRequest{}
+	mi := &file_proto_music_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetLikedTracksLengthRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetLikedTracksLengthRequest) ProtoMessage() {}
+
+func (x *GetLikedTracksLengthRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_music_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetLikedTracksLengthRequest.ProtoReflect.Descriptor instead.
+func (*GetLikedTracksLengthRequest) Descriptor() ([]byte, []int) {
+	return file_proto_music_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *GetLikedTracksLengthRequest) GetLikerEmail() string {
+	if x != nil {
+		return x.LikerEmail
+	}
+	return ""
+}
+
+type GetLikedTracksLengthResponse struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	LikedTracksLength *commonpb.TracksLength `protobuf:"bytes,1,opt,name=liked_tracks_length,json=likedTracksLength,proto3" json:"liked_tracks_length,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *GetLikedTracksLengthResponse) Reset() {
+	*x = GetLikedTracksLengthResponse{}
+	mi := &file_proto_music_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetLikedTracksLengthResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetLikedTracksLengthResponse) ProtoMessage() {}
+
+func (x *GetLikedTracksLengthResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_music_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetLikedTracksLengthResponse.ProtoReflect.Descriptor instead.
+func (*GetLikedTracksLengthResponse) Descriptor() ([]byte, []int) {
+	return file_proto_music_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *GetLikedTracksLengthResponse) GetLikedTracksLength() *commonpb.TracksLength {
+	if x != nil {
+		return x.LikedTracksLength
+	}
+	return nil
+}
+
+type GetLikedTracksRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	LikerEmail    string                 `protobuf:"bytes,1,opt,name=liker_email,json=likerEmail,proto3" json:"liker_email,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetLikedTracksRequest) Reset() {
+	*x = GetLikedTracksRequest{}
+	mi := &file_proto_music_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetLikedTracksRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetLikedTracksRequest) ProtoMessage() {}
+
+func (x *GetLikedTracksRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_music_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetLikedTracksRequest.ProtoReflect.Descriptor instead.
+func (*GetLikedTracksRequest) Descriptor() ([]byte, []int) {
+	return file_proto_music_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *GetLikedTracksRequest) GetLikerEmail() string {
+	if x != nil {
+		return x.LikerEmail
+	}
+	return ""
+}
+
+type GetLikedTracksResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	LikedTracks   []*commonpb.LikedTrack `protobuf:"bytes,1,rep,name=liked_tracks,json=likedTracks,proto3" json:"liked_tracks,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetLikedTracksResponse) Reset() {
+	*x = GetLikedTracksResponse{}
+	mi := &file_proto_music_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetLikedTracksResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetLikedTracksResponse) ProtoMessage() {}
+
+func (x *GetLikedTracksResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_music_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetLikedTracksResponse.ProtoReflect.Descriptor instead.
+func (*GetLikedTracksResponse) Descriptor() ([]byte, []int) {
+	return file_proto_music_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *GetLikedTracksResponse) GetLikedTracks() []*commonpb.LikedTrack {
+	if x != nil {
+		return x.LikedTracks
+	}
+	return nil
+}
+
 var File_proto_music_proto protoreflect.FileDescriptor
 
 const file_proto_music_proto_rawDesc = "" +
@@ -235,9 +675,39 @@ const file_proto_music_proto_rawDesc = "" +
 	"\bLikeType\x12\n" +
 	"\n" +
 	"\x06UNLIKE\x10\x00\x12\b\n" +
-	"\x04LIKE\x10\x012N\n" +
+	"\x04LIKE\x10\x01\"8\n" +
+	" GetMusicSearchSuggestionsRequest\x12\x14\n" +
+	"\x05query\x18\x01 \x01(\tR\x05query\"#\n" +
+	"!GetMusicSearchSuggestionsResponse\"Q\n" +
+	"\x13IsTrackLikedRequest\x12\x1f\n" +
+	"\vliker_email\x18\x01 \x01(\tR\n" +
+	"likerEmail\x12\x19\n" +
+	"\bvideo_id\x18\x02 \x01(\tR\avideoId\"1\n" +
+	"\x14IsTrackLikedResponse\x12\x19\n" +
+	"\bis_liked\x18\x01 \x01(\bR\aisLiked\"<\n" +
+	"\x19GetLikedTrackCountRequest\x12\x1f\n" +
+	"\vliker_email\x18\x01 \x01(\tR\n" +
+	"likerEmail\";\n" +
+	"\x1aGetLikedTrackCountResponse\x12\x1d\n" +
+	"\n" +
+	"like_count\x18\x01 \x01(\rR\tlikeCount\">\n" +
+	"\x1bGetLikedTracksLengthRequest\x12\x1f\n" +
+	"\vliker_email\x18\x01 \x01(\tR\n" +
+	"likerEmail\"d\n" +
+	"\x1cGetLikedTracksLengthResponse\x12D\n" +
+	"\x13liked_tracks_length\x18\x01 \x01(\v2\x14.common.TracksLengthR\x11likedTracksLength\"8\n" +
+	"\x15GetLikedTracksRequest\x12\x1f\n" +
+	"\vliker_email\x18\x01 \x01(\tR\n" +
+	"likerEmail\"O\n" +
+	"\x16GetLikedTracksResponse\x125\n" +
+	"\fliked_tracks\x18\x01 \x03(\v2\x12.common.LikedTrackR\vlikedTracks2\x92\x04\n" +
 	"\fMusicService\x12>\n" +
-	"\tLikeTrack\x12\x17.music.LikeTrackRequest\x1a\x18.music.LikeTrackResponseB'Z%wavelength/server/proto/music;musicpbb\x06proto3"
+	"\tLikeTrack\x12\x17.music.LikeTrackRequest\x1a\x18.music.LikeTrackResponse\x12G\n" +
+	"\fIsTrackLiked\x12\x1a.music.IsTrackLikedRequest\x1a\x1b.music.IsTrackLikedResponse\x12Y\n" +
+	"\x12GetLikedTrackCount\x12 .music.GetLikedTrackCountRequest\x1a!.music.GetLikedTrackCountResponse\x12_\n" +
+	"\x14GetLikedTracksLength\x12\".music.GetLikedTracksLengthRequest\x1a#.music.GetLikedTracksLengthResponse\x12M\n" +
+	"\x0eGetLikedTracks\x12\x1c.music.GetLikedTracksRequest\x1a\x1d.music.GetLikedTracksResponse\x12n\n" +
+	"\x19GetMusicSearchSuggestions\x12'.music.GetMusicSearchSuggestionsRequest\x1a(.music.GetMusicSearchSuggestionsResponseB'Z%wavelength/server/proto/music;musicpbb\x06proto3"
 
 var (
 	file_proto_music_proto_rawDescOnce sync.Once
@@ -252,23 +722,47 @@ func file_proto_music_proto_rawDescGZIP() []byte {
 }
 
 var file_proto_music_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_proto_music_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_proto_music_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_proto_music_proto_goTypes = []any{
-	(LikeTrackResponse_LikeType)(0), // 0: music.LikeTrackResponse.LikeType
-	(*LikeTrackRequest)(nil),        // 1: music.LikeTrackRequest
-	(*LikeTrackResponse)(nil),       // 2: music.LikeTrackResponse
-	(commonpb.VideoType)(0),         // 3: common.VideoType
+	(LikeTrackResponse_LikeType)(0),           // 0: music.LikeTrackResponse.LikeType
+	(*LikeTrackRequest)(nil),                  // 1: music.LikeTrackRequest
+	(*LikeTrackResponse)(nil),                 // 2: music.LikeTrackResponse
+	(*GetMusicSearchSuggestionsRequest)(nil),  // 3: music.GetMusicSearchSuggestionsRequest
+	(*GetMusicSearchSuggestionsResponse)(nil), // 4: music.GetMusicSearchSuggestionsResponse
+	(*IsTrackLikedRequest)(nil),               // 5: music.IsTrackLikedRequest
+	(*IsTrackLikedResponse)(nil),              // 6: music.IsTrackLikedResponse
+	(*GetLikedTrackCountRequest)(nil),         // 7: music.GetLikedTrackCountRequest
+	(*GetLikedTrackCountResponse)(nil),        // 8: music.GetLikedTrackCountResponse
+	(*GetLikedTracksLengthRequest)(nil),       // 9: music.GetLikedTracksLengthRequest
+	(*GetLikedTracksLengthResponse)(nil),      // 10: music.GetLikedTracksLengthResponse
+	(*GetLikedTracksRequest)(nil),             // 11: music.GetLikedTracksRequest
+	(*GetLikedTracksResponse)(nil),            // 12: music.GetLikedTracksResponse
+	(commonpb.VideoType)(0),                   // 13: common.VideoType
+	(*commonpb.TracksLength)(nil),             // 14: common.TracksLength
+	(*commonpb.LikedTrack)(nil),               // 15: common.LikedTrack
 }
 var file_proto_music_proto_depIdxs = []int32{
-	3, // 0: music.LikeTrackRequest.video_type:type_name -> common.VideoType
-	0, // 1: music.LikeTrackResponse.like_type:type_name -> music.LikeTrackResponse.LikeType
-	1, // 2: music.MusicService.LikeTrack:input_type -> music.LikeTrackRequest
-	2, // 3: music.MusicService.LikeTrack:output_type -> music.LikeTrackResponse
-	3, // [3:4] is the sub-list for method output_type
-	2, // [2:3] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	13, // 0: music.LikeTrackRequest.video_type:type_name -> common.VideoType
+	0,  // 1: music.LikeTrackResponse.like_type:type_name -> music.LikeTrackResponse.LikeType
+	14, // 2: music.GetLikedTracksLengthResponse.liked_tracks_length:type_name -> common.TracksLength
+	15, // 3: music.GetLikedTracksResponse.liked_tracks:type_name -> common.LikedTrack
+	1,  // 4: music.MusicService.LikeTrack:input_type -> music.LikeTrackRequest
+	5,  // 5: music.MusicService.IsTrackLiked:input_type -> music.IsTrackLikedRequest
+	7,  // 6: music.MusicService.GetLikedTrackCount:input_type -> music.GetLikedTrackCountRequest
+	9,  // 7: music.MusicService.GetLikedTracksLength:input_type -> music.GetLikedTracksLengthRequest
+	11, // 8: music.MusicService.GetLikedTracks:input_type -> music.GetLikedTracksRequest
+	3,  // 9: music.MusicService.GetMusicSearchSuggestions:input_type -> music.GetMusicSearchSuggestionsRequest
+	2,  // 10: music.MusicService.LikeTrack:output_type -> music.LikeTrackResponse
+	6,  // 11: music.MusicService.IsTrackLiked:output_type -> music.IsTrackLikedResponse
+	8,  // 12: music.MusicService.GetLikedTrackCount:output_type -> music.GetLikedTrackCountResponse
+	10, // 13: music.MusicService.GetLikedTracksLength:output_type -> music.GetLikedTracksLengthResponse
+	12, // 14: music.MusicService.GetLikedTracks:output_type -> music.GetLikedTracksResponse
+	4,  // 15: music.MusicService.GetMusicSearchSuggestions:output_type -> music.GetMusicSearchSuggestionsResponse
+	10, // [10:16] is the sub-list for method output_type
+	4,  // [4:10] is the sub-list for method input_type
+	4,  // [4:4] is the sub-list for extension type_name
+	4,  // [4:4] is the sub-list for extension extendee
+	0,  // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_proto_music_proto_init() }
@@ -282,7 +776,7 @@ func file_proto_music_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_music_proto_rawDesc), len(file_proto_music_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   2,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

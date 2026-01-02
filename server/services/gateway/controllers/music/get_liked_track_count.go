@@ -1,10 +1,13 @@
 package music_controllers
 
 import (
-	"wavelength/services/gateway/db"
+	"wavelength/proto/musicpb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 func GetLikedTrackCount(ctx *fiber.Ctx) error {
@@ -14,16 +17,13 @@ func GetLikedTrackCount(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
 	}
 
-	var likeCount int
-
-	row := db.Database.QueryRow(`
-		SELECT COUNT(*) FROM "likes"
-		WHERE email = $1;
-	`, authUser.Email)
-
-	if err := row.Scan(&likeCount); err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to read like count: "+err.Error())
+	likedTrackCountResponse, err := clients.MusicClient.GetLikedTrackCount(ctx.Context(), &musicpb.GetLikedTrackCountRequest{
+		LikerEmail: authUser.Email,
+	})
+	if err != nil {
+		go logging.Logger.Error("MusicServer: 'GetLikedTrackCount' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Like count read failed.")
 	}
 
-	return ctx.JSON(models.Success(likeCount))
+	return ctx.JSON(models.Success(likedTrackCountResponse.LikeCount))
 }

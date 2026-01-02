@@ -1,10 +1,13 @@
 package music_controllers
 
 import (
-	"wavelength/services/gateway/db"
+	"wavelength/proto/musicpb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 func GetLikedTracks(ctx *fiber.Ctx) error {
@@ -14,48 +17,13 @@ func GetLikedTracks(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
 	}
 
-	rows, err := db.Database.Query(`
-		SELECT
-			like_id,
-			email,
-			title,
-			thumbnail,
-			is_explicit,
-			author,
-			duration,
-			video_id,
-			video_type
-		FROM "likes"
-		WHERE email = $1;
-	`, authUser.Email)
-
+	likedTracksResponse, err := clients.MusicClient.GetLikedTracks(ctx.Context(), &musicpb.GetLikedTracksRequest{
+		LikerEmail: authUser.Email,
+	})
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get liked tracks from database: "+err.Error())
+		go logging.Logger.Error("MusicService: 'GetLikedTracks' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Liked tracks fetch failed.")
 	}
 
-	defer rows.Close()
-
-	tracks := make([]models.LikedTrack, 0)
-
-	for rows.Next() {
-		var track models.LikedTrack
-
-		if err := rows.Scan(
-			&track.LikeId,
-			&track.Email,
-			&track.Title,
-			&track.Thumbnail,
-			&track.IsExplicit,
-			&track.Author,
-			&track.Duration,
-			&track.VideoId,
-			&track.VideoType,
-		); err != nil {
-			return fiber.NewError(fiber.StatusInternalServerError, "Failed to get your liked tracks: "+err.Error())
-		}
-
-		tracks = append(tracks, track)
-	}
-
-	return ctx.JSON(models.Success(tracks))
+	return ctx.JSON(models.Success(likedTracksResponse.LikedTracks))
 }

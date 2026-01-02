@@ -7,3 +7,44 @@ enum VideoType {
   TRACK = 0;
   UVIDEO = 1;
 }
+
+message Playlist {
+  string playlist_id = 1;
+  string name = 2;
+  string author_google_email = 3;
+  string author_name = 4;
+  string author_image = 5;
+  string is_public = 6;
+  
+  optional string cover_image = 7;
+}
+
+message PlaylistTrack {
+  string playlist_track_id = 1;
+  string title = 2;
+  string thumbnail = 3;
+  uint32 position_in_playlist = 4;
+  bool is_explicit = 5;
+  string author = 6;
+  string duration = 7;
+  string video_id = 8;
+  VideoType video_type = 9;
+  string playlist_id = 10;
+}
+
+message TracksLength {
+  uint32 song_count = 1;
+  uint64 song_duration_second = 2;
+}
+
+message LikedTrack {
+  string like_id = 1;
+  string email = 2;
+  string title = 3;
+  string thumbnail = 4;
+  bool is_explicit = 5;
+  string author = 6;
+  string duration = 7;
+  string video_id = 8;
+  VideoType video_type = 9;
+}

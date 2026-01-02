@@ -8,16 +8,16 @@ RUN go mod download
 COPY . .
 
 ENV CGO_ENABLED=0
-RUN go build -v -trimpath -ldflags=-s -ldflags=-w -buildvcs=false -o /usr/local/bin/playlist /usr/src/app/services/playlist
+RUN go build -v -trimpath -ldflags=-s -ldflags=-w -buildvcs=false -o /usr/local/bin/music /usr/src/app/services/music
 
 FROM debian:bookworm-slim
 
 WORKDIR /app
 
-COPY --from=builder /usr/local/bin/playlist /usr/local/bin/playlist
+COPY --from=builder /usr/local/bin/music /usr/local/bin/music
 
-RUN chmod +x /usr/local/bin/playlist
+RUN chmod +x /usr/local/bin/music
 
 EXPOSE 8080
 
-ENTRYPOINT [ "/usr/local/bin/playlist" ]
+ENTRYPOINT [ "/usr/local/bin/music" ]

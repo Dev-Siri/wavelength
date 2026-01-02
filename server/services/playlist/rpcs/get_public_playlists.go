@@ -2,6 +2,7 @@ package playlist_rpcs
 
 import (
 	"context"
+	"wavelength/proto/commonpb"
 	"wavelength/proto/playlistpb"
 	shared_db "wavelength/shared/db"
 	"wavelength/shared/logging"
@@ -35,10 +36,10 @@ func (p *PlaylistService) GetPublicPlaylists(
 		return nil, status.Error(codes.Internal, "Public playlists fetch failed.")
 	}
 
-	playlists := make([]*playlistpb.Playlist, 0)
+	playlists := make([]*commonpb.Playlist, 0)
 
 	for rows.Next() {
-		var playlist playlistpb.Playlist
+		var playlist commonpb.Playlist
 
 		if err := rows.Scan(
 			&playlist.PlaylistId,

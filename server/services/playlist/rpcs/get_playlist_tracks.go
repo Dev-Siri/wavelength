@@ -3,6 +3,7 @@ package playlist_rpcs
 import (
 	"context"
 	"html"
+	"wavelength/proto/commonpb"
 	"wavelength/proto/playlistpb"
 	shared_db "wavelength/shared/db"
 	"wavelength/shared/logging"
@@ -37,10 +38,10 @@ func (p *PlaylistService) GetPlaylistTracks(
 		return nil, status.Error(codes.Internal, "Playlist tracks fetch failed.")
 	}
 
-	playlistTracks := make([]*playlistpb.PlaylistTrack, 0)
+	playlistTracks := make([]*commonpb.PlaylistTrack, 0)
 
 	for rows.Next() {
-		var playlistTrack playlistpb.PlaylistTrack
+		var playlistTrack commonpb.PlaylistTrack
 
 		if err := rows.Scan(
 			&playlistTrack.PlaylistTrackId,

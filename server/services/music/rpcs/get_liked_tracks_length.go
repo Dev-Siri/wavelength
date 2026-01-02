@@ -1,10 +1,10 @@
-package playlist_rpcs
+package music_rpcs
 
 import (
 	"context"
 	"sync"
 	"wavelength/proto/commonpb"
-	"wavelength/proto/playlistpb"
+	"wavelength/proto/musicpb"
 	"wavelength/services/gateway/utils"
 	shared_db "wavelength/shared/db"
 	"wavelength/shared/logging"
@@ -14,10 +14,10 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (p *PlaylistService) GetPlaylistTracksLength(
+func (m *MusicService) GetLikedTracksLength(
 	ctx context.Context,
-	request *playlistpb.PlaylistTracksLengthRequest,
-) (*playlistpb.PlaylistTracksLengthResponse, error) {
+	request *musicpb.GetLikedTracksLengthRequest,
+) (*musicpb.GetLikedTracksLengthResponse, error) {
 	durationsChan := make(chan []string, 1)
 	countChan := make(chan int, 1)
 	errChan := make(chan error, 2)
@@ -30,8 +30,8 @@ func (p *PlaylistService) GetPlaylistTracksLength(
 
 		rows, err := shared_db.Database.QueryContext(
 			context.Background(),
-			`SELECT duration FROM playlist_tracks WHERE playlist_id = $1`,
-			request.PlaylistId,
+			`SELECT duration FROM "likes" WHERE email = $1`,
+			request.LikerEmail,
 		)
 
 		if err != nil {
@@ -61,8 +61,8 @@ func (p *PlaylistService) GetPlaylistTracksLength(
 
 		if err := shared_db.Database.QueryRowContext(
 			context.Background(),
-			`SELECT COUNT(*) FROM playlist_tracks WHERE playlist_id = $1`,
-			request.PlaylistId,
+			`SELECT COUNT(*) FROM "likes" WHERE email = $1`,
+			request.LikerEmail,
 		).Scan(&songCount); err != nil {
 			errChan <- err
 			return
@@ -98,8 +98,8 @@ func (p *PlaylistService) GetPlaylistTracksLength(
 			receivedCount = true
 		case err, ok := <-errChan:
 			if ok {
-				go logging.Logger.Error("Fetch for playlist tracks length failed.", zap.Error(err))
-				return nil, status.Error(codes.Internal, "Fetch for playlist tracks length failed.")
+				go logging.Logger.Error("Liked tracks play length fetch failed.", zap.Error(err))
+				return nil, status.Error(codes.Internal, "Liked tracks play length fetch failed.")
 			}
 		}
 
@@ -110,12 +110,13 @@ func (p *PlaylistService) GetPlaylistTracksLength(
 
 	// Sum durations in seconds
 	totalDurationSeconds := 0
+
 	for _, duration := range durations {
 		totalDurationSeconds += utils.ParseDurationToSeconds(duration)
 	}
 
-	return &playlistpb.PlaylistTracksLengthResponse{
-		PlaylistTracksLength: &commonpb.TracksLength{
+	return &musicpb.GetLikedTracksLengthResponse{
+		LikedTracksLength: &commonpb.TracksLength{
 			SongCount:          uint32(songCount),
 			SongDurationSecond: uint64(totalDurationSeconds),
 		},

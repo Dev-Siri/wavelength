@@ -20,36 +20,6 @@ service PlaylistService {
   rpc CreatePlaylist(CreatePlaylistRequest) returns (google.protobuf.Empty);
 }
 
-// Data Representations.
-message Playlist {
-  string playlist_id = 1;
-  string name = 2;
-  string author_google_email = 3;
-  string author_name = 4;
-  string author_image = 5;
-  string is_public = 6;
-  
-  optional string cover_image = 7;
-}
-
-message PlaylistTrack {
-  string playlist_track_id = 1;
-  string title = 2;
-  string thumbnail = 3;
-  uint32 position_in_playlist = 4;
-  bool is_explicit = 5;
-  string author = 6;
-  string duration = 7;
-  string video_id = 8;
-  common.VideoType video_type = 9;
-  string playlist_id = 10;
-}
-
-message PlaylistTracksLength {
-  uint32 song_count = 1;
-  uint64 song_duration_second = 2;
-}
-
 // Request/Response messages
 message EditPlaylistRequest {
   string playlist_id = 1;
@@ -68,7 +38,7 @@ message GetUserPlaylistsRequest {
 }
 
 message GetUserPlaylistsResponse {
-  repeated Playlist playlists = 1;
+  repeated common.Playlist playlists = 1;
 }
 
 message GetPlaylistByIdRequest {
@@ -76,7 +46,7 @@ message GetPlaylistByIdRequest {
 }
 
 message GetPlaylistByIdResponse {
-  Playlist playlist = 1;
+  common.Playlist playlist = 1;
 }
 
 message AddRemovePlaylistTrackRequest {
@@ -112,7 +82,7 @@ message GetPlaylistTracksRequest {
 }
 
 message GetPlaylistTracksResponse {
-  repeated PlaylistTrack playlists_tracks = 1;
+  repeated common.PlaylistTrack playlists_tracks = 1;
 }
 
 message DeletePlaylistRequest {
@@ -130,7 +100,7 @@ message PlaylistTracksLengthRequest {
 }
 
 message PlaylistTracksLengthResponse {
-  PlaylistTracksLength playlist_tracks_length = 1;
+  common.TracksLength playlist_tracks_length = 1;
 }
 
 message GetPublicPlaylistsRequest {
@@ -138,5 +108,5 @@ message GetPublicPlaylistsRequest {
 }
 
 message GetPublicPlaylistsResponse {
-  repeated Playlist playlists = 1;
+  repeated common.Playlist playlists = 1;
 }

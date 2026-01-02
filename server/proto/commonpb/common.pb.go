@@ -67,11 +67,423 @@ func (VideoType) EnumDescriptor() ([]byte, []int) {
 	return file_proto_common_proto_rawDescGZIP(), []int{0}
 }
 
+type Playlist struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	PlaylistId        string                 `protobuf:"bytes,1,opt,name=playlist_id,json=playlistId,proto3" json:"playlist_id,omitempty"`
+	Name              string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	AuthorGoogleEmail string                 `protobuf:"bytes,3,opt,name=author_google_email,json=authorGoogleEmail,proto3" json:"author_google_email,omitempty"`
+	AuthorName        string                 `protobuf:"bytes,4,opt,name=author_name,json=authorName,proto3" json:"author_name,omitempty"`
+	AuthorImage       string                 `protobuf:"bytes,5,opt,name=author_image,json=authorImage,proto3" json:"author_image,omitempty"`
+	IsPublic          string                 `protobuf:"bytes,6,opt,name=is_public,json=isPublic,proto3" json:"is_public,omitempty"`
+	CoverImage        *string                `protobuf:"bytes,7,opt,name=cover_image,json=coverImage,proto3,oneof" json:"cover_image,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *Playlist) Reset() {
+	*x = Playlist{}
+	mi := &file_proto_common_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Playlist) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Playlist) ProtoMessage() {}
+
+func (x *Playlist) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Playlist.ProtoReflect.Descriptor instead.
+func (*Playlist) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *Playlist) GetPlaylistId() string {
+	if x != nil {
+		return x.PlaylistId
+	}
+	return ""
+}
+
+func (x *Playlist) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *Playlist) GetAuthorGoogleEmail() string {
+	if x != nil {
+		return x.AuthorGoogleEmail
+	}
+	return ""
+}
+
+func (x *Playlist) GetAuthorName() string {
+	if x != nil {
+		return x.AuthorName
+	}
+	return ""
+}
+
+func (x *Playlist) GetAuthorImage() string {
+	if x != nil {
+		return x.AuthorImage
+	}
+	return ""
+}
+
+func (x *Playlist) GetIsPublic() string {
+	if x != nil {
+		return x.IsPublic
+	}
+	return ""
+}
+
+func (x *Playlist) GetCoverImage() string {
+	if x != nil && x.CoverImage != nil {
+		return *x.CoverImage
+	}
+	return ""
+}
+
+type PlaylistTrack struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	PlaylistTrackId    string                 `protobuf:"bytes,1,opt,name=playlist_track_id,json=playlistTrackId,proto3" json:"playlist_track_id,omitempty"`
+	Title              string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Thumbnail          string                 `protobuf:"bytes,3,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
+	PositionInPlaylist uint32                 `protobuf:"varint,4,opt,name=position_in_playlist,json=positionInPlaylist,proto3" json:"position_in_playlist,omitempty"`
+	IsExplicit         bool                   `protobuf:"varint,5,opt,name=is_explicit,json=isExplicit,proto3" json:"is_explicit,omitempty"`
+	Author             string                 `protobuf:"bytes,6,opt,name=author,proto3" json:"author,omitempty"`
+	Duration           string                 `protobuf:"bytes,7,opt,name=duration,proto3" json:"duration,omitempty"`
+	VideoId            string                 `protobuf:"bytes,8,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	VideoType          VideoType              `protobuf:"varint,9,opt,name=video_type,json=videoType,proto3,enum=common.VideoType" json:"video_type,omitempty"`
+	PlaylistId         string                 `protobuf:"bytes,10,opt,name=playlist_id,json=playlistId,proto3" json:"playlist_id,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *PlaylistTrack) Reset() {
+	*x = PlaylistTrack{}
+	mi := &file_proto_common_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PlaylistTrack) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PlaylistTrack) ProtoMessage() {}
+
+func (x *PlaylistTrack) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PlaylistTrack.ProtoReflect.Descriptor instead.
+func (*PlaylistTrack) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *PlaylistTrack) GetPlaylistTrackId() string {
+	if x != nil {
+		return x.PlaylistTrackId
+	}
+	return ""
+}
+
+func (x *PlaylistTrack) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *PlaylistTrack) GetThumbnail() string {
+	if x != nil {
+		return x.Thumbnail
+	}
+	return ""
+}
+
+func (x *PlaylistTrack) GetPositionInPlaylist() uint32 {
+	if x != nil {
+		return x.PositionInPlaylist
+	}
+	return 0
+}
+
+func (x *PlaylistTrack) GetIsExplicit() bool {
+	if x != nil {
+		return x.IsExplicit
+	}
+	return false
+}
+
+func (x *PlaylistTrack) GetAuthor() string {
+	if x != nil {
+		return x.Author
+	}
+	return ""
+}
+
+func (x *PlaylistTrack) GetDuration() string {
+	if x != nil {
+		return x.Duration
+	}
+	return ""
+}
+
+func (x *PlaylistTrack) GetVideoId() string {
+	if x != nil {
+		return x.VideoId
+	}
+	return ""
+}
+
+func (x *PlaylistTrack) GetVideoType() VideoType {
+	if x != nil {
+		return x.VideoType
+	}
+	return VideoType_TRACK
+}
+
+func (x *PlaylistTrack) GetPlaylistId() string {
+	if x != nil {
+		return x.PlaylistId
+	}
+	return ""
+}
+
+type TracksLength struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	SongCount          uint32                 `protobuf:"varint,1,opt,name=song_count,json=songCount,proto3" json:"song_count,omitempty"`
+	SongDurationSecond uint64                 `protobuf:"varint,2,opt,name=song_duration_second,json=songDurationSecond,proto3" json:"song_duration_second,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *TracksLength) Reset() {
+	*x = TracksLength{}
+	mi := &file_proto_common_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TracksLength) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TracksLength) ProtoMessage() {}
+
+func (x *TracksLength) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TracksLength.ProtoReflect.Descriptor instead.
+func (*TracksLength) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *TracksLength) GetSongCount() uint32 {
+	if x != nil {
+		return x.SongCount
+	}
+	return 0
+}
+
+func (x *TracksLength) GetSongDurationSecond() uint64 {
+	if x != nil {
+		return x.SongDurationSecond
+	}
+	return 0
+}
+
+type LikedTrack struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	LikeId        string                 `protobuf:"bytes,1,opt,name=like_id,json=likeId,proto3" json:"like_id,omitempty"`
+	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
+	Title         string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	Thumbnail     string                 `protobuf:"bytes,4,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
+	IsExplicit    bool                   `protobuf:"varint,5,opt,name=is_explicit,json=isExplicit,proto3" json:"is_explicit,omitempty"`
+	Author        string                 `protobuf:"bytes,6,opt,name=author,proto3" json:"author,omitempty"`
+	Duration      string                 `protobuf:"bytes,7,opt,name=duration,proto3" json:"duration,omitempty"`
+	VideoId       string                 `protobuf:"bytes,8,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	VideoType     VideoType              `protobuf:"varint,9,opt,name=video_type,json=videoType,proto3,enum=common.VideoType" json:"video_type,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LikedTrack) Reset() {
+	*x = LikedTrack{}
+	mi := &file_proto_common_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LikedTrack) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LikedTrack) ProtoMessage() {}
+
+func (x *LikedTrack) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LikedTrack.ProtoReflect.Descriptor instead.
+func (*LikedTrack) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *LikedTrack) GetLikeId() string {
+	if x != nil {
+		return x.LikeId
+	}
+	return ""
+}
+
+func (x *LikedTrack) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *LikedTrack) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *LikedTrack) GetThumbnail() string {
+	if x != nil {
+		return x.Thumbnail
+	}
+	return ""
+}
+
+func (x *LikedTrack) GetIsExplicit() bool {
+	if x != nil {
+		return x.IsExplicit
+	}
+	return false
+}
+
+func (x *LikedTrack) GetAuthor() string {
+	if x != nil {
+		return x.Author
+	}
+	return ""
+}
+
+func (x *LikedTrack) GetDuration() string {
+	if x != nil {
+		return x.Duration
+	}
+	return ""
+}
+
+func (x *LikedTrack) GetVideoId() string {
+	if x != nil {
+		return x.VideoId
+	}
+	return ""
+}
+
+func (x *LikedTrack) GetVideoType() VideoType {
+	if x != nil {
+		return x.VideoType
+	}
+	return VideoType_TRACK
+}
+
 var File_proto_common_proto protoreflect.FileDescriptor
 
 const file_proto_common_proto_rawDesc = "" +
 	"\n" +
-	"\x12proto/common.proto\x12\x06common*\"\n" +
+	"\x12proto/common.proto\x12\x06common\"\x86\x02\n" +
+	"\bPlaylist\x12\x1f\n" +
+	"\vplaylist_id\x18\x01 \x01(\tR\n" +
+	"playlistId\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12.\n" +
+	"\x13author_google_email\x18\x03 \x01(\tR\x11authorGoogleEmail\x12\x1f\n" +
+	"\vauthor_name\x18\x04 \x01(\tR\n" +
+	"authorName\x12!\n" +
+	"\fauthor_image\x18\x05 \x01(\tR\vauthorImage\x12\x1b\n" +
+	"\tis_public\x18\x06 \x01(\tR\bisPublic\x12$\n" +
+	"\vcover_image\x18\a \x01(\tH\x00R\n" +
+	"coverImage\x88\x01\x01B\x0e\n" +
+	"\f_cover_image\"\xe4\x02\n" +
+	"\rPlaylistTrack\x12*\n" +
+	"\x11playlist_track_id\x18\x01 \x01(\tR\x0fplaylistTrackId\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1c\n" +
+	"\tthumbnail\x18\x03 \x01(\tR\tthumbnail\x120\n" +
+	"\x14position_in_playlist\x18\x04 \x01(\rR\x12positionInPlaylist\x12\x1f\n" +
+	"\vis_explicit\x18\x05 \x01(\bR\n" +
+	"isExplicit\x12\x16\n" +
+	"\x06author\x18\x06 \x01(\tR\x06author\x12\x1a\n" +
+	"\bduration\x18\a \x01(\tR\bduration\x12\x19\n" +
+	"\bvideo_id\x18\b \x01(\tR\avideoId\x120\n" +
+	"\n" +
+	"video_type\x18\t \x01(\x0e2\x11.common.VideoTypeR\tvideoType\x12\x1f\n" +
+	"\vplaylist_id\x18\n" +
+	" \x01(\tR\n" +
+	"playlistId\"_\n" +
+	"\fTracksLength\x12\x1d\n" +
+	"\n" +
+	"song_count\x18\x01 \x01(\rR\tsongCount\x120\n" +
+	"\x14song_duration_second\x18\x02 \x01(\x04R\x12songDurationSecond\"\x91\x02\n" +
+	"\n" +
+	"LikedTrack\x12\x17\n" +
+	"\alike_id\x18\x01 \x01(\tR\x06likeId\x12\x14\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\x12\x14\n" +
+	"\x05title\x18\x03 \x01(\tR\x05title\x12\x1c\n" +
+	"\tthumbnail\x18\x04 \x01(\tR\tthumbnail\x12\x1f\n" +
+	"\vis_explicit\x18\x05 \x01(\bR\n" +
+	"isExplicit\x12\x16\n" +
+	"\x06author\x18\x06 \x01(\tR\x06author\x12\x1a\n" +
+	"\bduration\x18\a \x01(\tR\bduration\x12\x19\n" +
+	"\bvideo_id\x18\b \x01(\tR\avideoId\x120\n" +
+	"\n" +
+	"video_type\x18\t \x01(\x0e2\x11.common.VideoTypeR\tvideoType*\"\n" +
 	"\tVideoType\x12\t\n" +
 	"\x05TRACK\x10\x00\x12\n" +
 	"\n" +
@@ -90,15 +502,22 @@ func file_proto_common_proto_rawDescGZIP() []byte {
 }
 
 var file_proto_common_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_proto_common_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_proto_common_proto_goTypes = []any{
-	(VideoType)(0), // 0: common.VideoType
+	(VideoType)(0),        // 0: common.VideoType
+	(*Playlist)(nil),      // 1: common.Playlist
+	(*PlaylistTrack)(nil), // 2: common.PlaylistTrack
+	(*TracksLength)(nil),  // 3: common.TracksLength
+	(*LikedTrack)(nil),    // 4: common.LikedTrack
 }
 var file_proto_common_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0, // 0: common.PlaylistTrack.video_type:type_name -> common.VideoType
+	0, // 1: common.LikedTrack.video_type:type_name -> common.VideoType
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_proto_common_proto_init() }
@@ -106,19 +525,21 @@ func file_proto_common_proto_init() {
 	if File_proto_common_proto != nil {
 		return
 	}
+	file_proto_common_proto_msgTypes[0].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_common_proto_rawDesc), len(file_proto_common_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   0,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_proto_common_proto_goTypes,
 		DependencyIndexes: file_proto_common_proto_depIdxs,
 		EnumInfos:         file_proto_common_proto_enumTypes,
+		MessageInfos:      file_proto_common_proto_msgTypes,
 	}.Build()
 	File_proto_common_proto = out.File
 	file_proto_common_proto_goTypes = nil
