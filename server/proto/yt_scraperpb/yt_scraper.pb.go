@@ -4,7 +4,7 @@
 // 	protoc        v6.33.1
 // source: proto/yt_scraper.proto
 
-package playlistpb
+package yt_scraperpb
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -66,10 +66,11 @@ func (x *SearchRequest) GetQuery() string {
 }
 
 type SearchResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Suggestions   []string               `protobuf:"bytes,1,rep,name=suggestions,proto3" json:"suggestions,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state            protoimpl.MessageState          `protogen:"open.v1"`
+	SuggestedQueries []string                        `protobuf:"bytes,1,rep,name=suggested_queries,json=suggestedQueries,proto3" json:"suggested_queries,omitempty"`
+	SuggestedLinks   []*SearchResponse_SuggestedLink `protobuf:"bytes,2,rep,name=suggested_links,json=suggestedLinks,proto3" json:"suggested_links,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *SearchResponse) Reset() {
@@ -102,24 +103,115 @@ func (*SearchResponse) Descriptor() ([]byte, []int) {
 	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *SearchResponse) GetSuggestions() []string {
+func (x *SearchResponse) GetSuggestedQueries() []string {
 	if x != nil {
-		return x.Suggestions
+		return x.SuggestedQueries
 	}
 	return nil
+}
+
+func (x *SearchResponse) GetSuggestedLinks() []*SearchResponse_SuggestedLink {
+	if x != nil {
+		return x.SuggestedLinks
+	}
+	return nil
+}
+
+type SearchResponse_SuggestedLink struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Thumbnail     string                 `protobuf:"bytes,1,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
+	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Subtitle      string                 `protobuf:"bytes,3,opt,name=subtitle,proto3" json:"subtitle,omitempty"`
+	BrowseId      string                 `protobuf:"bytes,4,opt,name=browse_id,json=browseId,proto3" json:"browse_id,omitempty"`
+	Type          string                 `protobuf:"bytes,6,opt,name=type,proto3" json:"type,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchResponse_SuggestedLink) Reset() {
+	*x = SearchResponse_SuggestedLink{}
+	mi := &file_proto_yt_scraper_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchResponse_SuggestedLink) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchResponse_SuggestedLink) ProtoMessage() {}
+
+func (x *SearchResponse_SuggestedLink) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_yt_scraper_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchResponse_SuggestedLink.ProtoReflect.Descriptor instead.
+func (*SearchResponse_SuggestedLink) Descriptor() ([]byte, []int) {
+	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{1, 0}
+}
+
+func (x *SearchResponse_SuggestedLink) GetThumbnail() string {
+	if x != nil {
+		return x.Thumbnail
+	}
+	return ""
+}
+
+func (x *SearchResponse_SuggestedLink) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *SearchResponse_SuggestedLink) GetSubtitle() string {
+	if x != nil {
+		return x.Subtitle
+	}
+	return ""
+}
+
+func (x *SearchResponse_SuggestedLink) GetBrowseId() string {
+	if x != nil {
+		return x.BrowseId
+	}
+	return ""
+}
+
+func (x *SearchResponse_SuggestedLink) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
 }
 
 var File_proto_yt_scraper_proto protoreflect.FileDescriptor
 
 const file_proto_yt_scraper_proto_rawDesc = "" +
 	"\n" +
-	"\x16proto/yt_scraper.proto\x12\bplaylist\"%\n" +
+	"\x16proto/yt_scraper.proto\x12\n" +
+	"yt_scraper\"%\n" +
 	"\rSearchRequest\x12\x14\n" +
-	"\x05query\x18\x01 \x01(\tR\x05query\"2\n" +
-	"\x0eSearchResponse\x12 \n" +
-	"\vsuggestions\x18\x01 \x03(\tR\vsuggestions2V\n" +
-	"\tYTScraper\x12I\n" +
-	"\x14GetSearchSuggestions\x12\x17.playlist.SearchRequest\x1a\x18.playlist.SearchResponseB-Z+wavelength/server/proto/playlist;playlistpbb\x06proto3"
+	"\x05query\x18\x01 \x01(\tR\x05query\"\xa3\x02\n" +
+	"\x0eSearchResponse\x12+\n" +
+	"\x11suggested_queries\x18\x01 \x03(\tR\x10suggestedQueries\x12Q\n" +
+	"\x0fsuggested_links\x18\x02 \x03(\v2(.yt_scraper.SearchResponse.SuggestedLinkR\x0esuggestedLinks\x1a\x90\x01\n" +
+	"\rSuggestedLink\x12\x1c\n" +
+	"\tthumbnail\x18\x01 \x01(\tR\tthumbnail\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1a\n" +
+	"\bsubtitle\x18\x03 \x01(\tR\bsubtitle\x12\x1b\n" +
+	"\tbrowse_id\x18\x04 \x01(\tR\bbrowseId\x12\x12\n" +
+	"\x04type\x18\x06 \x01(\tR\x04type2Z\n" +
+	"\tYTScraper\x12M\n" +
+	"\x14GetSearchSuggestions\x12\x19.yt_scraper.SearchRequest\x1a\x1a.yt_scraper.SearchResponseB1Z/wavelength/server/proto/yt_scraper;yt_scraperpbb\x06proto3"
 
 var (
 	file_proto_yt_scraper_proto_rawDescOnce sync.Once
@@ -133,19 +225,21 @@ func file_proto_yt_scraper_proto_rawDescGZIP() []byte {
 	return file_proto_yt_scraper_proto_rawDescData
 }
 
-var file_proto_yt_scraper_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_proto_yt_scraper_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_proto_yt_scraper_proto_goTypes = []any{
-	(*SearchRequest)(nil),  // 0: playlist.SearchRequest
-	(*SearchResponse)(nil), // 1: playlist.SearchResponse
+	(*SearchRequest)(nil),                // 0: yt_scraper.SearchRequest
+	(*SearchResponse)(nil),               // 1: yt_scraper.SearchResponse
+	(*SearchResponse_SuggestedLink)(nil), // 2: yt_scraper.SearchResponse.SuggestedLink
 }
 var file_proto_yt_scraper_proto_depIdxs = []int32{
-	0, // 0: playlist.YTScraper.GetSearchSuggestions:input_type -> playlist.SearchRequest
-	1, // 1: playlist.YTScraper.GetSearchSuggestions:output_type -> playlist.SearchResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	2, // 0: yt_scraper.SearchResponse.suggested_links:type_name -> yt_scraper.SearchResponse.SuggestedLink
+	0, // 1: yt_scraper.YTScraper.GetSearchSuggestions:input_type -> yt_scraper.SearchRequest
+	1, // 2: yt_scraper.YTScraper.GetSearchSuggestions:output_type -> yt_scraper.SearchResponse
+	2, // [2:3] is the sub-list for method output_type
+	1, // [1:2] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_proto_yt_scraper_proto_init() }
@@ -159,7 +253,7 @@ func file_proto_yt_scraper_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_yt_scraper_proto_rawDesc), len(file_proto_yt_scraper_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

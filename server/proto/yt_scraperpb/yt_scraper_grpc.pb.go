@@ -4,7 +4,7 @@
 // - protoc             v6.33.1
 // source: proto/yt_scraper.proto
 
-package playlistpb
+package yt_scraperpb
 
 import (
 	context "context"
@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	YTScraper_GetSearchSuggestions_FullMethodName = "/playlist.YTScraper/GetSearchSuggestions"
+	YTScraper_GetSearchSuggestions_FullMethodName = "/yt_scraper.YTScraper/GetSearchSuggestions"
 )
 
 // YTScraperClient is the client API for YTScraper service.
@@ -108,7 +108,7 @@ func _YTScraper_GetSearchSuggestions_Handler(srv interface{}, ctx context.Contex
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var YTScraper_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "playlist.YTScraper",
+	ServiceName: "yt_scraper.YTScraper",
 	HandlerType: (*YTScraperServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

@@ -1,4 +1,4 @@
-// package: playlist
+// package: yt_scraper
 // file: yt_scraper.proto
 
 /* tslint:disable */
@@ -27,10 +27,14 @@ export namespace SearchRequest {
 }
 
 export class SearchResponse extends jspb.Message { 
-    clearSuggestionsList(): void;
-    getSuggestionsList(): Array<string>;
-    setSuggestionsList(value: Array<string>): SearchResponse;
-    addSuggestions(value: string, index?: number): string;
+    clearSuggestedQueriesList(): void;
+    getSuggestedQueriesList(): Array<string>;
+    setSuggestedQueriesList(value: Array<string>): SearchResponse;
+    addSuggestedQueries(value: string, index?: number): string;
+    clearSuggestedLinksList(): void;
+    getSuggestedLinksList(): Array<SearchResponse.SuggestedLink>;
+    setSuggestedLinksList(value: Array<SearchResponse.SuggestedLink>): SearchResponse;
+    addSuggestedLinks(value?: SearchResponse.SuggestedLink, index?: number): SearchResponse.SuggestedLink;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SearchResponse.AsObject;
@@ -44,6 +48,41 @@ export class SearchResponse extends jspb.Message {
 
 export namespace SearchResponse {
     export type AsObject = {
-        suggestionsList: Array<string>,
+        suggestedQueriesList: Array<string>,
+        suggestedLinksList: Array<SearchResponse.SuggestedLink.AsObject>,
     }
+
+
+    export class SuggestedLink extends jspb.Message { 
+        getThumbnail(): string;
+        setThumbnail(value: string): SuggestedLink;
+        getTitle(): string;
+        setTitle(value: string): SuggestedLink;
+        getSubtitle(): string;
+        setSubtitle(value: string): SuggestedLink;
+        getBrowseId(): string;
+        setBrowseId(value: string): SuggestedLink;
+        getType(): string;
+        setType(value: string): SuggestedLink;
+
+        serializeBinary(): Uint8Array;
+        toObject(includeInstance?: boolean): SuggestedLink.AsObject;
+        static toObject(includeInstance: boolean, msg: SuggestedLink): SuggestedLink.AsObject;
+        static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+        static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+        static serializeBinaryToWriter(message: SuggestedLink, writer: jspb.BinaryWriter): void;
+        static deserializeBinary(bytes: Uint8Array): SuggestedLink;
+        static deserializeBinaryFromReader(message: SuggestedLink, reader: jspb.BinaryReader): SuggestedLink;
+    }
+
+    export namespace SuggestedLink {
+        export type AsObject = {
+            thumbnail: string,
+            title: string,
+            subtitle: string,
+            browseId: string,
+            type: string,
+        }
+    }
+
 }

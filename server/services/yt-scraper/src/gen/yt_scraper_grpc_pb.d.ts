@@ -1,4 +1,4 @@
-// package: playlist
+// package: yt_scraper
 // file: yt_scraper.proto
 
 /* tslint:disable */
@@ -12,7 +12,7 @@ interface IYTScraperService extends grpc.ServiceDefinition<grpc.UntypedServiceIm
 }
 
 interface IYTScraperService_IGetSearchSuggestions extends grpc.MethodDefinition<yt_scraper_pb.SearchRequest, yt_scraper_pb.SearchResponse> {
-    path: "/playlist.YTScraper/GetSearchSuggestions";
+    path: "/yt_scraper.YTScraper/GetSearchSuggestions";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<yt_scraper_pb.SearchRequest>;
