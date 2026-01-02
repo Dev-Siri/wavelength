@@ -20,3 +20,11 @@ services:
     container_name: playlist
     environment:
       - PORT=8081
+  music:
+    build:
+      context: .
+      dockerfile: services/music/Dockerfile
+    image: wavelength/services/music
+    container_name: music
+    environment:
+      - PORT=8081
