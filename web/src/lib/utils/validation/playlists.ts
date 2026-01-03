@@ -9,7 +9,9 @@ export const playlistSchema = z.object({
   coverImage: z.string().nullish(),
   isPublic: z.boolean(),
 });
-export const playlistsSchema = z.array(playlistSchema);
+export const playlistsSchema = z.object({
+  playlists: z.array(playlistSchema),
+});
 
 export type Playlist = z.infer<typeof playlistSchema>;
 export type Playlists = z.infer<typeof playlistsSchema>;

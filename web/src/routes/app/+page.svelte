@@ -37,8 +37,13 @@
         <MusicCardSkeleton />
       {/each}
     {:else if quickPicksQuery.isSuccess}
-      {#each quickPicksQuery.data as music}
-        <VideoCard {music} />
+      {#each quickPicksQuery.data.quickPicks as quickPick}
+        <VideoCard
+          music={{
+            ...quickPick,
+            author: quickPick.artists.map(artist => artist.title).join(", "),
+          }}
+        />
       {/each}
     {/if}
   </div>

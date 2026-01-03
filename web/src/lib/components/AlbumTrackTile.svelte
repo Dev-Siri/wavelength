@@ -28,7 +28,7 @@
   function playSong() {
     const queueableTrack = {
       ...music,
-      videoType: "track",
+      videoType: "VIDEO_TYPE_TRACK",
     } satisfies QueueableMusic;
 
     musicQueueStore.addToQueue(queueableTrack);

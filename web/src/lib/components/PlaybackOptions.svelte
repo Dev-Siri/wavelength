@@ -9,7 +9,7 @@
   import VolumeSlider from "./VolumeSlider.svelte";
 
   function syncUVideoToMusic(fn: () => void) {
-    if (musicQueueStore.musicPlayingNow?.videoType !== "uvideo") return fn();
+    if (musicQueueStore.musicPlayingNow?.videoType !== "VIDEO_TYPE_UVIDEO") return fn();
 
     fn();
 
@@ -70,7 +70,7 @@
     <Button
       variant="ghost"
       class="w-fit px-3 rounded-full"
-      disabled={musicQueueStore.musicPlayingNow?.videoType === "uvideo"}
+      disabled={musicQueueStore.musicPlayingNow?.videoType === "VIDEO_TYPE_UVIDEO"}
       onclick={() =>
         syncUVideoToMusic(
           () =>

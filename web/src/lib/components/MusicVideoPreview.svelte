@@ -10,7 +10,7 @@
 
   async function viewRandomChunks() {
     if (
-      musicQueueStore.musicPlayingNow?.videoType === "uvideo" ||
+      musicQueueStore.musicPlayingNow?.videoType === "VIDEO_TYPE_UVIDEO" ||
       !musicPlayerStore.musicPreviewPlayer
     )
       return;
@@ -47,7 +47,7 @@
 
       await ytPlayer.loadVideoById(
         musicVideoId,
-        musicQueueStore.musicPlayingNow?.videoType === "uvideo" ? playerDuration : 10,
+        musicQueueStore.musicPlayingNow?.videoType === "VIDEO_TYPE_UVIDEO" ? playerDuration : 10,
       );
 
       interval = setInterval(viewRandomChunks, 5000);
@@ -66,7 +66,7 @@
   $effect(() => {
     async function controlMusicVidToSong() {
       if (
-        musicQueueStore.musicPlayingNow?.videoType !== "uvideo" ||
+        musicQueueStore.musicPlayingNow?.videoType !== "VIDEO_TYPE_UVIDEO" ||
         !musicPlayerStore.musicPreviewPlayer
       )
         return;

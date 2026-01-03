@@ -41,7 +41,7 @@
 
     await musicPlayerStore.musicPlayer.seekTo(newTime, true);
 
-    if (musicQueueStore.musicPlayingNow?.videoType === "uvideo")
+    if (musicQueueStore.musicPlayingNow?.videoType === "VIDEO_TYPE_UVIDEO")
       await musicPlayerStore.musicPreviewPlayer?.seekTo(newTime, true);
 
     musicPlayerStore.progress = (newTime / duration) * 100;

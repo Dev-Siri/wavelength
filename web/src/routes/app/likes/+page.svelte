@@ -2,15 +2,14 @@
   import { ClockIcon, HeartIcon, HeartPlusIcon, PlayIcon } from "@lucide/svelte";
   import { createQuery } from "@tanstack/svelte-query";
   import { fly } from "svelte/transition";
-  import { z } from "zod";
 
   import { svelteQueryKeys } from "$lib/constants/keys.js";
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
   import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
   import userStore from "$lib/stores/user.svelte.js";
   import { backendClient } from "$lib/utils/query-client.js";
-  import { likedTrackSchema } from "$lib/utils/validation/liked-track";
-  import { trackLengthSchema } from "$lib/utils/validation/track-length";
+  import { likedTracksSchema } from "$lib/utils/validation/liked-track";
+  import { likedTracksLengthSchema } from "$lib/utils/validation/track-length";
 
   import Image from "$lib/components/Image.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
@@ -26,12 +25,12 @@
 
   const likedTracksQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.likes,
-    queryFn: () => backendClient("/music/track/likes", z.array(likedTrackSchema)),
+    queryFn: () => backendClient("/music/track/likes", likedTracksSchema),
   }));
 
   const likesPlaylengthQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.likesLength,
-    queryFn: () => backendClient("/music/track/likes/length", trackLengthSchema),
+    queryFn: () => backendClient("/music/track/likes/length", likedTracksLengthSchema),
   }));
 </script>
 
@@ -76,7 +75,9 @@
               {userStore.user.name}
               {#key likesPlaylengthQuery.dataUpdatedAt}
                 {#if likesPlaylengthQuery.isSuccess}
-                  <PlaylistLength playlistTrackLength={likesPlaylengthQuery.data} />
+                  <PlaylistLength
+                    playlistTrackLength={likesPlaylengthQuery.data.likedTracksLength}
+                  />
                 {/if}
               {/key}
             </p>
@@ -89,7 +90,7 @@
             <LoadingSpinner />
           </div>
         {:else if likedTracksQuery.isSuccess}
-          {@const likedTracks = likedTracksQuery.data}
+          {@const { likedTracks } = likedTracksQuery.data}
           {#if likedTracks.length}
             <div class="flex items-center gap-2">
               <Button

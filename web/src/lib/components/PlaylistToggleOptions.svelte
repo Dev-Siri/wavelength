@@ -9,6 +9,7 @@
 
   import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";
   import { backendClient } from "$lib/utils/query-client.js";
+  import { musicTrackDurationSchema } from "$lib/utils/validation/track-length";
 
   import DropdownMenuItem from "./ui/dropdown-menu/dropdown-menu-item.svelte";
 
@@ -40,9 +41,9 @@
       if (duration === "") {
         const fetchedDuration = await backendClient(
           `/music/track/${music.videoId}/duration`,
-          z.number(),
+          musicTrackDurationSchema,
         );
-        duration = fetchedDuration.toString();
+        duration = fetchedDuration.durationSeconds.toString();
       }
 
       return backendClient(`/playlists/playlist/${playlistId}/tracks`, z.string(), {

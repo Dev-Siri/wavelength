@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { lyricsSchema } from "$lib/utils/validation/lyric";
+  import { createQuery } from "@tanstack/svelte-query";
+  import { get, set } from "idb-keyval";
+  import { z } from "zod";
 
+  import { svelteQueryKeys } from "$lib/constants/keys";
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
   import { backendClient } from "$lib/utils/query-client.js";
+  import { lyricsSchema } from "$lib/utils/validation/lyric";
 
-  import { svelteQueryKeys } from "$lib/constants/keys";
-  import { createQuery } from "@tanstack/svelte-query";
-  import { get, set } from "idb-keyval";
-  import z from "zod";
   import LoadingSpinner from "./LoadingSpinner.svelte";
 
   let lyricsList: HTMLDivElement | null = $state(null);

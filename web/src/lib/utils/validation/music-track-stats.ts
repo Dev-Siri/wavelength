@@ -5,3 +5,7 @@ export const musicTrackStatsSchema = z.object({
   likeCount: z.number(),
   commentCount: z.number(),
 });
+
+export const musicTrackStatsResponseSchema = z.object({
+  musicTrackStats: musicTrackStatsSchema,
+});

@@ -23,7 +23,7 @@
     async queryFn() {
       if (
         musicQueueStore.musicPlayingNow &&
-        musicQueueStore.musicPlayingNow?.videoType !== "uvideo"
+        musicQueueStore.musicPlayingNow?.videoType !== "VIDEO_TYPE_UVIDEO"
       )
         return null;
 
@@ -40,7 +40,7 @@
 <article class="bg-black relative h-[104%] w-full rounded-t-2xl pr-20 overflow-hidden">
   {#key musicVideoPreviewQuery.data}
     <MusicVideoPreview
-      musicVideoId={musicQueueStore.musicPlayingNow?.videoType === "uvideo"
+      musicVideoId={musicQueueStore.musicPlayingNow?.videoType === "VIDEO_TYPE_UVIDEO"
         ? musicQueueStore.musicPlayingNow.videoId
         : (musicVideoPreviewQuery.data?.videoId ?? "")}
     />

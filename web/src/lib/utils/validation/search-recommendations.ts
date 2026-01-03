@@ -12,7 +12,6 @@ export const searchSuggestedLinkSchema = z.object({
   title: z.string(),
   subtitle: z.string(),
   browseId: z.string(),
-  isExplicit: z.boolean(),
   type: z.string(),
 });
 

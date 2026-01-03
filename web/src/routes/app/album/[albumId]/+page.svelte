@@ -81,7 +81,7 @@
             playAlbum(
               album.results.map(track => ({
                 ...track,
-                videoType: "track",
+                videoType: "VIDEO_TYPE_TRACK",
                 thumbnail: album.albumCover,
               })),
             )}

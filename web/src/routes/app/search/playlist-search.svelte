@@ -26,8 +26,8 @@
     <TrackItemSkeleton />
     <TrackItemSkeleton />
   {:else if playlistSearchQuery.isSuccess}
-    {#if playlistSearchQuery.data.length}
-      {#each playlistSearchQuery.data as playlist}
+    {#if playlistSearchQuery.data.playlists.length}
+      {#each playlistSearchQuery.data.playlists as playlist}
         <PlaylistCard {playlist} />
       {/each}
     {:else}

@@ -11,6 +11,7 @@
   import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
   import { backendClient } from "$lib/utils/query-client";
 
+  import { musicTrackDurationSchema } from "$lib/utils/validation/track-length";
   import toast from "svelte-french-toast";
   import z from "zod";
   import ExplicitIndicator from "./ExplicitIndicator.svelte";
@@ -37,7 +38,7 @@
   function playSong() {
     const queueableTrack = {
       ...music,
-      videoType: music.videoType ?? "track",
+      videoType: music.videoType ?? "VIDEO_TYPE_TRACK",
     } satisfies QueueableMusic;
 
     musicQueueStore.addToQueue(queueableTrack);
@@ -47,7 +48,11 @@
 
   const isTrackLikedQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.isTrackLiked(music.videoId),
-    queryFn: () => backendClient(`/music/track/likes/${music.videoId}/is-liked`, z.boolean()),
+    queryFn: () =>
+      backendClient(
+        `/music/track/likes/${music.videoId}/is-liked`,
+        z.object({ isLiked: z.boolean() }),
+      ),
   }));
 
   const likeMutation = createMutation(() => ({
@@ -58,9 +63,9 @@
       if (duration === "") {
         const fetchedDuration = await backendClient(
           `/music/track/${music.videoId}/duration`,
-          z.number(),
+          musicTrackDurationSchema,
         );
-        duration = fetchedDuration.toString();
+        duration = fetchedDuration.durationSeconds.toString();
       }
 
       return backendClient("/music/track/likes", z.string(), {
@@ -129,11 +134,12 @@
     <Button
       variant="ghost"
       class="flex items-center p-0 mx-4 justify-center text-muted-foreground {isTrackLikedQuery.data
+        ?.isLiked
         ? 'text-red-500'
         : ''}"
       onclick={() => likeMutation.mutate()}
     >
-      {#if isTrackLikedQuery.data}
+      {#if isTrackLikedQuery.data?.isLiked}
         <HeartIcon fill="red" />
       {:else}
         <HeartIcon />

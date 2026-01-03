@@ -97,7 +97,7 @@
                 playArtistsSongs(
                   artist.topSongs.map(track => ({
                     ...track,
-                    videoType: "track",
+                    videoType: "VIDEO_TYPE_TRACK",
                   })),
                 )}
             >

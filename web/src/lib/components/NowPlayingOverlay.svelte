@@ -13,7 +13,7 @@
   import { getThumbnailUrl } from "$lib/utils/url";
 
   import { svelteQueryKeys } from "$lib/constants/keys";
-  import { musicTrackStatsSchema } from "$lib/utils/validation/music-track-stats";
+  import { musicTrackStatsResponseSchema } from "$lib/utils/validation/music-track-stats";
   import { themeColorSchema } from "$lib/utils/validation/theme-color";
   import { createQuery } from "@tanstack/svelte-query";
   import Image from "./Image.svelte";
@@ -35,8 +35,7 @@
     queryFn: () =>
       backendClient(
         `/music/track/${musicQueueStore.musicPlayingNow?.videoId}/stats`,
-        musicTrackStatsSchema,
-        { searchParams: { imageUrl: musicThumbnail } },
+        musicTrackStatsResponseSchema,
       ),
   }));
 
@@ -96,7 +95,7 @@
     </div>
   </section>
   {#if musicStatsQuery.isSuccess}
-    {@const musicStats = musicStatsQuery.data}
+    {@const { musicTrackStats } = musicStatsQuery.data}
     <section>
       <Button
         href="https://youtube.com/watch?v={musicQueueStore.musicPlayingNow.videoId}"
@@ -105,18 +104,18 @@
         target="_blank"
         class="flex justify-between items-center min-[800px]:ml-14 w-fit gap-4 py-6 min-[800px]:-mt-32 lg:-mt-10"
       >
-        {#if musicStats.likeCount}
+        {#if musicTrackStats.likeCount}
           <div class="flex items-center justify-center gap-1.5 cursor-default" aria-label="Likes">
             <Tooltip.Root>
               <Tooltip.Trigger>
                 <ThumbsUpIcon />
               </Tooltip.Trigger>
               <Tooltip.Content>
-                <p>{musicStats.likeCount} Likes</p>
+                <p>{musicTrackStats.likeCount} Likes</p>
               </Tooltip.Content>
             </Tooltip.Root>
             <p class="text-md text-primary">
-              {compactify(Number(musicStats.likeCount))}
+              {compactify(Number(musicTrackStats.likeCount))}
             </p>
           </div>
           <div
@@ -128,11 +127,11 @@
                 <MessageSquareIcon />
               </Tooltip.Trigger>
               <Tooltip.Content>
-                <p>{musicStats.commentCount} Comments</p>
+                <p>{musicTrackStats.commentCount} Comments</p>
               </Tooltip.Content>
             </Tooltip.Root>
             <p class="text-md text-primary">
-              {compactify(Number(musicStats.commentCount))}
+              {compactify(Number(musicTrackStats.commentCount))}
             </p>
           </div>
           <div class="flex items-center justify-center gap-1.5 cursor-default" aria-label="Streams">
@@ -141,11 +140,11 @@
                 <CirclePlayIcon />
               </Tooltip.Trigger>
               <Tooltip.Content>
-                <p>{musicStats.viewCount} Streams</p>
+                <p>{musicTrackStats.viewCount} Streams</p>
               </Tooltip.Content>
             </Tooltip.Root>
             <p class="text-md text-primary">
-              {compactify(Number(musicStats.viewCount))}
+              {compactify(Number(musicTrackStats.viewCount))}
             </p>
           </div>
         {/if}

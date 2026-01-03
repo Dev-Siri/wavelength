@@ -14,4 +14,8 @@ export const likedTrackSchema = z.object({
   videoType: videoTypeSchema,
 });
 
+export const likedTracksSchema = z.object({
+  likedTracks: z.array(likedTrackSchema),
+});
+
 export type LikedTrack = z.infer<typeof likedTrackSchema>;

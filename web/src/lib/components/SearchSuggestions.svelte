@@ -2,8 +2,8 @@
   import { goto } from "$app/navigation";
   import { backendClient } from "$lib/utils/query-client";
   import {
-    searchRecommendationsSchema,
-    type SearchRecommendations,
+      searchRecommendationsSchema,
+      type SearchRecommendations,
   } from "$lib/utils/validation/search-recommendations";
 
   let searchSuggestionsList: HTMLDivElement | null = $state(null);

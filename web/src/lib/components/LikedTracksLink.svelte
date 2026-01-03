@@ -10,7 +10,13 @@
 
   const likeTracksCountQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.likeCount,
-    queryFn: () => backendClient("/music/track/likes/count", z.number()),
+    queryFn: () =>
+      backendClient(
+        "/music/track/likes/count",
+        z.object({
+          likeCount: z.number(),
+        }),
+      ),
   }));
 </script>
 
@@ -31,8 +37,8 @@
         <p class="text-xs text-red-500">An error occured.</p>
       {:else if likeTracksCountQuery.isSuccess}
         <p class="text-xs text-muted-foreground">
-          {likeTracksCountQuery.data === 0 ? "No" : likeTracksCountQuery.data}
-          {likeTracksCountQuery.data === 1 ? "song" : "songs"}
+          {likeTracksCountQuery.data.likeCount === 0 ? "No" : likeTracksCountQuery.data.likeCount}
+          {likeTracksCountQuery.data.likeCount === 1 ? "song" : "songs"}
         </p>
       {:else}
         <p class="text-xs text-muted-foreground">Loading...</p>

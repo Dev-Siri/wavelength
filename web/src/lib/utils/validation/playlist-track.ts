@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const videoTypeSchema = z.enum(["track", "uvideo"]);
+export const videoTypeSchema = z.enum(["VIDEO_TYPE_TRACK", "VIDEO_TYPE_UVIDEO"]);
 export const playlistTrackSchema = z.object({
   playlistId: z.string(),
   playlistTrackId: z.string(),
@@ -13,7 +13,9 @@ export const playlistTrackSchema = z.object({
   videoId: z.string(),
   videoType: videoTypeSchema,
 });
-export const playlistTracksSchema = z.array(playlistTrackSchema);
+export const playlistTracksSchema = z.object({
+  playlistTracks: z.array(playlistTrackSchema),
+});
 
 export type PlaylistTrack = z.infer<typeof playlistTrackSchema>;
 export type VideoType = z.infer<typeof videoTypeSchema>;

@@ -36,7 +36,7 @@
     {#if playlistsQuery.data}
       <LikedTracksLink />
       {#key playlistsQuery.data}
-        {#each playlistsQuery.data as playlist}
+        {#each playlistsQuery.data.playlists as playlist}
           <PlaylistCard
             {playlist}
             titleClasses={sidebarWidth < 11 ? "hidden" : "w-10 overflow-hidden"}

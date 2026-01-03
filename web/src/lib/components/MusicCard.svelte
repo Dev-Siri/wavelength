@@ -16,7 +16,7 @@
   let isHoveringCard = $state(false);
 
   function playSong() {
-    const queueableTrack = { ...music, videoType: "track" } satisfies QueueableMusic;
+    const queueableTrack = { ...music, videoType: "VIDEO_TYPE_TRACK" } satisfies QueueableMusic;
 
     musicQueueStore.addToQueue(queueableTrack);
     musicQueueStore.musicPlayingNow = queueableTrack;

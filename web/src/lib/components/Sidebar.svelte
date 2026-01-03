@@ -29,7 +29,7 @@
   }));
 </script>
 
-<aside class="h-full bg-black">
+<aside class="h-full overflow-y-auto bg-black">
   <div class="pl-4 pt-3">
     <a
       href="/app"

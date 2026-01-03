@@ -12,6 +12,7 @@
   import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
   import { backendClient } from "$lib/utils/query-client.js";
   import { getThumbnailUrl } from "$lib/utils/url";
+  import { musicTrackDurationSchema } from "$lib/utils/validation/track-length";
 
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import * as Tooltip from "$lib/components/ui/tooltip";
@@ -28,7 +29,7 @@
     const queueableTrack = {
       ...uvideo,
       author: uvideo.author,
-      videoType: "uvideo",
+      videoType: "VIDEO_TYPE_UVIDEO",
     } satisfies QueueableMusic;
 
     musicQueueStore.addToQueue(queueableTrack);
@@ -44,7 +45,10 @@
       queryClient.invalidateQueries({ queryKey: svelteQueryKeys.playlist(playlistId) });
     },
     async mutationFn(playlistId: string) {
-      const duration = await backendClient(`/music/track/${uvideo.videoId}/duration`, z.number());
+      const duration = await backendClient(
+        `/music/track/${uvideo.videoId}/duration`,
+        musicTrackDurationSchema,
+      );
 
       return backendClient(`/playlists/playlist/${playlistId}/tracks`, z.string(), {
         method: "POST",
@@ -52,7 +56,7 @@
           author: uvideo.author,
           title: uvideo.title,
           videoId: uvideo.videoId,
-          duration: duration,
+          duration: duration.durationSeconds,
           isExplicit: false,
           thumbnail: getThumbnailUrl(uvideo.videoId),
           videoType: "uvideo",

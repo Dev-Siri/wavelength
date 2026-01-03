@@ -3,6 +3,7 @@
   import { ClockIcon, ListMusicIcon, ListPlusIcon, PlayIcon } from "@lucide/svelte";
   import { createQuery } from "@tanstack/svelte-query";
   import { fly } from "svelte/transition";
+  import { z } from "zod";
 
   import { svelteQueryKeys } from "$lib/constants/keys.js";
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
@@ -12,7 +13,7 @@
   import { playlistTracksSchema } from "$lib/utils/validation/playlist-track";
   import { playlistSchema } from "$lib/utils/validation/playlists.js";
   import { themeColorSchema } from "$lib/utils/validation/theme-color";
-  import { trackLengthSchema } from "$lib/utils/validation/track-length";
+  import { playlistTracksLengthSchema } from "$lib/utils/validation/track-length";
 
   import ChangePlaylistVisibilityButton from "$lib/components/ChangePlaylistVisibilityButton.svelte";
   import EditPlaylistDetailsDialog from "$lib/components/EditPlaylistDetailsDialog.svelte";
@@ -35,7 +36,11 @@
 
   const playlistQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.playlist(page.params.playlistId ?? ""),
-    queryFn: () => backendClient(`/playlists/playlist/${page.params.playlistId}`, playlistSchema),
+    queryFn: () =>
+      backendClient(
+        `/playlists/playlist/${page.params.playlistId}`,
+        z.object({ playlist: playlistSchema }),
+      ),
   }));
 
   const playlistTracksQuery = createQuery(() => ({
@@ -47,10 +52,13 @@
   const playlistPlaylengthQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.playlistTrackLength(page.params.playlistId ?? ""),
     queryFn: () =>
-      backendClient(`/playlists/playlist/${page.params.playlistId}/length`, trackLengthSchema),
+      backendClient(
+        `/playlists/playlist/${page.params.playlistId}/length`,
+        playlistTracksLengthSchema,
+      ),
   }));
 
-  let playlistThumbnailUrl = $derived(playlistQuery.data?.coverImage ?? "");
+  let playlistThumbnailUrl = $derived(playlistQuery.data?.playlist.coverImage ?? "");
 
   const playlistThemeColorQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.themeColor(playlistThumbnailUrl),
@@ -64,7 +72,7 @@
   }));
 
   $effect(() => {
-    if (playlistQuery.isSuccess) pageTitle = `${playlistQuery.data.name}`;
+    if (playlistQuery.isSuccess) pageTitle = `${playlistQuery.data.playlist.name}`;
   });
 </script>
 
@@ -83,7 +91,7 @@
         <LoadingSpinner />
       </div>
     {:else if playlistQuery.isSuccess}
-      {@const playlist = playlistQuery.data}
+      {@const { playlist } = playlistQuery.data}
       <Dialog.Content>
         <EditPlaylistDetailsDialog initialPlaylist={playlist} />
       </Dialog.Content>
@@ -136,7 +144,9 @@
                 {playlist.authorName}
                 {#key playlistPlaylengthQuery.dataUpdatedAt}
                   {#if playlistPlaylengthQuery.isSuccess}
-                    <PlaylistLength playlistTrackLength={playlistPlaylengthQuery.data} />
+                    <PlaylistLength
+                      playlistTrackLength={playlistPlaylengthQuery.data.playlistTracksLength}
+                    />
                   {/if}
                 {/key}
               </p>
@@ -150,7 +160,7 @@
               <LoadingSpinner />
             </div>
           {:else if playlistTracksQuery.isSuccess}
-            {@const playlistTracks = playlistTracksQuery.data}
+            {@const { playlistTracks } = playlistTracksQuery.data}
             {#if playlistTracks.length}
               <div class="flex items-center gap-2">
                 <Button
