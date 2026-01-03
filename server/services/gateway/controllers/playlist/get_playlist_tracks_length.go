@@ -25,5 +25,5 @@ func GetPlaylistTracksLength(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Playlists tracks length fetch failed.")
 	}
 
-	return ctx.JSON(models.Success(tracksLengthResponse.PlaylistTracksLength))
+	return models.Success(ctx, tracksLengthResponse)
 }

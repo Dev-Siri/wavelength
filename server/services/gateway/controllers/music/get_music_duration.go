@@ -1,11 +1,13 @@
 package music_controllers
 
 import (
-	"wavelength/services/gateway/api"
+	"wavelength/proto/musicpb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
-	"wavelength/services/gateway/utils"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 func GetMusicDuration(ctx *fiber.Ctx) error {
@@ -15,18 +17,13 @@ func GetMusicDuration(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Video ID is required.")
 	}
 
-	call := api.YouTubeV3Client.Videos.List([]string{"contentDetails"}).Id(videoId)
-	response, err := call.Do()
-
+	durationResponse, err := clients.MusicClient.GetMusicDuration(ctx.Context(), &musicpb.GetMusicDurationRequest{
+		VideoId: videoId,
+	})
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get duration of track from YouTube: "+err.Error())
+		go logging.Logger.Error("MusicService: 'GetMusicDuration' errored", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Duration fetch from YouTube failed.")
 	}
 
-	if len(response.Items) == 0 {
-		return fiber.NewError(fiber.StatusNotFound, "Video not found.")
-	}
-
-	durationSeconds := utils.ParseDuration(response.Items[0].ContentDetails.Duration)
-
-	return ctx.JSON(models.Success(durationSeconds))
+	return models.Success(ctx, durationResponse)
 }

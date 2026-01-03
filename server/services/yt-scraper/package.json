@@ -11,13 +11,14 @@
   "scripts": {
     "start": "bun src/main.ts",
     "dev": "bun --watch src/main.ts",
-    "protoc:generate": "grpc_tools_node_protoc --proto_path=../../proto --js_out=import_style=commonjs,binary:./src/gen --grpc_out=grpc_js:./src/gen --ts_out=grpc_js:./src/gen ../../proto/yt_scraper.proto"
+    "protoc:generate": "grpc_tools_node_protoc --proto_path=../../ --js_out=import_style=commonjs,binary:./src/gen --grpc_out=grpc_js:./src/gen --ts_out=grpc_js:./src/gen ../../proto/yt_scraper.proto ../../proto/common.proto"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.14.3",
+    "google-protobuf": "^4.0.1",
     "youtubei.js": "^16.0.1",
     "zod": "^4.3.4"
   }

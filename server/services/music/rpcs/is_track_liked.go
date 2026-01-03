@@ -29,6 +29,6 @@ func (m *MusicService) IsTrackLiked(
 
 	isLiked := likesCount > 0
 	return &musicpb.IsTrackLikedResponse{
-		IsLiked: isLiked,
+		IsLiked: &isLiked,
 	}, nil
 }

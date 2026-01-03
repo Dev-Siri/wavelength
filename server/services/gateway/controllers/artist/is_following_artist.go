@@ -32,5 +32,5 @@ func IsFollowingArtist(ctx *fiber.Ctx) error {
 	}
 
 	isFollowingArtist := followingCount > 0
-	return ctx.JSON(models.Success(isFollowingArtist))
+	return models.Success(ctx, isFollowingArtist)
 }

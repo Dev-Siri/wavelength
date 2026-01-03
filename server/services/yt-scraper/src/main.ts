@@ -1,7 +1,7 @@
 import * as grpc from "@grpc/grpc-js";
 
 import { ADDR_ALLOW_ALL, DEFAULT_PORT, env } from "./config";
-import { YTScraperService } from "./gen/yt_scraper_grpc_pb";
+import { YTScraperService } from "./gen/proto/yt_scraper_grpc_pb";
 import { ytScraperServer } from "./server";
 
 const port = env.PORT || DEFAULT_PORT;

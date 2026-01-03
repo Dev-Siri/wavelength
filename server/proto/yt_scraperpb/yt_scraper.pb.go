@@ -12,6 +12,7 @@ import (
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
+	commonpb "wavelength/proto/commonpb"
 )
 
 const (
@@ -21,27 +22,27 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type SearchRequest struct {
+type GetSearchSuggestionsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Query         string                 `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *SearchRequest) Reset() {
-	*x = SearchRequest{}
+func (x *GetSearchSuggestionsRequest) Reset() {
+	*x = GetSearchSuggestionsRequest{}
 	mi := &file_proto_yt_scraper_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *SearchRequest) String() string {
+func (x *GetSearchSuggestionsRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*SearchRequest) ProtoMessage() {}
+func (*GetSearchSuggestionsRequest) ProtoMessage() {}
 
-func (x *SearchRequest) ProtoReflect() protoreflect.Message {
+func (x *GetSearchSuggestionsRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_yt_scraper_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -53,40 +54,40 @@ func (x *SearchRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SearchRequest.ProtoReflect.Descriptor instead.
-func (*SearchRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetSearchSuggestionsRequest.ProtoReflect.Descriptor instead.
+func (*GetSearchSuggestionsRequest) Descriptor() ([]byte, []int) {
 	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *SearchRequest) GetQuery() string {
+func (x *GetSearchSuggestionsRequest) GetQuery() string {
 	if x != nil {
 		return x.Query
 	}
 	return ""
 }
 
-type SearchResponse struct {
-	state            protoimpl.MessageState          `protogen:"open.v1"`
-	SuggestedQueries []string                        `protobuf:"bytes,1,rep,name=suggested_queries,json=suggestedQueries,proto3" json:"suggested_queries,omitempty"`
-	SuggestedLinks   []*SearchResponse_SuggestedLink `protobuf:"bytes,2,rep,name=suggested_links,json=suggestedLinks,proto3" json:"suggested_links,omitempty"`
+type GetSearchSuggestionsResponse struct {
+	state            protoimpl.MessageState    `protogen:"open.v1"`
+	SuggestedQueries []string                  `protobuf:"bytes,1,rep,name=suggested_queries,json=suggestedQueries,proto3" json:"suggested_queries,omitempty"`
+	SuggestedLinks   []*commonpb.SuggestedLink `protobuf:"bytes,2,rep,name=suggested_links,json=suggestedLinks,proto3" json:"suggested_links,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *SearchResponse) Reset() {
-	*x = SearchResponse{}
+func (x *GetSearchSuggestionsResponse) Reset() {
+	*x = GetSearchSuggestionsResponse{}
 	mi := &file_proto_yt_scraper_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *SearchResponse) String() string {
+func (x *GetSearchSuggestionsResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*SearchResponse) ProtoMessage() {}
+func (*GetSearchSuggestionsResponse) ProtoMessage() {}
 
-func (x *SearchResponse) ProtoReflect() protoreflect.Message {
+func (x *GetSearchSuggestionsResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_yt_scraper_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -98,50 +99,47 @@ func (x *SearchResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SearchResponse.ProtoReflect.Descriptor instead.
-func (*SearchResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetSearchSuggestionsResponse.ProtoReflect.Descriptor instead.
+func (*GetSearchSuggestionsResponse) Descriptor() ([]byte, []int) {
 	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *SearchResponse) GetSuggestedQueries() []string {
+func (x *GetSearchSuggestionsResponse) GetSuggestedQueries() []string {
 	if x != nil {
 		return x.SuggestedQueries
 	}
 	return nil
 }
 
-func (x *SearchResponse) GetSuggestedLinks() []*SearchResponse_SuggestedLink {
+func (x *GetSearchSuggestionsResponse) GetSuggestedLinks() []*commonpb.SuggestedLink {
 	if x != nil {
 		return x.SuggestedLinks
 	}
 	return nil
 }
 
-type SearchResponse_SuggestedLink struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Thumbnail     string                 `protobuf:"bytes,1,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
-	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
-	Subtitle      string                 `protobuf:"bytes,3,opt,name=subtitle,proto3" json:"subtitle,omitempty"`
-	BrowseId      string                 `protobuf:"bytes,4,opt,name=browse_id,json=browseId,proto3" json:"browse_id,omitempty"`
-	Type          string                 `protobuf:"bytes,6,opt,name=type,proto3" json:"type,omitempty"`
+type GetQuickPicksRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Region/Country code. (Like US, UK, IN)
+	Gl            string `protobuf:"bytes,1,opt,name=gl,proto3" json:"gl,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *SearchResponse_SuggestedLink) Reset() {
-	*x = SearchResponse_SuggestedLink{}
+func (x *GetQuickPicksRequest) Reset() {
+	*x = GetQuickPicksRequest{}
 	mi := &file_proto_yt_scraper_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *SearchResponse_SuggestedLink) String() string {
+func (x *GetQuickPicksRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*SearchResponse_SuggestedLink) ProtoMessage() {}
+func (*GetQuickPicksRequest) ProtoMessage() {}
 
-func (x *SearchResponse_SuggestedLink) ProtoReflect() protoreflect.Message {
+func (x *GetQuickPicksRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_yt_scraper_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -153,44 +151,60 @@ func (x *SearchResponse_SuggestedLink) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SearchResponse_SuggestedLink.ProtoReflect.Descriptor instead.
-func (*SearchResponse_SuggestedLink) Descriptor() ([]byte, []int) {
-	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{1, 0}
+// Deprecated: Use GetQuickPicksRequest.ProtoReflect.Descriptor instead.
+func (*GetQuickPicksRequest) Descriptor() ([]byte, []int) {
+	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *SearchResponse_SuggestedLink) GetThumbnail() string {
+func (x *GetQuickPicksRequest) GetGl() string {
 	if x != nil {
-		return x.Thumbnail
+		return x.Gl
 	}
 	return ""
 }
 
-func (x *SearchResponse_SuggestedLink) GetTitle() string {
-	if x != nil {
-		return x.Title
-	}
-	return ""
+type GetQuickPicksResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	QuickPicks    []*commonpb.QuickPick  `protobuf:"bytes,1,rep,name=quick_picks,json=quickPicks,proto3" json:"quick_picks,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
-func (x *SearchResponse_SuggestedLink) GetSubtitle() string {
-	if x != nil {
-		return x.Subtitle
-	}
-	return ""
+func (x *GetQuickPicksResponse) Reset() {
+	*x = GetQuickPicksResponse{}
+	mi := &file_proto_yt_scraper_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
 }
 
-func (x *SearchResponse_SuggestedLink) GetBrowseId() string {
-	if x != nil {
-		return x.BrowseId
-	}
-	return ""
+func (x *GetQuickPicksResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
 }
 
-func (x *SearchResponse_SuggestedLink) GetType() string {
+func (*GetQuickPicksResponse) ProtoMessage() {}
+
+func (x *GetQuickPicksResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_yt_scraper_proto_msgTypes[3]
 	if x != nil {
-		return x.Type
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
 	}
-	return ""
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetQuickPicksResponse.ProtoReflect.Descriptor instead.
+func (*GetQuickPicksResponse) Descriptor() ([]byte, []int) {
+	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetQuickPicksResponse) GetQuickPicks() []*commonpb.QuickPick {
+	if x != nil {
+		return x.QuickPicks
+	}
+	return nil
 }
 
 var File_proto_yt_scraper_proto protoreflect.FileDescriptor
@@ -198,20 +212,20 @@ var File_proto_yt_scraper_proto protoreflect.FileDescriptor
 const file_proto_yt_scraper_proto_rawDesc = "" +
 	"\n" +
 	"\x16proto/yt_scraper.proto\x12\n" +
-	"yt_scraper\"%\n" +
-	"\rSearchRequest\x12\x14\n" +
-	"\x05query\x18\x01 \x01(\tR\x05query\"\xa3\x02\n" +
-	"\x0eSearchResponse\x12+\n" +
-	"\x11suggested_queries\x18\x01 \x03(\tR\x10suggestedQueries\x12Q\n" +
-	"\x0fsuggested_links\x18\x02 \x03(\v2(.yt_scraper.SearchResponse.SuggestedLinkR\x0esuggestedLinks\x1a\x90\x01\n" +
-	"\rSuggestedLink\x12\x1c\n" +
-	"\tthumbnail\x18\x01 \x01(\tR\tthumbnail\x12\x14\n" +
-	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1a\n" +
-	"\bsubtitle\x18\x03 \x01(\tR\bsubtitle\x12\x1b\n" +
-	"\tbrowse_id\x18\x04 \x01(\tR\bbrowseId\x12\x12\n" +
-	"\x04type\x18\x06 \x01(\tR\x04type2Z\n" +
-	"\tYTScraper\x12M\n" +
-	"\x14GetSearchSuggestions\x12\x19.yt_scraper.SearchRequest\x1a\x1a.yt_scraper.SearchResponseB1Z/wavelength/server/proto/yt_scraper;yt_scraperpbb\x06proto3"
+	"yt_scraper\x1a\x12proto/common.proto\"3\n" +
+	"\x1bGetSearchSuggestionsRequest\x12\x14\n" +
+	"\x05query\x18\x01 \x01(\tR\x05query\"\x8b\x01\n" +
+	"\x1cGetSearchSuggestionsResponse\x12+\n" +
+	"\x11suggested_queries\x18\x01 \x03(\tR\x10suggestedQueries\x12>\n" +
+	"\x0fsuggested_links\x18\x02 \x03(\v2\x15.common.SuggestedLinkR\x0esuggestedLinks\"&\n" +
+	"\x14GetQuickPicksRequest\x12\x0e\n" +
+	"\x02gl\x18\x01 \x01(\tR\x02gl\"K\n" +
+	"\x15GetQuickPicksResponse\x122\n" +
+	"\vquick_picks\x18\x01 \x03(\v2\x11.common.QuickPickR\n" +
+	"quickPicks2\xcc\x01\n" +
+	"\tYTScraper\x12i\n" +
+	"\x14GetSearchSuggestions\x12'.yt_scraper.GetSearchSuggestionsRequest\x1a(.yt_scraper.GetSearchSuggestionsResponse\x12T\n" +
+	"\rGetQuickPicks\x12 .yt_scraper.GetQuickPicksRequest\x1a!.yt_scraper.GetQuickPicksResponseB1Z/wavelength/server/proto/yt_scraper;yt_scraperpbb\x06proto3"
 
 var (
 	file_proto_yt_scraper_proto_rawDescOnce sync.Once
@@ -225,21 +239,27 @@ func file_proto_yt_scraper_proto_rawDescGZIP() []byte {
 	return file_proto_yt_scraper_proto_rawDescData
 }
 
-var file_proto_yt_scraper_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_proto_yt_scraper_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_proto_yt_scraper_proto_goTypes = []any{
-	(*SearchRequest)(nil),                // 0: yt_scraper.SearchRequest
-	(*SearchResponse)(nil),               // 1: yt_scraper.SearchResponse
-	(*SearchResponse_SuggestedLink)(nil), // 2: yt_scraper.SearchResponse.SuggestedLink
+	(*GetSearchSuggestionsRequest)(nil),  // 0: yt_scraper.GetSearchSuggestionsRequest
+	(*GetSearchSuggestionsResponse)(nil), // 1: yt_scraper.GetSearchSuggestionsResponse
+	(*GetQuickPicksRequest)(nil),         // 2: yt_scraper.GetQuickPicksRequest
+	(*GetQuickPicksResponse)(nil),        // 3: yt_scraper.GetQuickPicksResponse
+	(*commonpb.SuggestedLink)(nil),       // 4: common.SuggestedLink
+	(*commonpb.QuickPick)(nil),           // 5: common.QuickPick
 }
 var file_proto_yt_scraper_proto_depIdxs = []int32{
-	2, // 0: yt_scraper.SearchResponse.suggested_links:type_name -> yt_scraper.SearchResponse.SuggestedLink
-	0, // 1: yt_scraper.YTScraper.GetSearchSuggestions:input_type -> yt_scraper.SearchRequest
-	1, // 2: yt_scraper.YTScraper.GetSearchSuggestions:output_type -> yt_scraper.SearchResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	4, // 0: yt_scraper.GetSearchSuggestionsResponse.suggested_links:type_name -> common.SuggestedLink
+	5, // 1: yt_scraper.GetQuickPicksResponse.quick_picks:type_name -> common.QuickPick
+	0, // 2: yt_scraper.YTScraper.GetSearchSuggestions:input_type -> yt_scraper.GetSearchSuggestionsRequest
+	2, // 3: yt_scraper.YTScraper.GetQuickPicks:input_type -> yt_scraper.GetQuickPicksRequest
+	1, // 4: yt_scraper.YTScraper.GetSearchSuggestions:output_type -> yt_scraper.GetSearchSuggestionsResponse
+	3, // 5: yt_scraper.YTScraper.GetQuickPicks:output_type -> yt_scraper.GetQuickPicksResponse
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_proto_yt_scraper_proto_init() }
@@ -253,7 +273,7 @@ func file_proto_yt_scraper_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_yt_scraper_proto_rawDesc), len(file_proto_yt_scraper_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

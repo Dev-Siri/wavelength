@@ -43,5 +43,5 @@ func RearrangePlaylistTracks(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Playlist rearrangement failed.")
 	}
 
-	return ctx.JSON(models.Success("Playlist positions updated successfully."))
+	return models.Success(ctx, "Playlist positions updated successfully.")
 }

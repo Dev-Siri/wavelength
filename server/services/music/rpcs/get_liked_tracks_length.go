@@ -118,7 +118,7 @@ func (m *MusicService) GetLikedTracksLength(
 	return &musicpb.GetLikedTracksLengthResponse{
 		LikedTracksLength: &commonpb.TracksLength{
 			SongCount:          uint32(songCount),
-			SongDurationSecond: uint64(totalDurationSeconds),
+			SongDurationSecond: uint32(totalDurationSeconds),
 		},
 	}, nil
 }

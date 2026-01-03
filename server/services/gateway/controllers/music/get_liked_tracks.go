@@ -25,5 +25,5 @@ func GetLikedTracks(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Liked tracks fetch failed.")
 	}
 
-	return ctx.JSON(models.Success(likedTracksResponse.LikedTracks))
+	return models.Success(ctx, likedTracksResponse)
 }

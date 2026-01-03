@@ -1,10 +1,13 @@
 package music_controllers
 
 import (
-	"wavelength/services/gateway/api"
+	"wavelength/proto/musicpb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 func GetMusicTrackStats(ctx *fiber.Ctx) error {
@@ -14,17 +17,13 @@ func GetMusicTrackStats(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Video ID is required.")
 	}
 
-	response, err := api.YouTubeV3Client.Videos.List([]string{"statistics"}).Id(videoId).Do()
-
+	musicTrackStats, err := clients.MusicClient.GetMusicTrackStats(ctx.Context(), &musicpb.GetMusicTrackStatsRequest{
+		VideoId: videoId,
+	})
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Failed to get music track statistics from YouTube: "+err.Error())
+		go logging.Logger.Error("MusicService: 'GetMusicTrackStats' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Track statistics fetch from YouTube failed.")
 	}
 
-	stats := response.Items[0].Statistics
-
-	return ctx.JSON(models.Success(models.MusicTrackStats{
-		ViewCount:    stats.ViewCount,
-		LikeCount:    stats.LikeCount,
-		CommentCount: stats.CommentCount,
-	}))
+	return models.Success(ctx, musicTrackStats)
 }

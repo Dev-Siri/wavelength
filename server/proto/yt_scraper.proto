@@ -3,23 +3,27 @@ package yt_scraper;
 
 option go_package = "wavelength/server/proto/yt_scraper;yt_scraperpb";
 
+import "proto/common.proto";
+
 service YTScraper {
-  rpc GetSearchSuggestions(SearchRequest) returns (SearchResponse);
+  rpc GetSearchSuggestions(GetSearchSuggestionsRequest) returns (GetSearchSuggestionsResponse);
+  rpc GetQuickPicks(GetQuickPicksRequest) returns (GetQuickPicksResponse);
 }
 
-message SearchRequest {
+message GetSearchSuggestionsRequest {
   string query = 1;
 }
 
-message SearchResponse {
-  message SuggestedLink {
-    string thumbnail = 1;
-    string title = 2;
-    string subtitle = 3;
-    string browse_id = 4;
-    string type = 6;
-  }
-
+message GetSearchSuggestionsResponse {
   repeated string suggested_queries = 1;
-  repeated SuggestedLink suggested_links = 2;
+  repeated common.SuggestedLink suggested_links = 2;
+}
+
+message GetQuickPicksRequest {
+  // Region/Country code. (Like US, UK, IN)
+  string gl = 1;
+}
+
+message GetQuickPicksResponse {
+  repeated common.QuickPick quick_picks = 1;
 }

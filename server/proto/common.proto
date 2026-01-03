@@ -4,8 +4,9 @@ package common;
 option go_package = "wavelength/proto/commonpb";
 
 enum VideoType {
-  TRACK = 0;
-  UVIDEO = 1;
+  VIDEO_TYPE_UNSPECIFIED = 0;
+  VIDEO_TYPE_TRACK = 1;
+  VIDEO_TYPE_UVIDEO = 2;
 }
 
 message Playlist {
@@ -14,8 +15,8 @@ message Playlist {
   string author_google_email = 3;
   string author_name = 4;
   string author_image = 5;
-  string is_public = 6;
   
+  optional bool is_public = 6; 
   optional string cover_image = 7;
 }
 
@@ -24,7 +25,7 @@ message PlaylistTrack {
   string title = 2;
   string thumbnail = 3;
   uint32 position_in_playlist = 4;
-  bool is_explicit = 5;
+  optional bool is_explicit = 5;
   string author = 6;
   string duration = 7;
   string video_id = 8;
@@ -34,7 +35,7 @@ message PlaylistTrack {
 
 message TracksLength {
   uint32 song_count = 1;
-  uint64 song_duration_second = 2;
+  uint32 song_duration_second = 2;
 }
 
 message LikedTrack {
@@ -42,9 +43,39 @@ message LikedTrack {
   string email = 2;
   string title = 3;
   string thumbnail = 4;
-  bool is_explicit = 5;
+  optional bool is_explicit = 5;
   string author = 6;
   string duration = 7;
   string video_id = 8;
   VideoType video_type = 9;
+}
+
+message SuggestedLink {
+  string thumbnail = 1;
+  string title = 2;
+  string subtitle = 3;
+  string browse_id = 4;
+  string type = 6;
+}
+
+message QuickPick {
+  message QuickPickAlbum {
+    string browse_id = 1;
+    string title = 2;
+  }
+  message QuickPickArtist {
+    string browse_id = 1;
+    string title = 2;
+  }
+  string video_id = 1;
+  string title = 2;
+  string thumbnail = 3;
+  repeated QuickPickArtist artists = 4;
+  optional QuickPickAlbum album = 5;
+}
+
+message MusicTrackStats {
+  uint64 view_count = 1;
+  uint64 like_count = 2;
+  uint64 comment_count = 3;
 }

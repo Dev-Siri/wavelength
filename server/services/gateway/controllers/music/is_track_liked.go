@@ -32,5 +32,5 @@ func IsTrackLiked(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Liked status check failed.")
 	}
 
-	return ctx.JSON(models.Success(isTrackLikedResponse.IsLiked))
+	return models.Success(ctx, isTrackLikedResponse)
 }

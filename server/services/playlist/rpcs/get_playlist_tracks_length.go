@@ -117,7 +117,7 @@ func (p *PlaylistService) GetPlaylistTracksLength(
 	return &playlistpb.PlaylistTracksLengthResponse{
 		PlaylistTracksLength: &commonpb.TracksLength{
 			SongCount:          uint32(songCount),
-			SongDurationSecond: uint64(totalDurationSeconds),
+			SongDurationSecond: uint32(totalDurationSeconds),
 		},
 	}, nil
 }

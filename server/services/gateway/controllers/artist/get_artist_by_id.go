@@ -60,12 +60,12 @@ func GetArtistById(ctx *fiber.Ctx) error {
 		restructuredSinglesAndEps = append(restructuredSinglesAndEps, restructuredSinglesAndEp)
 	}
 
-	return ctx.JSON(models.Success(models.Artist{
+	return models.Success(ctx, models.Artist{
 		Title:           response.Title,
 		Description:     response.Description,
 		SubscriberCount: response.SubscriberCount,
 		TopSongs:        response.TopSongs.Contents,
 		Albums:          restructuredAlbums,
 		SinglesAndEps:   restructuredSinglesAndEps,
-	}))
+	})
 }

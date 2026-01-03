@@ -25,7 +25,7 @@ func createDefaultResponse(ctx *fiber.Ctx, err error) error {
 		Expires:  infiniteTime,
 	})
 
-	return ctx.JSON(models.Success(constants.DefaultRegion))
+	return models.Success(ctx, constants.DefaultRegion)
 }
 
 func GetRegion(ctx *fiber.Ctx) error {
@@ -58,5 +58,5 @@ func GetRegion(ctx *fiber.Ctx) error {
 		})
 	}
 
-	return ctx.JSON(models.Success(region))
+	return models.Success(ctx, region)
 }

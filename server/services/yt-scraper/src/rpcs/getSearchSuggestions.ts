@@ -1,16 +1,24 @@
 import * as grpc from "@grpc/grpc-js";
 import { z } from "zod";
 
-import { SearchResponse, type SearchRequest } from "../gen/yt_scraper_pb";
+import { SuggestedLink } from "../gen/proto/common_pb";
+import {
+  GetSearchSuggestionsResponse,
+  type GetSearchSuggestionsRequest,
+} from "../gen/proto/yt_scraper_pb";
 import { music } from "../innertube";
 import {
   searchSuggestionLinkSchema,
   searchSuggestionSchema,
 } from "../schemas/search-suggestion";
+import { getHighestQualityThumbnail } from "../utils/thumbnail";
 
 export default async function getSearchSuggestions(
-  call: grpc.ServerUnaryCall<SearchRequest, SearchResponse>,
-  callback: grpc.sendUnaryData<SearchResponse>
+  call: grpc.ServerUnaryCall<
+    GetSearchSuggestionsRequest,
+    GetSearchSuggestionsResponse
+  >,
+  callback: grpc.sendUnaryData<GetSearchSuggestionsResponse>
 ) {
   const query = call.request.getQuery();
   const [suggestions, links] = await music.getSearchSuggestions(query);
@@ -43,9 +51,9 @@ export default async function getSearchSuggestions(
     return callback(status);
   }
 
-  const response = new SearchResponse();
+  const response = new GetSearchSuggestionsResponse();
   const suggestedQueries: string[] = [];
-  const suggestedLinks: SearchResponse.SuggestedLink[] = [];
+  const suggestedLinks: SuggestedLink[] = [];
 
   for (const query of parsedSuggestions.data) {
     suggestedQueries.push(query.suggestion.text);
@@ -63,7 +71,7 @@ export default async function getSearchSuggestions(
   if (!parsedLinks.success) return callback(null, response);
 
   for (const link of parsedLinks.data) {
-    const suggestedLink = new SearchResponse.SuggestedLink();
+    const suggestedLink = new SuggestedLink();
     const [titleCol, subtitleCol] = link.flex_columns;
 
     if (!titleCol || !subtitleCol) continue;
@@ -72,6 +80,10 @@ export default async function getSearchSuggestions(
     suggestedLink.setTitle(titleCol.title.text);
     suggestedLink.setSubtitle(subtitleCol.title.text);
     suggestedLink.setBrowseId(link.id);
+
+    const thumbnail = getHighestQualityThumbnail(link.thumbnail.contents);
+
+    if (thumbnail) suggestedLink.setThumbnail(thumbnail.url);
     suggestedLinks.push(suggestedLink);
   }
 

@@ -29,5 +29,5 @@ func GenerateJwtToken(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Failed to generate JWT token: "+err.Error())
 	}
 
-	return ctx.JSON(models.Success(authToken))
+	return models.Success(ctx, authToken)
 }

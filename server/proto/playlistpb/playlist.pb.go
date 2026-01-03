@@ -26,19 +26,22 @@ const (
 type AddRemovePlaylistTrackResponse_PlaylistTrackToggleType int32
 
 const (
-	AddRemovePlaylistTrackResponse_ADD    AddRemovePlaylistTrackResponse_PlaylistTrackToggleType = 0
-	AddRemovePlaylistTrackResponse_REMOVE AddRemovePlaylistTrackResponse_PlaylistTrackToggleType = 1
+	AddRemovePlaylistTrackResponse_PLAYLIST_TRACK_TOGGLE_TYPE_UNSPECIFIED AddRemovePlaylistTrackResponse_PlaylistTrackToggleType = 0
+	AddRemovePlaylistTrackResponse_PLAYLIST_TRACK_TOGGLE_TYPE_REMOVE      AddRemovePlaylistTrackResponse_PlaylistTrackToggleType = 1
+	AddRemovePlaylistTrackResponse_PLAYLIST_TRACK_TOGGLE_TYPE_ADD         AddRemovePlaylistTrackResponse_PlaylistTrackToggleType = 2
 )
 
 // Enum value maps for AddRemovePlaylistTrackResponse_PlaylistTrackToggleType.
 var (
 	AddRemovePlaylistTrackResponse_PlaylistTrackToggleType_name = map[int32]string{
-		0: "ADD",
-		1: "REMOVE",
+		0: "PLAYLIST_TRACK_TOGGLE_TYPE_UNSPECIFIED",
+		1: "PLAYLIST_TRACK_TOGGLE_TYPE_REMOVE",
+		2: "PLAYLIST_TRACK_TOGGLE_TYPE_ADD",
 	}
 	AddRemovePlaylistTrackResponse_PlaylistTrackToggleType_value = map[string]int32{
-		"ADD":    0,
-		"REMOVE": 1,
+		"PLAYLIST_TRACK_TOGGLE_TYPE_UNSPECIFIED": 0,
+		"PLAYLIST_TRACK_TOGGLE_TYPE_REMOVE":      1,
+		"PLAYLIST_TRACK_TOGGLE_TYPE_ADD":         2,
 	}
 )
 
@@ -507,7 +510,7 @@ func (x *AddRemovePlaylistTrackResponse) GetToggleType() AddRemovePlaylistTrackR
 	if x != nil {
 		return x.ToggleType
 	}
-	return AddRemovePlaylistTrackResponse_ADD
+	return AddRemovePlaylistTrackResponse_PLAYLIST_TRACK_TOGGLE_TYPE_UNSPECIFIED
 }
 
 type RearrangePlaylistTracksRequest struct {
@@ -607,10 +610,10 @@ func (x *GetPlaylistTracksRequest) GetPlaylistId() string {
 }
 
 type GetPlaylistTracksResponse struct {
-	state           protoimpl.MessageState    `protogen:"open.v1"`
-	PlaylistsTracks []*commonpb.PlaylistTrack `protobuf:"bytes,1,rep,name=playlists_tracks,json=playlistsTracks,proto3" json:"playlists_tracks,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	state          protoimpl.MessageState    `protogen:"open.v1"`
+	PlaylistTracks []*commonpb.PlaylistTrack `protobuf:"bytes,1,rep,name=playlist_tracks,json=playlistTracks,proto3" json:"playlist_tracks,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *GetPlaylistTracksResponse) Reset() {
@@ -643,9 +646,9 @@ func (*GetPlaylistTracksResponse) Descriptor() ([]byte, []int) {
 	return file_proto_playlist_proto_rawDescGZIP(), []int{10}
 }
 
-func (x *GetPlaylistTracksResponse) GetPlaylistsTracks() []*commonpb.PlaylistTrack {
+func (x *GetPlaylistTracksResponse) GetPlaylistTracks() []*commonpb.PlaylistTrack {
 	if x != nil {
-		return x.PlaylistsTracks
+		return x.PlaylistTracks
 	}
 	return nil
 }
@@ -1018,14 +1021,14 @@ const file_proto_playlist_proto_rawDesc = "" +
 	"\n" +
 	"video_type\x18\a \x01(\x0e2\x11.common.VideoTypeR\tvideoType\x12\x1f\n" +
 	"\vplaylist_id\x18\b \x01(\tR\n" +
-	"playlistId\"\xb3\x01\n" +
+	"playlistId\"\x96\x02\n" +
 	"\x1eAddRemovePlaylistTrackResponse\x12a\n" +
 	"\vtoggle_type\x18\x01 \x01(\x0e2@.playlist.AddRemovePlaylistTrackResponse.PlaylistTrackToggleTypeR\n" +
-	"toggleType\".\n" +
-	"\x17PlaylistTrackToggleType\x12\a\n" +
-	"\x03ADD\x10\x00\x12\n" +
-	"\n" +
-	"\x06REMOVE\x10\x01\"\xfb\x01\n" +
+	"toggleType\"\x90\x01\n" +
+	"\x17PlaylistTrackToggleType\x12*\n" +
+	"&PLAYLIST_TRACK_TOGGLE_TYPE_UNSPECIFIED\x10\x00\x12%\n" +
+	"!PLAYLIST_TRACK_TOGGLE_TYPE_REMOVE\x10\x01\x12\"\n" +
+	"\x1ePLAYLIST_TRACK_TOGGLE_TYPE_ADD\x10\x02\"\xfb\x01\n" +
 	"\x1eRearrangePlaylistTracksRequest\x12\x1f\n" +
 	"\vplaylist_id\x18\x01 \x01(\tR\n" +
 	"playlistId\x12Y\n" +
@@ -1035,9 +1038,9 @@ const file_proto_playlist_proto_rawDesc = "" +
 	"\anew_pos\x18\x02 \x01(\rR\x06newPos\";\n" +
 	"\x18GetPlaylistTracksRequest\x12\x1f\n" +
 	"\vplaylist_id\x18\x01 \x01(\tR\n" +
-	"playlistId\"]\n" +
-	"\x19GetPlaylistTracksResponse\x12@\n" +
-	"\x10playlists_tracks\x18\x01 \x03(\v2\x15.common.PlaylistTrackR\x0fplaylistsTracks\"`\n" +
+	"playlistId\"[\n" +
+	"\x19GetPlaylistTracksResponse\x12>\n" +
+	"\x0fplaylist_tracks\x18\x01 \x03(\v2\x15.common.PlaylistTrackR\x0eplaylistTracks\"`\n" +
 	"\x15DeletePlaylistRequest\x12\x1f\n" +
 	"\vplaylist_id\x18\x01 \x01(\tR\n" +
 	"playlistId\x12&\n" +
@@ -1114,7 +1117,7 @@ var file_proto_playlist_proto_depIdxs = []int32{
 	20, // 2: playlist.AddRemovePlaylistTrackRequest.video_type:type_name -> common.VideoType
 	0,  // 3: playlist.AddRemovePlaylistTrackResponse.toggle_type:type_name -> playlist.AddRemovePlaylistTrackResponse.PlaylistTrackToggleType
 	18, // 4: playlist.RearrangePlaylistTracksRequest.updates:type_name -> playlist.RearrangePlaylistTracksRequest.PlaylistTrackPosUpdate
-	21, // 5: playlist.GetPlaylistTracksResponse.playlists_tracks:type_name -> common.PlaylistTrack
+	21, // 5: playlist.GetPlaylistTracksResponse.playlist_tracks:type_name -> common.PlaylistTrack
 	22, // 6: playlist.PlaylistTracksLengthResponse.playlist_tracks_length:type_name -> common.TracksLength
 	19, // 7: playlist.GetPublicPlaylistsResponse.playlists:type_name -> common.Playlist
 	16, // 8: playlist.PlaylistService.GetPublicPlaylists:input_type -> playlist.GetPublicPlaylistsRequest

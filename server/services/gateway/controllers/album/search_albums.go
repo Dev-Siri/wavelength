@@ -37,5 +37,5 @@ func SearchAlbums(ctx *fiber.Ctx) error {
 		albums = append(albums, album)
 	}
 
-	return ctx.JSON(models.Success(albums))
+	return models.Success(ctx, albums)
 }

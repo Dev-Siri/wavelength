@@ -20,5 +20,5 @@ func GetAlbumDetails(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while getting album details: "+err.Error())
 	}
 
-	return ctx.JSON(models.Success(searchResults))
+	return models.Success(ctx, searchResults)
 }

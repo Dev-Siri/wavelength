@@ -42,6 +42,7 @@ func (p *PlaylistService) GetPlaylistTracks(
 
 	for rows.Next() {
 		var playlistTrack commonpb.PlaylistTrack
+		var videoType string
 
 		if err := rows.Scan(
 			&playlistTrack.PlaylistTrackId,
@@ -52,11 +53,17 @@ func (p *PlaylistService) GetPlaylistTracks(
 			&playlistTrack.Author,
 			&playlistTrack.Duration,
 			&playlistTrack.VideoId,
-			&playlistTrack.VideoType,
+			&videoType,
 			&playlistTrack.PlaylistId,
 		); err != nil {
 			go logging.Logger.Error("Parsing of one playlist track failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Parsing of one playlist track failed.")
+		}
+
+		if videoType == "uvideo" {
+			playlistTrack.VideoType = commonpb.VideoType_VIDEO_TYPE_UVIDEO
+		} else {
+			playlistTrack.VideoType = commonpb.VideoType_VIDEO_TYPE_TRACK
 		}
 
 		playlistTrack.Title = html.UnescapeString(playlistTrack.Title)
@@ -65,6 +72,6 @@ func (p *PlaylistService) GetPlaylistTracks(
 	}
 
 	return &playlistpb.GetPlaylistTracksResponse{
-		PlaylistsTracks: playlistTracks,
+		PlaylistTracks: playlistTracks,
 	}, nil
 }

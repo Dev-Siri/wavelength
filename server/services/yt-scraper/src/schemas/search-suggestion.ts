@@ -37,4 +37,14 @@ export const searchSuggestionLinkSchema = z.object({
   flex_columns: z.array(searchSuggestionColumnSchema),
   item_type: z.string(),
   id: z.string(),
+  thumbnail: z.object({
+    type: z.literal("MusicThumbnail"),
+    contents: z.array(
+      z.object({
+        url: z.string(),
+        height: z.number(),
+        width: z.number(),
+      })
+    ),
+  }),
 });

@@ -28,7 +28,7 @@ func GetVersionStatus(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get version status from GitHub.")
 	}
 
-	return ctx.JSON(models.Success(models.VersionStatus{
+	return models.Success(ctx, models.VersionStatus{
 		LatestVersion: requiredResponse.TagName[1:],
-	}))
+	})
 }

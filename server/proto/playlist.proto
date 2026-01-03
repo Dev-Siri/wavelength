@@ -62,8 +62,9 @@ message AddRemovePlaylistTrackRequest {
 
 message AddRemovePlaylistTrackResponse {
   enum PlaylistTrackToggleType {
-    ADD = 0;
-    REMOVE = 1;
+    PLAYLIST_TRACK_TOGGLE_TYPE_UNSPECIFIED = 0;
+    PLAYLIST_TRACK_TOGGLE_TYPE_REMOVE = 1;
+    PLAYLIST_TRACK_TOGGLE_TYPE_ADD = 2;
   }
   PlaylistTrackToggleType toggle_type = 1;
 }
@@ -82,7 +83,7 @@ message GetPlaylistTracksRequest {
 }
 
 message GetPlaylistTracksResponse {
-  repeated common.PlaylistTrack playlists_tracks = 1;
+  repeated common.PlaylistTrack playlist_tracks = 1;
 }
 
 message DeletePlaylistRequest {

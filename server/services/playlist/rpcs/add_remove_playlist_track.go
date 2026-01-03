@@ -42,7 +42,7 @@ func (p *PlaylistService) AddRemovePlaylistTrack(
 		}
 
 		return &playlistpb.AddRemovePlaylistTrackResponse{
-			ToggleType: playlistpb.AddRemovePlaylistTrackResponse_REMOVE,
+			ToggleType: playlistpb.AddRemovePlaylistTrackResponse_PLAYLIST_TRACK_TOGGLE_TYPE_REMOVE,
 		}, nil
 	}
 
@@ -89,6 +89,6 @@ func (p *PlaylistService) AddRemovePlaylistTrack(
 	}
 
 	return &playlistpb.AddRemovePlaylistTrackResponse{
-		ToggleType: playlistpb.AddRemovePlaylistTrackResponse_ADD,
+		ToggleType: playlistpb.AddRemovePlaylistTrackResponse_PLAYLIST_TRACK_TOGGLE_TYPE_ADD,
 	}, nil
 }

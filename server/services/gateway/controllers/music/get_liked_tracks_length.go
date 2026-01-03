@@ -25,5 +25,5 @@ func GetLikedTracksLength(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Liked tracks length fetch failed.")
 	}
 
-	return ctx.JSON(models.Success(likedTracksLengthResponse.LikedTracksLength))
+	return models.Success(ctx, likedTracksLengthResponse)
 }

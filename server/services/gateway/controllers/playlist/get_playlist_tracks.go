@@ -25,5 +25,5 @@ func GetPlaylistTracks(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Playlist tracks fetched failed.")
 	}
 
-	return ctx.JSON(models.Success(playlistTracksResponse.PlaylistsTracks))
+	return models.Success(ctx, playlistTracksResponse)
 }

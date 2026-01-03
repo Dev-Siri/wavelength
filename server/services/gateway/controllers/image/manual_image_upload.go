@@ -117,10 +117,10 @@ func ManualImageUpload(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while uploading the image.")
 	}
 
-	return ctx.Status(fiber.StatusCreated).JSON(models.Success(
-		models.UploadThingManualFileUploadResponse{
-			Url:  data.Url,
-			Key:  data.Key,
-			Name: data.FileName,
-		}))
+	ctx.Status(fiber.StatusCreated)
+	return models.Success(ctx, models.UploadThingManualFileUploadResponse{
+		Url:  data.Url,
+		Key:  data.Key,
+		Name: data.FileName,
+	})
 }

@@ -25,5 +25,5 @@ func GetUserPlaylists(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Playlists fetch failed.")
 	}
 
-	return ctx.JSON(models.Success(playlistsResponse.Playlists))
+	return models.Success(ctx, playlistsResponse)
 }

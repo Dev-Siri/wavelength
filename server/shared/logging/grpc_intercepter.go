@@ -26,7 +26,6 @@ func GrpcLoggingInterceptor(
 	Logger.Info("gRPC (Response)",
 		zap.String("method", info.FullMethod),
 		zap.Duration("duration", time.Since(start)),
-		zap.Any("response", response),
 		zap.Error(err),
 	)
 

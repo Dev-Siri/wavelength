@@ -25,5 +25,5 @@ func GetLikedTrackCount(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Like count read failed.")
 	}
 
-	return ctx.JSON(models.Success(likedTrackCountResponse.LikeCount))
+	return models.Success(ctx, likedTrackCountResponse)
 }

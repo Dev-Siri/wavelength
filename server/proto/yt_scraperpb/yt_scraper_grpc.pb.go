@@ -20,13 +20,15 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	YTScraper_GetSearchSuggestions_FullMethodName = "/yt_scraper.YTScraper/GetSearchSuggestions"
+	YTScraper_GetQuickPicks_FullMethodName        = "/yt_scraper.YTScraper/GetQuickPicks"
 )
 
 // YTScraperClient is the client API for YTScraper service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type YTScraperClient interface {
-	GetSearchSuggestions(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
+	GetSearchSuggestions(ctx context.Context, in *GetSearchSuggestionsRequest, opts ...grpc.CallOption) (*GetSearchSuggestionsResponse, error)
+	GetQuickPicks(ctx context.Context, in *GetQuickPicksRequest, opts ...grpc.CallOption) (*GetQuickPicksResponse, error)
 }
 
 type yTScraperClient struct {
@@ -37,10 +39,20 @@ func NewYTScraperClient(cc grpc.ClientConnInterface) YTScraperClient {
 	return &yTScraperClient{cc}
 }
 
-func (c *yTScraperClient) GetSearchSuggestions(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error) {
+func (c *yTScraperClient) GetSearchSuggestions(ctx context.Context, in *GetSearchSuggestionsRequest, opts ...grpc.CallOption) (*GetSearchSuggestionsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SearchResponse)
+	out := new(GetSearchSuggestionsResponse)
 	err := c.cc.Invoke(ctx, YTScraper_GetSearchSuggestions_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *yTScraperClient) GetQuickPicks(ctx context.Context, in *GetQuickPicksRequest, opts ...grpc.CallOption) (*GetQuickPicksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetQuickPicksResponse)
+	err := c.cc.Invoke(ctx, YTScraper_GetQuickPicks_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +63,8 @@ func (c *yTScraperClient) GetSearchSuggestions(ctx context.Context, in *SearchRe
 // All implementations must embed UnimplementedYTScraperServer
 // for forward compatibility.
 type YTScraperServer interface {
-	GetSearchSuggestions(context.Context, *SearchRequest) (*SearchResponse, error)
+	GetSearchSuggestions(context.Context, *GetSearchSuggestionsRequest) (*GetSearchSuggestionsResponse, error)
+	GetQuickPicks(context.Context, *GetQuickPicksRequest) (*GetQuickPicksResponse, error)
 	mustEmbedUnimplementedYTScraperServer()
 }
 
@@ -62,8 +75,11 @@ type YTScraperServer interface {
 // pointer dereference when methods are called.
 type UnimplementedYTScraperServer struct{}
 
-func (UnimplementedYTScraperServer) GetSearchSuggestions(context.Context, *SearchRequest) (*SearchResponse, error) {
+func (UnimplementedYTScraperServer) GetSearchSuggestions(context.Context, *GetSearchSuggestionsRequest) (*GetSearchSuggestionsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetSearchSuggestions not implemented")
+}
+func (UnimplementedYTScraperServer) GetQuickPicks(context.Context, *GetQuickPicksRequest) (*GetQuickPicksResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetQuickPicks not implemented")
 }
 func (UnimplementedYTScraperServer) mustEmbedUnimplementedYTScraperServer() {}
 func (UnimplementedYTScraperServer) testEmbeddedByValue()                   {}
@@ -87,7 +103,7 @@ func RegisterYTScraperServer(s grpc.ServiceRegistrar, srv YTScraperServer) {
 }
 
 func _YTScraper_GetSearchSuggestions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SearchRequest)
+	in := new(GetSearchSuggestionsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -99,7 +115,25 @@ func _YTScraper_GetSearchSuggestions_Handler(srv interface{}, ctx context.Contex
 		FullMethod: YTScraper_GetSearchSuggestions_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(YTScraperServer).GetSearchSuggestions(ctx, req.(*SearchRequest))
+		return srv.(YTScraperServer).GetSearchSuggestions(ctx, req.(*GetSearchSuggestionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _YTScraper_GetQuickPicks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetQuickPicksRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(YTScraperServer).GetQuickPicks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: YTScraper_GetQuickPicks_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(YTScraperServer).GetQuickPicks(ctx, req.(*GetQuickPicksRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -114,6 +148,10 @@ var YTScraper_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetSearchSuggestions",
 			Handler:    _YTScraper_GetSearchSuggestions_Handler,
+		},
+		{
+			MethodName: "GetQuickPicks",
+			Handler:    _YTScraper_GetQuickPicks_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

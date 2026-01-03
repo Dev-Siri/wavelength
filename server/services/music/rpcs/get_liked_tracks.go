@@ -42,6 +42,7 @@ func (m *MusicService) GetLikedTracks(
 
 	for rows.Next() {
 		var likedTrack commonpb.LikedTrack
+		var videoType string
 
 		if err := rows.Scan(
 			&likedTrack.LikeId,
@@ -52,10 +53,16 @@ func (m *MusicService) GetLikedTracks(
 			&likedTrack.Author,
 			&likedTrack.Duration,
 			&likedTrack.VideoId,
-			&likedTrack.VideoType,
+			&videoType,
 		); err != nil {
 			go logging.Logger.Error("Parsing of one liked track failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Parsing of one liked track failed.")
+		}
+
+		if videoType == "uvideo" {
+			likedTrack.VideoType = commonpb.VideoType_VIDEO_TYPE_UVIDEO
+		} else {
+			likedTrack.VideoType = commonpb.VideoType_VIDEO_TYPE_TRACK
 		}
 
 		likedTracks = append(likedTracks, &likedTrack)

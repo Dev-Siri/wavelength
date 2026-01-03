@@ -1,24 +1,25 @@
 package music_controllers
 
 import (
-	"wavelength/services/gateway/api"
+	"wavelength/proto/musicpb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 func GetQuickPicks(ctx *fiber.Ctx) error {
 	regionCode := ctx.Query("regionCode")
 
-	quickPicks, err := api.YouTubeClient.GetQuickPicks(regionCode)
-
+	quickPicksResponse, err := clients.MusicClient.GetQuickPicks(ctx.Context(), &musicpb.GetQuickPicksRequest{
+		Gl: regionCode,
+	})
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while retrieving for your feed: "+err.Error())
+		go logging.Logger.Error("MusicServce: 'GetQuickPicks' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Quick picks fetch failed.")
 	}
 
-	if quickPicks.Error {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get your recommended feed.")
-	}
-
-	return ctx.JSON(models.Success(quickPicks.Results))
+	return models.Success(ctx, quickPicksResponse)
 }

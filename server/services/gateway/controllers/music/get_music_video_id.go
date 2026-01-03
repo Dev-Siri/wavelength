@@ -77,7 +77,7 @@ func GetMusicVideoPreviewId(ctx *fiber.Ctx) error {
 		selectedVideo = videos[0]
 	}
 
-	return ctx.JSON(models.Success(models.MusicVideoPreviewId{
+	return models.Success(ctx, models.MusicVideoPreviewId{
 		VideoId: selectedVideo.VideoID,
-	}))
+	})
 }

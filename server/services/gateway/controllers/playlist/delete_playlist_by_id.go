@@ -28,5 +28,5 @@ func DeletePlaylistById(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Playlist deletion failed.")
 	}
 
-	return ctx.JSON(models.Success("Deleted playlist with ID " + playlistId))
+	return models.Success(ctx, "Deleted playlist with ID "+playlistId)
 }

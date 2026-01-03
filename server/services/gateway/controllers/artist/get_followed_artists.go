@@ -47,5 +47,5 @@ func GetFollowedArtists(ctx *fiber.Ctx) error {
 		followedArtists = append(followedArtists, followedArtist)
 	}
 
-	return ctx.JSON(models.Success(followedArtists))
+	return models.Success(ctx, followedArtists)
 }

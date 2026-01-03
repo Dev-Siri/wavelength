@@ -32,5 +32,5 @@ func EditPlaylist(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to edit playlist.")
 	}
 
-	return ctx.JSON(models.Success("Edited playlist with ID " + playlistId + " successfully."))
+	return models.Success(ctx, "Edited playlist with ID "+playlistId+" successfully.")
 }

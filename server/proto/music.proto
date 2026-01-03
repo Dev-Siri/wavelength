@@ -12,6 +12,9 @@ service MusicService {
   rpc GetLikedTracksLength(GetLikedTracksLengthRequest) returns (GetLikedTracksLengthResponse);
   rpc GetLikedTracks(GetLikedTracksRequest) returns (GetLikedTracksResponse);
   rpc GetMusicSearchSuggestions(GetMusicSearchSuggestionsRequest) returns (GetMusicSearchSuggestionsResponse);
+  rpc GetQuickPicks(GetQuickPicksRequest) returns (GetQuickPicksResponse);
+  rpc GetMusicDuration(GetMusicDurationRequest) returns (GetMusicDurationResponse);
+  rpc GetMusicTrackStats(GetMusicTrackStatsRequest) returns (GetMusicTrackStatsResponse);
 }
 
 message LikeTrackRequest {
@@ -27,8 +30,9 @@ message LikeTrackRequest {
 
 message LikeTrackResponse {
   enum LikeType {
-    UNLIKE = 0;
-    LIKE = 1;
+    LIKE_TYPE_UNSPECIFIED = 0;
+    LIKE_TYPE_UNLIKE = 1;
+    LIKE_TYPE_LIKE = 2;
   }
   LikeType like_type = 1;
 }
@@ -38,7 +42,23 @@ message GetMusicSearchSuggestionsRequest {
 }
 
 message GetMusicSearchSuggestionsResponse {
+  message SearchSuggestedLink {
+    message SearchSuggestedLinkMeta {
+      string type = 1;
+      string author_or_album = 2;
+      string plays_or_album_release = 3;
+    }
 
+    SearchSuggestedLinkMeta meta = 1;
+    string thumbnail = 2;
+    string title = 3;
+    string subtitle = 4;
+    string browse_id = 5;
+    string type = 7;
+  }
+
+  repeated string matching_queries = 1;
+  repeated SearchSuggestedLink matching_links = 2;
 }
 
 message IsTrackLikedRequest {
@@ -47,7 +67,7 @@ message IsTrackLikedRequest {
 }
 
 message IsTrackLikedResponse {
-  bool is_liked = 1;
+  optional bool is_liked = 1;
 }
 
 message GetLikedTrackCountRequest {
@@ -72,4 +92,28 @@ message GetLikedTracksRequest {
 
 message GetLikedTracksResponse {
   repeated common.LikedTrack liked_tracks = 1;
+}
+
+message GetQuickPicksRequest {
+  string gl = 1;
+}
+
+message GetQuickPicksResponse {
+  repeated common.QuickPick quick_picks = 1;
+}
+
+message GetMusicDurationRequest {
+  string video_id = 1;
+}
+
+message GetMusicDurationResponse {
+  uint32 duration_seconds = 1;
+}
+
+message GetMusicTrackStatsRequest {
+  string video_id = 1;
+}
+
+message GetMusicTrackStatsResponse {
+  common.MusicTrackStats music_track_stats = 1;
 }

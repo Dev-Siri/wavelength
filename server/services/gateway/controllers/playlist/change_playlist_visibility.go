@@ -32,5 +32,5 @@ func ChangePlaylistVisibility(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Playlist visibility change failed.")
 	}
 
-	return ctx.JSON(models.Success("Visibility toggled of playlist with ID: " + playlistId))
+	return models.Success(ctx, "Visibility toggled of playlist with ID: "+playlistId)
 }

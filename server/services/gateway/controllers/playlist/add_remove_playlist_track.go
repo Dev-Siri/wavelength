@@ -38,9 +38,9 @@ func AddRemovePlaylistTrack(ctx *fiber.Ctx) error {
 	var enumVideoType commonpb.VideoType
 
 	if parsedBody.VideoType == "uvideo" {
-		enumVideoType = commonpb.VideoType_UVIDEO
+		enumVideoType = commonpb.VideoType_VIDEO_TYPE_UVIDEO
 	} else {
-		enumVideoType = commonpb.VideoType_TRACK
+		enumVideoType = commonpb.VideoType_VIDEO_TYPE_TRACK
 	}
 
 	toggleResponse, err := clients.PlaylistClient.AddRemovePlaylistTrack(ctx.Context(), &playlistpb.AddRemovePlaylistTrackRequest{
@@ -58,9 +58,9 @@ func AddRemovePlaylistTrack(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Playlist track addition/removal failed.")
 	}
 
-	if toggleResponse.ToggleType == playlistpb.AddRemovePlaylistTrackResponse_REMOVE {
-		return ctx.JSON(models.Success("Removed song from playlist successfully."))
+	if toggleResponse.ToggleType == playlistpb.AddRemovePlaylistTrackResponse_PLAYLIST_TRACK_TOGGLE_TYPE_REMOVE {
+		return models.Success(ctx, "Removed song from playlist successfully.")
 	}
 
-	return ctx.JSON(models.Success("Added song to playlist successfully."))
+	return models.Success(ctx, "Added song to playlist successfully.")
 }

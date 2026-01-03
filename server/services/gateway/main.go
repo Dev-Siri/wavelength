@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"wavelength/services/gateway/api"
 	"wavelength/services/gateway/clients"
 	error_controllers "wavelength/services/gateway/controllers/errors"
 	"wavelength/services/gateway/db"
@@ -46,10 +45,6 @@ func main() {
 				logging.Logger.Fatal("Failed to close database connection.", zap.Error(err))
 			}
 		}()
-	}
-
-	if err := api.InitializeYouTubeClients(env.GetGoogleApiKey()); err != nil {
-		logging.Logger.Fatal("Failed to initialize YouTube clients.", zap.Error(err))
 	}
 
 	if err := db.InitGeoIP(); err != nil {

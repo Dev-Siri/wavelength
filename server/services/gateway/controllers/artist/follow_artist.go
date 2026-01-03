@@ -50,7 +50,7 @@ func FollowArtist(ctx *fiber.Ctx) error {
 			return fiber.NewError(fiber.StatusInternalServerError, "Failed to unfollow artist: "+err.Error())
 		}
 
-		return ctx.JSON(models.Success("Successfully unfollowed artist."))
+		return models.Success(ctx, "Successfully unfollowed artist.")
 	}
 
 	_, err := shared_db.Database.Exec(`
@@ -67,5 +67,5 @@ func FollowArtist(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to follow artist: "+err.Error())
 	}
 
-	return ctx.JSON(models.Success("Successfully followed artist."))
+	return models.Success(ctx, "Successfully followed artist.")
 }

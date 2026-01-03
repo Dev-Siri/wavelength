@@ -43,7 +43,7 @@ func (m *MusicService) LikeTrack(
 		}
 
 		return &musicpb.LikeTrackResponse{
-			LikeType: musicpb.LikeTrackResponse_UNLIKE,
+			LikeType: musicpb.LikeTrackResponse_LIKE_TYPE_UNLIKE,
 		}, nil
 	}
 
@@ -72,6 +72,6 @@ func (m *MusicService) LikeTrack(
 	}
 
 	return &musicpb.LikeTrackResponse{
-		LikeType: musicpb.LikeTrackResponse_LIKE,
+		LikeType: musicpb.LikeTrackResponse_LIKE_TYPE_LIKE,
 	}, nil
 }

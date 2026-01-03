@@ -16,11 +16,12 @@ func ErrorHandler(ctx *fiber.Ctx, err error) error {
 
 		switch code {
 		case fiber.StatusMethodNotAllowed:
-			return ctx.JSON(models.Error("Method not allowed."))
+			return models.Error(ctx, "Method not allowed.")
 		case fiber.StatusNotFound:
-			return ctx.JSON(models.Error(message))
+			return models.Error(ctx, message)
 		}
 	}
 
-	return ctx.Status(code).JSON(models.Error(message))
+	ctx.Status(code)
+	return models.Error(ctx, message)
 }

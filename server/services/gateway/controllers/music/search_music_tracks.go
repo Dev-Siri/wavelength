@@ -21,5 +21,5 @@ func SearchMusicTracks(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while searching for tracks: "+err.Error())
 	}
 
-	return ctx.JSON(models.Success(searchResults))
+	return models.Success(ctx, searchResults)
 }

@@ -36,9 +36,9 @@ func LikeTrack(ctx *fiber.Ctx) error {
 	var grpcVideoType commonpb.VideoType
 
 	if parsedBody.VideoType == type_constants.PlaylistTrackTypeUVideo {
-		grpcVideoType = commonpb.VideoType_UVIDEO
+		grpcVideoType = commonpb.VideoType_VIDEO_TYPE_UVIDEO
 	} else {
-		grpcVideoType = commonpb.VideoType_TRACK
+		grpcVideoType = commonpb.VideoType_VIDEO_TYPE_TRACK
 	}
 
 	likedTracksResponse, err := clients.MusicClient.LikeTrack(ctx.Context(), &musicpb.LikeTrackRequest{
@@ -56,9 +56,9 @@ func LikeTrack(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Like track failed.")
 	}
 
-	if likedTracksResponse.LikeType == musicpb.LikeTrackResponse_UNLIKE {
-		return ctx.JSON(models.Success("Track removed from likes."))
+	if likedTracksResponse.LikeType == musicpb.LikeTrackResponse_LIKE_TYPE_UNLIKE {
+		return models.Success(ctx, "Track removed from likes.")
 	}
 
-	return ctx.JSON(models.Success("Track saved to likes."))
+	return models.Success(ctx, "Track saved to likes.")
 }

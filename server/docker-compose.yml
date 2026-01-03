@@ -7,24 +7,60 @@ services:
     container_name: gateway
     ports:
       - "8080:8000"
+    env_file: services/gateway/.env
     environment:
       - PORT=8000
       - PLAYLIST_CLIENT_URL=playlist:8081
+      - MUSIC_CLIENT_URL=music:8082
     depends_on:
       - playlist
+      - music
+    develop:
+      watch:
+        - action: rebuild
+          path: services/gateway
   playlist:
     build:
       context: .
       dockerfile: services/playlist/Dockerfile
     image: wavelength/services/playlist
     container_name: playlist
+    env_file: services/playlist/.env
     environment:
       - PORT=8081
+    develop:
+      watch:
+        - action: rebuild
+          path: services
   music:
     build:
       context: .
       dockerfile: services/music/Dockerfile
     image: wavelength/services/music
     container_name: music
+    env_file: services/music/.env
     environment:
-      - PORT=8081
+      - PORT=8082
+      - YT_SCRAPER_URL=yt-scraper:8083
+    depends_on:
+      - yt-scraper
+    develop:
+      watch:
+        - action: rebuild
+          path: services
+  yt-scraper:
+    build:
+      context: .
+      dockerfile: services/yt-scraper/Dockerfile
+    image: wavelength/services/yt-scraper
+    container_name: yt-scraper
+    env_file: services/yt-scraper/.env
+    environment:
+      - PORT=8083
+    develop:
+      watch:
+        - action: sync
+          path: services/yt-scraper
+          target: /app
+        - action: rebuild
+          path: services/yt-scraper/package.json

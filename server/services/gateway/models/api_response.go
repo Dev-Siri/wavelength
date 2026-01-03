@@ -1,17 +1,39 @@
 package models
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"encoding/json"
 
-func Success[T any](data T) *fiber.Map {
-	return &fiber.Map{
+	"github.com/gofiber/fiber/v2"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
+)
+
+func Success[T any](ctx *fiber.Ctx, data T) error {
+	if msg, ok := any(data).(proto.Message); ok {
+		bytes, err := protojson.Marshal(msg)
+		if err != nil {
+			return err
+		}
+
+		response := fiber.Map{
+			"success": true,
+			"data":    json.RawMessage(bytes),
+		}
+
+		return ctx.JSON(response)
+	}
+
+	return ctx.JSON(fiber.Map{
 		"success": true,
 		"data":    data,
-	}
+	})
 }
 
-func Error(message string) *fiber.Map {
-	return &fiber.Map{
+func Error(ctx *fiber.Ctx, message string) error {
+	response := &fiber.Map{
 		"success": false,
 		"message": message,
 	}
+
+	return ctx.JSON(response)
 }
