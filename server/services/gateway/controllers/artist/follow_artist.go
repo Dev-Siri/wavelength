@@ -2,13 +2,15 @@ package artist_controllers
 
 import (
 	"encoding/json"
+	"wavelength/proto/artistpb"
 	"wavelength/services/gateway/models"
 	"wavelength/services/gateway/models/schemas"
 	"wavelength/services/gateway/validation"
-	shared_db "wavelength/shared/db"
+	shared_clients "wavelength/shared/clients"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
+	"go.uber.org/zap"
 )
 
 func FollowArtist(ctx *fiber.Ctx) error {
@@ -22,49 +24,24 @@ func FollowArtist(ctx *fiber.Ctx) error {
 	var parsedBody schemas.ArtistFollowSchmea
 
 	if err := json.Unmarshal(body, &parsedBody); err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to parse body: "+err.Error())
+		go logging.Logger.Error("Body parse failed.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Body parse failed.")
 	}
 
 	if !validation.IsFollowArtistShapeValid(parsedBody) {
 		return fiber.NewError(fiber.StatusInternalServerError, "Body is not in valid shape.")
 	}
 
-	var followCount int
-
-	row := shared_db.Database.QueryRow(`
-		SELECT COUNT(*) FROM "follows"
-		WHERE follower_email = $1 AND artist_browse_id = $2; 
-	`, authUser.Email, parsedBody.BrowseId)
-
-	if err := row.Scan(&followCount); err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to read follow count from database.")
-	}
-
-	if followCount > 0 {
-		_, err := shared_db.Database.Exec(`
-			DELETE FROM "follows"
-			WHERE follower_email = $1 AND artist_browse_id = $2;
-		`, authUser.Email, parsedBody.BrowseId)
-
-		if err != nil {
-			return fiber.NewError(fiber.StatusInternalServerError, "Failed to unfollow artist: "+err.Error())
-		}
-
-		return models.Success(ctx, "Successfully unfollowed artist.")
-	}
-
-	_, err := shared_db.Database.Exec(`
-			INSERT INTO "follows" (
-				follower_email,
-				follow_id,
-				artist_name,
-				artist_thumbnail,
-				artist_browse_id
-			)
-		`, authUser.Email, uuid.NewString(), parsedBody.Name, parsedBody.Thumbnail, parsedBody.BrowseId)
+	_, err := shared_clients.ArtistClient.FollowArtist(ctx.Context(), &artistpb.FollowArtistRequest{
+		FollowerEmail:   authUser.Email,
+		ArtistName:      parsedBody.Name,
+		ArtistThumbnail: parsedBody.Thumbnail,
+		ArtistBrowseId:  parsedBody.BrowseId,
+	})
 
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to follow artist: "+err.Error())
+		go logging.Logger.Error("ArtistService: 'FollowArtist' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Artist follow failed. ")
 	}
 
 	return models.Success(ctx, "Successfully followed artist.")

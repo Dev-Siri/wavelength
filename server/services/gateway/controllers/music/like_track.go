@@ -41,8 +41,15 @@ func LikeTrack(ctx *fiber.Ctx) error {
 		grpcVideoType = commonpb.VideoType_VIDEO_TYPE_TRACK
 	}
 
+	embeddedArtists := make([]*commonpb.EmbeddedArtist, 0)
+	for _, artist := range parsedBody.Artists {
+		embeddedArtists = append(embeddedArtists, &commonpb.EmbeddedArtist{
+			Title:    artist.Title,
+			BrowseId: artist.BrowseId,
+		})
+	}
 	likedTracksResponse, err := clients.MusicClient.LikeTrack(ctx.Context(), &musicpb.LikeTrackRequest{
-		Author:     parsedBody.Author,
+		Artists:    embeddedArtists,
 		Thumbnail:  parsedBody.Thumbnail,
 		Duration:   parsedBody.Duration,
 		IsExplicit: parsedBody.IsExplicit,

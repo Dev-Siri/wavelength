@@ -6,7 +6,7 @@
   import { playlistsSchema } from "$lib/utils/validation/playlists";
 
   import NoResults from "$lib/components/NoResults.svelte";
-  import PlaylistCard from "$lib/components/PlaylistCard.svelte";
+  import PlaylistTile from "$lib/components/PlaylistTile.svelte";
   import TrackItemSkeleton from "$lib/components/skeletons/TrackItemSkeleton.svelte";
 
   const { q }: { q: string } = $props();
@@ -26,9 +26,9 @@
     <TrackItemSkeleton />
     <TrackItemSkeleton />
   {:else if playlistSearchQuery.isSuccess}
-    {#if playlistSearchQuery.data.playlists.length}
+    {#if playlistSearchQuery.data.playlists}
       {#each playlistSearchQuery.data.playlists as playlist}
-        <PlaylistCard {playlist} />
+        <PlaylistTile {playlist} />
       {/each}
     {:else}
       <div class="mt-[14%]">

@@ -1,0 +1,62 @@
+syntax = "proto3";
+package artist;
+
+option go_package = "wavelength/server/proto/artist;artistpb";
+
+import "google/protobuf/empty.proto";
+import "proto/common.proto";
+
+service ArtistService {
+  rpc GetFollowedArtists(GetFollowedArtistsRequest) returns (GetFollowedArtistsResponse);
+  rpc GetArtistDetails(GetArtistDetailsRequest) returns (GetArtistDetailsResponse);
+  rpc SearchArtists(SearchArtistsRequest) returns (SearchArtistsResponse);
+  rpc FollowArtist(FollowArtistRequest) returns (google.protobuf.Empty);
+  rpc IsFollowingArtist(IsFollowingArtistRequest) returns (IsFollowingArtistResponse);
+  rpc CreateAuthoredTrackArtist(CreateAuthoredTrackArtistRequest) returns (google.protobuf.Empty);
+}
+
+message SearchArtistsRequest {
+  string query = 1;
+}
+
+message SearchArtistsResponse {
+  repeated common.SearchArtist artists = 1;
+}
+
+message FollowArtistRequest {
+  string follower_email = 1;
+  string artist_browse_id = 2;
+  string artist_name = 3;
+  string artist_thumbnail = 4;
+}
+
+message GetArtistDetailsRequest {
+  string browse_id = 1;
+}
+
+message GetArtistDetailsResponse {
+  common.Artist artist = 1;
+}
+
+message IsFollowingArtistRequest {
+  string browse_id = 1;
+  string follower_email = 2;
+}
+
+message IsFollowingArtistResponse {
+  optional bool is_following = 1;
+}
+
+message GetFollowedArtistsRequest {
+  string follower_email = 1;
+}
+
+message GetFollowedArtistsResponse {
+  repeated common.FollowedArtist artists = 1;
+}
+
+message CreateAuthoredTrackArtistRequest {
+  string browse_id = 1;
+  string authored_track_id = 2;
+  string title = 3;
+}

@@ -8,7 +8,7 @@
   } from "@lucide/svelte";
 
   import musicQueueStore from "$lib/stores/music-queue.svelte";
-  import { compactify } from "$lib/utils/format.js";
+  import { compactify, punctuatify } from "$lib/utils/format.js";
   import { backendClient } from "$lib/utils/query-client.js";
   import { getThumbnailUrl } from "$lib/utils/url";
 
@@ -50,14 +50,16 @@
   <section
     class="flex flex-col min-[800px]:flex-row justify-center min-[800px]:justify-start text-center min-[800px]:text-start items-center h-3/5 p-9 min-[800px]:p-14 pt-5"
   >
-    <Image
-      src={musicThumbnail}
-      alt="Thumbnail"
-      height={256}
-      width={256}
-      class="rounded-2xl h-64 w-64 duration-200"
-      style={coverStyle}
-    />
+    {#key musicThumbnail}
+      <Image
+        src={musicThumbnail}
+        alt="Thumbnail"
+        height={256}
+        width={256}
+        class="rounded-2xl h-64 w-64 duration-200"
+        style={coverStyle}
+      />
+    {/key}
     <div class="min-[800px]:ml-16 mt-4 min-[800px]:mt-0 pt-2">
       <h1
         class="scroll-m-20 pb-2 {musicQueueStore.musicPlayingNow.title.length >= 30
@@ -67,7 +69,7 @@
         {musicQueueStore.musicPlayingNow.title}
       </h1>
       <p class="text-muted-foreground text-2xl ml-1">
-        {musicQueueStore.musicPlayingNow.author}
+        {punctuatify(musicQueueStore.musicPlayingNow.artists.map(artist => artist.title))}
       </p>
       <div class="flex items-center mt-4 lg:mt-24 gap-2 justify-center w-fit flex-col lg:flex-row">
         <Button

@@ -13,19 +13,19 @@ import (
 
 func EditPlaylist(ctx *fiber.Ctx) error {
 	playlistId := ctx.Params("playlistId")
-
 	if playlistId == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "Playlist ID is required.")
 	}
 
 	var playlistEditBody schemas.PlaylistEditSchema
-
 	if err := ctx.BodyParser(&playlistEditBody); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid JSON body: "+err.Error())
 	}
 
 	_, err := clients.PlaylistClient.EditPlaylist(ctx.Context(), &playlistpb.EditPlaylistRequest{
 		PlaylistId: playlistId,
+		Name:       playlistEditBody.Name,
+		CoverImage: playlistEditBody.CoverImage,
 	})
 	if err != nil {
 		go logging.Logger.Error("PlaylistService: 'EditPlaylist' errored.", zap.Error(err))

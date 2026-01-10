@@ -1,9 +1,7 @@
 import { z } from "zod";
 
-const quickPickSubInfoSchema = z.object({
-  title: z.string(),
-  browseId: z.string(),
-});
+import { embeddedAlbumSchema } from "./albums";
+import { embeddedArtistSchema } from "./artist";
 
 export const quickPicksResponseSchema = z.object({
   quickPicks: z.array(
@@ -11,8 +9,10 @@ export const quickPicksResponseSchema = z.object({
       videoId: z.string(),
       title: z.string(),
       thumbnail: z.string(),
-      artists: z.array(quickPickSubInfoSchema),
-      album: quickPickSubInfoSchema.nullish(),
+      artists: z.array(embeddedArtistSchema),
+      album: embeddedAlbumSchema.nullish(),
     }),
   ),
 });
+
+export type QuickPick = z.infer<typeof quickPicksResponseSchema>["quickPicks"][number];

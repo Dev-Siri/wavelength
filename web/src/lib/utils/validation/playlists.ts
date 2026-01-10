@@ -10,7 +10,7 @@ export const playlistSchema = z.object({
   isPublic: z.boolean(),
 });
 export const playlistsSchema = z.object({
-  playlists: z.array(playlistSchema),
+  playlists: z.array(playlistSchema).optional(),
 });
 
 export type Playlist = z.infer<typeof playlistSchema>;

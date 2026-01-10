@@ -1,25 +1,29 @@
 package music_controllers
 
 import (
-	"wavelength/services/gateway/api"
+	"wavelength/proto/musicpb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 func SearchMusicTracks(ctx *fiber.Ctx) error {
 	query := ctx.Query("q")
-	nextPageToken := ctx.Query("nextPageToken")
 
 	if query == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "Query (q) is required for searching music.")
 	}
 
-	searchResults, err := api.YouTubeClient.SearchMusicTracks(query, nextPageToken)
-
+	tracksSearchResponse, err := clients.MusicClient.SearchMusicTracks(ctx.Context(), &musicpb.SearchMusicTracksRequest{
+		Query: query,
+	})
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while searching for tracks: "+err.Error())
+		go logging.Logger.Error("MusicService: 'SearchMusicTracks' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Music tracks search failed.")
 	}
 
-	return models.Success(ctx, searchResults)
+	return models.Success(ctx, tracksSearchResponse)
 }

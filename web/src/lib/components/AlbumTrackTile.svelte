@@ -6,6 +6,7 @@
 
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
   import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
+  import { durationify } from "$lib/utils/format";
 
   import ExplicitIndicator from "./ExplicitIndicator.svelte";
   import PlaylistToggleOptions from "./PlaylistToggleOptions.svelte";
@@ -57,7 +58,7 @@
         </p>
       </div>
       <p class="self-center text-sm text-muted-foreground pl-[9%]">
-        {music.duration}
+        {durationify(Number(music.duration))}
       </p>
     </div>
     {#if music.duration !== ""}

@@ -45,6 +45,7 @@
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "bits-ui": "^2.14.0",
+    "embla-carousel-svelte": "^8.6.0",
     "idb-keyval": "^6.2.2",
     "sharp": "^0.34.4",
     "svelte-french-toast": "^1.2.0",

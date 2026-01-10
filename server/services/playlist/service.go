@@ -5,6 +5,7 @@ import (
 	"net"
 	"wavelength/proto/playlistpb"
 	playlist_rpcs "wavelength/services/playlist/rpcs"
+	shared_clients "wavelength/shared/clients"
 	shared_db "wavelength/shared/db"
 	shared_env "wavelength/shared/env"
 	"wavelength/shared/logging"
@@ -33,6 +34,10 @@ func main() {
 				logging.Logger.Fatal("Failed to close database connection.", zap.Error(err))
 			}
 		}()
+	}
+
+	if err := shared_clients.InitArtistClient(); err != nil {
+		logging.Logger.Fatal("Artist-service client failed to connect.", zap.Error(err))
 	}
 
 	port := shared_env.GetPORT()

@@ -1,3 +1,5 @@
+import type { AlbumType } from "./validation/albums";
+
 export function compactify(statCount: number) {
   const formatter = Intl.NumberFormat("en", {
     compactDisplay: "short",
@@ -11,15 +13,25 @@ export function compactify(statCount: number) {
 
 export function durationify(seconds: number) {
   const minutes = Math.floor(seconds / 60);
-  const formattedSeconds = Math.floor(seconds % 60);
+  const secs = Math.floor(seconds % 60);
 
-  return `${minutes}:${formattedSeconds}`;
+  return `${minutes}:${secs.toString().padStart(2, "0")}`;
 }
 
-export function parseDurationToSeconds(duration: string) {
-  const [minutesStr, secondsStr] = duration.split(":");
-  const [minutes, seconds] = [Number(minutesStr), Number(secondsStr)];
-  const minutesInSeconds = minutes * 60;
+export function punctuatify(entities: string[]) {
+  const listFormatter = new Intl.ListFormat("en-US", {
+    style: "short",
+  });
+  return listFormatter.format(entities);
+}
 
-  return minutesInSeconds + seconds;
+export function getReadableAlbumType(albumType: AlbumType) {
+  switch (albumType) {
+    case "ALBUM_TYPE_ALBUM":
+      return "Album";
+    case "ALBUM_TYPE_EP":
+      return "EP";
+    case "ALBUM_TYPE_SINGLE":
+      return "Single";
+  }
 }

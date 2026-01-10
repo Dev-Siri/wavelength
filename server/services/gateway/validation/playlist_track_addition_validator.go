@@ -9,6 +9,14 @@ func IsPlaylistTrackAdditionShapeValid(schema schemas.PlaylistTrackAdditionSchem
 	isTitleValid := schema.Title != "" && len(schema.Title) <= 255
 	isVideoIdValid := schema.VideoId != "" && len(schema.VideoId) <= 11
 	isVideoTypeValid := schema.VideoType == type_constants.PlaylistTrackTypeTrack || schema.VideoType == type_constants.PlaylistTrackTypeUVideo
+	areArtistValid := true
 
-	return schema.Author != "" && schema.Thumbnail != "" && schema.Duration != "" && isTitleValid && isVideoIdValid && isVideoTypeValid
+	for _, artist := range schema.Artists {
+		if artist.Title == "" || artist.BrowseId == "" {
+			areArtistValid = false
+		}
+	}
+
+	return len(schema.Artists) != 0 && schema.Thumbnail != "" && schema.Duration != "" &&
+		isTitleValid && isVideoIdValid && isVideoTypeValid && areArtistValid
 }

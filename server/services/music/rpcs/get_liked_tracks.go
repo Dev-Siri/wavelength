@@ -2,6 +2,7 @@ package music_rpcs
 
 import (
 	"context"
+	"html"
 	"wavelength/proto/commonpb"
 	"wavelength/proto/musicpb"
 	shared_db "wavelength/shared/db"
@@ -18,17 +19,21 @@ func (m *MusicService) GetLikedTracks(
 ) (*musicpb.GetLikedTracksResponse, error) {
 	rows, err := shared_db.Database.Query(`
 		SELECT
-			like_id,
-			email,
-			title,
-			thumbnail,
-			is_explicit,
-			author,
-			duration,
-			video_id,
-			video_type
-		FROM "likes"
-		WHERE email = $1;
+			l.like_id,
+			l.email,
+			l.title,
+			l.thumbnail,
+			l.is_explicit,
+			l.duration,
+			l.video_id,
+			l.video_type,
+
+			a.title AS artist_title,
+			a.browse_id AS artist_browse_id
+		FROM "likes" l
+		LEFT JOIN "artists" a
+		ON l.video_id = a.authored_track_id
+		WHERE l.email = $1;
 	`, request.LikerEmail)
 
 	if err != nil {
@@ -38,34 +43,70 @@ func (m *MusicService) GetLikedTracks(
 
 	defer rows.Close()
 
-	likedTracks := make([]*commonpb.LikedTrack, 0)
+	tracks := make(map[string]*commonpb.LikedTrack)
 
 	for rows.Next() {
-		var likedTrack commonpb.LikedTrack
-		var videoType string
+		var (
+			likeId     string
+			email      string
+			title      string
+			thumbnail  string
+			isExplicit bool
+			duration   uint64
+			videoId    string
+			videoType  string
+
+			artistTitle    string
+			artistBrowseId string
+		)
 
 		if err := rows.Scan(
-			&likedTrack.LikeId,
-			&likedTrack.Email,
-			&likedTrack.Title,
-			&likedTrack.Thumbnail,
-			&likedTrack.IsExplicit,
-			&likedTrack.Author,
-			&likedTrack.Duration,
-			&likedTrack.VideoId,
+			&likeId,
+			&email,
+			&title,
+			&thumbnail,
+			&isExplicit,
+			&duration,
+			&videoId,
 			&videoType,
+			&artistTitle,
+			&artistBrowseId,
 		); err != nil {
 			go logging.Logger.Error("Parsing of one liked track failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Parsing of one liked track failed.")
 		}
 
-		if videoType == "uvideo" {
-			likedTrack.VideoType = commonpb.VideoType_VIDEO_TYPE_UVIDEO
-		} else {
-			likedTrack.VideoType = commonpb.VideoType_VIDEO_TYPE_TRACK
+		track, exists := tracks[likeId]
+		if !exists {
+			track = &commonpb.LikedTrack{
+				LikeId:     likeId,
+				Title:      html.UnescapeString(title),
+				Thumbnail:  thumbnail,
+				IsExplicit: &isExplicit,
+				Duration:   duration,
+				VideoId:    videoId,
+				Email:      email,
+				Artists:    []*commonpb.EmbeddedArtist{},
+			}
+
+			if videoType == "uvideo" {
+				track.VideoType = commonpb.VideoType_VIDEO_TYPE_UVIDEO
+			} else {
+				track.VideoType = commonpb.VideoType_VIDEO_TYPE_TRACK
+			}
+
+			tracks[likeId] = track
 		}
 
-		likedTracks = append(likedTracks, &likedTrack)
+		track.Artists = append(track.Artists, &commonpb.EmbeddedArtist{
+			Title:    artistTitle,
+			BrowseId: artistBrowseId,
+		})
+	}
+
+	likedTracks := make([]*commonpb.LikedTrack, 0, len(tracks))
+	for _, t := range tracks {
+		likedTracks = append(likedTracks, t)
 	}
 
 	return &musicpb.GetLikedTracksResponse{

@@ -64,16 +64,18 @@ export class PlaylistTrack extends jspb.Message {
     clearIsExplicit(): void;
     getIsExplicit(): boolean | undefined;
     setIsExplicit(value: boolean): PlaylistTrack;
-    getAuthor(): string;
-    setAuthor(value: string): PlaylistTrack;
-    getDuration(): string;
-    setDuration(value: string): PlaylistTrack;
+    getDuration(): number;
+    setDuration(value: number): PlaylistTrack;
     getVideoId(): string;
     setVideoId(value: string): PlaylistTrack;
     getVideoType(): VideoType;
     setVideoType(value: VideoType): PlaylistTrack;
     getPlaylistId(): string;
     setPlaylistId(value: string): PlaylistTrack;
+    clearArtistsList(): void;
+    getArtistsList(): Array<EmbeddedArtist>;
+    setArtistsList(value: Array<EmbeddedArtist>): PlaylistTrack;
+    addArtists(value?: EmbeddedArtist, index?: number): EmbeddedArtist;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlaylistTrack.AsObject;
@@ -92,11 +94,11 @@ export namespace PlaylistTrack {
         thumbnail: string,
         positionInPlaylist: number,
         isExplicit?: boolean,
-        author: string,
-        duration: string,
+        duration: number,
         videoId: string,
         videoType: VideoType,
         playlistId: string,
+        artistsList: Array<EmbeddedArtist.AsObject>,
     }
 }
 
@@ -137,14 +139,16 @@ export class LikedTrack extends jspb.Message {
     clearIsExplicit(): void;
     getIsExplicit(): boolean | undefined;
     setIsExplicit(value: boolean): LikedTrack;
-    getAuthor(): string;
-    setAuthor(value: string): LikedTrack;
-    getDuration(): string;
-    setDuration(value: string): LikedTrack;
+    getDuration(): number;
+    setDuration(value: number): LikedTrack;
     getVideoId(): string;
     setVideoId(value: string): LikedTrack;
     getVideoType(): VideoType;
     setVideoType(value: VideoType): LikedTrack;
+    clearArtistsList(): void;
+    getArtistsList(): Array<EmbeddedArtist>;
+    setArtistsList(value: Array<EmbeddedArtist>): LikedTrack;
+    addArtists(value?: EmbeddedArtist, index?: number): EmbeddedArtist;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LikedTrack.AsObject;
@@ -163,10 +167,10 @@ export namespace LikedTrack {
         title: string,
         thumbnail: string,
         isExplicit?: boolean,
-        author: string,
-        duration: string,
+        duration: number,
         videoId: string,
         videoType: VideoType,
+        artistsList: Array<EmbeddedArtist.AsObject>,
     }
 }
 
@@ -202,6 +206,52 @@ export namespace SuggestedLink {
     }
 }
 
+export class EmbeddedAlbum extends jspb.Message { 
+    getBrowseId(): string;
+    setBrowseId(value: string): EmbeddedAlbum;
+    getTitle(): string;
+    setTitle(value: string): EmbeddedAlbum;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): EmbeddedAlbum.AsObject;
+    static toObject(includeInstance: boolean, msg: EmbeddedAlbum): EmbeddedAlbum.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: EmbeddedAlbum, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): EmbeddedAlbum;
+    static deserializeBinaryFromReader(message: EmbeddedAlbum, reader: jspb.BinaryReader): EmbeddedAlbum;
+}
+
+export namespace EmbeddedAlbum {
+    export type AsObject = {
+        browseId: string,
+        title: string,
+    }
+}
+
+export class EmbeddedArtist extends jspb.Message { 
+    getBrowseId(): string;
+    setBrowseId(value: string): EmbeddedArtist;
+    getTitle(): string;
+    setTitle(value: string): EmbeddedArtist;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): EmbeddedArtist.AsObject;
+    static toObject(includeInstance: boolean, msg: EmbeddedArtist): EmbeddedArtist.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: EmbeddedArtist, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): EmbeddedArtist;
+    static deserializeBinaryFromReader(message: EmbeddedArtist, reader: jspb.BinaryReader): EmbeddedArtist;
+}
+
+export namespace EmbeddedArtist {
+    export type AsObject = {
+        browseId: string,
+        title: string,
+    }
+}
+
 export class QuickPick extends jspb.Message { 
     getVideoId(): string;
     setVideoId(value: string): QuickPick;
@@ -210,14 +260,14 @@ export class QuickPick extends jspb.Message {
     getThumbnail(): string;
     setThumbnail(value: string): QuickPick;
     clearArtistsList(): void;
-    getArtistsList(): Array<QuickPick.QuickPickArtist>;
-    setArtistsList(value: Array<QuickPick.QuickPickArtist>): QuickPick;
-    addArtists(value?: QuickPick.QuickPickArtist, index?: number): QuickPick.QuickPickArtist;
+    getArtistsList(): Array<EmbeddedArtist>;
+    setArtistsList(value: Array<EmbeddedArtist>): QuickPick;
+    addArtists(value?: EmbeddedArtist, index?: number): EmbeddedArtist;
 
     hasAlbum(): boolean;
     clearAlbum(): void;
-    getAlbum(): QuickPick.QuickPickAlbum | undefined;
-    setAlbum(value?: QuickPick.QuickPickAlbum): QuickPick;
+    getAlbum(): EmbeddedAlbum | undefined;
+    setAlbum(value?: EmbeddedAlbum): QuickPick;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): QuickPick.AsObject;
@@ -234,61 +284,426 @@ export namespace QuickPick {
         videoId: string,
         title: string,
         thumbnail: string,
-        artistsList: Array<QuickPick.QuickPickArtist.AsObject>,
-        album?: QuickPick.QuickPickAlbum.AsObject,
+        artistsList: Array<EmbeddedArtist.AsObject>,
+        album?: EmbeddedAlbum.AsObject,
+    }
+}
+
+export class MusicTrackStats extends jspb.Message { 
+    getViewCount(): number;
+    setViewCount(value: number): MusicTrackStats;
+    getLikeCount(): number;
+    setLikeCount(value: number): MusicTrackStats;
+    getCommentCount(): number;
+    setCommentCount(value: number): MusicTrackStats;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): MusicTrackStats.AsObject;
+    static toObject(includeInstance: boolean, msg: MusicTrackStats): MusicTrackStats.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: MusicTrackStats, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): MusicTrackStats;
+    static deserializeBinaryFromReader(message: MusicTrackStats, reader: jspb.BinaryReader): MusicTrackStats;
+}
+
+export namespace MusicTrackStats {
+    export type AsObject = {
+        viewCount: number,
+        likeCount: number,
+        commentCount: number,
+    }
+}
+
+export class YouTubeVideo extends jspb.Message { 
+    getVideoId(): string;
+    setVideoId(value: string): YouTubeVideo;
+    getTitle(): string;
+    setTitle(value: string): YouTubeVideo;
+    getThumbnail(): string;
+    setThumbnail(value: string): YouTubeVideo;
+    getAuthor(): string;
+    setAuthor(value: string): YouTubeVideo;
+    getAuthorChannelId(): string;
+    setAuthorChannelId(value: string): YouTubeVideo;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): YouTubeVideo.AsObject;
+    static toObject(includeInstance: boolean, msg: YouTubeVideo): YouTubeVideo.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: YouTubeVideo, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): YouTubeVideo;
+    static deserializeBinaryFromReader(message: YouTubeVideo, reader: jspb.BinaryReader): YouTubeVideo;
+}
+
+export namespace YouTubeVideo {
+    export type AsObject = {
+        videoId: string,
+        title: string,
+        thumbnail: string,
+        author: string,
+        authorChannelId: string,
+    }
+}
+
+export class AlbumTrack extends jspb.Message { 
+    getVideoId(): string;
+    setVideoId(value: string): AlbumTrack;
+    getTitle(): string;
+    setTitle(value: string): AlbumTrack;
+    getDuration(): number;
+    setDuration(value: number): AlbumTrack;
+    getPositionInAlbum(): number;
+    setPositionInAlbum(value: number): AlbumTrack;
+
+    hasIsExplicit(): boolean;
+    clearIsExplicit(): void;
+    getIsExplicit(): boolean | undefined;
+    setIsExplicit(value: boolean): AlbumTrack;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): AlbumTrack.AsObject;
+    static toObject(includeInstance: boolean, msg: AlbumTrack): AlbumTrack.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: AlbumTrack, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): AlbumTrack;
+    static deserializeBinaryFromReader(message: AlbumTrack, reader: jspb.BinaryReader): AlbumTrack;
+}
+
+export namespace AlbumTrack {
+    export type AsObject = {
+        videoId: string,
+        title: string,
+        duration: number,
+        positionInAlbum: number,
+        isExplicit?: boolean,
+    }
+}
+
+export class Album extends jspb.Message { 
+    getTitle(): string;
+    setTitle(value: string): Album;
+    getAlbumType(): AlbumType;
+    setAlbumType(value: AlbumType): Album;
+    getRelease(): string;
+    setRelease(value: string): Album;
+    getCover(): string;
+    setCover(value: string): Album;
+    getTotalSongCount(): number;
+    setTotalSongCount(value: number): Album;
+    getTotalDuration(): string;
+    setTotalDuration(value: string): Album;
+
+    hasArtist(): boolean;
+    clearArtist(): void;
+    getArtist(): EmbeddedArtist | undefined;
+    setArtist(value?: EmbeddedArtist): Album;
+    clearAlbumTracksList(): void;
+    getAlbumTracksList(): Array<AlbumTrack>;
+    setAlbumTracksList(value: Array<AlbumTrack>): Album;
+    addAlbumTracks(value?: AlbumTrack, index?: number): AlbumTrack;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Album.AsObject;
+    static toObject(includeInstance: boolean, msg: Album): Album.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Album, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Album;
+    static deserializeBinaryFromReader(message: Album, reader: jspb.BinaryReader): Album;
+}
+
+export namespace Album {
+    export type AsObject = {
+        title: string,
+        albumType: AlbumType,
+        release: string,
+        cover: string,
+        totalSongCount: number,
+        totalDuration: string,
+        artist?: EmbeddedArtist.AsObject,
+        albumTracksList: Array<AlbumTrack.AsObject>,
+    }
+}
+
+export class Track extends jspb.Message { 
+    getVideoId(): string;
+    setVideoId(value: string): Track;
+    getTitle(): string;
+    setTitle(value: string): Track;
+    getThumbnail(): string;
+    setThumbnail(value: string): Track;
+    getDuration(): number;
+    setDuration(value: number): Track;
+    clearArtistsList(): void;
+    getArtistsList(): Array<EmbeddedArtist>;
+    setArtistsList(value: Array<EmbeddedArtist>): Track;
+    addArtists(value?: EmbeddedArtist, index?: number): EmbeddedArtist;
+
+    hasIsExplicit(): boolean;
+    clearIsExplicit(): void;
+    getIsExplicit(): boolean | undefined;
+    setIsExplicit(value: boolean): Track;
+
+    hasAlbum(): boolean;
+    clearAlbum(): void;
+    getAlbum(): EmbeddedAlbum | undefined;
+    setAlbum(value?: EmbeddedAlbum): Track;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Track.AsObject;
+    static toObject(includeInstance: boolean, msg: Track): Track.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Track, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Track;
+    static deserializeBinaryFromReader(message: Track, reader: jspb.BinaryReader): Track;
+}
+
+export namespace Track {
+    export type AsObject = {
+        videoId: string,
+        title: string,
+        thumbnail: string,
+        duration: number,
+        artistsList: Array<EmbeddedArtist.AsObject>,
+        isExplicit?: boolean,
+        album?: EmbeddedAlbum.AsObject,
+    }
+}
+
+export class SearchArtist extends jspb.Message { 
+    getBrowseId(): string;
+    setBrowseId(value: string): SearchArtist;
+    getTitle(): string;
+    setTitle(value: string): SearchArtist;
+    getThumbnail(): string;
+    setThumbnail(value: string): SearchArtist;
+    getAudience(): string;
+    setAudience(value: string): SearchArtist;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): SearchArtist.AsObject;
+    static toObject(includeInstance: boolean, msg: SearchArtist): SearchArtist.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: SearchArtist, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): SearchArtist;
+    static deserializeBinaryFromReader(message: SearchArtist, reader: jspb.BinaryReader): SearchArtist;
+}
+
+export namespace SearchArtist {
+    export type AsObject = {
+        browseId: string,
+        title: string,
+        thumbnail: string,
+        audience: string,
+    }
+}
+
+export class Artist extends jspb.Message { 
+    getBrowseId(): string;
+    setBrowseId(value: string): Artist;
+    getTitle(): string;
+    setTitle(value: string): Artist;
+    getThumbnail(): string;
+    setThumbnail(value: string): Artist;
+    getDescription(): string;
+    setDescription(value: string): Artist;
+    getAudience(): string;
+    setAudience(value: string): Artist;
+    clearTopSongsList(): void;
+    getTopSongsList(): Array<Artist.TopSongTrack>;
+    setTopSongsList(value: Array<Artist.TopSongTrack>): Artist;
+    addTopSongs(value?: Artist.TopSongTrack, index?: number): Artist.TopSongTrack;
+    clearAlbumsList(): void;
+    getAlbumsList(): Array<Artist.ArtistAlbum>;
+    setAlbumsList(value: Array<Artist.ArtistAlbum>): Artist;
+    addAlbums(value?: Artist.ArtistAlbum, index?: number): Artist.ArtistAlbum;
+    clearSinglesAndEpsList(): void;
+    getSinglesAndEpsList(): Array<Artist.ArtistAlbum>;
+    setSinglesAndEpsList(value: Array<Artist.ArtistAlbum>): Artist;
+    addSinglesAndEps(value?: Artist.ArtistAlbum, index?: number): Artist.ArtistAlbum;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Artist.AsObject;
+    static toObject(includeInstance: boolean, msg: Artist): Artist.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Artist, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Artist;
+    static deserializeBinaryFromReader(message: Artist, reader: jspb.BinaryReader): Artist;
+}
+
+export namespace Artist {
+    export type AsObject = {
+        browseId: string,
+        title: string,
+        thumbnail: string,
+        description: string,
+        audience: string,
+        topSongsList: Array<Artist.TopSongTrack.AsObject>,
+        albumsList: Array<Artist.ArtistAlbum.AsObject>,
+        singlesAndEpsList: Array<Artist.ArtistAlbum.AsObject>,
     }
 
 
-    export class QuickPickAlbum extends jspb.Message { 
-        getBrowseId(): string;
-        setBrowseId(value: string): QuickPickAlbum;
+    export class TopSongTrack extends jspb.Message { 
+        getVideoId(): string;
+        setVideoId(value: string): TopSongTrack;
         getTitle(): string;
-        setTitle(value: string): QuickPickAlbum;
+        setTitle(value: string): TopSongTrack;
+        getThumbnail(): string;
+        setThumbnail(value: string): TopSongTrack;
+        getPlayCount(): string;
+        setPlayCount(value: string): TopSongTrack;
+
+        hasIsExplicit(): boolean;
+        clearIsExplicit(): void;
+        getIsExplicit(): boolean | undefined;
+        setIsExplicit(value: boolean): TopSongTrack;
+
+        hasAlbum(): boolean;
+        clearAlbum(): void;
+        getAlbum(): EmbeddedAlbum | undefined;
+        setAlbum(value?: EmbeddedAlbum): TopSongTrack;
 
         serializeBinary(): Uint8Array;
-        toObject(includeInstance?: boolean): QuickPickAlbum.AsObject;
-        static toObject(includeInstance: boolean, msg: QuickPickAlbum): QuickPickAlbum.AsObject;
+        toObject(includeInstance?: boolean): TopSongTrack.AsObject;
+        static toObject(includeInstance: boolean, msg: TopSongTrack): TopSongTrack.AsObject;
         static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
         static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-        static serializeBinaryToWriter(message: QuickPickAlbum, writer: jspb.BinaryWriter): void;
-        static deserializeBinary(bytes: Uint8Array): QuickPickAlbum;
-        static deserializeBinaryFromReader(message: QuickPickAlbum, reader: jspb.BinaryReader): QuickPickAlbum;
+        static serializeBinaryToWriter(message: TopSongTrack, writer: jspb.BinaryWriter): void;
+        static deserializeBinary(bytes: Uint8Array): TopSongTrack;
+        static deserializeBinaryFromReader(message: TopSongTrack, reader: jspb.BinaryReader): TopSongTrack;
     }
 
-    export namespace QuickPickAlbum {
+    export namespace TopSongTrack {
         export type AsObject = {
-            browseId: string,
+            videoId: string,
             title: string,
+            thumbnail: string,
+            playCount: string,
+            isExplicit?: boolean,
+            album?: EmbeddedAlbum.AsObject,
         }
     }
 
-    export class QuickPickArtist extends jspb.Message { 
-        getBrowseId(): string;
-        setBrowseId(value: string): QuickPickArtist;
+    export class ArtistAlbum extends jspb.Message { 
+        getAlbumId(): string;
+        setAlbumId(value: string): ArtistAlbum;
         getTitle(): string;
-        setTitle(value: string): QuickPickArtist;
+        setTitle(value: string): ArtistAlbum;
+        getThumbnail(): string;
+        setThumbnail(value: string): ArtistAlbum;
+        getReleaseDate(): string;
+        setReleaseDate(value: string): ArtistAlbum;
+        getAlbumType(): AlbumType;
+        setAlbumType(value: AlbumType): ArtistAlbum;
 
         serializeBinary(): Uint8Array;
-        toObject(includeInstance?: boolean): QuickPickArtist.AsObject;
-        static toObject(includeInstance: boolean, msg: QuickPickArtist): QuickPickArtist.AsObject;
+        toObject(includeInstance?: boolean): ArtistAlbum.AsObject;
+        static toObject(includeInstance: boolean, msg: ArtistAlbum): ArtistAlbum.AsObject;
         static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
         static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-        static serializeBinaryToWriter(message: QuickPickArtist, writer: jspb.BinaryWriter): void;
-        static deserializeBinary(bytes: Uint8Array): QuickPickArtist;
-        static deserializeBinaryFromReader(message: QuickPickArtist, reader: jspb.BinaryReader): QuickPickArtist;
+        static serializeBinaryToWriter(message: ArtistAlbum, writer: jspb.BinaryWriter): void;
+        static deserializeBinary(bytes: Uint8Array): ArtistAlbum;
+        static deserializeBinaryFromReader(message: ArtistAlbum, reader: jspb.BinaryReader): ArtistAlbum;
     }
 
-    export namespace QuickPickArtist {
+    export namespace ArtistAlbum {
         export type AsObject = {
-            browseId: string,
+            albumId: string,
             title: string,
+            thumbnail: string,
+            releaseDate: string,
+            albumType: AlbumType,
         }
     }
 
+}
+
+export class SearchAlbum extends jspb.Message { 
+    getAlbumId(): string;
+    setAlbumId(value: string): SearchAlbum;
+    getTitle(): string;
+    setTitle(value: string): SearchAlbum;
+    getThumbnail(): string;
+    setThumbnail(value: string): SearchAlbum;
+    getReleaseDate(): string;
+    setReleaseDate(value: string): SearchAlbum;
+    getAlbumType(): AlbumType;
+    setAlbumType(value: AlbumType): SearchAlbum;
+
+    hasArtist(): boolean;
+    clearArtist(): void;
+    getArtist(): EmbeddedArtist | undefined;
+    setArtist(value?: EmbeddedArtist): SearchAlbum;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): SearchAlbum.AsObject;
+    static toObject(includeInstance: boolean, msg: SearchAlbum): SearchAlbum.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: SearchAlbum, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): SearchAlbum;
+    static deserializeBinaryFromReader(message: SearchAlbum, reader: jspb.BinaryReader): SearchAlbum;
+}
+
+export namespace SearchAlbum {
+    export type AsObject = {
+        albumId: string,
+        title: string,
+        thumbnail: string,
+        releaseDate: string,
+        albumType: AlbumType,
+        artist?: EmbeddedArtist.AsObject,
+    }
+}
+
+export class FollowedArtist extends jspb.Message { 
+    getFollowId(): string;
+    setFollowId(value: string): FollowedArtist;
+    getBrowseId(): string;
+    setBrowseId(value: string): FollowedArtist;
+    getFollowerEmail(): string;
+    setFollowerEmail(value: string): FollowedArtist;
+    getName(): string;
+    setName(value: string): FollowedArtist;
+    getThumbnail(): string;
+    setThumbnail(value: string): FollowedArtist;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): FollowedArtist.AsObject;
+    static toObject(includeInstance: boolean, msg: FollowedArtist): FollowedArtist.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: FollowedArtist, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): FollowedArtist;
+    static deserializeBinaryFromReader(message: FollowedArtist, reader: jspb.BinaryReader): FollowedArtist;
+}
+
+export namespace FollowedArtist {
+    export type AsObject = {
+        followId: string,
+        browseId: string,
+        followerEmail: string,
+        name: string,
+        thumbnail: string,
+    }
 }
 
 export enum VideoType {
     VIDEO_TYPE_UNSPECIFIED = 0,
     VIDEO_TYPE_TRACK = 1,
     VIDEO_TYPE_UVIDEO = 2,
+}
+
+export enum AlbumType {
+    ALBUM_TYPE_UNSPECIFIED = 0,
+    ALBUM_TYPE_ALBUM = 1,
+    ALBUM_TYPE_SINGLE = 2,
+    ALBUM_TYPE_EP = 3,
 }

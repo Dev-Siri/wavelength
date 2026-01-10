@@ -1,10 +1,13 @@
 package album_controllers
 
 import (
-	"wavelength/services/gateway/api"
+	"wavelength/proto/albumpb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 func GetAlbumDetails(ctx *fiber.Ctx) error {
@@ -14,11 +17,13 @@ func GetAlbumDetails(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Album ID is required for searching albums.")
 	}
 
-	searchResults, err := api.YouTubeClient.GetAlbumsDetails(albumId)
-
+	albumDetailsResponse, err := clients.AlbumClient.GetAlbumDetails(ctx.Context(), &albumpb.GetAlbumDetailsRequest{
+		AlbumId: albumId,
+	})
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while getting album details: "+err.Error())
+		go logging.Logger.Error("AlbumService: 'GetAlbumDetails' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Album details fetch failed.")
 	}
 
-	return models.Success(ctx, searchResults)
+	return models.Success(ctx, albumDetailsResponse)
 }

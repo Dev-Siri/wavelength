@@ -3,7 +3,10 @@
 
   const { playlistTrackLength }: { playlistTrackLength: TrackLength } = $props();
 
-  const { songCount, songDurationSecond } = playlistTrackLength;
+  const { songCount, songDurationSecond } = {
+    songCount: Number(playlistTrackLength.songCount),
+    songDurationSecond: Number(playlistTrackLength.songDurationSecond),
+  };
 
   const minutes = Math.round(songDurationSecond / 60);
   const hours = Math.round(minutes / 60);

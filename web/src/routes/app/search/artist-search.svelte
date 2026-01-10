@@ -26,7 +26,7 @@
   </div>
 {:else if artistSearchQuery.isSuccess}
   <div class="flex flex-wrap w-full gap-4">
-    {#each artistSearchQuery.data.result as artist}
+    {#each artistSearchQuery.data.artists as artist}
       <ArtistLabel {artist} />
     {/each}
   </div>

@@ -5,6 +5,7 @@
   import type { QueueableMusic } from "$lib/stores/music-queue.svelte";
 
   import musicQueueStore from "$lib/stores/music-queue.svelte";
+  import { punctuatify } from "$lib/utils/format";
 
   import Image from "./Image.svelte";
 
@@ -40,7 +41,9 @@
         ? `${musicQueueItem.title.slice(0, 20)}...`
         : musicQueueItem.title}
     </p>
-    <p class="text-[9px] text-gray-400/90">{musicQueueItem.author}</p>
+    <p class="text-[9px] text-gray-400/90">
+      {punctuatify(musicQueueStore.musicPlayingNow?.artists.map(artist => artist.title) ?? [])}
+    </p>
   </div>
   <div
     role="button"

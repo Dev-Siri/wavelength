@@ -1,15 +1,16 @@
 <script lang="ts">
   import { EllipsisIcon, PlusIcon } from "@lucide/svelte";
-  import { createMutation, useQueryClient } from "@tanstack/svelte-query";
+  import { createMutation, createQuery, useQueryClient } from "@tanstack/svelte-query";
   import toast from "svelte-french-toast";
   import { z } from "zod";
 
-  import type { Playlist } from "$lib/utils/validation/playlists";
+  import { playlistsSchema } from "$lib/utils/validation/playlists";
   import type { YouTubeVideo } from "$lib/utils/validation/youtube-video";
 
   import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
   import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
+  import userStore from "$lib/stores/user.svelte";
   import { backendClient } from "$lib/utils/query-client.js";
   import { getThumbnailUrl } from "$lib/utils/url";
   import { musicTrackDurationSchema } from "$lib/utils/validation/track-length";
@@ -21,14 +22,24 @@
   const { uvideo }: { uvideo: YouTubeVideo } = $props();
 
   const queryClient = useQueryClient();
-  const playlists = $derived.by(() =>
-    queryClient.getQueryData<Playlist[]>(svelteQueryKeys.userPlaylists),
-  );
+  const playlistsQuery = createQuery(() => ({
+    queryKey: svelteQueryKeys.userPlaylists,
+    async queryFn() {
+      if (!userStore.user) return;
+
+      return backendClient(`/playlists/user/${userStore.user.email}`, playlistsSchema);
+    },
+  }));
 
   async function playYtVideo() {
     const queueableTrack = {
       ...uvideo,
-      author: uvideo.author,
+      artists: [
+        {
+          title: uvideo.title,
+          browseId: uvideo.authorChannelId,
+        },
+      ],
       videoType: "VIDEO_TYPE_UVIDEO",
     } satisfies QueueableMusic;
 
@@ -53,10 +64,15 @@
       return backendClient(`/playlists/playlist/${playlistId}/tracks`, z.string(), {
         method: "POST",
         body: {
-          author: uvideo.author,
+          artists: [
+            {
+              title: uvideo.author,
+              browseId: uvideo.authorChannelId,
+            },
+          ],
           title: uvideo.title,
           videoId: uvideo.videoId,
-          duration: duration.durationSeconds,
+          duration: duration.durationSeconds.toString(),
           isExplicit: false,
           thumbnail: getThumbnailUrl(uvideo.videoId),
           videoType: "uvideo",
@@ -74,7 +90,7 @@
         height={300}
         width={360}
         alt="YouTube Video Thumbnail"
-        class="rounded-2xl h-[200px] object-cover opacity-75 group-hover:opacity-100 duration-200"
+        class="rounded-2xl h-full w-full object-cover opacity-75 group-hover:opacity-100 duration-200"
       />
     {/key}
     <div class="fade-shadow"></div>
@@ -114,9 +130,9 @@
       </p>
     </div>
   </button>
-  {#if playlists && playlists.length}
+  {#if playlistsQuery.data?.playlists}
     <DropdownMenu.Content>
-      {#each playlists as playlist}
+      {#each playlistsQuery.data.playlists as playlist}
         <DropdownMenu.Item
           onclick={() => addToPlaylistMutation.mutate(playlist.playlistId)}
           class="flex py-3 gap-2"

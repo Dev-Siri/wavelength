@@ -4,7 +4,7 @@ import (
 	"context"
 	"wavelength/proto/commonpb"
 	"wavelength/proto/musicpb"
-	"wavelength/services/gateway/api"
+	"wavelength/services/music/api"
 	"wavelength/shared/logging"
 
 	"go.uber.org/zap"

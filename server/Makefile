@@ -13,3 +13,4 @@ generate:
 		[ -f "$$dir/$${base}_grpc.pb.go" ] && \
 	  	mv $$dir/$${base}_grpc.pb.go $$out_dir/ || true; \
 	done
+	cd services/yt-scraper && bun run protoc:generate

@@ -1,0 +1,27 @@
+syntax = "proto3";
+package album;
+
+option go_package = "wavelength/server/proto/album;albumpb";
+
+import "proto/common.proto";
+
+service AlbumService {
+  rpc GetAlbumDetails(GetAlbumDetailsRequest) returns (GetAlbumDetailsResponse);
+  rpc SearchAlbums(SearchAlbumsRequest) returns (SearchAlbumsResponse);
+}
+
+message GetAlbumDetailsRequest {
+  string album_id = 1;
+}
+
+message GetAlbumDetailsResponse {
+  common.Album album = 1;
+}
+
+message SearchAlbumsRequest {
+  string query = 1;
+}
+
+message SearchAlbumsResponse {
+  repeated common.SearchAlbum albums = 1;
+}

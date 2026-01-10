@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 export const trackLengthSchema = z.object({
-  songCount: z.number(),
-  songDurationSecond: z.number(),
+  songCount: z.string(),
+  songDurationSecond: z.string(),
 });
 
 export const playlistTracksLengthSchema = z.object({

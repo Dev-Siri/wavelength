@@ -21,6 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Contains all data representations.
 type VideoType int32
 
 const (
@@ -68,6 +69,58 @@ func (x VideoType) Number() protoreflect.EnumNumber {
 // Deprecated: Use VideoType.Descriptor instead.
 func (VideoType) EnumDescriptor() ([]byte, []int) {
 	return file_proto_common_proto_rawDescGZIP(), []int{0}
+}
+
+type AlbumType int32
+
+const (
+	AlbumType_ALBUM_TYPE_UNSPECIFIED AlbumType = 0
+	AlbumType_ALBUM_TYPE_ALBUM       AlbumType = 1
+	AlbumType_ALBUM_TYPE_SINGLE      AlbumType = 2
+	AlbumType_ALBUM_TYPE_EP          AlbumType = 3
+)
+
+// Enum value maps for AlbumType.
+var (
+	AlbumType_name = map[int32]string{
+		0: "ALBUM_TYPE_UNSPECIFIED",
+		1: "ALBUM_TYPE_ALBUM",
+		2: "ALBUM_TYPE_SINGLE",
+		3: "ALBUM_TYPE_EP",
+	}
+	AlbumType_value = map[string]int32{
+		"ALBUM_TYPE_UNSPECIFIED": 0,
+		"ALBUM_TYPE_ALBUM":       1,
+		"ALBUM_TYPE_SINGLE":      2,
+		"ALBUM_TYPE_EP":          3,
+	}
+)
+
+func (x AlbumType) Enum() *AlbumType {
+	p := new(AlbumType)
+	*p = x
+	return p
+}
+
+func (x AlbumType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (AlbumType) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_common_proto_enumTypes[1].Descriptor()
+}
+
+func (AlbumType) Type() protoreflect.EnumType {
+	return &file_proto_common_proto_enumTypes[1]
+}
+
+func (x AlbumType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use AlbumType.Descriptor instead.
+func (AlbumType) EnumDescriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{1}
 }
 
 type Playlist struct {
@@ -169,11 +222,11 @@ type PlaylistTrack struct {
 	Thumbnail          string                 `protobuf:"bytes,3,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
 	PositionInPlaylist uint32                 `protobuf:"varint,4,opt,name=position_in_playlist,json=positionInPlaylist,proto3" json:"position_in_playlist,omitempty"`
 	IsExplicit         *bool                  `protobuf:"varint,5,opt,name=is_explicit,json=isExplicit,proto3,oneof" json:"is_explicit,omitempty"`
-	Author             string                 `protobuf:"bytes,6,opt,name=author,proto3" json:"author,omitempty"`
-	Duration           string                 `protobuf:"bytes,7,opt,name=duration,proto3" json:"duration,omitempty"`
+	Duration           uint64                 `protobuf:"varint,7,opt,name=duration,proto3" json:"duration,omitempty"`
 	VideoId            string                 `protobuf:"bytes,8,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
 	VideoType          VideoType              `protobuf:"varint,9,opt,name=video_type,json=videoType,proto3,enum=common.VideoType" json:"video_type,omitempty"`
 	PlaylistId         string                 `protobuf:"bytes,10,opt,name=playlist_id,json=playlistId,proto3" json:"playlist_id,omitempty"`
+	Artists            []*EmbeddedArtist      `protobuf:"bytes,11,rep,name=artists,proto3" json:"artists,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -243,18 +296,11 @@ func (x *PlaylistTrack) GetIsExplicit() bool {
 	return false
 }
 
-func (x *PlaylistTrack) GetAuthor() string {
-	if x != nil {
-		return x.Author
-	}
-	return ""
-}
-
-func (x *PlaylistTrack) GetDuration() string {
+func (x *PlaylistTrack) GetDuration() uint64 {
 	if x != nil {
 		return x.Duration
 	}
-	return ""
+	return 0
 }
 
 func (x *PlaylistTrack) GetVideoId() string {
@@ -278,10 +324,17 @@ func (x *PlaylistTrack) GetPlaylistId() string {
 	return ""
 }
 
+func (x *PlaylistTrack) GetArtists() []*EmbeddedArtist {
+	if x != nil {
+		return x.Artists
+	}
+	return nil
+}
+
 type TracksLength struct {
 	state              protoimpl.MessageState `protogen:"open.v1"`
-	SongCount          uint32                 `protobuf:"varint,1,opt,name=song_count,json=songCount,proto3" json:"song_count,omitempty"`
-	SongDurationSecond uint32                 `protobuf:"varint,2,opt,name=song_duration_second,json=songDurationSecond,proto3" json:"song_duration_second,omitempty"`
+	SongCount          uint64                 `protobuf:"varint,1,opt,name=song_count,json=songCount,proto3" json:"song_count,omitempty"`
+	SongDurationSecond uint64                 `protobuf:"varint,2,opt,name=song_duration_second,json=songDurationSecond,proto3" json:"song_duration_second,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -316,14 +369,14 @@ func (*TracksLength) Descriptor() ([]byte, []int) {
 	return file_proto_common_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *TracksLength) GetSongCount() uint32 {
+func (x *TracksLength) GetSongCount() uint64 {
 	if x != nil {
 		return x.SongCount
 	}
 	return 0
 }
 
-func (x *TracksLength) GetSongDurationSecond() uint32 {
+func (x *TracksLength) GetSongDurationSecond() uint64 {
 	if x != nil {
 		return x.SongDurationSecond
 	}
@@ -337,10 +390,10 @@ type LikedTrack struct {
 	Title         string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
 	Thumbnail     string                 `protobuf:"bytes,4,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
 	IsExplicit    *bool                  `protobuf:"varint,5,opt,name=is_explicit,json=isExplicit,proto3,oneof" json:"is_explicit,omitempty"`
-	Author        string                 `protobuf:"bytes,6,opt,name=author,proto3" json:"author,omitempty"`
-	Duration      string                 `protobuf:"bytes,7,opt,name=duration,proto3" json:"duration,omitempty"`
-	VideoId       string                 `protobuf:"bytes,8,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
-	VideoType     VideoType              `protobuf:"varint,9,opt,name=video_type,json=videoType,proto3,enum=common.VideoType" json:"video_type,omitempty"`
+	Duration      uint64                 `protobuf:"varint,6,opt,name=duration,proto3" json:"duration,omitempty"`
+	VideoId       string                 `protobuf:"bytes,7,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	VideoType     VideoType              `protobuf:"varint,8,opt,name=video_type,json=videoType,proto3,enum=common.VideoType" json:"video_type,omitempty"`
+	Artists       []*EmbeddedArtist      `protobuf:"bytes,9,rep,name=artists,proto3" json:"artists,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -410,18 +463,11 @@ func (x *LikedTrack) GetIsExplicit() bool {
 	return false
 }
 
-func (x *LikedTrack) GetAuthor() string {
-	if x != nil {
-		return x.Author
-	}
-	return ""
-}
-
-func (x *LikedTrack) GetDuration() string {
+func (x *LikedTrack) GetDuration() uint64 {
 	if x != nil {
 		return x.Duration
 	}
-	return ""
+	return 0
 }
 
 func (x *LikedTrack) GetVideoId() string {
@@ -436,6 +482,13 @@ func (x *LikedTrack) GetVideoType() VideoType {
 		return x.VideoType
 	}
 	return VideoType_VIDEO_TYPE_UNSPECIFIED
+}
+
+func (x *LikedTrack) GetArtists() []*EmbeddedArtist {
+	if x != nil {
+		return x.Artists
+	}
+	return nil
 }
 
 type SuggestedLink struct {
@@ -514,20 +567,126 @@ func (x *SuggestedLink) GetType() string {
 	return ""
 }
 
+// Embedded types are made to be small and use as a part of a larger type.
+// These do not contain much information about their respective representations.
+type EmbeddedAlbum struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	BrowseId      string                 `protobuf:"bytes,1,opt,name=browse_id,json=browseId,proto3" json:"browse_id,omitempty"`
+	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EmbeddedAlbum) Reset() {
+	*x = EmbeddedAlbum{}
+	mi := &file_proto_common_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EmbeddedAlbum) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EmbeddedAlbum) ProtoMessage() {}
+
+func (x *EmbeddedAlbum) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EmbeddedAlbum.ProtoReflect.Descriptor instead.
+func (*EmbeddedAlbum) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *EmbeddedAlbum) GetBrowseId() string {
+	if x != nil {
+		return x.BrowseId
+	}
+	return ""
+}
+
+func (x *EmbeddedAlbum) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+type EmbeddedArtist struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	BrowseId      string                 `protobuf:"bytes,1,opt,name=browse_id,json=browseId,proto3" json:"browse_id,omitempty"`
+	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EmbeddedArtist) Reset() {
+	*x = EmbeddedArtist{}
+	mi := &file_proto_common_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EmbeddedArtist) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EmbeddedArtist) ProtoMessage() {}
+
+func (x *EmbeddedArtist) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EmbeddedArtist.ProtoReflect.Descriptor instead.
+func (*EmbeddedArtist) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *EmbeddedArtist) GetBrowseId() string {
+	if x != nil {
+		return x.BrowseId
+	}
+	return ""
+}
+
+func (x *EmbeddedArtist) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
 type QuickPick struct {
-	state         protoimpl.MessageState       `protogen:"open.v1"`
-	VideoId       string                       `protobuf:"bytes,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
-	Title         string                       `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
-	Thumbnail     string                       `protobuf:"bytes,3,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
-	Artists       []*QuickPick_QuickPickArtist `protobuf:"bytes,4,rep,name=artists,proto3" json:"artists,omitempty"`
-	Album         *QuickPick_QuickPickAlbum    `protobuf:"bytes,5,opt,name=album,proto3,oneof" json:"album,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VideoId       string                 `protobuf:"bytes,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Thumbnail     string                 `protobuf:"bytes,3,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
+	Artists       []*EmbeddedArtist      `protobuf:"bytes,4,rep,name=artists,proto3" json:"artists,omitempty"`
+	Album         *EmbeddedAlbum         `protobuf:"bytes,5,opt,name=album,proto3,oneof" json:"album,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *QuickPick) Reset() {
 	*x = QuickPick{}
-	mi := &file_proto_common_proto_msgTypes[5]
+	mi := &file_proto_common_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -539,7 +698,7 @@ func (x *QuickPick) String() string {
 func (*QuickPick) ProtoMessage() {}
 
 func (x *QuickPick) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_common_proto_msgTypes[5]
+	mi := &file_proto_common_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -552,7 +711,7 @@ func (x *QuickPick) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuickPick.ProtoReflect.Descriptor instead.
 func (*QuickPick) Descriptor() ([]byte, []int) {
-	return file_proto_common_proto_rawDescGZIP(), []int{5}
+	return file_proto_common_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *QuickPick) GetVideoId() string {
@@ -576,14 +735,14 @@ func (x *QuickPick) GetThumbnail() string {
 	return ""
 }
 
-func (x *QuickPick) GetArtists() []*QuickPick_QuickPickArtist {
+func (x *QuickPick) GetArtists() []*EmbeddedArtist {
 	if x != nil {
 		return x.Artists
 	}
 	return nil
 }
 
-func (x *QuickPick) GetAlbum() *QuickPick_QuickPickAlbum {
+func (x *QuickPick) GetAlbum() *EmbeddedAlbum {
 	if x != nil {
 		return x.Album
 	}
@@ -601,7 +760,7 @@ type MusicTrackStats struct {
 
 func (x *MusicTrackStats) Reset() {
 	*x = MusicTrackStats{}
-	mi := &file_proto_common_proto_msgTypes[6]
+	mi := &file_proto_common_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -613,7 +772,7 @@ func (x *MusicTrackStats) String() string {
 func (*MusicTrackStats) ProtoMessage() {}
 
 func (x *MusicTrackStats) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_common_proto_msgTypes[6]
+	mi := &file_proto_common_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -626,7 +785,7 @@ func (x *MusicTrackStats) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MusicTrackStats.ProtoReflect.Descriptor instead.
 func (*MusicTrackStats) Descriptor() ([]byte, []int) {
-	return file_proto_common_proto_rawDescGZIP(), []int{6}
+	return file_proto_common_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *MusicTrackStats) GetViewCount() uint64 {
@@ -650,29 +809,32 @@ func (x *MusicTrackStats) GetCommentCount() uint64 {
 	return 0
 }
 
-type QuickPick_QuickPickAlbum struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	BrowseId      string                 `protobuf:"bytes,1,opt,name=browse_id,json=browseId,proto3" json:"browse_id,omitempty"`
-	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+type YouTubeVideo struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	VideoId         string                 `protobuf:"bytes,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	Title           string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Thumbnail       string                 `protobuf:"bytes,3,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
+	Author          string                 `protobuf:"bytes,4,opt,name=author,proto3" json:"author,omitempty"`
+	AuthorChannelId string                 `protobuf:"bytes,5,opt,name=author_channel_id,json=authorChannelId,proto3" json:"author_channel_id,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
-func (x *QuickPick_QuickPickAlbum) Reset() {
-	*x = QuickPick_QuickPickAlbum{}
-	mi := &file_proto_common_proto_msgTypes[7]
+func (x *YouTubeVideo) Reset() {
+	*x = YouTubeVideo{}
+	mi := &file_proto_common_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *QuickPick_QuickPickAlbum) String() string {
+func (x *YouTubeVideo) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*QuickPick_QuickPickAlbum) ProtoMessage() {}
+func (*YouTubeVideo) ProtoMessage() {}
 
-func (x *QuickPick_QuickPickAlbum) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_common_proto_msgTypes[7]
+func (x *YouTubeVideo) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -683,48 +845,72 @@ func (x *QuickPick_QuickPickAlbum) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use QuickPick_QuickPickAlbum.ProtoReflect.Descriptor instead.
-func (*QuickPick_QuickPickAlbum) Descriptor() ([]byte, []int) {
-	return file_proto_common_proto_rawDescGZIP(), []int{5, 0}
+// Deprecated: Use YouTubeVideo.ProtoReflect.Descriptor instead.
+func (*YouTubeVideo) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *QuickPick_QuickPickAlbum) GetBrowseId() string {
+func (x *YouTubeVideo) GetVideoId() string {
 	if x != nil {
-		return x.BrowseId
+		return x.VideoId
 	}
 	return ""
 }
 
-func (x *QuickPick_QuickPickAlbum) GetTitle() string {
+func (x *YouTubeVideo) GetTitle() string {
 	if x != nil {
 		return x.Title
 	}
 	return ""
 }
 
-type QuickPick_QuickPickArtist struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	BrowseId      string                 `protobuf:"bytes,1,opt,name=browse_id,json=browseId,proto3" json:"browse_id,omitempty"`
-	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+func (x *YouTubeVideo) GetThumbnail() string {
+	if x != nil {
+		return x.Thumbnail
+	}
+	return ""
 }
 
-func (x *QuickPick_QuickPickArtist) Reset() {
-	*x = QuickPick_QuickPickArtist{}
-	mi := &file_proto_common_proto_msgTypes[8]
+func (x *YouTubeVideo) GetAuthor() string {
+	if x != nil {
+		return x.Author
+	}
+	return ""
+}
+
+func (x *YouTubeVideo) GetAuthorChannelId() string {
+	if x != nil {
+		return x.AuthorChannelId
+	}
+	return ""
+}
+
+type AlbumTrack struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	VideoId         string                 `protobuf:"bytes,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	Title           string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Duration        uint64                 `protobuf:"varint,3,opt,name=duration,proto3" json:"duration,omitempty"`
+	PositionInAlbum uint32                 `protobuf:"varint,4,opt,name=position_in_album,json=positionInAlbum,proto3" json:"position_in_album,omitempty"`
+	IsExplicit      *bool                  `protobuf:"varint,5,opt,name=is_explicit,json=isExplicit,proto3,oneof" json:"is_explicit,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *AlbumTrack) Reset() {
+	*x = AlbumTrack{}
+	mi := &file_proto_common_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *QuickPick_QuickPickArtist) String() string {
+func (x *AlbumTrack) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*QuickPick_QuickPickArtist) ProtoMessage() {}
+func (*AlbumTrack) ProtoMessage() {}
 
-func (x *QuickPick_QuickPickArtist) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_common_proto_msgTypes[8]
+func (x *AlbumTrack) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -735,23 +921,726 @@ func (x *QuickPick_QuickPickArtist) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use QuickPick_QuickPickArtist.ProtoReflect.Descriptor instead.
-func (*QuickPick_QuickPickArtist) Descriptor() ([]byte, []int) {
-	return file_proto_common_proto_rawDescGZIP(), []int{5, 1}
+// Deprecated: Use AlbumTrack.ProtoReflect.Descriptor instead.
+func (*AlbumTrack) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{10}
 }
 
-func (x *QuickPick_QuickPickArtist) GetBrowseId() string {
+func (x *AlbumTrack) GetVideoId() string {
+	if x != nil {
+		return x.VideoId
+	}
+	return ""
+}
+
+func (x *AlbumTrack) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *AlbumTrack) GetDuration() uint64 {
+	if x != nil {
+		return x.Duration
+	}
+	return 0
+}
+
+func (x *AlbumTrack) GetPositionInAlbum() uint32 {
+	if x != nil {
+		return x.PositionInAlbum
+	}
+	return 0
+}
+
+func (x *AlbumTrack) GetIsExplicit() bool {
+	if x != nil && x.IsExplicit != nil {
+		return *x.IsExplicit
+	}
+	return false
+}
+
+type Album struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Title          string                 `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	AlbumType      AlbumType              `protobuf:"varint,2,opt,name=album_type,json=albumType,proto3,enum=common.AlbumType" json:"album_type,omitempty"`
+	Release        string                 `protobuf:"bytes,3,opt,name=release,proto3" json:"release,omitempty"`
+	Cover          string                 `protobuf:"bytes,4,opt,name=cover,proto3" json:"cover,omitempty"`
+	TotalSongCount uint32                 `protobuf:"varint,5,opt,name=total_song_count,json=totalSongCount,proto3" json:"total_song_count,omitempty"`
+	TotalDuration  string                 `protobuf:"bytes,6,opt,name=total_duration,json=totalDuration,proto3" json:"total_duration,omitempty"`
+	Artist         *EmbeddedArtist        `protobuf:"bytes,7,opt,name=artist,proto3" json:"artist,omitempty"`
+	AlbumTracks    []*AlbumTrack          `protobuf:"bytes,8,rep,name=album_tracks,json=albumTracks,proto3" json:"album_tracks,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *Album) Reset() {
+	*x = Album{}
+	mi := &file_proto_common_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Album) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Album) ProtoMessage() {}
+
+func (x *Album) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Album.ProtoReflect.Descriptor instead.
+func (*Album) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *Album) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *Album) GetAlbumType() AlbumType {
+	if x != nil {
+		return x.AlbumType
+	}
+	return AlbumType_ALBUM_TYPE_UNSPECIFIED
+}
+
+func (x *Album) GetRelease() string {
+	if x != nil {
+		return x.Release
+	}
+	return ""
+}
+
+func (x *Album) GetCover() string {
+	if x != nil {
+		return x.Cover
+	}
+	return ""
+}
+
+func (x *Album) GetTotalSongCount() uint32 {
+	if x != nil {
+		return x.TotalSongCount
+	}
+	return 0
+}
+
+func (x *Album) GetTotalDuration() string {
+	if x != nil {
+		return x.TotalDuration
+	}
+	return ""
+}
+
+func (x *Album) GetArtist() *EmbeddedArtist {
+	if x != nil {
+		return x.Artist
+	}
+	return nil
+}
+
+func (x *Album) GetAlbumTracks() []*AlbumTrack {
+	if x != nil {
+		return x.AlbumTracks
+	}
+	return nil
+}
+
+type Track struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VideoId       string                 `protobuf:"bytes,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Thumbnail     string                 `protobuf:"bytes,3,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
+	Duration      uint64                 `protobuf:"varint,4,opt,name=duration,proto3" json:"duration,omitempty"`
+	Artists       []*EmbeddedArtist      `protobuf:"bytes,5,rep,name=artists,proto3" json:"artists,omitempty"`
+	IsExplicit    *bool                  `protobuf:"varint,6,opt,name=is_explicit,json=isExplicit,proto3,oneof" json:"is_explicit,omitempty"`
+	Album         *EmbeddedAlbum         `protobuf:"bytes,7,opt,name=album,proto3,oneof" json:"album,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Track) Reset() {
+	*x = Track{}
+	mi := &file_proto_common_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Track) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Track) ProtoMessage() {}
+
+func (x *Track) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Track.ProtoReflect.Descriptor instead.
+func (*Track) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *Track) GetVideoId() string {
+	if x != nil {
+		return x.VideoId
+	}
+	return ""
+}
+
+func (x *Track) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *Track) GetThumbnail() string {
+	if x != nil {
+		return x.Thumbnail
+	}
+	return ""
+}
+
+func (x *Track) GetDuration() uint64 {
+	if x != nil {
+		return x.Duration
+	}
+	return 0
+}
+
+func (x *Track) GetArtists() []*EmbeddedArtist {
+	if x != nil {
+		return x.Artists
+	}
+	return nil
+}
+
+func (x *Track) GetIsExplicit() bool {
+	if x != nil && x.IsExplicit != nil {
+		return *x.IsExplicit
+	}
+	return false
+}
+
+func (x *Track) GetAlbum() *EmbeddedAlbum {
+	if x != nil {
+		return x.Album
+	}
+	return nil
+}
+
+// SearchArtist is the message returned when you search for artists.
+type SearchArtist struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	BrowseId      string                 `protobuf:"bytes,1,opt,name=browse_id,json=browseId,proto3" json:"browse_id,omitempty"`
+	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Thumbnail     string                 `protobuf:"bytes,3,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
+	Audience      string                 `protobuf:"bytes,4,opt,name=audience,proto3" json:"audience,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchArtist) Reset() {
+	*x = SearchArtist{}
+	mi := &file_proto_common_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchArtist) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchArtist) ProtoMessage() {}
+
+func (x *SearchArtist) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchArtist.ProtoReflect.Descriptor instead.
+func (*SearchArtist) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *SearchArtist) GetBrowseId() string {
 	if x != nil {
 		return x.BrowseId
 	}
 	return ""
 }
 
-func (x *QuickPick_QuickPickArtist) GetTitle() string {
+func (x *SearchArtist) GetTitle() string {
 	if x != nil {
 		return x.Title
 	}
 	return ""
+}
+
+func (x *SearchArtist) GetThumbnail() string {
+	if x != nil {
+		return x.Thumbnail
+	}
+	return ""
+}
+
+func (x *SearchArtist) GetAudience() string {
+	if x != nil {
+		return x.Audience
+	}
+	return ""
+}
+
+// Artist is the message returned when you get an artist's details.
+type Artist struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	BrowseId      string                 `protobuf:"bytes,1,opt,name=browse_id,json=browseId,proto3" json:"browse_id,omitempty"`
+	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Thumbnail     string                 `protobuf:"bytes,3,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
+	Description   string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	Audience      string                 `protobuf:"bytes,5,opt,name=audience,proto3" json:"audience,omitempty"`
+	TopSongs      []*Artist_TopSongTrack `protobuf:"bytes,6,rep,name=top_songs,json=topSongs,proto3" json:"top_songs,omitempty"`
+	Albums        []*Artist_ArtistAlbum  `protobuf:"bytes,7,rep,name=albums,proto3" json:"albums,omitempty"`
+	SinglesAndEps []*Artist_ArtistAlbum  `protobuf:"bytes,8,rep,name=singles_and_eps,json=singlesAndEps,proto3" json:"singles_and_eps,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Artist) Reset() {
+	*x = Artist{}
+	mi := &file_proto_common_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Artist) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Artist) ProtoMessage() {}
+
+func (x *Artist) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Artist.ProtoReflect.Descriptor instead.
+func (*Artist) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *Artist) GetBrowseId() string {
+	if x != nil {
+		return x.BrowseId
+	}
+	return ""
+}
+
+func (x *Artist) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *Artist) GetThumbnail() string {
+	if x != nil {
+		return x.Thumbnail
+	}
+	return ""
+}
+
+func (x *Artist) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *Artist) GetAudience() string {
+	if x != nil {
+		return x.Audience
+	}
+	return ""
+}
+
+func (x *Artist) GetTopSongs() []*Artist_TopSongTrack {
+	if x != nil {
+		return x.TopSongs
+	}
+	return nil
+}
+
+func (x *Artist) GetAlbums() []*Artist_ArtistAlbum {
+	if x != nil {
+		return x.Albums
+	}
+	return nil
+}
+
+func (x *Artist) GetSinglesAndEps() []*Artist_ArtistAlbum {
+	if x != nil {
+		return x.SinglesAndEps
+	}
+	return nil
+}
+
+type SearchAlbum struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AlbumId       string                 `protobuf:"bytes,1,opt,name=album_id,json=albumId,proto3" json:"album_id,omitempty"`
+	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Thumbnail     string                 `protobuf:"bytes,3,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
+	ReleaseDate   string                 `protobuf:"bytes,4,opt,name=release_date,json=releaseDate,proto3" json:"release_date,omitempty"`
+	AlbumType     AlbumType              `protobuf:"varint,5,opt,name=album_type,json=albumType,proto3,enum=common.AlbumType" json:"album_type,omitempty"`
+	Artist        *EmbeddedArtist        `protobuf:"bytes,6,opt,name=artist,proto3" json:"artist,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchAlbum) Reset() {
+	*x = SearchAlbum{}
+	mi := &file_proto_common_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchAlbum) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchAlbum) ProtoMessage() {}
+
+func (x *SearchAlbum) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchAlbum.ProtoReflect.Descriptor instead.
+func (*SearchAlbum) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *SearchAlbum) GetAlbumId() string {
+	if x != nil {
+		return x.AlbumId
+	}
+	return ""
+}
+
+func (x *SearchAlbum) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *SearchAlbum) GetThumbnail() string {
+	if x != nil {
+		return x.Thumbnail
+	}
+	return ""
+}
+
+func (x *SearchAlbum) GetReleaseDate() string {
+	if x != nil {
+		return x.ReleaseDate
+	}
+	return ""
+}
+
+func (x *SearchAlbum) GetAlbumType() AlbumType {
+	if x != nil {
+		return x.AlbumType
+	}
+	return AlbumType_ALBUM_TYPE_UNSPECIFIED
+}
+
+func (x *SearchAlbum) GetArtist() *EmbeddedArtist {
+	if x != nil {
+		return x.Artist
+	}
+	return nil
+}
+
+type FollowedArtist struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	FollowId      string                 `protobuf:"bytes,1,opt,name=follow_id,json=followId,proto3" json:"follow_id,omitempty"`
+	BrowseId      string                 `protobuf:"bytes,2,opt,name=browse_id,json=browseId,proto3" json:"browse_id,omitempty"`
+	FollowerEmail string                 `protobuf:"bytes,3,opt,name=follower_email,json=followerEmail,proto3" json:"follower_email,omitempty"`
+	Name          string                 `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
+	Thumbnail     string                 `protobuf:"bytes,5,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FollowedArtist) Reset() {
+	*x = FollowedArtist{}
+	mi := &file_proto_common_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FollowedArtist) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FollowedArtist) ProtoMessage() {}
+
+func (x *FollowedArtist) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FollowedArtist.ProtoReflect.Descriptor instead.
+func (*FollowedArtist) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *FollowedArtist) GetFollowId() string {
+	if x != nil {
+		return x.FollowId
+	}
+	return ""
+}
+
+func (x *FollowedArtist) GetBrowseId() string {
+	if x != nil {
+		return x.BrowseId
+	}
+	return ""
+}
+
+func (x *FollowedArtist) GetFollowerEmail() string {
+	if x != nil {
+		return x.FollowerEmail
+	}
+	return ""
+}
+
+func (x *FollowedArtist) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *FollowedArtist) GetThumbnail() string {
+	if x != nil {
+		return x.Thumbnail
+	}
+	return ""
+}
+
+type Artist_TopSongTrack struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VideoId       string                 `protobuf:"bytes,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Thumbnail     string                 `protobuf:"bytes,3,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
+	PlayCount     string                 `protobuf:"bytes,4,opt,name=play_count,json=playCount,proto3" json:"play_count,omitempty"`
+	IsExplicit    *bool                  `protobuf:"varint,5,opt,name=is_explicit,json=isExplicit,proto3,oneof" json:"is_explicit,omitempty"`
+	Album         *EmbeddedAlbum         `protobuf:"bytes,6,opt,name=album,proto3,oneof" json:"album,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Artist_TopSongTrack) Reset() {
+	*x = Artist_TopSongTrack{}
+	mi := &file_proto_common_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Artist_TopSongTrack) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Artist_TopSongTrack) ProtoMessage() {}
+
+func (x *Artist_TopSongTrack) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Artist_TopSongTrack.ProtoReflect.Descriptor instead.
+func (*Artist_TopSongTrack) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{14, 0}
+}
+
+func (x *Artist_TopSongTrack) GetVideoId() string {
+	if x != nil {
+		return x.VideoId
+	}
+	return ""
+}
+
+func (x *Artist_TopSongTrack) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *Artist_TopSongTrack) GetThumbnail() string {
+	if x != nil {
+		return x.Thumbnail
+	}
+	return ""
+}
+
+func (x *Artist_TopSongTrack) GetPlayCount() string {
+	if x != nil {
+		return x.PlayCount
+	}
+	return ""
+}
+
+func (x *Artist_TopSongTrack) GetIsExplicit() bool {
+	if x != nil && x.IsExplicit != nil {
+		return *x.IsExplicit
+	}
+	return false
+}
+
+func (x *Artist_TopSongTrack) GetAlbum() *EmbeddedAlbum {
+	if x != nil {
+		return x.Album
+	}
+	return nil
+}
+
+type Artist_ArtistAlbum struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AlbumId       string                 `protobuf:"bytes,1,opt,name=album_id,json=albumId,proto3" json:"album_id,omitempty"`
+	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Thumbnail     string                 `protobuf:"bytes,3,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
+	ReleaseDate   string                 `protobuf:"bytes,4,opt,name=release_date,json=releaseDate,proto3" json:"release_date,omitempty"`
+	AlbumType     AlbumType              `protobuf:"varint,5,opt,name=album_type,json=albumType,proto3,enum=common.AlbumType" json:"album_type,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Artist_ArtistAlbum) Reset() {
+	*x = Artist_ArtistAlbum{}
+	mi := &file_proto_common_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Artist_ArtistAlbum) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Artist_ArtistAlbum) ProtoMessage() {}
+
+func (x *Artist_ArtistAlbum) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Artist_ArtistAlbum.ProtoReflect.Descriptor instead.
+func (*Artist_ArtistAlbum) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{14, 1}
+}
+
+func (x *Artist_ArtistAlbum) GetAlbumId() string {
+	if x != nil {
+		return x.AlbumId
+	}
+	return ""
+}
+
+func (x *Artist_ArtistAlbum) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *Artist_ArtistAlbum) GetThumbnail() string {
+	if x != nil {
+		return x.Thumbnail
+	}
+	return ""
+}
+
+func (x *Artist_ArtistAlbum) GetReleaseDate() string {
+	if x != nil {
+		return x.ReleaseDate
+	}
+	return ""
+}
+
+func (x *Artist_ArtistAlbum) GetAlbumType() AlbumType {
+	if x != nil {
+		return x.AlbumType
+	}
+	return AlbumType_ALBUM_TYPE_UNSPECIFIED
 }
 
 var File_proto_common_proto protoreflect.FileDescriptor
@@ -772,27 +1661,27 @@ const file_proto_common_proto_rawDesc = "" +
 	"coverImage\x88\x01\x01B\f\n" +
 	"\n" +
 	"_is_publicB\x0e\n" +
-	"\f_cover_image\"\xf9\x02\n" +
+	"\f_cover_image\"\x93\x03\n" +
 	"\rPlaylistTrack\x12*\n" +
 	"\x11playlist_track_id\x18\x01 \x01(\tR\x0fplaylistTrackId\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1c\n" +
 	"\tthumbnail\x18\x03 \x01(\tR\tthumbnail\x120\n" +
 	"\x14position_in_playlist\x18\x04 \x01(\rR\x12positionInPlaylist\x12$\n" +
 	"\vis_explicit\x18\x05 \x01(\bH\x00R\n" +
-	"isExplicit\x88\x01\x01\x12\x16\n" +
-	"\x06author\x18\x06 \x01(\tR\x06author\x12\x1a\n" +
-	"\bduration\x18\a \x01(\tR\bduration\x12\x19\n" +
+	"isExplicit\x88\x01\x01\x12\x1a\n" +
+	"\bduration\x18\a \x01(\x04R\bduration\x12\x19\n" +
 	"\bvideo_id\x18\b \x01(\tR\avideoId\x120\n" +
 	"\n" +
 	"video_type\x18\t \x01(\x0e2\x11.common.VideoTypeR\tvideoType\x12\x1f\n" +
 	"\vplaylist_id\x18\n" +
 	" \x01(\tR\n" +
-	"playlistIdB\x0e\n" +
+	"playlistId\x120\n" +
+	"\aartists\x18\v \x03(\v2\x16.common.EmbeddedArtistR\aartistsB\x0e\n" +
 	"\f_is_explicit\"_\n" +
 	"\fTracksLength\x12\x1d\n" +
 	"\n" +
-	"song_count\x18\x01 \x01(\rR\tsongCount\x120\n" +
-	"\x14song_duration_second\x18\x02 \x01(\rR\x12songDurationSecond\"\xa6\x02\n" +
+	"song_count\x18\x01 \x01(\x04R\tsongCount\x120\n" +
+	"\x14song_duration_second\x18\x02 \x01(\x04R\x12songDurationSecond\"\xc0\x02\n" +
 	"\n" +
 	"LikedTrack\x12\x17\n" +
 	"\alike_id\x18\x01 \x01(\tR\x06likeId\x12\x14\n" +
@@ -800,42 +1689,129 @@ const file_proto_common_proto_rawDesc = "" +
 	"\x05title\x18\x03 \x01(\tR\x05title\x12\x1c\n" +
 	"\tthumbnail\x18\x04 \x01(\tR\tthumbnail\x12$\n" +
 	"\vis_explicit\x18\x05 \x01(\bH\x00R\n" +
-	"isExplicit\x88\x01\x01\x12\x16\n" +
-	"\x06author\x18\x06 \x01(\tR\x06author\x12\x1a\n" +
-	"\bduration\x18\a \x01(\tR\bduration\x12\x19\n" +
-	"\bvideo_id\x18\b \x01(\tR\avideoId\x120\n" +
+	"isExplicit\x88\x01\x01\x12\x1a\n" +
+	"\bduration\x18\x06 \x01(\x04R\bduration\x12\x19\n" +
+	"\bvideo_id\x18\a \x01(\tR\avideoId\x120\n" +
 	"\n" +
-	"video_type\x18\t \x01(\x0e2\x11.common.VideoTypeR\tvideoTypeB\x0e\n" +
+	"video_type\x18\b \x01(\x0e2\x11.common.VideoTypeR\tvideoType\x120\n" +
+	"\aartists\x18\t \x03(\v2\x16.common.EmbeddedArtistR\aartistsB\x0e\n" +
 	"\f_is_explicit\"\x90\x01\n" +
 	"\rSuggestedLink\x12\x1c\n" +
 	"\tthumbnail\x18\x01 \x01(\tR\tthumbnail\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1a\n" +
 	"\bsubtitle\x18\x03 \x01(\tR\bsubtitle\x12\x1b\n" +
 	"\tbrowse_id\x18\x04 \x01(\tR\bbrowseId\x12\x12\n" +
-	"\x04type\x18\x06 \x01(\tR\x04type\"\xe9\x02\n" +
+	"\x04type\x18\x06 \x01(\tR\x04type\"B\n" +
+	"\rEmbeddedAlbum\x12\x1b\n" +
+	"\tbrowse_id\x18\x01 \x01(\tR\bbrowseId\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\"C\n" +
+	"\x0eEmbeddedArtist\x12\x1b\n" +
+	"\tbrowse_id\x18\x01 \x01(\tR\bbrowseId\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\"\xc8\x01\n" +
 	"\tQuickPick\x12\x19\n" +
 	"\bvideo_id\x18\x01 \x01(\tR\avideoId\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1c\n" +
-	"\tthumbnail\x18\x03 \x01(\tR\tthumbnail\x12;\n" +
-	"\aartists\x18\x04 \x03(\v2!.common.QuickPick.QuickPickArtistR\aartists\x12;\n" +
-	"\x05album\x18\x05 \x01(\v2 .common.QuickPick.QuickPickAlbumH\x00R\x05album\x88\x01\x01\x1aC\n" +
-	"\x0eQuickPickAlbum\x12\x1b\n" +
-	"\tbrowse_id\x18\x01 \x01(\tR\bbrowseId\x12\x14\n" +
-	"\x05title\x18\x02 \x01(\tR\x05title\x1aD\n" +
-	"\x0fQuickPickArtist\x12\x1b\n" +
-	"\tbrowse_id\x18\x01 \x01(\tR\bbrowseId\x12\x14\n" +
-	"\x05title\x18\x02 \x01(\tR\x05titleB\b\n" +
+	"\tthumbnail\x18\x03 \x01(\tR\tthumbnail\x120\n" +
+	"\aartists\x18\x04 \x03(\v2\x16.common.EmbeddedArtistR\aartists\x120\n" +
+	"\x05album\x18\x05 \x01(\v2\x15.common.EmbeddedAlbumH\x00R\x05album\x88\x01\x01B\b\n" +
 	"\x06_album\"t\n" +
 	"\x0fMusicTrackStats\x12\x1d\n" +
 	"\n" +
 	"view_count\x18\x01 \x01(\x04R\tviewCount\x12\x1d\n" +
 	"\n" +
 	"like_count\x18\x02 \x01(\x04R\tlikeCount\x12#\n" +
-	"\rcomment_count\x18\x03 \x01(\x04R\fcommentCount*T\n" +
+	"\rcomment_count\x18\x03 \x01(\x04R\fcommentCount\"\xa1\x01\n" +
+	"\fYouTubeVideo\x12\x19\n" +
+	"\bvideo_id\x18\x01 \x01(\tR\avideoId\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1c\n" +
+	"\tthumbnail\x18\x03 \x01(\tR\tthumbnail\x12\x16\n" +
+	"\x06author\x18\x04 \x01(\tR\x06author\x12*\n" +
+	"\x11author_channel_id\x18\x05 \x01(\tR\x0fauthorChannelId\"\xbb\x01\n" +
+	"\n" +
+	"AlbumTrack\x12\x19\n" +
+	"\bvideo_id\x18\x01 \x01(\tR\avideoId\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1a\n" +
+	"\bduration\x18\x03 \x01(\x04R\bduration\x12*\n" +
+	"\x11position_in_album\x18\x04 \x01(\rR\x0fpositionInAlbum\x12$\n" +
+	"\vis_explicit\x18\x05 \x01(\bH\x00R\n" +
+	"isExplicit\x88\x01\x01B\x0e\n" +
+	"\f_is_explicit\"\xb7\x02\n" +
+	"\x05Album\x12\x14\n" +
+	"\x05title\x18\x01 \x01(\tR\x05title\x120\n" +
+	"\n" +
+	"album_type\x18\x02 \x01(\x0e2\x11.common.AlbumTypeR\talbumType\x12\x18\n" +
+	"\arelease\x18\x03 \x01(\tR\arelease\x12\x14\n" +
+	"\x05cover\x18\x04 \x01(\tR\x05cover\x12(\n" +
+	"\x10total_song_count\x18\x05 \x01(\rR\x0etotalSongCount\x12%\n" +
+	"\x0etotal_duration\x18\x06 \x01(\tR\rtotalDuration\x12.\n" +
+	"\x06artist\x18\a \x01(\v2\x16.common.EmbeddedArtistR\x06artist\x125\n" +
+	"\falbum_tracks\x18\b \x03(\v2\x12.common.AlbumTrackR\valbumTracks\"\x96\x02\n" +
+	"\x05Track\x12\x19\n" +
+	"\bvideo_id\x18\x01 \x01(\tR\avideoId\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1c\n" +
+	"\tthumbnail\x18\x03 \x01(\tR\tthumbnail\x12\x1a\n" +
+	"\bduration\x18\x04 \x01(\x04R\bduration\x120\n" +
+	"\aartists\x18\x05 \x03(\v2\x16.common.EmbeddedArtistR\aartists\x12$\n" +
+	"\vis_explicit\x18\x06 \x01(\bH\x00R\n" +
+	"isExplicit\x88\x01\x01\x120\n" +
+	"\x05album\x18\a \x01(\v2\x15.common.EmbeddedAlbumH\x01R\x05album\x88\x01\x01B\x0e\n" +
+	"\f_is_explicitB\b\n" +
+	"\x06_album\"{\n" +
+	"\fSearchArtist\x12\x1b\n" +
+	"\tbrowse_id\x18\x01 \x01(\tR\bbrowseId\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1c\n" +
+	"\tthumbnail\x18\x03 \x01(\tR\tthumbnail\x12\x1a\n" +
+	"\baudience\x18\x04 \x01(\tR\baudience\"\xee\x05\n" +
+	"\x06Artist\x12\x1b\n" +
+	"\tbrowse_id\x18\x01 \x01(\tR\bbrowseId\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1c\n" +
+	"\tthumbnail\x18\x03 \x01(\tR\tthumbnail\x12 \n" +
+	"\vdescription\x18\x04 \x01(\tR\vdescription\x12\x1a\n" +
+	"\baudience\x18\x05 \x01(\tR\baudience\x128\n" +
+	"\ttop_songs\x18\x06 \x03(\v2\x1b.common.Artist.TopSongTrackR\btopSongs\x122\n" +
+	"\x06albums\x18\a \x03(\v2\x1a.common.Artist.ArtistAlbumR\x06albums\x12B\n" +
+	"\x0fsingles_and_eps\x18\b \x03(\v2\x1a.common.Artist.ArtistAlbumR\rsinglesAndEps\x1a\xee\x01\n" +
+	"\fTopSongTrack\x12\x19\n" +
+	"\bvideo_id\x18\x01 \x01(\tR\avideoId\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1c\n" +
+	"\tthumbnail\x18\x03 \x01(\tR\tthumbnail\x12\x1d\n" +
+	"\n" +
+	"play_count\x18\x04 \x01(\tR\tplayCount\x12$\n" +
+	"\vis_explicit\x18\x05 \x01(\bH\x00R\n" +
+	"isExplicit\x88\x01\x01\x120\n" +
+	"\x05album\x18\x06 \x01(\v2\x15.common.EmbeddedAlbumH\x01R\x05album\x88\x01\x01B\x0e\n" +
+	"\f_is_explicitB\b\n" +
+	"\x06_album\x1a\xb1\x01\n" +
+	"\vArtistAlbum\x12\x19\n" +
+	"\balbum_id\x18\x01 \x01(\tR\aalbumId\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1c\n" +
+	"\tthumbnail\x18\x03 \x01(\tR\tthumbnail\x12!\n" +
+	"\frelease_date\x18\x04 \x01(\tR\vreleaseDate\x120\n" +
+	"\n" +
+	"album_type\x18\x05 \x01(\x0e2\x11.common.AlbumTypeR\talbumType\"\xe1\x01\n" +
+	"\vSearchAlbum\x12\x19\n" +
+	"\balbum_id\x18\x01 \x01(\tR\aalbumId\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1c\n" +
+	"\tthumbnail\x18\x03 \x01(\tR\tthumbnail\x12!\n" +
+	"\frelease_date\x18\x04 \x01(\tR\vreleaseDate\x120\n" +
+	"\n" +
+	"album_type\x18\x05 \x01(\x0e2\x11.common.AlbumTypeR\talbumType\x12.\n" +
+	"\x06artist\x18\x06 \x01(\v2\x16.common.EmbeddedArtistR\x06artist\"\xa3\x01\n" +
+	"\x0eFollowedArtist\x12\x1b\n" +
+	"\tfollow_id\x18\x01 \x01(\tR\bfollowId\x12\x1b\n" +
+	"\tbrowse_id\x18\x02 \x01(\tR\bbrowseId\x12%\n" +
+	"\x0efollower_email\x18\x03 \x01(\tR\rfollowerEmail\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1c\n" +
+	"\tthumbnail\x18\x05 \x01(\tR\tthumbnail*T\n" +
 	"\tVideoType\x12\x1a\n" +
 	"\x16VIDEO_TYPE_UNSPECIFIED\x10\x00\x12\x14\n" +
 	"\x10VIDEO_TYPE_TRACK\x10\x01\x12\x15\n" +
-	"\x11VIDEO_TYPE_UVIDEO\x10\x02B\x1bZ\x19wavelength/proto/commonpbb\x06proto3"
+	"\x11VIDEO_TYPE_UVIDEO\x10\x02*g\n" +
+	"\tAlbumType\x12\x1a\n" +
+	"\x16ALBUM_TYPE_UNSPECIFIED\x10\x00\x12\x14\n" +
+	"\x10ALBUM_TYPE_ALBUM\x10\x01\x12\x15\n" +
+	"\x11ALBUM_TYPE_SINGLE\x10\x02\x12\x11\n" +
+	"\rALBUM_TYPE_EP\x10\x03B\x1bZ\x19wavelength/proto/commonpbb\x06proto3"
 
 var (
 	file_proto_common_proto_rawDescOnce sync.Once
@@ -849,30 +1825,55 @@ func file_proto_common_proto_rawDescGZIP() []byte {
 	return file_proto_common_proto_rawDescData
 }
 
-var file_proto_common_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_proto_common_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_proto_common_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_proto_common_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
 var file_proto_common_proto_goTypes = []any{
-	(VideoType)(0),                    // 0: common.VideoType
-	(*Playlist)(nil),                  // 1: common.Playlist
-	(*PlaylistTrack)(nil),             // 2: common.PlaylistTrack
-	(*TracksLength)(nil),              // 3: common.TracksLength
-	(*LikedTrack)(nil),                // 4: common.LikedTrack
-	(*SuggestedLink)(nil),             // 5: common.SuggestedLink
-	(*QuickPick)(nil),                 // 6: common.QuickPick
-	(*MusicTrackStats)(nil),           // 7: common.MusicTrackStats
-	(*QuickPick_QuickPickAlbum)(nil),  // 8: common.QuickPick.QuickPickAlbum
-	(*QuickPick_QuickPickArtist)(nil), // 9: common.QuickPick.QuickPickArtist
+	(VideoType)(0),              // 0: common.VideoType
+	(AlbumType)(0),              // 1: common.AlbumType
+	(*Playlist)(nil),            // 2: common.Playlist
+	(*PlaylistTrack)(nil),       // 3: common.PlaylistTrack
+	(*TracksLength)(nil),        // 4: common.TracksLength
+	(*LikedTrack)(nil),          // 5: common.LikedTrack
+	(*SuggestedLink)(nil),       // 6: common.SuggestedLink
+	(*EmbeddedAlbum)(nil),       // 7: common.EmbeddedAlbum
+	(*EmbeddedArtist)(nil),      // 8: common.EmbeddedArtist
+	(*QuickPick)(nil),           // 9: common.QuickPick
+	(*MusicTrackStats)(nil),     // 10: common.MusicTrackStats
+	(*YouTubeVideo)(nil),        // 11: common.YouTubeVideo
+	(*AlbumTrack)(nil),          // 12: common.AlbumTrack
+	(*Album)(nil),               // 13: common.Album
+	(*Track)(nil),               // 14: common.Track
+	(*SearchArtist)(nil),        // 15: common.SearchArtist
+	(*Artist)(nil),              // 16: common.Artist
+	(*SearchAlbum)(nil),         // 17: common.SearchAlbum
+	(*FollowedArtist)(nil),      // 18: common.FollowedArtist
+	(*Artist_TopSongTrack)(nil), // 19: common.Artist.TopSongTrack
+	(*Artist_ArtistAlbum)(nil),  // 20: common.Artist.ArtistAlbum
 }
 var file_proto_common_proto_depIdxs = []int32{
-	0, // 0: common.PlaylistTrack.video_type:type_name -> common.VideoType
-	0, // 1: common.LikedTrack.video_type:type_name -> common.VideoType
-	9, // 2: common.QuickPick.artists:type_name -> common.QuickPick.QuickPickArtist
-	8, // 3: common.QuickPick.album:type_name -> common.QuickPick.QuickPickAlbum
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	0,  // 0: common.PlaylistTrack.video_type:type_name -> common.VideoType
+	8,  // 1: common.PlaylistTrack.artists:type_name -> common.EmbeddedArtist
+	0,  // 2: common.LikedTrack.video_type:type_name -> common.VideoType
+	8,  // 3: common.LikedTrack.artists:type_name -> common.EmbeddedArtist
+	8,  // 4: common.QuickPick.artists:type_name -> common.EmbeddedArtist
+	7,  // 5: common.QuickPick.album:type_name -> common.EmbeddedAlbum
+	1,  // 6: common.Album.album_type:type_name -> common.AlbumType
+	8,  // 7: common.Album.artist:type_name -> common.EmbeddedArtist
+	12, // 8: common.Album.album_tracks:type_name -> common.AlbumTrack
+	8,  // 9: common.Track.artists:type_name -> common.EmbeddedArtist
+	7,  // 10: common.Track.album:type_name -> common.EmbeddedAlbum
+	19, // 11: common.Artist.top_songs:type_name -> common.Artist.TopSongTrack
+	20, // 12: common.Artist.albums:type_name -> common.Artist.ArtistAlbum
+	20, // 13: common.Artist.singles_and_eps:type_name -> common.Artist.ArtistAlbum
+	1,  // 14: common.SearchAlbum.album_type:type_name -> common.AlbumType
+	8,  // 15: common.SearchAlbum.artist:type_name -> common.EmbeddedArtist
+	7,  // 16: common.Artist.TopSongTrack.album:type_name -> common.EmbeddedAlbum
+	1,  // 17: common.Artist.ArtistAlbum.album_type:type_name -> common.AlbumType
+	18, // [18:18] is the sub-list for method output_type
+	18, // [18:18] is the sub-list for method input_type
+	18, // [18:18] is the sub-list for extension type_name
+	18, // [18:18] is the sub-list for extension extendee
+	0,  // [0:18] is the sub-list for field type_name
 }
 
 func init() { file_proto_common_proto_init() }
@@ -883,14 +1884,17 @@ func file_proto_common_proto_init() {
 	file_proto_common_proto_msgTypes[0].OneofWrappers = []any{}
 	file_proto_common_proto_msgTypes[1].OneofWrappers = []any{}
 	file_proto_common_proto_msgTypes[3].OneofWrappers = []any{}
-	file_proto_common_proto_msgTypes[5].OneofWrappers = []any{}
+	file_proto_common_proto_msgTypes[7].OneofWrappers = []any{}
+	file_proto_common_proto_msgTypes[10].OneofWrappers = []any{}
+	file_proto_common_proto_msgTypes[12].OneofWrappers = []any{}
+	file_proto_common_proto_msgTypes[17].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_common_proto_rawDesc), len(file_proto_common_proto_rawDesc)),
-			NumEnums:      1,
-			NumMessages:   9,
+			NumEnums:      2,
+			NumMessages:   19,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

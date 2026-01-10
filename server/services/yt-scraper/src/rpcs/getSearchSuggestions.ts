@@ -81,7 +81,7 @@ export default async function getSearchSuggestions(
     suggestedLink.setSubtitle(subtitleCol.title.text);
     suggestedLink.setBrowseId(link.id);
 
-    const thumbnail = getHighestQualityThumbnail(link.thumbnail.contents);
+    const thumbnail = getHighestQualityThumbnail(link.thumbnail);
 
     if (thumbnail) suggestedLink.setThumbnail(thumbnail.url);
     suggestedLinks.push(suggestedLink);

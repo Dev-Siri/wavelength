@@ -3,8 +3,8 @@ package music_rpcs
 import (
 	"context"
 	"wavelength/proto/musicpb"
-	"wavelength/services/gateway/api"
-	"wavelength/services/gateway/utils"
+	"wavelength/services/music/api"
+	"wavelength/services/music/utils"
 	"wavelength/shared/logging"
 
 	"go.uber.org/zap"

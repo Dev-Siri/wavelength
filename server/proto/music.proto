@@ -15,10 +15,13 @@ service MusicService {
   rpc GetQuickPicks(GetQuickPicksRequest) returns (GetQuickPicksResponse);
   rpc GetMusicDuration(GetMusicDurationRequest) returns (GetMusicDurationResponse);
   rpc GetMusicTrackStats(GetMusicTrackStatsRequest) returns (GetMusicTrackStatsResponse);
+  rpc GetMusicVideoId(GetMusicVideoIdRequest) returns (GetMusicVideoIdResponse);
+  rpc SearchMusicTracks(SearchMusicTracksRequest) returns (SearchMusicTracksResponse);
+  rpc SearchYouTubeVideos(SearchYouTubeVideosRequest) returns (SearchYouTubeVideosResponse);
 }
 
 message LikeTrackRequest {
-  string author = 1;
+  repeated common.EmbeddedArtist artists = 1;
   string thumbnail = 2;
   string duration = 3;
   bool is_explicit = 4;
@@ -116,4 +119,29 @@ message GetMusicTrackStatsRequest {
 
 message GetMusicTrackStatsResponse {
   common.MusicTrackStats music_track_stats = 1;
+}
+
+message SearchYouTubeVideosRequest {
+  string query = 1;
+}
+
+message SearchYouTubeVideosResponse {
+  repeated common.YouTubeVideo youtube_videos = 1;
+}
+
+message GetMusicVideoIdRequest {
+  string title = 1;
+  string artist = 2;
+}
+
+message GetMusicVideoIdResponse {
+  string video_id = 1;
+}
+
+message SearchMusicTracksRequest {
+  string query = 1;
+}
+
+message SearchMusicTracksResponse {
+  repeated common.Track tracks = 1;
 }

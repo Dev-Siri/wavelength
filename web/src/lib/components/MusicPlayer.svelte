@@ -72,6 +72,9 @@
     const youtubePlayer = createYouTubePlayer(musicPlayerElement, {
       playerVars: {
         autoplay: 0,
+        controls: 0,
+        disablekb: 1,
+        playsinline: 1,
       },
     });
 

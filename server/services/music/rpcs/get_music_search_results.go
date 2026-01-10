@@ -5,7 +5,7 @@ import (
 	"strings"
 	"wavelength/proto/musicpb"
 	"wavelength/proto/yt_scraperpb"
-	"wavelength/services/music/clients"
+	shared_clients "wavelength/shared/clients"
 	"wavelength/shared/logging"
 
 	"go.uber.org/zap"
@@ -17,7 +17,7 @@ func (m *MusicService) GetMusicSearchSuggestions(
 	ctx context.Context,
 	request *musicpb.GetMusicSearchSuggestionsRequest,
 ) (*musicpb.GetMusicSearchSuggestionsResponse, error) {
-	response, err := clients.YtScraperClient.GetSearchSuggestions(ctx, &yt_scraperpb.GetSearchSuggestionsRequest{
+	response, err := shared_clients.YtScraperClient.GetSearchSuggestions(ctx, &yt_scraperpb.GetSearchSuggestionsRequest{
 		Query: request.Query,
 	})
 	if err != nil {

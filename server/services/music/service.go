@@ -5,8 +5,8 @@ import (
 	"net"
 	"wavelength/proto/musicpb"
 	"wavelength/services/music/api"
-	"wavelength/services/music/clients"
 	music_rpcs "wavelength/services/music/rpcs"
+	shared_clients "wavelength/shared/clients"
 	shared_db "wavelength/shared/db"
 	shared_env "wavelength/shared/env"
 	"wavelength/shared/logging"
@@ -25,7 +25,7 @@ func main() {
 		logging.Logger.Error("Failed to initialize environment variables.", zap.Error(err))
 	}
 
-	if err := clients.InitYtScraperClient(); err != nil {
+	if err := shared_clients.InitYtScraperClient(); err != nil {
 		logging.Logger.Fatal("YtScraper-service client failed to connect.", zap.Error(err))
 	}
 
@@ -39,6 +39,10 @@ func main() {
 				logging.Logger.Fatal("Failed to close database connection.", zap.Error(err))
 			}
 		}()
+	}
+
+	if err := shared_clients.InitArtistClient(); err != nil {
+		logging.Logger.Fatal("Artist-service client failed to connect.", zap.Error(err))
 	}
 
 	if err := api.InitializeYouTubeV3Client(); err != nil {

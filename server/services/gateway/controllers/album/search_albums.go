@@ -1,41 +1,29 @@
 package album_controllers
 
 import (
-	"wavelength/services/gateway/api"
+	"wavelength/proto/albumpb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 func SearchAlbums(ctx *fiber.Ctx) error {
 	query := ctx.Query("q")
-	nextPageToken := ctx.Query("nextPageToken")
 
 	if query == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "Query (q) is required for searching albums.")
 	}
 
-	searchResults, err := api.YouTubeClient.SearchAlbums(query, nextPageToken)
-
+	albumSearchResponse, err := clients.AlbumClient.SearchAlbums(ctx.Context(), &albumpb.SearchAlbumsRequest{
+		Query: query,
+	})
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while searching for albums: "+err.Error())
+		go logging.Logger.Error("AlbumService: 'SearchAlbums' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Albums search failed.")
 	}
 
-	albums := make([]models.Album, 0)
-
-	for _, searchResult := range searchResults.Result {
-		album := models.Album{
-			AlbumId:     searchResult.AlbumId,
-			AlbumType:   "Album",
-			Title:       searchResult.Title,
-			Thumbnail:   searchResult.Thumbnail,
-			Author:      searchResult.Author,
-			ReleaseDate: searchResult.ReleaseDate,
-			IsExplicit:  searchResult.IsExplicit,
-		}
-
-		albums = append(albums, album)
-	}
-
-	return models.Success(ctx, albums)
+	return models.Success(ctx, albumSearchResponse)
 }

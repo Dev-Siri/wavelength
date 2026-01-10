@@ -14,6 +14,8 @@ FROM debian:bookworm-slim
 
 WORKDIR /app
 
+RUN apt update && apt install -y --no-install-recommends ca-certificates
+
 COPY --from=builder /usr/local/bin/music /usr/local/bin/music
 
 RUN chmod +x /usr/local/bin/music

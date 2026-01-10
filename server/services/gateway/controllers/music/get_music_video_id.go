@@ -1,14 +1,13 @@
 package music_controllers
 
 import (
-	"fmt"
-	"html"
-	"strings"
-	"wavelength/services/gateway/api"
+	"wavelength/proto/musicpb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/sahilm/fuzzy"
+	"go.uber.org/zap"
 )
 
 // NOTE:
@@ -30,54 +29,14 @@ func GetMusicVideoPreviewId(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Artist (artist) search param is required.")
 	}
 
-	q := fmt.Sprintf("%s %s -#shorts", artist, songTitle)
-	response, err := api.YouTubeV3Client.Search.List([]string{"id", "snippet"}).
-		Q(q).
-		VideoCategoryId("10").
-		MaxResults(15).
-		Type("video").
-		Order("relevance").
-		Do()
-
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get music video from YouTube: "+err.Error())
-	}
-
-	videos := []models.SearchableYouTubeVideo{}
-
-	for _, item := range response.Items {
-		videos = append(videos, models.SearchableYouTubeVideo{
-			VideoID: item.Id.VideoId,
-			Title:   item.Snippet.Title,
-			Channel: item.Snippet.ChannelTitle,
-		})
-	}
-
-	if len(videos) == 0 {
-		return fiber.NewError(fiber.StatusNotFound, "No suitable music video found")
-	}
-
-	keyword := fmt.Sprintf("%s %s official music video", artist, songTitle)
-	titles := make([]string, len(videos))
-
-	for i, v := range videos {
-		titles[i] = strings.ToLower(
-			html.UnescapeString(v.Title) + " " + v.Channel,
-		)
-	}
-
-	matches := fuzzy.Find(strings.ToLower(keyword), titles)
-
-	var selectedVideo models.SearchableYouTubeVideo
-
-	if len(matches) > 0 {
-		selectedVideo = videos[matches[0].Index]
-	} else {
-		// Fallback.
-		selectedVideo = videos[0]
-	}
-
-	return models.Success(ctx, models.MusicVideoPreviewId{
-		VideoId: selectedVideo.VideoID,
+	musicVideoPreviewResponse, err := clients.MusicClient.GetMusicVideoId(ctx.Context(), &musicpb.GetMusicVideoIdRequest{
+		Title:  songTitle,
+		Artist: artist,
 	})
+	if err != nil {
+		go logging.Logger.Error("MusicService: 'GetMusicVideoId' errored", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Music video fetch from YouTube failed.")
+	}
+
+	return models.Success(ctx, musicVideoPreviewResponse)
 }

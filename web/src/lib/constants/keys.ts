@@ -10,6 +10,7 @@ export const cookieKeys = {
 
 export const svelteQueryKeys = {
   userPlaylists: ["user-playlists"],
+  followedArtists: ["followed-artists"],
   region: ["region"],
   quickPicks: ["quick-picks"],
   likes: ["likes"],
@@ -21,12 +22,12 @@ export const svelteQueryKeys = {
   playlistTrack: (playlistId: string) => ["playlist-track", playlistId],
   playlistTrackLength: (playlistId: string) => ["playlist-track-length", playlistId],
   artist: (browseId: string) => ["artist", browseId],
-  artistExtra: (browseId: string) => ["artist-extra", browseId],
   search: (query: string, searchType: string) => ["search", searchType, query],
   musicVideoPreview: (title: string, artist: string) => ["music-video-preview", title, artist],
   lyrics: (videoId: string) => ["lyrics", videoId],
   themeColor: (imageUrl: string) => ["theme-color", imageUrl],
   musicStats: (videoId: string) => ["music-stats", videoId],
+  isFollowingArtist: (browseId: string) => ["is-following-artist", browseId],
 } as const;
 
 export const svelteMutationKeys = {
@@ -38,4 +39,5 @@ export const svelteMutationKeys = {
   deletePlaylist: (playlistId: string) => ["delete-playlist", playlistId],
   rearrangePlaylistTracks: (playlistId: string) => ["rearrange-playlist-items", playlistId],
   likeTrack: (trackId: string) => ["like-track", trackId],
+  followArtist: (browseId: string) => ["follow-artist", browseId],
 } as const;

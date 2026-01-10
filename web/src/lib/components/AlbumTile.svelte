@@ -1,7 +1,8 @@
 <script lang="ts">
   import type { Album } from "$lib/utils/validation/albums";
 
-  import ExplicitIndicator from "./ExplicitIndicator.svelte";
+  import { getReadableAlbumType } from "$lib/utils/format";
+
   import Image from "./Image.svelte";
   import Button from "./ui/button/button.svelte";
 
@@ -21,12 +22,9 @@
   <div>
     <p class="text-2xl font-medium text-wrap pt-2">{album.title}</p>
     <p class="text-wrap">
-      {#if album.isExplicit}
-        <ExplicitIndicator />
-      {/if}
-      {album.albumType}
+      {getReadableAlbumType(album.albumType)}
       <span class="text-muted-foreground"> by </span>
-      {album.author} <span class="text-muted-foreground">•</span>
+      {album.artist.title} <span class="text-muted-foreground">•</span>
       {album.releaseDate}
     </p>
     <div class="flex gap-2 mt-4">

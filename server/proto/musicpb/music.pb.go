@@ -72,15 +72,15 @@ func (LikeTrackResponse_LikeType) EnumDescriptor() ([]byte, []int) {
 }
 
 type LikeTrackRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Author        string                 `protobuf:"bytes,1,opt,name=author,proto3" json:"author,omitempty"`
-	Thumbnail     string                 `protobuf:"bytes,2,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
-	Duration      string                 `protobuf:"bytes,3,opt,name=duration,proto3" json:"duration,omitempty"`
-	IsExplicit    bool                   `protobuf:"varint,4,opt,name=is_explicit,json=isExplicit,proto3" json:"is_explicit,omitempty"`
-	Title         string                 `protobuf:"bytes,5,opt,name=title,proto3" json:"title,omitempty"`
-	VideoType     commonpb.VideoType     `protobuf:"varint,7,opt,name=video_type,json=videoType,proto3,enum=common.VideoType" json:"video_type,omitempty"`
-	LikerEmail    string                 `protobuf:"bytes,9,opt,name=liker_email,json=likerEmail,proto3" json:"liker_email,omitempty"`
-	VideoId       string                 `protobuf:"bytes,10,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	state         protoimpl.MessageState     `protogen:"open.v1"`
+	Artists       []*commonpb.EmbeddedArtist `protobuf:"bytes,1,rep,name=artists,proto3" json:"artists,omitempty"`
+	Thumbnail     string                     `protobuf:"bytes,2,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
+	Duration      string                     `protobuf:"bytes,3,opt,name=duration,proto3" json:"duration,omitempty"`
+	IsExplicit    bool                       `protobuf:"varint,4,opt,name=is_explicit,json=isExplicit,proto3" json:"is_explicit,omitempty"`
+	Title         string                     `protobuf:"bytes,5,opt,name=title,proto3" json:"title,omitempty"`
+	VideoType     commonpb.VideoType         `protobuf:"varint,7,opt,name=video_type,json=videoType,proto3,enum=common.VideoType" json:"video_type,omitempty"`
+	LikerEmail    string                     `protobuf:"bytes,9,opt,name=liker_email,json=likerEmail,proto3" json:"liker_email,omitempty"`
+	VideoId       string                     `protobuf:"bytes,10,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -115,11 +115,11 @@ func (*LikeTrackRequest) Descriptor() ([]byte, []int) {
 	return file_proto_music_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *LikeTrackRequest) GetAuthor() string {
+func (x *LikeTrackRequest) GetArtists() []*commonpb.EmbeddedArtist {
 	if x != nil {
-		return x.Author
+		return x.Artists
 	}
-	return ""
+	return nil
 }
 
 func (x *LikeTrackRequest) GetThumbnail() string {
@@ -935,6 +935,278 @@ func (x *GetMusicTrackStatsResponse) GetMusicTrackStats() *commonpb.MusicTrackSt
 	return nil
 }
 
+type SearchYouTubeVideosRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Query         string                 `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchYouTubeVideosRequest) Reset() {
+	*x = SearchYouTubeVideosRequest{}
+	mi := &file_proto_music_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchYouTubeVideosRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchYouTubeVideosRequest) ProtoMessage() {}
+
+func (x *SearchYouTubeVideosRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_music_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchYouTubeVideosRequest.ProtoReflect.Descriptor instead.
+func (*SearchYouTubeVideosRequest) Descriptor() ([]byte, []int) {
+	return file_proto_music_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *SearchYouTubeVideosRequest) GetQuery() string {
+	if x != nil {
+		return x.Query
+	}
+	return ""
+}
+
+type SearchYouTubeVideosResponse struct {
+	state         protoimpl.MessageState   `protogen:"open.v1"`
+	YoutubeVideos []*commonpb.YouTubeVideo `protobuf:"bytes,1,rep,name=youtube_videos,json=youtubeVideos,proto3" json:"youtube_videos,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchYouTubeVideosResponse) Reset() {
+	*x = SearchYouTubeVideosResponse{}
+	mi := &file_proto_music_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchYouTubeVideosResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchYouTubeVideosResponse) ProtoMessage() {}
+
+func (x *SearchYouTubeVideosResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_music_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchYouTubeVideosResponse.ProtoReflect.Descriptor instead.
+func (*SearchYouTubeVideosResponse) Descriptor() ([]byte, []int) {
+	return file_proto_music_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *SearchYouTubeVideosResponse) GetYoutubeVideos() []*commonpb.YouTubeVideo {
+	if x != nil {
+		return x.YoutubeVideos
+	}
+	return nil
+}
+
+type GetMusicVideoIdRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Title         string                 `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	Artist        string                 `protobuf:"bytes,2,opt,name=artist,proto3" json:"artist,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetMusicVideoIdRequest) Reset() {
+	*x = GetMusicVideoIdRequest{}
+	mi := &file_proto_music_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetMusicVideoIdRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetMusicVideoIdRequest) ProtoMessage() {}
+
+func (x *GetMusicVideoIdRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_music_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetMusicVideoIdRequest.ProtoReflect.Descriptor instead.
+func (*GetMusicVideoIdRequest) Descriptor() ([]byte, []int) {
+	return file_proto_music_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *GetMusicVideoIdRequest) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *GetMusicVideoIdRequest) GetArtist() string {
+	if x != nil {
+		return x.Artist
+	}
+	return ""
+}
+
+type GetMusicVideoIdResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VideoId       string                 `protobuf:"bytes,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetMusicVideoIdResponse) Reset() {
+	*x = GetMusicVideoIdResponse{}
+	mi := &file_proto_music_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetMusicVideoIdResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetMusicVideoIdResponse) ProtoMessage() {}
+
+func (x *GetMusicVideoIdResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_music_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetMusicVideoIdResponse.ProtoReflect.Descriptor instead.
+func (*GetMusicVideoIdResponse) Descriptor() ([]byte, []int) {
+	return file_proto_music_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *GetMusicVideoIdResponse) GetVideoId() string {
+	if x != nil {
+		return x.VideoId
+	}
+	return ""
+}
+
+type SearchMusicTracksRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Query         string                 `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchMusicTracksRequest) Reset() {
+	*x = SearchMusicTracksRequest{}
+	mi := &file_proto_music_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchMusicTracksRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchMusicTracksRequest) ProtoMessage() {}
+
+func (x *SearchMusicTracksRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_music_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchMusicTracksRequest.ProtoReflect.Descriptor instead.
+func (*SearchMusicTracksRequest) Descriptor() ([]byte, []int) {
+	return file_proto_music_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *SearchMusicTracksRequest) GetQuery() string {
+	if x != nil {
+		return x.Query
+	}
+	return ""
+}
+
+type SearchMusicTracksResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tracks        []*commonpb.Track      `protobuf:"bytes,1,rep,name=tracks,proto3" json:"tracks,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchMusicTracksResponse) Reset() {
+	*x = SearchMusicTracksResponse{}
+	mi := &file_proto_music_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchMusicTracksResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchMusicTracksResponse) ProtoMessage() {}
+
+func (x *SearchMusicTracksResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_music_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchMusicTracksResponse.ProtoReflect.Descriptor instead.
+func (*SearchMusicTracksResponse) Descriptor() ([]byte, []int) {
+	return file_proto_music_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *SearchMusicTracksResponse) GetTracks() []*commonpb.Track {
+	if x != nil {
+		return x.Tracks
+	}
+	return nil
+}
+
 type GetMusicSearchSuggestionsResponse_SearchSuggestedLink struct {
 	state         protoimpl.MessageState                                                         `protogen:"open.v1"`
 	Meta          *GetMusicSearchSuggestionsResponse_SearchSuggestedLink_SearchSuggestedLinkMeta `protobuf:"bytes,1,opt,name=meta,proto3" json:"meta,omitempty"`
@@ -949,7 +1221,7 @@ type GetMusicSearchSuggestionsResponse_SearchSuggestedLink struct {
 
 func (x *GetMusicSearchSuggestionsResponse_SearchSuggestedLink) Reset() {
 	*x = GetMusicSearchSuggestionsResponse_SearchSuggestedLink{}
-	mi := &file_proto_music_proto_msgTypes[18]
+	mi := &file_proto_music_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -961,7 +1233,7 @@ func (x *GetMusicSearchSuggestionsResponse_SearchSuggestedLink) String() string 
 func (*GetMusicSearchSuggestionsResponse_SearchSuggestedLink) ProtoMessage() {}
 
 func (x *GetMusicSearchSuggestionsResponse_SearchSuggestedLink) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_music_proto_msgTypes[18]
+	mi := &file_proto_music_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1030,7 +1302,7 @@ type GetMusicSearchSuggestionsResponse_SearchSuggestedLink_SearchSuggestedLinkMe
 
 func (x *GetMusicSearchSuggestionsResponse_SearchSuggestedLink_SearchSuggestedLinkMeta) Reset() {
 	*x = GetMusicSearchSuggestionsResponse_SearchSuggestedLink_SearchSuggestedLinkMeta{}
-	mi := &file_proto_music_proto_msgTypes[19]
+	mi := &file_proto_music_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1043,7 +1315,7 @@ func (*GetMusicSearchSuggestionsResponse_SearchSuggestedLink_SearchSuggestedLink
 }
 
 func (x *GetMusicSearchSuggestionsResponse_SearchSuggestedLink_SearchSuggestedLinkMeta) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_music_proto_msgTypes[19]
+	mi := &file_proto_music_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1084,9 +1356,9 @@ var File_proto_music_proto protoreflect.FileDescriptor
 
 const file_proto_music_proto_rawDesc = "" +
 	"\n" +
-	"\x11proto/music.proto\x12\x05music\x1a\x12proto/common.proto\"\x89\x02\n" +
-	"\x10LikeTrackRequest\x12\x16\n" +
-	"\x06author\x18\x01 \x01(\tR\x06author\x12\x1c\n" +
+	"\x11proto/music.proto\x12\x05music\x1a\x12proto/common.proto\"\xa3\x02\n" +
+	"\x10LikeTrackRequest\x120\n" +
+	"\aartists\x18\x01 \x03(\v2\x16.common.EmbeddedArtistR\aartists\x12\x1c\n" +
 	"\tthumbnail\x18\x02 \x01(\tR\tthumbnail\x12\x1a\n" +
 	"\bduration\x18\x03 \x01(\tR\bduration\x12\x1f\n" +
 	"\vis_explicit\x18\x04 \x01(\bR\n" +
@@ -1155,7 +1427,20 @@ const file_proto_music_proto_rawDesc = "" +
 	"\x19GetMusicTrackStatsRequest\x12\x19\n" +
 	"\bvideo_id\x18\x01 \x01(\tR\avideoId\"a\n" +
 	"\x1aGetMusicTrackStatsResponse\x12C\n" +
-	"\x11music_track_stats\x18\x01 \x01(\v2\x17.common.MusicTrackStatsR\x0fmusicTrackStats2\x8e\x06\n" +
+	"\x11music_track_stats\x18\x01 \x01(\v2\x17.common.MusicTrackStatsR\x0fmusicTrackStats\"2\n" +
+	"\x1aSearchYouTubeVideosRequest\x12\x14\n" +
+	"\x05query\x18\x01 \x01(\tR\x05query\"Z\n" +
+	"\x1bSearchYouTubeVideosResponse\x12;\n" +
+	"\x0eyoutube_videos\x18\x01 \x03(\v2\x14.common.YouTubeVideoR\ryoutubeVideos\"F\n" +
+	"\x16GetMusicVideoIdRequest\x12\x14\n" +
+	"\x05title\x18\x01 \x01(\tR\x05title\x12\x16\n" +
+	"\x06artist\x18\x02 \x01(\tR\x06artist\"4\n" +
+	"\x17GetMusicVideoIdResponse\x12\x19\n" +
+	"\bvideo_id\x18\x01 \x01(\tR\avideoId\"0\n" +
+	"\x18SearchMusicTracksRequest\x12\x14\n" +
+	"\x05query\x18\x01 \x01(\tR\x05query\"B\n" +
+	"\x19SearchMusicTracksResponse\x12%\n" +
+	"\x06tracks\x18\x01 \x03(\v2\r.common.TrackR\x06tracks2\x96\b\n" +
 	"\fMusicService\x12>\n" +
 	"\tLikeTrack\x12\x17.music.LikeTrackRequest\x1a\x18.music.LikeTrackResponse\x12G\n" +
 	"\fIsTrackLiked\x12\x1a.music.IsTrackLikedRequest\x1a\x1b.music.IsTrackLikedResponse\x12Y\n" +
@@ -1165,7 +1450,10 @@ const file_proto_music_proto_rawDesc = "" +
 	"\x19GetMusicSearchSuggestions\x12'.music.GetMusicSearchSuggestionsRequest\x1a(.music.GetMusicSearchSuggestionsResponse\x12J\n" +
 	"\rGetQuickPicks\x12\x1b.music.GetQuickPicksRequest\x1a\x1c.music.GetQuickPicksResponse\x12S\n" +
 	"\x10GetMusicDuration\x12\x1e.music.GetMusicDurationRequest\x1a\x1f.music.GetMusicDurationResponse\x12Y\n" +
-	"\x12GetMusicTrackStats\x12 .music.GetMusicTrackStatsRequest\x1a!.music.GetMusicTrackStatsResponseB'Z%wavelength/server/proto/music;musicpbb\x06proto3"
+	"\x12GetMusicTrackStats\x12 .music.GetMusicTrackStatsRequest\x1a!.music.GetMusicTrackStatsResponse\x12P\n" +
+	"\x0fGetMusicVideoId\x12\x1d.music.GetMusicVideoIdRequest\x1a\x1e.music.GetMusicVideoIdResponse\x12V\n" +
+	"\x11SearchMusicTracks\x12\x1f.music.SearchMusicTracksRequest\x1a .music.SearchMusicTracksResponse\x12\\\n" +
+	"\x13SearchYouTubeVideos\x12!.music.SearchYouTubeVideosRequest\x1a\".music.SearchYouTubeVideosResponseB'Z%wavelength/server/proto/music;musicpbb\x06proto3"
 
 var (
 	file_proto_music_proto_rawDescOnce sync.Once
@@ -1180,7 +1468,7 @@ func file_proto_music_proto_rawDescGZIP() []byte {
 }
 
 var file_proto_music_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_proto_music_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
+var file_proto_music_proto_msgTypes = make([]protoimpl.MessageInfo, 26)
 var file_proto_music_proto_goTypes = []any{
 	(LikeTrackResponse_LikeType)(0),                               // 0: music.LikeTrackResponse.LikeType
 	(*LikeTrackRequest)(nil),                                      // 1: music.LikeTrackRequest
@@ -1201,46 +1489,64 @@ var file_proto_music_proto_goTypes = []any{
 	(*GetMusicDurationResponse)(nil),                              // 16: music.GetMusicDurationResponse
 	(*GetMusicTrackStatsRequest)(nil),                             // 17: music.GetMusicTrackStatsRequest
 	(*GetMusicTrackStatsResponse)(nil),                            // 18: music.GetMusicTrackStatsResponse
-	(*GetMusicSearchSuggestionsResponse_SearchSuggestedLink)(nil), // 19: music.GetMusicSearchSuggestionsResponse.SearchSuggestedLink
-	(*GetMusicSearchSuggestionsResponse_SearchSuggestedLink_SearchSuggestedLinkMeta)(nil), // 20: music.GetMusicSearchSuggestionsResponse.SearchSuggestedLink.SearchSuggestedLinkMeta
-	(commonpb.VideoType)(0),          // 21: common.VideoType
-	(*commonpb.TracksLength)(nil),    // 22: common.TracksLength
-	(*commonpb.LikedTrack)(nil),      // 23: common.LikedTrack
-	(*commonpb.QuickPick)(nil),       // 24: common.QuickPick
-	(*commonpb.MusicTrackStats)(nil), // 25: common.MusicTrackStats
+	(*SearchYouTubeVideosRequest)(nil),                            // 19: music.SearchYouTubeVideosRequest
+	(*SearchYouTubeVideosResponse)(nil),                           // 20: music.SearchYouTubeVideosResponse
+	(*GetMusicVideoIdRequest)(nil),                                // 21: music.GetMusicVideoIdRequest
+	(*GetMusicVideoIdResponse)(nil),                               // 22: music.GetMusicVideoIdResponse
+	(*SearchMusicTracksRequest)(nil),                              // 23: music.SearchMusicTracksRequest
+	(*SearchMusicTracksResponse)(nil),                             // 24: music.SearchMusicTracksResponse
+	(*GetMusicSearchSuggestionsResponse_SearchSuggestedLink)(nil), // 25: music.GetMusicSearchSuggestionsResponse.SearchSuggestedLink
+	(*GetMusicSearchSuggestionsResponse_SearchSuggestedLink_SearchSuggestedLinkMeta)(nil), // 26: music.GetMusicSearchSuggestionsResponse.SearchSuggestedLink.SearchSuggestedLinkMeta
+	(*commonpb.EmbeddedArtist)(nil),  // 27: common.EmbeddedArtist
+	(commonpb.VideoType)(0),          // 28: common.VideoType
+	(*commonpb.TracksLength)(nil),    // 29: common.TracksLength
+	(*commonpb.LikedTrack)(nil),      // 30: common.LikedTrack
+	(*commonpb.QuickPick)(nil),       // 31: common.QuickPick
+	(*commonpb.MusicTrackStats)(nil), // 32: common.MusicTrackStats
+	(*commonpb.YouTubeVideo)(nil),    // 33: common.YouTubeVideo
+	(*commonpb.Track)(nil),           // 34: common.Track
 }
 var file_proto_music_proto_depIdxs = []int32{
-	21, // 0: music.LikeTrackRequest.video_type:type_name -> common.VideoType
-	0,  // 1: music.LikeTrackResponse.like_type:type_name -> music.LikeTrackResponse.LikeType
-	19, // 2: music.GetMusicSearchSuggestionsResponse.matching_links:type_name -> music.GetMusicSearchSuggestionsResponse.SearchSuggestedLink
-	22, // 3: music.GetLikedTracksLengthResponse.liked_tracks_length:type_name -> common.TracksLength
-	23, // 4: music.GetLikedTracksResponse.liked_tracks:type_name -> common.LikedTrack
-	24, // 5: music.GetQuickPicksResponse.quick_picks:type_name -> common.QuickPick
-	25, // 6: music.GetMusicTrackStatsResponse.music_track_stats:type_name -> common.MusicTrackStats
-	20, // 7: music.GetMusicSearchSuggestionsResponse.SearchSuggestedLink.meta:type_name -> music.GetMusicSearchSuggestionsResponse.SearchSuggestedLink.SearchSuggestedLinkMeta
-	1,  // 8: music.MusicService.LikeTrack:input_type -> music.LikeTrackRequest
-	5,  // 9: music.MusicService.IsTrackLiked:input_type -> music.IsTrackLikedRequest
-	7,  // 10: music.MusicService.GetLikedTrackCount:input_type -> music.GetLikedTrackCountRequest
-	9,  // 11: music.MusicService.GetLikedTracksLength:input_type -> music.GetLikedTracksLengthRequest
-	11, // 12: music.MusicService.GetLikedTracks:input_type -> music.GetLikedTracksRequest
-	3,  // 13: music.MusicService.GetMusicSearchSuggestions:input_type -> music.GetMusicSearchSuggestionsRequest
-	13, // 14: music.MusicService.GetQuickPicks:input_type -> music.GetQuickPicksRequest
-	15, // 15: music.MusicService.GetMusicDuration:input_type -> music.GetMusicDurationRequest
-	17, // 16: music.MusicService.GetMusicTrackStats:input_type -> music.GetMusicTrackStatsRequest
-	2,  // 17: music.MusicService.LikeTrack:output_type -> music.LikeTrackResponse
-	6,  // 18: music.MusicService.IsTrackLiked:output_type -> music.IsTrackLikedResponse
-	8,  // 19: music.MusicService.GetLikedTrackCount:output_type -> music.GetLikedTrackCountResponse
-	10, // 20: music.MusicService.GetLikedTracksLength:output_type -> music.GetLikedTracksLengthResponse
-	12, // 21: music.MusicService.GetLikedTracks:output_type -> music.GetLikedTracksResponse
-	4,  // 22: music.MusicService.GetMusicSearchSuggestions:output_type -> music.GetMusicSearchSuggestionsResponse
-	14, // 23: music.MusicService.GetQuickPicks:output_type -> music.GetQuickPicksResponse
-	16, // 24: music.MusicService.GetMusicDuration:output_type -> music.GetMusicDurationResponse
-	18, // 25: music.MusicService.GetMusicTrackStats:output_type -> music.GetMusicTrackStatsResponse
-	17, // [17:26] is the sub-list for method output_type
-	8,  // [8:17] is the sub-list for method input_type
-	8,  // [8:8] is the sub-list for extension type_name
-	8,  // [8:8] is the sub-list for extension extendee
-	0,  // [0:8] is the sub-list for field type_name
+	27, // 0: music.LikeTrackRequest.artists:type_name -> common.EmbeddedArtist
+	28, // 1: music.LikeTrackRequest.video_type:type_name -> common.VideoType
+	0,  // 2: music.LikeTrackResponse.like_type:type_name -> music.LikeTrackResponse.LikeType
+	25, // 3: music.GetMusicSearchSuggestionsResponse.matching_links:type_name -> music.GetMusicSearchSuggestionsResponse.SearchSuggestedLink
+	29, // 4: music.GetLikedTracksLengthResponse.liked_tracks_length:type_name -> common.TracksLength
+	30, // 5: music.GetLikedTracksResponse.liked_tracks:type_name -> common.LikedTrack
+	31, // 6: music.GetQuickPicksResponse.quick_picks:type_name -> common.QuickPick
+	32, // 7: music.GetMusicTrackStatsResponse.music_track_stats:type_name -> common.MusicTrackStats
+	33, // 8: music.SearchYouTubeVideosResponse.youtube_videos:type_name -> common.YouTubeVideo
+	34, // 9: music.SearchMusicTracksResponse.tracks:type_name -> common.Track
+	26, // 10: music.GetMusicSearchSuggestionsResponse.SearchSuggestedLink.meta:type_name -> music.GetMusicSearchSuggestionsResponse.SearchSuggestedLink.SearchSuggestedLinkMeta
+	1,  // 11: music.MusicService.LikeTrack:input_type -> music.LikeTrackRequest
+	5,  // 12: music.MusicService.IsTrackLiked:input_type -> music.IsTrackLikedRequest
+	7,  // 13: music.MusicService.GetLikedTrackCount:input_type -> music.GetLikedTrackCountRequest
+	9,  // 14: music.MusicService.GetLikedTracksLength:input_type -> music.GetLikedTracksLengthRequest
+	11, // 15: music.MusicService.GetLikedTracks:input_type -> music.GetLikedTracksRequest
+	3,  // 16: music.MusicService.GetMusicSearchSuggestions:input_type -> music.GetMusicSearchSuggestionsRequest
+	13, // 17: music.MusicService.GetQuickPicks:input_type -> music.GetQuickPicksRequest
+	15, // 18: music.MusicService.GetMusicDuration:input_type -> music.GetMusicDurationRequest
+	17, // 19: music.MusicService.GetMusicTrackStats:input_type -> music.GetMusicTrackStatsRequest
+	21, // 20: music.MusicService.GetMusicVideoId:input_type -> music.GetMusicVideoIdRequest
+	23, // 21: music.MusicService.SearchMusicTracks:input_type -> music.SearchMusicTracksRequest
+	19, // 22: music.MusicService.SearchYouTubeVideos:input_type -> music.SearchYouTubeVideosRequest
+	2,  // 23: music.MusicService.LikeTrack:output_type -> music.LikeTrackResponse
+	6,  // 24: music.MusicService.IsTrackLiked:output_type -> music.IsTrackLikedResponse
+	8,  // 25: music.MusicService.GetLikedTrackCount:output_type -> music.GetLikedTrackCountResponse
+	10, // 26: music.MusicService.GetLikedTracksLength:output_type -> music.GetLikedTracksLengthResponse
+	12, // 27: music.MusicService.GetLikedTracks:output_type -> music.GetLikedTracksResponse
+	4,  // 28: music.MusicService.GetMusicSearchSuggestions:output_type -> music.GetMusicSearchSuggestionsResponse
+	14, // 29: music.MusicService.GetQuickPicks:output_type -> music.GetQuickPicksResponse
+	16, // 30: music.MusicService.GetMusicDuration:output_type -> music.GetMusicDurationResponse
+	18, // 31: music.MusicService.GetMusicTrackStats:output_type -> music.GetMusicTrackStatsResponse
+	22, // 32: music.MusicService.GetMusicVideoId:output_type -> music.GetMusicVideoIdResponse
+	24, // 33: music.MusicService.SearchMusicTracks:output_type -> music.SearchMusicTracksResponse
+	20, // 34: music.MusicService.SearchYouTubeVideos:output_type -> music.SearchYouTubeVideosResponse
+	23, // [23:35] is the sub-list for method output_type
+	11, // [11:23] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_proto_music_proto_init() }
@@ -1255,7 +1561,7 @@ func file_proto_music_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_music_proto_rawDesc), len(file_proto_music_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   20,
+			NumMessages:   26,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

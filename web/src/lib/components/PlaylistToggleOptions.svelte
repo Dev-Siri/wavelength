@@ -1,14 +1,15 @@
 <script lang="ts">
   import { MinusIcon, PlusIcon } from "@lucide/svelte";
-  import { createMutation, useQueryClient } from "@tanstack/svelte-query";
+  import { createMutation, createQuery, useQueryClient } from "@tanstack/svelte-query";
   import toast from "svelte-french-toast";
   import { z } from "zod";
 
   import type { MusicTrack } from "$lib/utils/validation/music-track";
-  import type { Playlist } from "$lib/utils/validation/playlists";
 
   import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";
+  import userStore from "$lib/stores/user.svelte";
   import { backendClient } from "$lib/utils/query-client.js";
+  import { playlistsSchema, type Playlist } from "$lib/utils/validation/playlists";
   import { musicTrackDurationSchema } from "$lib/utils/validation/track-length";
 
   import DropdownMenuItem from "./ui/dropdown-menu/dropdown-menu-item.svelte";
@@ -29,9 +30,14 @@
   } = $props();
 
   const queryClient = useQueryClient();
-  const playlists = $derived.by(() =>
-    queryClient.getQueryData<Playlist[]>(svelteQueryKeys.userPlaylists),
-  );
+  const playlistsQuery = createQuery(() => ({
+    queryKey: svelteQueryKeys.userPlaylists,
+    async queryFn() {
+      if (!userStore.user) return;
+
+      return backendClient(`/playlists/user/${userStore.user.email}`, playlistsSchema);
+    },
+  }));
 
   const playlistsAddMutation = createMutation(() => ({
     mutationKey: svelteMutationKeys.addToPlaylists,
@@ -58,14 +64,19 @@
     onError: () => toast.error("Failed to update playlist."),
     onSuccess(data, playlistId) {
       toast.success(data);
-      queryClient.invalidateQueries({ queryKey: svelteQueryKeys.playlist(playlistId) });
+      queryClient.invalidateQueries({
+        queryKey: [
+          ...svelteQueryKeys.playlist(playlistId),
+          svelteQueryKeys.playlistTrack(playlistId),
+        ],
+      });
     },
   }));
 </script>
 
 {#if toggle.type === "add"}
-  {#if playlists?.length}
-    {#each playlists as playlist}
+  {#if playlistsQuery.data?.playlists}
+    {#each playlistsQuery.data.playlists as playlist}
       <DropdownMenuItem
         onclick={() => playlistsAddMutation.mutate(playlist.playlistId)}
         class="flex py-3 gap-2"

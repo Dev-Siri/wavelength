@@ -2,8 +2,8 @@
   import { goto } from "$app/navigation";
   import { backendClient } from "$lib/utils/query-client";
   import {
-      searchRecommendationsSchema,
-      type SearchRecommendations,
+    searchRecommendationsSchema,
+    type SearchRecommendations,
   } from "$lib/utils/validation/search-recommendations";
 
   let searchSuggestionsList: HTMLDivElement | null = $state(null);
@@ -28,12 +28,12 @@
 
   $effect(() => {
     async function fetchRecentSearches() {
+      if (!q) return;
+
       const recentSearches = await backendClient(
         "/music/search/search-recommendations",
         searchRecommendationsSchema,
-        {
-          searchParams: { q },
-        },
+        { searchParams: { q } },
       );
 
       searchResults = recentSearches;
@@ -77,7 +77,7 @@
 </script>
 
 <div class="bg-black border-secondary rounded-xl w-full overflow-hidden shadow-2xl">
-  {#if searchResults.matchingLinks.length || searchResults.matchingQueries.length}
+  {#if searchResults.matchingLinks?.length || searchResults.matchingQueries.length}
     <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <div

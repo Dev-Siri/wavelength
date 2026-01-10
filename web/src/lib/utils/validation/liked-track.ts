@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { embeddedArtistSchema } from "./artist";
 import { videoTypeSchema } from "./playlist-track";
 
 export const likedTrackSchema = z.object({
@@ -8,10 +9,10 @@ export const likedTrackSchema = z.object({
   title: z.string(),
   thumbnail: z.string(),
   isExplicit: z.boolean(),
-  author: z.string(),
   duration: z.string(),
   videoId: z.string(),
   videoType: videoTypeSchema,
+  artists: z.array(embeddedArtistSchema),
 });
 
 export const likedTracksSchema = z.object({

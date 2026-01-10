@@ -4,7 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"wavelength/proto/artistpb"
+	"wavelength/proto/commonpb"
 	"wavelength/proto/playlistpb"
+	shared_clients "wavelength/shared/clients"
 	shared_db "wavelength/shared/db"
 	"wavelength/shared/logging"
 
@@ -46,6 +49,19 @@ func (p *PlaylistService) AddRemovePlaylistTrack(
 		}, nil
 	}
 
+	for _, artist := range request.Artists {
+		_, err := shared_clients.ArtistClient.CreateAuthoredTrackArtist(ctx, &artistpb.CreateAuthoredTrackArtistRequest{
+			AuthoredTrackId: request.VideoId,
+			BrowseId:        artist.BrowseId,
+			Title:           artist.Title,
+		})
+
+		if err != nil {
+			go logging.Logger.Error("Storing artists failed.", zap.Error(err))
+			return nil, status.Error(codes.Internal, "Storing artists failed.")
+		}
+	}
+
 	var totalSongCount int
 	err = shared_db.Database.QueryRow(`
 		SELECT COUNT(*) 
@@ -60,26 +76,29 @@ func (p *PlaylistService) AddRemovePlaylistTrack(
 
 	playlistTrackId := uuid.NewString()
 
+	dbVideoType := "track"
+	if request.VideoType == commonpb.VideoType_VIDEO_TYPE_UVIDEO {
+		dbVideoType = "uvideo"
+	}
+
 	_, err = shared_db.Database.Exec(`
 		INSERT INTO playlist_tracks (
 			title,
 			thumbnail,
 			duration,
 			is_explicit,
-			author,
 			video_id,
 			video_type,
 			playlist_id, 
 			playlist_track_id, 
 			position_in_playlist
-		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9 )`,
 		request.Title,
 		request.Thumbnail,
 		request.Duration,
 		request.IsExplicit,
-		request.Author,
 		request.VideoId,
-		request.VideoType,
+		dbVideoType,
 		request.PlaylistId, playlistTrackId, totalSongCount+1,
 	)
 

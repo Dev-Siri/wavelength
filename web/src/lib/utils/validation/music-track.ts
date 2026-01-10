@@ -1,20 +1,23 @@
 import { z } from "zod";
 
-export const baseMusicTrackSchema = z.object({
+export const musicTrackSchema = z.object({
   videoId: z.string(),
   title: z.string(),
   thumbnail: z.string(),
-  author: z.string(),
-});
-
-export const musicTrackSchema = baseMusicTrackSchema.extend({
   duration: z.string(),
   isExplicit: z.boolean(),
-});
-
-export const artistSongSchema = baseMusicTrackSchema.extend({
-  isExplicit: z.boolean(),
+  artists: z.array(
+    z.object({
+      title: z.string(),
+      browseId: z.string(),
+    }),
+  ),
+  album: z
+    .object({
+      title: z.string(),
+      browseId: z.string(),
+    })
+    .optional(),
 });
 
 export type MusicTrack = z.infer<typeof musicTrackSchema>;
-export type BaseMusicTrack = z.infer<typeof baseMusicTrackSchema>;

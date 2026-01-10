@@ -5,7 +5,6 @@ import (
 	"sync"
 	"wavelength/proto/commonpb"
 	"wavelength/proto/musicpb"
-	"wavelength/services/gateway/utils"
 	shared_db "wavelength/shared/db"
 	"wavelength/shared/logging"
 
@@ -18,7 +17,7 @@ func (m *MusicService) GetLikedTracksLength(
 	ctx context.Context,
 	request *musicpb.GetLikedTracksLengthRequest,
 ) (*musicpb.GetLikedTracksLengthResponse, error) {
-	durationsChan := make(chan []string, 1)
+	durationsChan := make(chan []int64, 1)
 	countChan := make(chan int, 1)
 	errChan := make(chan error, 2)
 
@@ -41,10 +40,10 @@ func (m *MusicService) GetLikedTracksLength(
 
 		defer rows.Close()
 
-		var durations []string
+		var durations []int64
 
 		for rows.Next() {
-			var duration string
+			var duration int64
 			if err := rows.Scan(&duration); err != nil {
 				errChan <- err
 				return
@@ -79,7 +78,7 @@ func (m *MusicService) GetLikedTracksLength(
 	}()
 
 	var songCount int
-	durations := []string{}
+	durations := []int64{}
 
 	receivedDurations := false
 	receivedCount := false
@@ -109,16 +108,15 @@ func (m *MusicService) GetLikedTracksLength(
 	}
 
 	// Sum durations in seconds
-	totalDurationSeconds := 0
-
+	totalDurationSeconds := int64(0)
 	for _, duration := range durations {
-		totalDurationSeconds += utils.ParseDurationToSeconds(duration)
+		totalDurationSeconds += duration
 	}
 
 	return &musicpb.GetLikedTracksLengthResponse{
 		LikedTracksLength: &commonpb.TracksLength{
-			SongCount:          uint32(songCount),
-			SongDurationSecond: uint32(totalDurationSeconds),
+			SongCount:          uint64(songCount),
+			SongDurationSecond: uint64(totalDurationSeconds),
 		},
 	}, nil
 }

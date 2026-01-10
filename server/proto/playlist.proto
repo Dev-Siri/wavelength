@@ -50,7 +50,7 @@ message GetPlaylistByIdResponse {
 }
 
 message AddRemovePlaylistTrackRequest {
-  string author = 1;
+  repeated common.EmbeddedArtist artists = 1;
   string thumbnail = 2;
   string duration = 3;
   bool is_explicit = 4;

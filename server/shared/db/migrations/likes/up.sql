@@ -5,7 +5,6 @@ CREATE TABLE IF NOT EXISTS "likes" (
   thumbnail TEXT NOT NULL,
   is_explicit BOOLEAN NOT NULL,
   duration VARCHAR(10) NOT NULL,
-  author VARCHAR(255) NOT NULL,
   video_id VARCHAR(11) NOT NULL,
   video_type video_type NOT NULL
 );

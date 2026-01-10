@@ -17,7 +17,7 @@ export const searchSuggestedLinkSchema = z.object({
 
 export const searchRecommendationsSchema = z.object({
   matchingQueries: z.array(z.string()),
-  matchingLinks: z.array(searchSuggestedLinkSchema),
+  matchingLinks: z.array(searchSuggestedLinkSchema).optional(),
 });
 
 export type SearchRecommendations = z.infer<typeof searchRecommendationsSchema>;

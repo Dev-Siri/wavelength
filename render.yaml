@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: gateway
-    runtime: docker
-    dockerfilePath: ./server/gateway/server/Dockerfile
-    dockerContext: ./server
-    region: singapore

@@ -2,7 +2,10 @@ package music_rpcs
 
 import (
 	"context"
+	"wavelength/proto/artistpb"
+	"wavelength/proto/commonpb"
 	"wavelength/proto/musicpb"
+	shared_clients "wavelength/shared/clients"
 	shared_db "wavelength/shared/db"
 	"wavelength/shared/logging"
 
@@ -47,8 +50,26 @@ func (m *MusicService) LikeTrack(
 		}, nil
 	}
 
+	for _, artist := range request.Artists {
+		_, err := shared_clients.ArtistClient.CreateAuthoredTrackArtist(ctx, &artistpb.CreateAuthoredTrackArtistRequest{
+			AuthoredTrackId: request.VideoId,
+			BrowseId:        artist.BrowseId,
+			Title:           artist.Title,
+		})
+
+		if err != nil {
+			go logging.Logger.Error("Storing artists failed.", zap.Error(err))
+			return nil, status.Error(codes.Internal, "Storing artists failed.")
+		}
+	}
+
 	// Perform a like.
 	likeId := uuid.NewString()
+
+	dbVideoType := "track"
+	if request.VideoType == commonpb.VideoType_VIDEO_TYPE_UVIDEO {
+		dbVideoType = "uvideo"
+	}
 
 	_, err := shared_db.Database.Exec(`
 		INSERT INTO "likes" (
@@ -58,13 +79,11 @@ func (m *MusicService) LikeTrack(
 			thumbnail,
 			is_explicit,
 			duration,
-			author,
 			video_id,
 			video_type
-		) VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9 );
-	`, likeId, request.LikerEmail, request.Title, request.Thumbnail,
-		request.IsExplicit, request.Duration, request.Author,
-		request.VideoId, request.VideoType)
+		) VALUES ( $1, $2, $3, $4, $5, $6, $7, $8 );
+	`, likeId, request.LikerEmail, request.Title, request.Thumbnail, request.IsExplicit,
+		request.Duration, request.VideoId, dbVideoType)
 
 	if err != nil {
 		go logging.Logger.Error("Like track failed.", zap.Error(err))

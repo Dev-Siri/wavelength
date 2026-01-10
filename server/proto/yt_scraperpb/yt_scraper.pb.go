@@ -207,6 +207,446 @@ func (x *GetQuickPicksResponse) GetQuickPicks() []*commonpb.QuickPick {
 	return nil
 }
 
+type SearchTracksRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Query         string                 `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchTracksRequest) Reset() {
+	*x = SearchTracksRequest{}
+	mi := &file_proto_yt_scraper_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchTracksRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchTracksRequest) ProtoMessage() {}
+
+func (x *SearchTracksRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_yt_scraper_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchTracksRequest.ProtoReflect.Descriptor instead.
+func (*SearchTracksRequest) Descriptor() ([]byte, []int) {
+	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *SearchTracksRequest) GetQuery() string {
+	if x != nil {
+		return x.Query
+	}
+	return ""
+}
+
+type SearchTracksResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tracks        []*commonpb.Track      `protobuf:"bytes,1,rep,name=tracks,proto3" json:"tracks,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchTracksResponse) Reset() {
+	*x = SearchTracksResponse{}
+	mi := &file_proto_yt_scraper_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchTracksResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchTracksResponse) ProtoMessage() {}
+
+func (x *SearchTracksResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_yt_scraper_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchTracksResponse.ProtoReflect.Descriptor instead.
+func (*SearchTracksResponse) Descriptor() ([]byte, []int) {
+	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *SearchTracksResponse) GetTracks() []*commonpb.Track {
+	if x != nil {
+		return x.Tracks
+	}
+	return nil
+}
+
+type GetAlbumDetailsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AlbumId       string                 `protobuf:"bytes,1,opt,name=album_id,json=albumId,proto3" json:"album_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAlbumDetailsRequest) Reset() {
+	*x = GetAlbumDetailsRequest{}
+	mi := &file_proto_yt_scraper_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAlbumDetailsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAlbumDetailsRequest) ProtoMessage() {}
+
+func (x *GetAlbumDetailsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_yt_scraper_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAlbumDetailsRequest.ProtoReflect.Descriptor instead.
+func (*GetAlbumDetailsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GetAlbumDetailsRequest) GetAlbumId() string {
+	if x != nil {
+		return x.AlbumId
+	}
+	return ""
+}
+
+type GetAlbumDetailsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Album         *commonpb.Album        `protobuf:"bytes,1,opt,name=album,proto3" json:"album,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAlbumDetailsResponse) Reset() {
+	*x = GetAlbumDetailsResponse{}
+	mi := &file_proto_yt_scraper_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAlbumDetailsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAlbumDetailsResponse) ProtoMessage() {}
+
+func (x *GetAlbumDetailsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_yt_scraper_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAlbumDetailsResponse.ProtoReflect.Descriptor instead.
+func (*GetAlbumDetailsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *GetAlbumDetailsResponse) GetAlbum() *commonpb.Album {
+	if x != nil {
+		return x.Album
+	}
+	return nil
+}
+
+type SearchArtistsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Query         string                 `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchArtistsRequest) Reset() {
+	*x = SearchArtistsRequest{}
+	mi := &file_proto_yt_scraper_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchArtistsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchArtistsRequest) ProtoMessage() {}
+
+func (x *SearchArtistsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_yt_scraper_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchArtistsRequest.ProtoReflect.Descriptor instead.
+func (*SearchArtistsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *SearchArtistsRequest) GetQuery() string {
+	if x != nil {
+		return x.Query
+	}
+	return ""
+}
+
+type SearchArtistsResponse struct {
+	state         protoimpl.MessageState   `protogen:"open.v1"`
+	Artists       []*commonpb.SearchArtist `protobuf:"bytes,1,rep,name=artists,proto3" json:"artists,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchArtistsResponse) Reset() {
+	*x = SearchArtistsResponse{}
+	mi := &file_proto_yt_scraper_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchArtistsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchArtistsResponse) ProtoMessage() {}
+
+func (x *SearchArtistsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_yt_scraper_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchArtistsResponse.ProtoReflect.Descriptor instead.
+func (*SearchArtistsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *SearchArtistsResponse) GetArtists() []*commonpb.SearchArtist {
+	if x != nil {
+		return x.Artists
+	}
+	return nil
+}
+
+type SearchAlbumsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Query         string                 `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchAlbumsRequest) Reset() {
+	*x = SearchAlbumsRequest{}
+	mi := &file_proto_yt_scraper_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchAlbumsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchAlbumsRequest) ProtoMessage() {}
+
+func (x *SearchAlbumsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_yt_scraper_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchAlbumsRequest.ProtoReflect.Descriptor instead.
+func (*SearchAlbumsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *SearchAlbumsRequest) GetQuery() string {
+	if x != nil {
+		return x.Query
+	}
+	return ""
+}
+
+type SearchAlbumsResponse struct {
+	state         protoimpl.MessageState  `protogen:"open.v1"`
+	Albums        []*commonpb.SearchAlbum `protobuf:"bytes,1,rep,name=albums,proto3" json:"albums,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchAlbumsResponse) Reset() {
+	*x = SearchAlbumsResponse{}
+	mi := &file_proto_yt_scraper_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchAlbumsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchAlbumsResponse) ProtoMessage() {}
+
+func (x *SearchAlbumsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_yt_scraper_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchAlbumsResponse.ProtoReflect.Descriptor instead.
+func (*SearchAlbumsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *SearchAlbumsResponse) GetAlbums() []*commonpb.SearchAlbum {
+	if x != nil {
+		return x.Albums
+	}
+	return nil
+}
+
+type GetArtistDetailsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	BrowseId      string                 `protobuf:"bytes,1,opt,name=browse_id,json=browseId,proto3" json:"browse_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetArtistDetailsRequest) Reset() {
+	*x = GetArtistDetailsRequest{}
+	mi := &file_proto_yt_scraper_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetArtistDetailsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetArtistDetailsRequest) ProtoMessage() {}
+
+func (x *GetArtistDetailsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_yt_scraper_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetArtistDetailsRequest.ProtoReflect.Descriptor instead.
+func (*GetArtistDetailsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *GetArtistDetailsRequest) GetBrowseId() string {
+	if x != nil {
+		return x.BrowseId
+	}
+	return ""
+}
+
+type GetArtistDetailsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Artist        *commonpb.Artist       `protobuf:"bytes,1,opt,name=artist,proto3" json:"artist,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetArtistDetailsResponse) Reset() {
+	*x = GetArtistDetailsResponse{}
+	mi := &file_proto_yt_scraper_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetArtistDetailsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetArtistDetailsResponse) ProtoMessage() {}
+
+func (x *GetArtistDetailsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_yt_scraper_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetArtistDetailsResponse.ProtoReflect.Descriptor instead.
+func (*GetArtistDetailsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *GetArtistDetailsResponse) GetArtist() *commonpb.Artist {
+	if x != nil {
+		return x.Artist
+	}
+	return nil
+}
+
 var File_proto_yt_scraper_proto protoreflect.FileDescriptor
 
 const file_proto_yt_scraper_proto_rawDesc = "" +
@@ -222,10 +662,35 @@ const file_proto_yt_scraper_proto_rawDesc = "" +
 	"\x02gl\x18\x01 \x01(\tR\x02gl\"K\n" +
 	"\x15GetQuickPicksResponse\x122\n" +
 	"\vquick_picks\x18\x01 \x03(\v2\x11.common.QuickPickR\n" +
-	"quickPicks2\xcc\x01\n" +
+	"quickPicks\"+\n" +
+	"\x13SearchTracksRequest\x12\x14\n" +
+	"\x05query\x18\x01 \x01(\tR\x05query\"=\n" +
+	"\x14SearchTracksResponse\x12%\n" +
+	"\x06tracks\x18\x01 \x03(\v2\r.common.TrackR\x06tracks\"3\n" +
+	"\x16GetAlbumDetailsRequest\x12\x19\n" +
+	"\balbum_id\x18\x01 \x01(\tR\aalbumId\">\n" +
+	"\x17GetAlbumDetailsResponse\x12#\n" +
+	"\x05album\x18\x01 \x01(\v2\r.common.AlbumR\x05album\",\n" +
+	"\x14SearchArtistsRequest\x12\x14\n" +
+	"\x05query\x18\x01 \x01(\tR\x05query\"G\n" +
+	"\x15SearchArtistsResponse\x12.\n" +
+	"\aartists\x18\x01 \x03(\v2\x14.common.SearchArtistR\aartists\"+\n" +
+	"\x13SearchAlbumsRequest\x12\x14\n" +
+	"\x05query\x18\x01 \x01(\tR\x05query\"C\n" +
+	"\x14SearchAlbumsResponse\x12+\n" +
+	"\x06albums\x18\x01 \x03(\v2\x13.common.SearchAlbumR\x06albums\"6\n" +
+	"\x17GetArtistDetailsRequest\x12\x1b\n" +
+	"\tbrowse_id\x18\x01 \x01(\tR\bbrowseId\"B\n" +
+	"\x18GetArtistDetailsResponse\x12&\n" +
+	"\x06artist\x18\x01 \x01(\v2\x0e.common.ArtistR\x06artist2\x83\x05\n" +
 	"\tYTScraper\x12i\n" +
 	"\x14GetSearchSuggestions\x12'.yt_scraper.GetSearchSuggestionsRequest\x1a(.yt_scraper.GetSearchSuggestionsResponse\x12T\n" +
-	"\rGetQuickPicks\x12 .yt_scraper.GetQuickPicksRequest\x1a!.yt_scraper.GetQuickPicksResponseB1Z/wavelength/server/proto/yt_scraper;yt_scraperpbb\x06proto3"
+	"\rGetQuickPicks\x12 .yt_scraper.GetQuickPicksRequest\x1a!.yt_scraper.GetQuickPicksResponse\x12Z\n" +
+	"\x0fGetAlbumDetails\x12\".yt_scraper.GetAlbumDetailsRequest\x1a#.yt_scraper.GetAlbumDetailsResponse\x12]\n" +
+	"\x10GetArtistDetails\x12#.yt_scraper.GetArtistDetailsRequest\x1a$.yt_scraper.GetArtistDetailsResponse\x12Q\n" +
+	"\fSearchTracks\x12\x1f.yt_scraper.SearchTracksRequest\x1a .yt_scraper.SearchTracksResponse\x12T\n" +
+	"\rSearchArtists\x12 .yt_scraper.SearchArtistsRequest\x1a!.yt_scraper.SearchArtistsResponse\x12Q\n" +
+	"\fSearchAlbums\x12\x1f.yt_scraper.SearchAlbumsRequest\x1a .yt_scraper.SearchAlbumsResponseB1Z/wavelength/server/proto/yt_scraper;yt_scraperpbb\x06proto3"
 
 var (
 	file_proto_yt_scraper_proto_rawDescOnce sync.Once
@@ -239,27 +704,57 @@ func file_proto_yt_scraper_proto_rawDescGZIP() []byte {
 	return file_proto_yt_scraper_proto_rawDescData
 }
 
-var file_proto_yt_scraper_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_proto_yt_scraper_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_proto_yt_scraper_proto_goTypes = []any{
 	(*GetSearchSuggestionsRequest)(nil),  // 0: yt_scraper.GetSearchSuggestionsRequest
 	(*GetSearchSuggestionsResponse)(nil), // 1: yt_scraper.GetSearchSuggestionsResponse
 	(*GetQuickPicksRequest)(nil),         // 2: yt_scraper.GetQuickPicksRequest
 	(*GetQuickPicksResponse)(nil),        // 3: yt_scraper.GetQuickPicksResponse
-	(*commonpb.SuggestedLink)(nil),       // 4: common.SuggestedLink
-	(*commonpb.QuickPick)(nil),           // 5: common.QuickPick
+	(*SearchTracksRequest)(nil),          // 4: yt_scraper.SearchTracksRequest
+	(*SearchTracksResponse)(nil),         // 5: yt_scraper.SearchTracksResponse
+	(*GetAlbumDetailsRequest)(nil),       // 6: yt_scraper.GetAlbumDetailsRequest
+	(*GetAlbumDetailsResponse)(nil),      // 7: yt_scraper.GetAlbumDetailsResponse
+	(*SearchArtistsRequest)(nil),         // 8: yt_scraper.SearchArtistsRequest
+	(*SearchArtistsResponse)(nil),        // 9: yt_scraper.SearchArtistsResponse
+	(*SearchAlbumsRequest)(nil),          // 10: yt_scraper.SearchAlbumsRequest
+	(*SearchAlbumsResponse)(nil),         // 11: yt_scraper.SearchAlbumsResponse
+	(*GetArtistDetailsRequest)(nil),      // 12: yt_scraper.GetArtistDetailsRequest
+	(*GetArtistDetailsResponse)(nil),     // 13: yt_scraper.GetArtistDetailsResponse
+	(*commonpb.SuggestedLink)(nil),       // 14: common.SuggestedLink
+	(*commonpb.QuickPick)(nil),           // 15: common.QuickPick
+	(*commonpb.Track)(nil),               // 16: common.Track
+	(*commonpb.Album)(nil),               // 17: common.Album
+	(*commonpb.SearchArtist)(nil),        // 18: common.SearchArtist
+	(*commonpb.SearchAlbum)(nil),         // 19: common.SearchAlbum
+	(*commonpb.Artist)(nil),              // 20: common.Artist
 }
 var file_proto_yt_scraper_proto_depIdxs = []int32{
-	4, // 0: yt_scraper.GetSearchSuggestionsResponse.suggested_links:type_name -> common.SuggestedLink
-	5, // 1: yt_scraper.GetQuickPicksResponse.quick_picks:type_name -> common.QuickPick
-	0, // 2: yt_scraper.YTScraper.GetSearchSuggestions:input_type -> yt_scraper.GetSearchSuggestionsRequest
-	2, // 3: yt_scraper.YTScraper.GetQuickPicks:input_type -> yt_scraper.GetQuickPicksRequest
-	1, // 4: yt_scraper.YTScraper.GetSearchSuggestions:output_type -> yt_scraper.GetSearchSuggestionsResponse
-	3, // 5: yt_scraper.YTScraper.GetQuickPicks:output_type -> yt_scraper.GetQuickPicksResponse
-	4, // [4:6] is the sub-list for method output_type
-	2, // [2:4] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	14, // 0: yt_scraper.GetSearchSuggestionsResponse.suggested_links:type_name -> common.SuggestedLink
+	15, // 1: yt_scraper.GetQuickPicksResponse.quick_picks:type_name -> common.QuickPick
+	16, // 2: yt_scraper.SearchTracksResponse.tracks:type_name -> common.Track
+	17, // 3: yt_scraper.GetAlbumDetailsResponse.album:type_name -> common.Album
+	18, // 4: yt_scraper.SearchArtistsResponse.artists:type_name -> common.SearchArtist
+	19, // 5: yt_scraper.SearchAlbumsResponse.albums:type_name -> common.SearchAlbum
+	20, // 6: yt_scraper.GetArtistDetailsResponse.artist:type_name -> common.Artist
+	0,  // 7: yt_scraper.YTScraper.GetSearchSuggestions:input_type -> yt_scraper.GetSearchSuggestionsRequest
+	2,  // 8: yt_scraper.YTScraper.GetQuickPicks:input_type -> yt_scraper.GetQuickPicksRequest
+	6,  // 9: yt_scraper.YTScraper.GetAlbumDetails:input_type -> yt_scraper.GetAlbumDetailsRequest
+	12, // 10: yt_scraper.YTScraper.GetArtistDetails:input_type -> yt_scraper.GetArtistDetailsRequest
+	4,  // 11: yt_scraper.YTScraper.SearchTracks:input_type -> yt_scraper.SearchTracksRequest
+	8,  // 12: yt_scraper.YTScraper.SearchArtists:input_type -> yt_scraper.SearchArtistsRequest
+	10, // 13: yt_scraper.YTScraper.SearchAlbums:input_type -> yt_scraper.SearchAlbumsRequest
+	1,  // 14: yt_scraper.YTScraper.GetSearchSuggestions:output_type -> yt_scraper.GetSearchSuggestionsResponse
+	3,  // 15: yt_scraper.YTScraper.GetQuickPicks:output_type -> yt_scraper.GetQuickPicksResponse
+	7,  // 16: yt_scraper.YTScraper.GetAlbumDetails:output_type -> yt_scraper.GetAlbumDetailsResponse
+	13, // 17: yt_scraper.YTScraper.GetArtistDetails:output_type -> yt_scraper.GetArtistDetailsResponse
+	5,  // 18: yt_scraper.YTScraper.SearchTracks:output_type -> yt_scraper.SearchTracksResponse
+	9,  // 19: yt_scraper.YTScraper.SearchArtists:output_type -> yt_scraper.SearchArtistsResponse
+	11, // 20: yt_scraper.YTScraper.SearchAlbums:output_type -> yt_scraper.SearchAlbumsResponse
+	14, // [14:21] is the sub-list for method output_type
+	7,  // [7:14] is the sub-list for method input_type
+	7,  // [7:7] is the sub-list for extension type_name
+	7,  // [7:7] is the sub-list for extension extendee
+	0,  // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_proto_yt_scraper_proto_init() }
@@ -273,7 +768,7 @@ func file_proto_yt_scraper_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_yt_scraper_proto_rawDesc), len(file_proto_yt_scraper_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -28,6 +28,9 @@ const (
 	MusicService_GetQuickPicks_FullMethodName             = "/music.MusicService/GetQuickPicks"
 	MusicService_GetMusicDuration_FullMethodName          = "/music.MusicService/GetMusicDuration"
 	MusicService_GetMusicTrackStats_FullMethodName        = "/music.MusicService/GetMusicTrackStats"
+	MusicService_GetMusicVideoId_FullMethodName           = "/music.MusicService/GetMusicVideoId"
+	MusicService_SearchMusicTracks_FullMethodName         = "/music.MusicService/SearchMusicTracks"
+	MusicService_SearchYouTubeVideos_FullMethodName       = "/music.MusicService/SearchYouTubeVideos"
 )
 
 // MusicServiceClient is the client API for MusicService service.
@@ -43,6 +46,9 @@ type MusicServiceClient interface {
 	GetQuickPicks(ctx context.Context, in *GetQuickPicksRequest, opts ...grpc.CallOption) (*GetQuickPicksResponse, error)
 	GetMusicDuration(ctx context.Context, in *GetMusicDurationRequest, opts ...grpc.CallOption) (*GetMusicDurationResponse, error)
 	GetMusicTrackStats(ctx context.Context, in *GetMusicTrackStatsRequest, opts ...grpc.CallOption) (*GetMusicTrackStatsResponse, error)
+	GetMusicVideoId(ctx context.Context, in *GetMusicVideoIdRequest, opts ...grpc.CallOption) (*GetMusicVideoIdResponse, error)
+	SearchMusicTracks(ctx context.Context, in *SearchMusicTracksRequest, opts ...grpc.CallOption) (*SearchMusicTracksResponse, error)
+	SearchYouTubeVideos(ctx context.Context, in *SearchYouTubeVideosRequest, opts ...grpc.CallOption) (*SearchYouTubeVideosResponse, error)
 }
 
 type musicServiceClient struct {
@@ -143,6 +149,36 @@ func (c *musicServiceClient) GetMusicTrackStats(ctx context.Context, in *GetMusi
 	return out, nil
 }
 
+func (c *musicServiceClient) GetMusicVideoId(ctx context.Context, in *GetMusicVideoIdRequest, opts ...grpc.CallOption) (*GetMusicVideoIdResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetMusicVideoIdResponse)
+	err := c.cc.Invoke(ctx, MusicService_GetMusicVideoId_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *musicServiceClient) SearchMusicTracks(ctx context.Context, in *SearchMusicTracksRequest, opts ...grpc.CallOption) (*SearchMusicTracksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SearchMusicTracksResponse)
+	err := c.cc.Invoke(ctx, MusicService_SearchMusicTracks_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *musicServiceClient) SearchYouTubeVideos(ctx context.Context, in *SearchYouTubeVideosRequest, opts ...grpc.CallOption) (*SearchYouTubeVideosResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SearchYouTubeVideosResponse)
+	err := c.cc.Invoke(ctx, MusicService_SearchYouTubeVideos_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MusicServiceServer is the server API for MusicService service.
 // All implementations must embed UnimplementedMusicServiceServer
 // for forward compatibility.
@@ -156,6 +192,9 @@ type MusicServiceServer interface {
 	GetQuickPicks(context.Context, *GetQuickPicksRequest) (*GetQuickPicksResponse, error)
 	GetMusicDuration(context.Context, *GetMusicDurationRequest) (*GetMusicDurationResponse, error)
 	GetMusicTrackStats(context.Context, *GetMusicTrackStatsRequest) (*GetMusicTrackStatsResponse, error)
+	GetMusicVideoId(context.Context, *GetMusicVideoIdRequest) (*GetMusicVideoIdResponse, error)
+	SearchMusicTracks(context.Context, *SearchMusicTracksRequest) (*SearchMusicTracksResponse, error)
+	SearchYouTubeVideos(context.Context, *SearchYouTubeVideosRequest) (*SearchYouTubeVideosResponse, error)
 	mustEmbedUnimplementedMusicServiceServer()
 }
 
@@ -192,6 +231,15 @@ func (UnimplementedMusicServiceServer) GetMusicDuration(context.Context, *GetMus
 }
 func (UnimplementedMusicServiceServer) GetMusicTrackStats(context.Context, *GetMusicTrackStatsRequest) (*GetMusicTrackStatsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetMusicTrackStats not implemented")
+}
+func (UnimplementedMusicServiceServer) GetMusicVideoId(context.Context, *GetMusicVideoIdRequest) (*GetMusicVideoIdResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetMusicVideoId not implemented")
+}
+func (UnimplementedMusicServiceServer) SearchMusicTracks(context.Context, *SearchMusicTracksRequest) (*SearchMusicTracksResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SearchMusicTracks not implemented")
+}
+func (UnimplementedMusicServiceServer) SearchYouTubeVideos(context.Context, *SearchYouTubeVideosRequest) (*SearchYouTubeVideosResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SearchYouTubeVideos not implemented")
 }
 func (UnimplementedMusicServiceServer) mustEmbedUnimplementedMusicServiceServer() {}
 func (UnimplementedMusicServiceServer) testEmbeddedByValue()                      {}
@@ -376,6 +424,60 @@ func _MusicService_GetMusicTrackStats_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MusicService_GetMusicVideoId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMusicVideoIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MusicServiceServer).GetMusicVideoId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MusicService_GetMusicVideoId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MusicServiceServer).GetMusicVideoId(ctx, req.(*GetMusicVideoIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MusicService_SearchMusicTracks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchMusicTracksRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MusicServiceServer).SearchMusicTracks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MusicService_SearchMusicTracks_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MusicServiceServer).SearchMusicTracks(ctx, req.(*SearchMusicTracksRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MusicService_SearchYouTubeVideos_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchYouTubeVideosRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MusicServiceServer).SearchYouTubeVideos(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MusicService_SearchYouTubeVideos_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MusicServiceServer).SearchYouTubeVideos(ctx, req.(*SearchYouTubeVideosRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MusicService_ServiceDesc is the grpc.ServiceDesc for MusicService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -418,6 +520,18 @@ var MusicService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetMusicTrackStats",
 			Handler:    _MusicService_GetMusicTrackStats_Handler,
+		},
+		{
+			MethodName: "GetMusicVideoId",
+			Handler:    _MusicService_GetMusicVideoId_Handler,
+		},
+		{
+			MethodName: "SearchMusicTracks",
+			Handler:    _MusicService_SearchMusicTracks_Handler,
+		},
+		{
+			MethodName: "SearchYouTubeVideos",
+			Handler:    _MusicService_SearchYouTubeVideos_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

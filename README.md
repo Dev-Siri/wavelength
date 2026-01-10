@@ -34,36 +34,27 @@ Then you can start the application in dev mode:
 $ flutter run
 ```
 
-## Server
+## Backend
 
-Navigate to `/server`.
+Almost all microservices are entirely written in Go, with one crucial service, the YouTube Scraper, written in TypeScript (Bun) for use of the [`YouTube.js`](https://github.com/LuanRT/YouTube.js) library to retrieve data from the platform.
 
-### Building The Docker Image
-
-Make sure you have Docker installed on your system.
-Then you can build the docker image, and run it, specifying the `PORT` and `--env-file`.
+To run the entirety of the project, you need to have [Docker](https://docker.com) installed on your system. The project includes a `docker-compose.yml` in the `/server` directory. Use the compose commands to start all the microservices up:
 
 ```sh
-$ docker build . -t wavelength/server
-$ docker run -p 8080:8080 -e PORT=8080 --env-file=.env.docker wavelength/server
+$ cd server
+$ docker compose up
+# shut all services down
+$ docker compose down
 ```
 
-### Manual Setup
-
-You will need Go 1.22+ installed on your system, and the GeoLite2-Country database from [MaxMind](https://maxmind.com/en). Get it by registering for a free MaxMind account [here](https://maxmind.com/en/geolite2/signup), after which you can download specifically the `GeoLite2-Country` database.
-Create a directory named `lib` and place the database file in it.
-
-After this, you can navigate back to `/server` and finally run the Go server:
+The microservices use gRPC for communication. If you are looking to make any changes to the protobuf definitions, you need to run `make` to regenerate the gRPC client/server code.
 
 ```sh
-# Run it directly.
-$ go run main.go
-# OR: Compile the server to a binary, then run it.
-$ go build -v -trimpath -ldflags=-s -ldflags=-w -buildvcs=false -o ./bin/wavelength .
-$ ./bin/wavelength
-# OR: Run it using `air` if you have it installed.
-$ air
+# generate gRPC definitions
+$ make generate
 ```
+
+Note that the command also runs a `package.json` script with Bun to generate TypeScript definitions. If you do not have Bun installed, then change the `Makefile` to a different JavaScript package manager command.
 
 ## License
 

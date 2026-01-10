@@ -1,6 +1,9 @@
 import { z } from "zod";
 
+import { embeddedArtistSchema } from "./artist";
+
 export const videoTypeSchema = z.enum(["VIDEO_TYPE_TRACK", "VIDEO_TYPE_UVIDEO"]);
+
 export const playlistTrackSchema = z.object({
   playlistId: z.string(),
   playlistTrackId: z.string(),
@@ -8,7 +11,7 @@ export const playlistTrackSchema = z.object({
   thumbnail: z.string(),
   positionInPlaylist: z.number(),
   isExplicit: z.boolean(),
-  author: z.string(),
+  artists: z.array(embeddedArtistSchema),
   duration: z.string(),
   videoId: z.string(),
   videoType: videoTypeSchema,

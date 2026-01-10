@@ -19,9 +19,9 @@
 </script>
 
 {#if videoSearchQuery.isSuccess}
-  {#if videoSearchQuery.data.length}
-    <div class="flex flex-wrap w-full gap-4">
-      {#each videoSearchQuery.data as uvideo}
+  {#if videoSearchQuery.data.youtubeVideos.length}
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 w-full gap-4">
+      {#each videoSearchQuery.data.youtubeVideos as uvideo}
         <UVideoCard {uvideo} />
       {/each}
     </div>

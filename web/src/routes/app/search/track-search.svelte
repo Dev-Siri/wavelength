@@ -35,15 +35,15 @@
     <TrackItemSkeleton />
     <TrackItemSkeleton />
   </div>
-{:else if trackSearchQuery.isSuccess}
-  {@const topResult = trackSearchQuery.data.result[0]}
+{:else if trackSearchQuery.isSuccess && trackSearchQuery.data.tracks}
+  {@const topResult = trackSearchQuery.data.tracks[0]}
   <div class="h-full w-1/2">
     <h2 class="text-2xl mb-3 font-semibold">Top Result</h2>
     <TopResult {topResult} />
   </div>
   <div class="h-full w-1/2">
     <h2 class="text-2xl mb-3 font-semibold">Songs</h2>
-    {#each trackSearchQuery.data.result.slice(0, 7) as music}
+    {#each trackSearchQuery.data.tracks.slice(0, 7) as music}
       <TrackItem {music} toggle={{ type: "add" }} />
     {/each}
   </div>

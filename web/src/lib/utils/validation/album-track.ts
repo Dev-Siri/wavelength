@@ -5,5 +5,5 @@ export const albumTrackSchema = z.object({
   title: z.string(),
   duration: z.string(),
   isExplicit: z.boolean(),
-  author: z.string(),
+  positionInAlbum: z.number(),
 });

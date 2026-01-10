@@ -8,6 +8,7 @@ import (
 	"wavelength/services/gateway/env"
 	"wavelength/services/gateway/middleware"
 	"wavelength/services/gateway/routes"
+	shared_clients "wavelength/shared/clients"
 	shared_db "wavelength/shared/db"
 	shared_env "wavelength/shared/env"
 	"wavelength/shared/logging"
@@ -15,6 +16,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/healthcheck"
+	"github.com/gofiber/fiber/v2/middleware/requestid"
 	"go.uber.org/zap"
 )
 
@@ -33,6 +35,14 @@ func main() {
 
 	if err := clients.InitMusicClient(); err != nil {
 		logging.Logger.Fatal("Music-service client failed to connect.", zap.Error(err))
+	}
+
+	if err := shared_clients.InitArtistClient(); err != nil {
+		logging.Logger.Fatal("Artist-service client failed to connect.", zap.Error(err))
+	}
+
+	if err := clients.InitAlbumClient(); err != nil {
+		logging.Logger.Fatal("Album-service client failed to connect.", zap.Error(err))
 	}
 
 	if err := shared_db.Connect(); err != nil {
@@ -62,6 +72,7 @@ func main() {
 	addr := ":" + shared_env.GetPORT()
 	staticDir := env.GetStaticDir()
 
+	app.Use(requestid.New())
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: env.GetCorsOrigin(),
 	}))

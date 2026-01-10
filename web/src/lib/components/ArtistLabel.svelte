@@ -23,6 +23,6 @@
     <p class="text-xl mt-2">
       {artist.title.length > 20 ? `${artist.title.slice(0, 19)}...` : artist.title}
     </p>
-    <p class="text-muted-foreground text-sm">{artist.subscriberText}</p>
+    <p class="text-muted-foreground text-sm">{artist.audience}</p>
   </div>
 </a>

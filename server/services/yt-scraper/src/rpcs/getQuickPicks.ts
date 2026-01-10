@@ -6,7 +6,11 @@ import {
 } from "../gen/proto/yt_scraper_pb";
 
 import { DEFAULT_CLIENT } from "../config";
-import { QuickPick } from "../gen/proto/common_pb";
+import {
+  EmbeddedAlbum,
+  EmbeddedArtist,
+  QuickPick,
+} from "../gen/proto/common_pb";
 import { musicPref } from "../innertube";
 import { quickPicksSchema } from "../schemas/quick-picks";
 import { getHighestQualityThumbnail } from "../utils/thumbnail";
@@ -32,8 +36,6 @@ export default async function getQuickPicks(
   const parsedQuickPicks = quickPicksSchema.safeParse(quickPicks);
 
   if (!parsedQuickPicks.success) {
-    console.log(parsedQuickPicks.error);
-
     const status = new grpc.StatusBuilder()
       .withCode(grpc.status.INTERNAL)
       .withDetails("Quick Picks response is invalid.")
@@ -49,24 +51,24 @@ export default async function getQuickPicks(
     responseQuickPick.setVideoId(parsedQuickPick.id);
     responseQuickPick.setTitle(parsedQuickPick.title);
 
-    const thumbnail = getHighestQualityThumbnail(
-      parsedQuickPick.thumbnail.contents
-    );
+    const thumbnail = getHighestQualityThumbnail(parsedQuickPick.thumbnail);
     if (thumbnail) responseQuickPick.setThumbnail(thumbnail.url);
 
-    const artists: QuickPick.QuickPickArtist[] = [];
+    const artists: EmbeddedArtist[] = [];
     for (const artist of parsedQuickPick.artists) {
-      const quickPicksArtists = new QuickPick.QuickPickArtist();
+      const quickPicksArtists = new EmbeddedArtist();
       quickPicksArtists.setTitle(artist.name);
       quickPicksArtists.setBrowseId(artist.channel_id);
 
       artists.push(quickPicksArtists);
     }
 
+    if (!artists.length) continue;
+
     responseQuickPick.setArtistsList(artists);
 
     if (parsedQuickPick.album) {
-      const quickPickAlbum = new QuickPick.QuickPickAlbum();
+      const quickPickAlbum = new EmbeddedAlbum();
       quickPickAlbum.setBrowseId(parsedQuickPick.album.id);
       quickPickAlbum.setTitle(parsedQuickPick.album.name);
 

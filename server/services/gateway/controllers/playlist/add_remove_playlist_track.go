@@ -28,7 +28,8 @@ func AddRemovePlaylistTrack(ctx *fiber.Ctx) error {
 	var parsedBody schemas.PlaylistTrackAdditionSchema
 
 	if err := json.Unmarshal(body, &parsedBody); err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to read body: "+err.Error())
+		logging.Logger.Error("Body read failed.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Body read failed.")
 	}
 
 	if !validation.IsPlaylistTrackAdditionShapeValid(parsedBody) {
@@ -43,8 +44,16 @@ func AddRemovePlaylistTrack(ctx *fiber.Ctx) error {
 		enumVideoType = commonpb.VideoType_VIDEO_TYPE_TRACK
 	}
 
+	embeddedArtists := make([]*commonpb.EmbeddedArtist, 0)
+	for _, artist := range parsedBody.Artists {
+		embeddedArtists = append(embeddedArtists, &commonpb.EmbeddedArtist{
+			Title:    artist.Title,
+			BrowseId: artist.BrowseId,
+		})
+	}
+
 	toggleResponse, err := clients.PlaylistClient.AddRemovePlaylistTrack(ctx.Context(), &playlistpb.AddRemovePlaylistTrackRequest{
-		Author:     parsedBody.Author,
+		Artists:    embeddedArtists,
 		Thumbnail:  parsedBody.Thumbnail,
 		Duration:   parsedBody.Duration,
 		IsExplicit: parsedBody.IsExplicit,

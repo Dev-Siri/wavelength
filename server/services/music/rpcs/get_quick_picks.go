@@ -4,7 +4,7 @@ import (
 	"context"
 	"wavelength/proto/musicpb"
 	"wavelength/proto/yt_scraperpb"
-	"wavelength/services/music/clients"
+	shared_clients "wavelength/shared/clients"
 	"wavelength/shared/logging"
 
 	"go.uber.org/zap"
@@ -16,7 +16,7 @@ func (m *MusicService) GetQuickPicks(
 	ctx context.Context,
 	request *musicpb.GetQuickPicksRequest,
 ) (*musicpb.GetQuickPicksResponse, error) {
-	quickPicksResponse, err := clients.YtScraperClient.GetQuickPicks(ctx, &yt_scraperpb.GetQuickPicksRequest{
+	quickPicksResponse, err := shared_clients.YtScraperClient.GetQuickPicks(ctx, &yt_scraperpb.GetQuickPicksRequest{
 		Gl: request.Gl,
 	})
 	if err != nil {

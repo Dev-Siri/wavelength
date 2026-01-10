@@ -134,3 +134,7 @@ body {
     rgba(83, 150, 237, 1) 100%
   );
 }
+
+.splitpanes.default-theme .splitpanes__pane {
+  background-color: black !important;
+}

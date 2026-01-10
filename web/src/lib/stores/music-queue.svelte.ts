@@ -1,7 +1,7 @@
-import type { BaseMusicTrack } from "$lib/utils/validation/music-track";
+import type { MusicTrack } from "$lib/utils/validation/music-track";
 import type { VideoType } from "$lib/utils/validation/playlist-track";
 
-export interface QueueableMusic extends BaseMusicTrack {
+export interface QueueableMusic extends Omit<MusicTrack, "duration" | "isExplicit"> {
   videoType: VideoType;
 }
 

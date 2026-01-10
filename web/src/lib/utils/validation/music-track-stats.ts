@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 export const musicTrackStatsSchema = z.object({
-  viewCount: z.number(),
-  likeCount: z.number(),
-  commentCount: z.number(),
+  viewCount: z.string(),
+  likeCount: z.string(),
+  commentCount: z.string(),
 });
 
 export const musicTrackStatsResponseSchema = z.object({

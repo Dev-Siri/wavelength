@@ -1,24 +1,28 @@
 package artist_controllers
 
 import (
-	"wavelength/services/gateway/api"
+	"wavelength/proto/artistpb"
 	"wavelength/services/gateway/models"
+	shared_clients "wavelength/shared/clients"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 func SearchArtists(ctx *fiber.Ctx) error {
 	query := ctx.Query("q")
-	nextPageToken := ctx.Query("nextPageToken")
 
 	if query == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "Query (q) is required for searching artists.")
 	}
 
-	searchResults, err := api.YouTubeClient.SearchArtists(query, nextPageToken)
-
+	searchResults, err := shared_clients.ArtistClient.SearchArtists(ctx.Context(), &artistpb.SearchArtistsRequest{
+		Query: query,
+	})
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while searching for artists: "+err.Error())
+		go logging.Logger.Error("ArtistService: 'SearchArtists' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Artists search failed.")
 	}
 
 	return models.Success(ctx, searchResults)

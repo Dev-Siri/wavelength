@@ -6,6 +6,7 @@
 
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
   import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
+  import { punctuatify } from "$lib/utils/format";
 
   import Image from "./Image.svelte";
   import { Button } from "./ui/button";
@@ -47,7 +48,9 @@
   >
     {topResult.title.length > 65 ? `${topResult.title.slice(0, 65)}...` : topResult.title}
   </h2>
-  <p class="text-muted-foreground text-md">{topResult.author}</p>
+  <p class="text-muted-foreground text-md">
+    {punctuatify(topResult.artists.map(artist => artist.title))}
+  </p>
   {#if isHoveringCard}
     <div class="right-5 top-[70%] absolute">
       <div in:fly={{ y: 10, x: 0 }}>

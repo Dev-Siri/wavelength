@@ -3,10 +3,10 @@
 
   import { svelteQueryKeys } from "$lib/constants/keys";
   import { backendClient } from "$lib/utils/query-client";
+  import { albumSearchResponseSchema } from "$lib/utils/validation/search-response";
 
   import AlbumTile from "$lib/components/AlbumTile.svelte";
   import AlbumSkeleton from "$lib/components/skeletons/AlbumSkeleton.svelte";
-  import { albumSearchResponseSchema } from "$lib/utils/validation/search-response";
 
   const { q }: { q: string } = $props();
 
@@ -25,8 +25,8 @@
       <AlbumSkeleton />
     {/each}
   {:else if albumSearchQuery.isSuccess}
-    {#if albumSearchQuery.data.result.length}
-      {#each albumSearchQuery.data.result as album}
+    {#if albumSearchQuery.data.albums}
+      {#each albumSearchQuery.data.albums as album}
         <AlbumTile {album} />
       {/each}
     {:else}

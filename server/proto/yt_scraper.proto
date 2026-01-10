@@ -8,6 +8,11 @@ import "proto/common.proto";
 service YTScraper {
   rpc GetSearchSuggestions(GetSearchSuggestionsRequest) returns (GetSearchSuggestionsResponse);
   rpc GetQuickPicks(GetQuickPicksRequest) returns (GetQuickPicksResponse);
+  rpc GetAlbumDetails(GetAlbumDetailsRequest) returns (GetAlbumDetailsResponse);
+  rpc GetArtistDetails(GetArtistDetailsRequest) returns (GetArtistDetailsResponse);
+  rpc SearchTracks(SearchTracksRequest) returns (SearchTracksResponse);
+  rpc SearchArtists(SearchArtistsRequest) returns (SearchArtistsResponse);
+  rpc SearchAlbums(SearchAlbumsRequest) returns (SearchAlbumsResponse);
 }
 
 message GetSearchSuggestionsRequest {
@@ -26,4 +31,44 @@ message GetQuickPicksRequest {
 
 message GetQuickPicksResponse {
   repeated common.QuickPick quick_picks = 1;
+}
+
+message SearchTracksRequest {
+  string query = 1;
+}
+
+message SearchTracksResponse {
+  repeated common.Track tracks = 1; 
+}
+
+message GetAlbumDetailsRequest {
+  string album_id = 1;
+}
+
+message GetAlbumDetailsResponse {
+  common.Album album = 1;
+}
+
+message SearchArtistsRequest {
+  string query = 1;
+}
+
+message SearchArtistsResponse {
+  repeated common.SearchArtist artists = 1;
+}
+
+message SearchAlbumsRequest {
+  string query = 1;
+}
+
+message SearchAlbumsResponse {
+  repeated common.SearchAlbum albums = 1;
+}
+
+message GetArtistDetailsRequest {
+  string browse_id = 1;
+}
+
+message GetArtistDetailsResponse {
+  common.Artist artist = 1;
 }

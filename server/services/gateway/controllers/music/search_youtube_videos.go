@@ -1,12 +1,13 @@
 package music_controllers
 
 import (
-	"html"
-	"wavelength/services/gateway/api"
+	"wavelength/proto/musicpb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
-	"wavelength/services/gateway/utils"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 func SearchYouTubeVideos(ctx *fiber.Ctx) error {
@@ -16,28 +17,13 @@ func SearchYouTubeVideos(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Query (q) is required for searching YouTube videos.")
 	}
 
-	searchResults, err := api.YouTubeV3Client.Search.List([]string{"snippet"}).Q(query).MaxResults(10).Do()
-
+	youtubeVideosSearchResponse, err := clients.MusicClient.SearchYouTubeVideos(ctx.Context(), &musicpb.SearchYouTubeVideosRequest{
+		Query: query,
+	})
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while searching for YouTube videos: "+err.Error())
+		go logging.Logger.Error("MusicService: 'SearchMusicVideos' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "YouTube videos search fetch failed.")
 	}
 
-	if len(searchResults.Items) == 0 {
-		return fiber.NewError(fiber.StatusNotFound, "No search results for that query.")
-	}
-
-	var youtubeVideos []models.YouTubeVideo
-
-	for _, item := range searchResults.Items {
-		video := models.YouTubeVideo{
-			VideoId:   item.Id.VideoId,
-			Title:     html.UnescapeString(item.Snippet.Title),
-			Thumbnail: utils.GetHighestPossibleThumbnailUrl(item.Snippet.Thumbnails),
-			Author:    item.Snippet.ChannelTitle,
-		}
-
-		youtubeVideos = append(youtubeVideos, video)
-	}
-
-	return models.Success(ctx, youtubeVideos)
+	return models.Success(ctx, youtubeVideosSearchResponse)
 }

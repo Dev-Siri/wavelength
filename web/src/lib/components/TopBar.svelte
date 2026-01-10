@@ -10,7 +10,7 @@
 </script>
 
 <header
-  class="flex items-center z-50 justify-between py-3 bg-black absolute right-0 left-0 pr-4 rounded-bl-2xl"
+  class="flex items-center z-50 justify-between py-3 bg-black/35 backdrop-blur-xl backdrop-saturate-150 absolute right-0 left-0 pr-4 rounded-bl-2xl"
 >
   <div class="flex gap-2 items-center w-1/2 pl-2">
     <Button onclick={() => history.back()} variant="secondary" class="rounded-full">

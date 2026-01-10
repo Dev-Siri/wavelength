@@ -7,6 +7,7 @@
   import { svelteQueryKeys } from "$lib/constants/keys";
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
+  import { punctuatify } from "$lib/utils/format";
   import { backendClient } from "$lib/utils/query-client";
   import { musicVideoPreviewSchema } from "$lib/utils/validation/music-video-preview";
 
@@ -18,7 +19,7 @@
   const musicVideoPreviewQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.musicVideoPreview(
       musicQueueStore.musicPlayingNow?.title ?? "",
-      musicQueueStore.musicPlayingNow?.author ?? "",
+      punctuatify(musicQueueStore.musicPlayingNow?.artists.map(artist => artist.title) ?? []),
     ),
     async queryFn() {
       if (
@@ -30,7 +31,9 @@
       return backendClient("/music/music-video-preview", musicVideoPreviewSchema, {
         searchParams: {
           title: musicQueueStore.musicPlayingNow?.title ?? "",
-          artist: musicQueueStore.musicPlayingNow?.author ?? "",
+          artist: punctuatify(
+            musicQueueStore.musicPlayingNow?.artists.map(artist => artist.title) ?? [],
+          ),
         },
       });
     },

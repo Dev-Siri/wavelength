@@ -16,23 +16,26 @@ func Success[T any](ctx *fiber.Ctx, data T) error {
 		}
 
 		response := fiber.Map{
-			"success": true,
-			"data":    json.RawMessage(bytes),
+			"success":   true,
+			"requestId": ctx.Locals("requestid"),
+			"data":      json.RawMessage(bytes),
 		}
 
 		return ctx.JSON(response)
 	}
 
 	return ctx.JSON(fiber.Map{
-		"success": true,
-		"data":    data,
+		"success":   true,
+		"requestId": ctx.Locals("requestid"),
+		"data":      data,
 	})
 }
 
 func Error(ctx *fiber.Ctx, message string) error {
 	response := &fiber.Map{
-		"success": false,
-		"message": message,
+		"success":   false,
+		"requestId": ctx.Locals("requestid"),
+		"message":   message,
 	}
 
 	return ctx.JSON(response)

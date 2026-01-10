@@ -1,10 +1,13 @@
 package artist_controllers
 
 import (
+	"wavelength/proto/artistpb"
 	"wavelength/services/gateway/models"
-	shared_db "wavelength/shared/db"
+	shared_clients "wavelength/shared/clients"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 func IsFollowingArtist(ctx *fiber.Ctx) error {
@@ -15,22 +18,18 @@ func IsFollowingArtist(ctx *fiber.Ctx) error {
 	}
 
 	authUser, ok := ctx.Locals("authUser").(models.AuthUser)
-
 	if !ok {
 		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
 	}
 
-	var followingCount int
-
-	row := shared_db.Database.QueryRow(`
-		SELECT COUNT(*) FROM "follows"
-		WHERE artist_browse_id = $1 AND follower_email = $2;
-	`, browseId, authUser.Email)
-
-	if err := row.Scan(&followingCount); err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get following count from database.")
+	isFollowingResponse, err := shared_clients.ArtistClient.IsFollowingArtist(ctx.Context(), &artistpb.IsFollowingArtistRequest{
+		BrowseId:      browseId,
+		FollowerEmail: authUser.Email,
+	})
+	if err != nil {
+		go logging.Logger.Error("ArtistService: 'IsFollowingArtist' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Artist follow status fetch failed.")
 	}
 
-	isFollowingArtist := followingCount > 0
-	return models.Success(ctx, isFollowingArtist)
+	return models.Success(ctx, isFollowingResponse)
 }

@@ -1,23 +1,29 @@
 <script lang="ts">
   import { EllipsisIcon } from "@lucide/svelte";
-  import { useQueryClient } from "@tanstack/svelte-query";
+  import { createQuery } from "@tanstack/svelte-query";
 
-  import type { Playlist } from "$lib/utils/validation/playlists";
+  import { playlistsSchema } from "$lib/utils/validation/playlists";
 
   import { svelteQueryKeys } from "$lib/constants/keys";
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
-  import { durationify } from "$lib/utils/format.js";
+  import userStore from "$lib/stores/user.svelte";
+  import { durationify, punctuatify } from "$lib/utils/format.js";
+  import { backendClient } from "$lib/utils/query-client";
   import { getThumbnailUrl } from "$lib/utils/url";
 
   import Image from "./Image.svelte";
   import PlaylistToggleOptions from "./PlaylistToggleOptions.svelte";
   import * as DropdownMenu from "./ui/dropdown-menu";
 
-  const queryClient = useQueryClient();
-  const playlists = $derived.by(() =>
-    queryClient.getQueryData<Playlist[]>(svelteQueryKeys.userPlaylists),
-  );
+  const playlistsQuery = createQuery(() => ({
+    queryKey: svelteQueryKeys.userPlaylists,
+    async queryFn() {
+      if (!userStore.user) return;
+
+      return backendClient(`/playlists/user/${userStore.user.email}`, playlistsSchema);
+    },
+  }));
 </script>
 
 {#if musicQueueStore.musicPlayingNow}
@@ -40,7 +46,7 @@
         {/key}
       </div>
     </DropdownMenu.Trigger>
-    <DropdownMenu.Content class="z-9999" hidden={!playlists?.length}>
+    <DropdownMenu.Content class="z-9999" hidden={!playlistsQuery.data?.playlists}>
       <PlaylistToggleOptions
         toggle={{ type: "add" }}
         music={{
@@ -55,7 +61,9 @@
     <p class="text-md ml-2 text-primary">
       {musicQueueStore.musicPlayingNow.title}
     </p>
-    <p class="text-xs ml-2 text-muted-foreground">{musicQueueStore.musicPlayingNow.author}</p>
+    <p class="text-xs ml-2 text-muted-foreground">
+      {punctuatify(musicQueueStore.musicPlayingNow.artists.map(artist => artist.title))}
+    </p>
   </div>
 {:else}
   <div class="h-20 w-20 bg-primary-foreground rounded-md"></div>

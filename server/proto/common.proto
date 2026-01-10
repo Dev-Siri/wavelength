@@ -3,6 +3,7 @@ package common;
 
 option go_package = "wavelength/proto/commonpb";
 
+// Contains all data representations.
 enum VideoType {
   VIDEO_TYPE_UNSPECIFIED = 0;
   VIDEO_TYPE_TRACK = 1;
@@ -26,16 +27,17 @@ message PlaylistTrack {
   string thumbnail = 3;
   uint32 position_in_playlist = 4;
   optional bool is_explicit = 5;
-  string author = 6;
-  string duration = 7;
+  uint64 duration = 7;
   string video_id = 8;
   VideoType video_type = 9;
   string playlist_id = 10;
+
+  repeated EmbeddedArtist artists = 11;
 }
 
 message TracksLength {
-  uint32 song_count = 1;
-  uint32 song_duration_second = 2;
+  uint64 song_count = 1;
+  uint64 song_duration_second = 2;
 }
 
 message LikedTrack {
@@ -44,10 +46,11 @@ message LikedTrack {
   string title = 3;
   string thumbnail = 4;
   optional bool is_explicit = 5;
-  string author = 6;
-  string duration = 7;
-  string video_id = 8;
-  VideoType video_type = 9;
+  uint64 duration = 6;
+  string video_id = 7;
+  VideoType video_type = 8;
+  
+  repeated EmbeddedArtist artists = 9;
 }
 
 message SuggestedLink {
@@ -58,24 +61,129 @@ message SuggestedLink {
   string type = 6;
 }
 
+// Embedded types are made to be small and use as a part of a larger type.
+// These do not contain much information about their respective representations.
+message EmbeddedAlbum {
+  string browse_id = 1;
+  string title = 2;
+}
+
+message EmbeddedArtist {
+  string browse_id = 1;
+  string title = 2;
+}
+
 message QuickPick {
-  message QuickPickAlbum {
-    string browse_id = 1;
-    string title = 2;
-  }
-  message QuickPickArtist {
-    string browse_id = 1;
-    string title = 2;
-  }
   string video_id = 1;
   string title = 2;
   string thumbnail = 3;
-  repeated QuickPickArtist artists = 4;
-  optional QuickPickAlbum album = 5;
+  repeated EmbeddedArtist artists = 4;
+  optional EmbeddedAlbum album = 5;
 }
 
 message MusicTrackStats {
   uint64 view_count = 1;
   uint64 like_count = 2;
   uint64 comment_count = 3;
+}
+
+message YouTubeVideo {
+  string video_id = 1;
+  string title = 2;
+  string thumbnail = 3;
+  string author = 4;
+  string author_channel_id = 5;
+}
+
+message AlbumTrack {
+  string video_id = 1;
+  string title = 2;
+  uint64 duration = 3;
+  uint32 position_in_album = 4;
+
+  optional bool is_explicit = 5;
+}
+
+enum AlbumType {
+  ALBUM_TYPE_UNSPECIFIED = 0;
+  ALBUM_TYPE_ALBUM = 1;
+  ALBUM_TYPE_SINGLE = 2;
+  ALBUM_TYPE_EP = 3;
+}
+
+message Album {
+  string title = 1;
+  AlbumType album_type = 2;
+  string release = 3;
+  string cover = 4;
+  uint32 total_song_count = 5;
+  string total_duration = 6;
+  EmbeddedArtist artist = 7;
+
+  repeated AlbumTrack album_tracks = 8;
+}
+
+message Track {
+  string video_id = 1;
+  string title = 2;
+  string thumbnail = 3;
+  uint64 duration = 4;
+
+  repeated EmbeddedArtist artists = 5;
+  optional bool is_explicit = 6;
+  optional EmbeddedAlbum album = 7;
+}
+
+// SearchArtist is the message returned when you search for artists.
+message SearchArtist {
+  string browse_id = 1;
+  string title = 2;
+  string thumbnail = 3;
+  string audience = 4;
+}
+
+// Artist is the message returned when you get an artist's details.
+message Artist {
+  message TopSongTrack {
+    string video_id = 1;
+    string title = 2;
+    string thumbnail = 3;
+    string play_count = 4;
+
+    optional bool is_explicit = 5;
+    optional EmbeddedAlbum album = 6;
+  }
+  message ArtistAlbum {
+    string album_id = 1;
+    string title = 2;
+    string thumbnail = 3;
+    string release_date = 4;
+    AlbumType album_type = 5;
+  }
+  string browse_id = 1;
+  string title = 2;
+  string thumbnail = 3;
+  string description = 4;
+  string audience = 5;
+
+  repeated TopSongTrack top_songs = 6;
+  repeated ArtistAlbum albums = 7;
+  repeated ArtistAlbum singles_and_eps = 8;
+}
+
+message SearchAlbum {
+  string album_id = 1;
+  string title = 2;
+  string thumbnail = 3;
+  string release_date = 4;
+  AlbumType album_type = 5;
+  EmbeddedArtist artist = 6;
+}
+
+message FollowedArtist {
+  string follow_id = 1;
+  string browse_id = 2;
+  string follower_email = 3;
+  string name = 4;
+  string thumbnail = 5;
 }
