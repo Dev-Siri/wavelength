@@ -9,6 +9,7 @@ import (
 	shared_clients "wavelength/shared/clients"
 	shared_db "wavelength/shared/db"
 	shared_env "wavelength/shared/env"
+	shared_http "wavelength/shared/http"
 	"wavelength/shared/logging"
 
 	"go.uber.org/zap"
@@ -51,6 +52,8 @@ func main() {
 
 	port := shared_env.GetPORT()
 	addr := ":" + port
+
+	go shared_http.BootstrapHealthCheckServer(addr)
 
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {

@@ -33,6 +33,8 @@ services:
     environment:
       - PORT=8081
       - ARTIST_CLIENT_URL=artist:8084
+    depends_on:
+      - artist
     develop:
       watch:
         - action: rebuild
@@ -50,6 +52,7 @@ services:
       - ARTIST_CLIENT_URL=artist:8084
     depends_on:
       - yt-scraper
+      - artist
     develop:
       watch:
         - action: rebuild
