@@ -9,12 +9,10 @@ import (
 	shared_clients "wavelength/shared/clients"
 	shared_db "wavelength/shared/db"
 	shared_env "wavelength/shared/env"
-	shared_http "wavelength/shared/http"
 	"wavelength/shared/logging"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 )
 
 func main() {
@@ -53,8 +51,6 @@ func main() {
 	port := shared_env.GetPORT()
 	addr := ":" + port
 
-	go shared_http.BootstrapHealthCheckServer(addr)
-
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {
 		logging.Logger.Error("TCP Listener failed to listen on provided address.", zap.String("addr", addr), zap.Error(err))
@@ -65,7 +61,6 @@ func main() {
 	)
 	musicService := music_rpcs.NewMusicService()
 	musicpb.RegisterMusicServiceServer(grpcServer, musicService)
-	reflection.Register(grpcServer)
 
 	logging.Logger.Info("MusicService listening on "+addr, zap.String("port", port))
 	if err := grpcServer.Serve(listener); err != nil {
