@@ -1,7 +1,7 @@
 package logging
 
 import (
-	type_constants "wavelength/services/gateway/constants/types"
+	shared_type_constants "wavelength/shared/constants/types"
 
 	"go.uber.org/zap"
 )
@@ -12,8 +12,8 @@ func InitLogger() error {
 	var logger *zap.Logger
 	var err error
 
-	goEnv := type_constants.GetGoEnv()
-	if goEnv == type_constants.GoEnvProduction {
+	goEnv := shared_type_constants.GetGoEnv()
+	if goEnv == shared_type_constants.GoEnvProduction {
 		logger, err = zap.NewProduction()
 	} else {
 		logger, err = zap.NewDevelopment()

@@ -9,7 +9,6 @@ import (
 	"wavelength/services/gateway/middleware"
 	"wavelength/services/gateway/routes"
 	shared_clients "wavelength/shared/clients"
-	shared_db "wavelength/shared/db"
 	shared_env "wavelength/shared/env"
 	"wavelength/shared/logging"
 
@@ -43,18 +42,6 @@ func main() {
 
 	if err := clients.InitAlbumClient(); err != nil {
 		logging.Logger.Fatal("Album-service client failed to connect.", zap.Error(err))
-	}
-
-	if err := shared_db.Connect(); err != nil {
-		logging.Logger.Fatal("Failed to connect to the database.", zap.Error(err))
-	}
-
-	if shared_db.Database != nil {
-		defer func() {
-			if err := shared_db.Database.Close(); err != nil {
-				logging.Logger.Fatal("Failed to close database connection.", zap.Error(err))
-			}
-		}()
 	}
 
 	if err := db.InitGeoIP(); err != nil {

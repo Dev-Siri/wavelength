@@ -1,8 +1,6 @@
-package type_constants
+package shared_type_constants
 
-import (
-	"os"
-)
+import "os"
 
 type GoEnv string
 
