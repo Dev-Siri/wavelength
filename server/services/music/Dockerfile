@@ -20,6 +20,8 @@ COPY --from=builder /usr/local/bin/music /usr/local/bin/music
 
 RUN chmod +x /usr/local/bin/music
 
+ENV GO_ENV=prod
+
 EXPOSE 8080
 
 ENTRYPOINT [ "/usr/local/bin/music" ]

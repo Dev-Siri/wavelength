@@ -18,6 +18,8 @@ COPY --from=builder /usr/local/bin/artist /usr/local/bin/artist
 
 RUN chmod +x /usr/local/bin/artist
 
+ENV GO_ENV=prod
+
 EXPOSE 8080
 
 ENTRYPOINT [ "/usr/local/bin/artist" ]

@@ -18,6 +18,8 @@ COPY --from=builder /usr/local/bin/playlist /usr/local/bin/playlist
 
 RUN chmod +x /usr/local/bin/playlist
 
+ENV GO_ENV=prod
+
 EXPOSE 8080
 
 ENTRYPOINT [ "/usr/local/bin/playlist" ]

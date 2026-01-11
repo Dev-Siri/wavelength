@@ -5,7 +5,6 @@ import (
 	"wavelength/services/gateway/env"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 var ArtistClient artistpb.ArtistServiceClient
@@ -16,9 +15,14 @@ func InitArtistClient() error {
 		return err
 	}
 
+	creds, err := GetTransportCreds()
+	if err != nil {
+		return err
+	}
+
 	conn, err := grpc.NewClient(
 		addr,
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithTransportCredentials(creds),
 	)
 	if err != nil {
 		return err
