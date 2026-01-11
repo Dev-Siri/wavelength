@@ -3,9 +3,9 @@ package clients
 import (
 	"wavelength/proto/albumpb"
 	"wavelength/services/gateway/env"
-	shared_clients "wavelength/shared/clients"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 var AlbumClient albumpb.AlbumServiceClient
@@ -16,11 +16,7 @@ func InitAlbumClient() error {
 		return err
 	}
 
-	creds, err := shared_clients.GetTransportCreds()
-	if err != nil {
-		return err
-	}
-
+	creds := insecure.NewCredentials()
 	conn, err := grpc.NewClient(
 		addr,
 		grpc.WithTransportCredentials(creds),

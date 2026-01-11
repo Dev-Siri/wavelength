@@ -3,9 +3,9 @@ package clients
 import (
 	"wavelength/proto/playlistpb"
 	"wavelength/services/gateway/env"
-	shared_clients "wavelength/shared/clients"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 var PlaylistClient playlistpb.PlaylistServiceClient
@@ -16,11 +16,7 @@ func InitPlaylistClient() error {
 		return err
 	}
 
-	creds, err := shared_clients.GetTransportCreds()
-	if err != nil {
-		return err
-	}
-
+	creds := insecure.NewCredentials()
 	conn, err := grpc.NewClient(
 		addr,
 		grpc.WithTransportCredentials(creds),
