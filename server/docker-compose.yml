@@ -1,6 +1,8 @@
 services:
   gateway:
     build:
+      platforms:
+        - linux/amd64
       context: .
       dockerfile: services/gateway/Dockerfile
     image: wavelength/services/gateway
@@ -25,6 +27,8 @@ services:
           path: services/gateway
   playlist:
     build:
+      platforms:
+        - linux/amd64
       context: .
       dockerfile: services/playlist/Dockerfile
     image: wavelength/services/playlist
@@ -41,6 +45,8 @@ services:
           path: services
   music:
     build:
+      platforms:
+        - linux/amd64
       context: .
       dockerfile: services/music/Dockerfile
     image: wavelength/services/music
@@ -59,6 +65,8 @@ services:
           path: services
   yt-scraper:
     build:
+      platforms:
+        - linux/amd64
       context: .
       dockerfile: services/yt-scraper/Dockerfile
     image: wavelength/services/yt-scraper
@@ -75,6 +83,8 @@ services:
           path: services/yt-scraper/package.json
   artist:
     build:
+      platforms:
+        - linux/amd64
       context: .
       dockerfile: services/artist/Dockerfile
     image: wavelength/services/artist
@@ -91,6 +101,8 @@ services:
           path: services
   album:
     build:
+      platforms:
+        - linux/amd64
       context: .
       dockerfile: services/album/Dockerfile
     image: wavelength/services/album

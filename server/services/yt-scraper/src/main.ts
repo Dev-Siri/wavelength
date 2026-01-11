@@ -8,8 +8,7 @@ const port = Number(env.PORT || DEFAULT_PORT);
 const address = env.ADDR || ADDR_ALLOW_ALL;
 
 const server = new grpc.Server();
-const grpcPort = port + 1;
-const bindAddress = `${address}:${grpcPort}`;
+const bindAddress = `${address}:${port}`;
 
 server.addService(YTScraperService, ytScraperServer);
 server.bindAsync(
@@ -17,6 +16,6 @@ server.bindAsync(
   grpc.ServerCredentials.createInsecure(),
   (error, port) => {
     if (error) return console.error("YtScraperService startup failed: ", error);
-    console.log(`YtScraperService is listening on port: ${grpcPort}`);
+    console.log(`YtScraperService is listening on port: ${port}`);
   }
 );
