@@ -1,0 +1,61 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "gcr.io/$PROJECT_ID/yt-scraper",
+        "-f",
+        "server/services/yt-scraper/Dockerfile",
+        "server",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "gcr.io/$PROJECT_ID/music",
+        "-f",
+        "server/services/music/Dockerfile",
+        "server",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "gcr.io/$PROJECT_ID/artist",
+        "-f",
+        "server/services/artist/Dockerfile",
+        "server",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "gcr.io/$PROJECT_ID/album",
+        "-f",
+        "server/services/album/Dockerfile",
+        "server",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "gcr.io/$PROJECT_ID/gateway",
+        "-f",
+        "server/services/gateway/Dockerfile",
+        "server",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "gcr.io/$PROJECT_ID/playlist",
+        "-f",
+        "server/services/playlist/Dockerfile",
+        "server",
+      ]
