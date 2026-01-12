@@ -8,6 +8,7 @@ export const DEFAULT_CLIENT = "US";
 const envConfig = z.object({
   PORT: z.string().nullish(),
   ADDR: z.string().nullish(),
+  COOKIE: z.string().optional(),
 });
 
 export const env = envConfig.parse(process.env);
