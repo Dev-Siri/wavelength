@@ -6,5 +6,6 @@ CREATE TABLE IF NOT EXISTS "likes" (
   is_explicit BOOLEAN NOT NULL,
   duration VARCHAR(10) NOT NULL,
   video_id VARCHAR(11) NOT NULL,
-  video_type video_type NOT NULL
+  video_type video_type NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

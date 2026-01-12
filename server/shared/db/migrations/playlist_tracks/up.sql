@@ -12,5 +12,6 @@ CREATE TABLE IF NOT EXISTS "playlist_tracks" (
   playlist_id CHAR(36) NOT NULL,
   video_id VARCHAR(11) NOT NULL,
   video_type video_type NOT NULL,
-  position_in_playlist INTEGER NOT NULL
+  position_in_playlist INTEGER NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
