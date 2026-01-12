@@ -3,9 +3,9 @@ package clients
 import (
 	"wavelength/proto/musicpb"
 	"wavelength/services/gateway/env"
+	shared_clients "wavelength/shared/clients"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 var MusicClient musicpb.MusicServiceClient
@@ -16,7 +16,11 @@ func InitMusicClient() error {
 		return err
 	}
 
-	creds := insecure.NewCredentials()
+	creds, err := shared_clients.GetTransportCreds()
+	if err != nil {
+		return err
+	}
+
 	conn, err := grpc.NewClient(
 		addr,
 		grpc.WithTransportCredentials(creds),

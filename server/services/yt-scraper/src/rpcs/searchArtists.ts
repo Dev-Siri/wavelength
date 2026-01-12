@@ -13,49 +13,58 @@ export default async function searchArtists(
   call: grpc.ServerUnaryCall<SearchArtistsRequest, SearchArtistsResponse>,
   callback: grpc.sendUnaryData<SearchArtistsResponse>
 ) {
-  const query = call.request.getQuery();
-  const { contents } = await music.search(query, {
-    type: "artist",
-  });
+  try {
+    const query = call.request.getQuery();
+    const { contents } = await music.search(query, {
+      type: "artist",
+    });
 
-  if (!contents) {
+    if (!contents) {
+      const status = new grpc.StatusBuilder()
+        .withCode(grpc.status.INTERNAL)
+        .withDetails("YouTube Music sent an empty response.")
+        .build();
+      return callback(status);
+    }
+
+    const parsedArtists = searchArtistSchema.safeParse(contents[0]?.contents);
+
+    if (!parsedArtists.success) {
+      const status = new grpc.StatusBuilder()
+        .withCode(grpc.status.INTERNAL)
+        .withDetails("YouTube Music sent an invalid response.")
+        .build();
+      return callback(status);
+    }
+
+    const artists: SearchArtist[] = [];
+    for (const parsedArtist of parsedArtists.data) {
+      const artist = new SearchArtist();
+
+      artist.setTitle(parsedArtist.name);
+
+      const [, audience] = parsedArtist.subtitle.text.split("•");
+
+      if (!audience) continue;
+      artist.setAudience(audience.trim());
+
+      const thumbnail = getHighestQualityThumbnail(parsedArtist.thumbnail);
+      if (thumbnail) artist.setThumbnail(thumbnail.url);
+
+      artist.setBrowseId(parsedArtist.id);
+      artists.push(artist);
+    }
+
+    const response = new SearchArtistsResponse();
+    response.setArtistsList(artists);
+
+    callback(null, response);
+  } catch (error) {
+    console.error("Artists search failed: ", error);
     const status = new grpc.StatusBuilder()
       .withCode(grpc.status.INTERNAL)
-      .withDetails("YouTube Music sent an empty response.")
+      .withDetails("Artists search failed.")
       .build();
-    return callback(status);
+    callback(status);
   }
-
-  const parsedArtists = searchArtistSchema.safeParse(contents[0]?.contents);
-
-  if (!parsedArtists.success) {
-    const status = new grpc.StatusBuilder()
-      .withCode(grpc.status.INTERNAL)
-      .withDetails("YouTube Music sent an invalid response.")
-      .build();
-    return callback(status);
-  }
-
-  const artists: SearchArtist[] = [];
-  for (const parsedArtist of parsedArtists.data) {
-    const artist = new SearchArtist();
-
-    artist.setTitle(parsedArtist.name);
-
-    const [, audience] = parsedArtist.subtitle.text.split("•");
-
-    if (!audience) continue;
-    artist.setAudience(audience.trim());
-
-    const thumbnail = getHighestQualityThumbnail(parsedArtist.thumbnail);
-    if (thumbnail) artist.setThumbnail(thumbnail.url);
-
-    artist.setBrowseId(parsedArtist.id);
-    artists.push(artist);
-  }
-
-  const response = new SearchArtistsResponse();
-  response.setArtistsList(artists);
-
-  callback(null, response);
 }

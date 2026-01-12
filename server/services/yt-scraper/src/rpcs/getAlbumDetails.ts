@@ -114,10 +114,11 @@ export default async function getAlbumDetails(
     response.setAlbum(album);
 
     callback(null, response);
-  } catch (error: unknown) {
+  } catch (error) {
+    console.error("Album details fetch failed.", error);
     const status = new grpc.StatusBuilder()
       .withCode(grpc.status.INTERNAL)
-      .withDetails(String(error))
+      .withDetails("Album details fetch failed.")
       .build();
     callback(status);
   }

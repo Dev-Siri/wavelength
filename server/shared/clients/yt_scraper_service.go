@@ -5,7 +5,6 @@ import (
 	shared_env "wavelength/shared/env"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 var YtScraperClient yt_scraperpb.YTScraperClient
@@ -16,7 +15,11 @@ func InitYtScraperClient() error {
 		return err
 	}
 
-	creds := insecure.NewCredentials()
+	creds, err := GetTransportCreds()
+	if err != nil {
+		return err
+	}
+
 	conn, err := grpc.NewClient(
 		addr,
 		grpc.WithTransportCredentials(creds),
