@@ -20,9 +20,7 @@ export default async function getQuickPicks(
   callback: grpc.sendUnaryData<GetQuickPicksResponse>
 ) {
   try {
-    const music = await getYtMusicClient(call.request.gl || DEFAULT_CLIENT, {
-      passCookies: false,
-    });
+    const music = await getYtMusicClient(call.request.gl || DEFAULT_CLIENT);
     const { sections } = await music.getHomeFeed();
 
     if (!sections) {
