@@ -22,7 +22,8 @@ func GetTransportCreds() (credentials.TransportCredentials, error) {
 	}
 
 	creds := credentials.NewTLS(&tls.Config{
-		RootCAs: systemRoots,
+		RootCAs:            systemRoots,
+		InsecureSkipVerify: true,
 	})
 	return creds, nil
 }
