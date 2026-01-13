@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-import { embeddedAlbumSchema } from "./album";
-import { embeddedArtistSchema } from "./artist";
-import { thumbnailSchema } from "./thumbnail";
+import { embeddedAlbumSchema } from "./album.js";
+import { embeddedArtistSchema } from "./artist.js";
+import { thumbnailSchema } from "./thumbnail.js";
 
 export const searchedTracksSchema = z.object({
   type: z.literal("MusicShelf"),

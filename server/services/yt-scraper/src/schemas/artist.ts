@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { thumbnailContentSchema, thumbnailSchema } from "./thumbnail";
+import { thumbnailContentSchema, thumbnailSchema } from "./thumbnail.js";
 
 export const embeddedArtistSchema = z.object({
   name: z.string(),

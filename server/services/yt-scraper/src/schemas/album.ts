@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { thumbnailSchema } from "./thumbnail";
+
+import { thumbnailSchema } from "./thumbnail.js";
 
 export const embeddedAlbumSchema = z
   .object({

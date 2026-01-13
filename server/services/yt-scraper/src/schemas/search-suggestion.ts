@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { thumbnailSchema } from "./thumbnail";
+import { thumbnailSchema } from "./thumbnail.js";
 
 const suggestionRunSchema = z.object({
   text: z.string(),

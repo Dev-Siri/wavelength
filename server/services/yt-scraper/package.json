@@ -6,12 +6,15 @@
   "devDependencies": {
     "@types/bun": "latest",
     "grpc-tools": "^1.13.1",
-    "grpc_tools_node_protoc_ts": "^5.3.3"
+    "protobufjs": "^8.0.0",
+    "ts-proto": "^2.10.1"
   },
   "scripts": {
-    "start": "bun src/main.ts",
+    "start": "node dist/main.js",
+    "start:bun": "bun src/main.ts",
     "dev": "bun --watch src/main.ts",
-    "protoc:generate": "grpc_tools_node_protoc --proto_path=../../ --js_out=import_style=commonjs,binary:./src/gen --grpc_out=grpc_js:./src/gen --ts_out=grpc_js:./src/gen ../../proto/yt_scraper.proto ../../proto/common.proto"
+    "build": "tsc && tsc-alias",
+    "protoc:generate": "protoc --plugin=protoc-gen-ts_proto=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./src/gen --ts_proto_opt=outputServices=grpc-js,esModuleInterop=true,importSuffix=.js -I ../../ proto/common.proto proto/yt_scraper.proto"
   },
   "peerDependencies": {
     "typescript": "^5"

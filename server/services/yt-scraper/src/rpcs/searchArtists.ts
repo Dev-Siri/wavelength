@@ -1,21 +1,21 @@
 import * as grpc from "@grpc/grpc-js";
 
-import { SearchArtist } from "../gen/proto/common_pb";
+import { SearchArtist } from "@/gen/proto/common.js";
 import {
   SearchArtistsResponse,
   type SearchArtistsRequest,
-} from "../gen/proto/yt_scraper_pb";
-import { music } from "../innertube";
-import { searchArtistSchema } from "../schemas/artist";
-import { getHighestQualityThumbnail } from "../utils/thumbnail";
+} from "@/gen/proto/yt_scraper.js";
+import { getYtMusicClient } from "@/innertube.js";
+import { searchArtistSchema } from "@/schemas/artist.js";
+import { getHighestQualityThumbnail } from "@/utils/thumbnail.js";
 
 export default async function searchArtists(
   call: grpc.ServerUnaryCall<SearchArtistsRequest, SearchArtistsResponse>,
   callback: grpc.sendUnaryData<SearchArtistsResponse>
 ) {
   try {
-    const query = call.request.getQuery();
-    const { contents } = await music.search(query, {
+    const music = await getYtMusicClient();
+    const { contents } = await music.search(call.request.query, {
       type: "artist",
     });
 
@@ -39,31 +39,28 @@ export default async function searchArtists(
 
     const artists: SearchArtist[] = [];
     for (const parsedArtist of parsedArtists.data) {
-      const artist = new SearchArtist();
-
-      artist.setTitle(parsedArtist.name);
-
       const [, audience] = parsedArtist.subtitle.text.split("•");
-
       if (!audience) continue;
-      artist.setAudience(audience.trim());
 
       const thumbnail = getHighestQualityThumbnail(parsedArtist.thumbnail);
-      if (thumbnail) artist.setThumbnail(thumbnail.url);
+      if (!thumbnail) continue;
 
-      artist.setBrowseId(parsedArtist.id);
+      const artist = {
+        title: parsedArtist.name,
+        audience: audience.trim(),
+        thumbnail: thumbnail.url,
+        browseId: parsedArtist.id,
+      } satisfies SearchArtist;
+
       artists.push(artist);
     }
 
-    const response = new SearchArtistsResponse();
-    response.setArtistsList(artists);
-
-    callback(null, response);
+    return callback(null, { artists });
   } catch (error) {
     console.error("Artists search failed: ", error);
     const status = new grpc.StatusBuilder()
       .withCode(grpc.status.INTERNAL)
-      .withDetails("Artists search failed.")
+      .withDetails("Artists search failed: " + String(error))
       .build();
     callback(status);
   }

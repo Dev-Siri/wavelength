@@ -9,6 +9,8 @@ const envConfig = z.object({
   PORT: z.string().nullish(),
   ADDR: z.string().nullish(),
   COOKIE: z.string().optional(),
+  VISITOR_DATA: z.string().optional(),
+  NODE_ENV: z.string().optional(),
 });
 
 export const env = envConfig.parse(process.env);

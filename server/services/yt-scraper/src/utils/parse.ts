@@ -1,4 +1,4 @@
-import { AlbumType } from "../gen/proto/common_pb";
+import { AlbumType } from "@/gen/proto/common.js";
 
 export function parseStringToAlbumType(albumType: string) {
   switch (albumType.toLowerCase()) {

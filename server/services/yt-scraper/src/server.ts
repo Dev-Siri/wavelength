@@ -1,14 +1,14 @@
-import type { IYTScraperServer } from "./gen/proto/yt_scraper_grpc_pb";
+import type { YTScraperServer } from "@/gen/proto/yt_scraper.js";
 
-import getAlbumDetails from "./rpcs/getAlbumDetails";
-import getArtistDetails from "./rpcs/getArtistDetails";
-import getQuickPicks from "./rpcs/getQuickPicks";
-import getSearchSuggestions from "./rpcs/getSearchSuggestions";
-import searchAlbums from "./rpcs/searchAlbums";
-import searchArtists from "./rpcs/searchArtists";
-import searchTracks from "./rpcs/searchTracks";
+import getAlbumDetails from "@/rpcs/getAlbumDetails.js";
+import getArtistDetails from "@/rpcs/getArtistDetails.js";
+import getQuickPicks from "@/rpcs/getQuickPicks.js";
+import getSearchSuggestions from "@/rpcs/getSearchSuggestions.js";
+import searchAlbums from "@/rpcs/searchAlbums.js";
+import searchArtists from "@/rpcs/searchArtists.js";
+import searchTracks from "@/rpcs/searchTracks.js";
 
-export const ytScraperServer: IYTScraperServer = {
+export const ytScraperServer: YTScraperServer = {
   getSearchSuggestions,
   getQuickPicks,
   searchTracks,

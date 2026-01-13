@@ -1,26 +1,32 @@
 import * as grpc from "@grpc/grpc-js";
 
-import { AlbumType, Artist, EmbeddedAlbum } from "../gen/proto/common_pb";
-import {
+import type {
+  GetArtistDetailsRequest,
   GetArtistDetailsResponse,
-  type GetArtistDetailsRequest,
-} from "../gen/proto/yt_scraper_pb";
-import { music } from "../innertube";
+} from "@/gen/proto/yt_scraper.js";
+
+import {
+  AlbumType,
+  type Artist,
+  type Artist_ArtistAlbum,
+  type Artist_TopSongTrack,
+} from "@/gen/proto/common.js";
+import { getYtMusicClient } from "@/innertube.js";
 import {
   artistDetailsResponseAlbumsSchema,
   artistDetailsResponseHeaderSchema,
   artistDetailsResponseTopSongsSchema,
-} from "../schemas/artist";
-import { parseStringToAlbumType } from "../utils/parse";
-import { getHighestQualityThumbnail } from "../utils/thumbnail";
+} from "@/schemas/artist.js";
+import { parseStringToAlbumType } from "@/utils/parse.js";
+import { getHighestQualityThumbnail } from "@/utils/thumbnail.js";
 
 export default async function getArtistDetails(
   call: grpc.ServerUnaryCall<GetArtistDetailsRequest, GetArtistDetailsResponse>,
   callback: grpc.sendUnaryData<GetArtistDetailsResponse>
 ) {
   try {
-    const browseId = call.request.getBrowseId();
-    const { header, sections } = await music.getArtist(browseId);
+    const music = await getYtMusicClient();
+    const { header, sections } = await music.getArtist(call.request.browseId);
 
     const parsedArtistDetails =
       artistDetailsResponseHeaderSchema.safeParse(header);
@@ -50,114 +56,108 @@ export default async function getArtistDetails(
       return callback(status, null);
     }
 
-    const artist = new Artist();
-
-    artist.setTitle(parsedArtistDetails.data.title.text);
-    artist.setDescription(parsedArtistDetails.data?.description?.text ?? "");
-    artist.setBrowseId(parsedArtistDetails.data.subscription_button.channel_id);
-    artist.setAudience(
-      parsedArtistDetails.data.subscription_button.subscribe_accessibility_label
-        .replace("Subscribe to this channel.", "")
-        .trim()
-    );
-
     const thumbnail = getHighestQualityThumbnail(
       parsedArtistDetails.data.thumbnail
     );
+    if (!thumbnail) {
+      const status = new grpc.StatusBuilder()
+        .withCode(grpc.status.INTERNAL)
+        .withDetails("YouTube music sent an invalid response.")
+        .build();
+      return callback(status, null);
+    }
 
-    if (thumbnail) artist.setThumbnail(thumbnail.url);
-
-    const topSongs: Artist.TopSongTrack[] = [];
-    const albums: Artist.ArtistAlbum[] = [];
-    const singlesAndEps: Artist.ArtistAlbum[] = [];
+    const topSongs: Artist_TopSongTrack[] = [];
+    const albums: Artist_ArtistAlbum[] = [];
+    const singlesAndEps: Artist_ArtistAlbum[] = [];
 
     for (const parsedTopSong of parsedTopSongs.data) {
-      const topSongTrack = new Artist.TopSongTrack();
-      topSongTrack.setVideoId(parsedTopSong.id);
-      topSongTrack.setTitle(parsedTopSong.title);
-
       const [, , playCount, albumInfo] = parsedTopSong.flex_columns;
       const albumBrowseId =
         albumInfo?.title.runs[0]?.endpoint?.payload?.browseId;
 
-      if (!playCount || !albumInfo || !albumBrowseId) continue;
-
-      topSongTrack.setPlayCount(playCount.title.text);
-
-      const album = new EmbeddedAlbum();
-
-      album.setTitle(albumInfo.title.text);
-      album.setBrowseId(albumBrowseId);
-
-      topSongTrack.setAlbum(album);
-
       const thumbnail = getHighestQualityThumbnail(parsedTopSong.thumbnail);
-      if (thumbnail) topSongTrack.setThumbnail(thumbnail.url);
+      if (!playCount || !albumInfo || !albumBrowseId || !thumbnail) continue;
 
-      const isExplicit = !!parsedTopSong.badges?.some(
-        (badge) => badge.icon_type === "MUSIC_EXPLICIT_BADGE"
-      );
-      topSongTrack.setIsExplicit(isExplicit);
+      const topSongTrack = {
+        videoId: parsedTopSong.id,
+        title: parsedTopSong.title,
+        playCount: playCount.title.text,
+        album: {
+          title: albumInfo.title.text,
+          browseId: albumBrowseId,
+        },
+        thumbnail: thumbnail.url,
+        isExplicit: !!parsedTopSong.badges?.some(
+          (badge) => badge.icon_type === "MUSIC_EXPLICIT_BADGE"
+        ),
+      } satisfies Artist_TopSongTrack;
 
       topSongs.push(topSongTrack);
     }
 
     for (const parsedAlbum of parsedAlbums.data) {
-      const album = new Artist.ArtistAlbum();
-
-      album.setTitle(parsedAlbum.title.text);
-      album.setAlbumId(parsedAlbum.id);
-      album.setAlbumType(AlbumType.ALBUM_TYPE_ALBUM);
-      album.setReleaseDate(parsedAlbum.year ?? parsedAlbum.subtitle.text);
-
       const thumbnail = getHighestQualityThumbnail({
         type: "MusicThumbnail",
         contents: parsedAlbum.thumbnail,
       });
-      if (thumbnail) album.setThumbnail(thumbnail.url);
+
+      if (!thumbnail) continue;
+
+      const album = {
+        albumId: parsedAlbum.id,
+        title: parsedAlbum.title.text,
+        albumType: AlbumType.ALBUM_TYPE_ALBUM,
+        releaseDate: parsedAlbum.year ?? parsedAlbum.subtitle.text,
+        thumbnail: thumbnail.url,
+      } satisfies Artist_ArtistAlbum;
 
       albums.push(album);
     }
 
     for (const parsedSingleOrEp of parsedSinglesAndEps.data) {
-      const album = new Artist.ArtistAlbum();
-
-      album.setTitle(parsedSingleOrEp.title.text);
-      album.setAlbumId(parsedSingleOrEp.id);
-      album.setReleaseDate(
-        parsedSingleOrEp.year ?? parsedSingleOrEp.subtitle.text
-      );
-
       const [albumTypeStr] = parsedSingleOrEp.subtitle.text.split("•");
-      if (!albumTypeStr) continue;
-
-      album.setAlbumType(parseStringToAlbumType(albumTypeStr.trim()));
-
       const thumbnail = getHighestQualityThumbnail({
         type: "MusicThumbnail",
         contents: parsedSingleOrEp.thumbnail,
       });
-      if (thumbnail) album.setThumbnail(thumbnail.url);
 
-      // Default for EPs and singles
-      if (!album.getAlbumType()) album.setAlbumType(AlbumType.ALBUM_TYPE_EP);
+      if (!albumTypeStr || !thumbnail) continue;
+
+      const album = {
+        title: parsedSingleOrEp.title.text,
+        albumId: parsedSingleOrEp.id,
+        releaseDate: parsedSingleOrEp.year ?? parsedSingleOrEp.subtitle.text,
+        // Default for EPs and singles
+        albumType:
+          parseStringToAlbumType(albumTypeStr.trim()) ||
+          AlbumType.ALBUM_TYPE_EP,
+        thumbnail: thumbnail.url,
+      } satisfies Artist_ArtistAlbum;
 
       singlesAndEps.push(album);
     }
 
-    artist.setTopSongsList(topSongs);
-    artist.setAlbumsList(albums);
-    artist.setSinglesAndEpsList(singlesAndEps);
+    const artist = {
+      title: parsedArtistDetails.data.title.text,
+      description: parsedArtistDetails.data?.description?.text ?? "",
+      browseId: parsedArtistDetails.data.subscription_button.channel_id,
+      audience:
+        parsedArtistDetails.data.subscription_button.subscribe_accessibility_label
+          .replace("Subscribe to this channel.", "")
+          .trim(),
+      thumbnail: thumbnail.url,
+      topSongs,
+      albums,
+      singlesAndEps,
+    } satisfies Artist;
 
-    const response = new GetArtistDetailsResponse();
-    response.setArtist(artist);
-
-    callback(null, response);
+    return callback(null, { artist });
   } catch (error) {
     console.error("Artist details fetch failed: ", error);
     const status = new grpc.StatusBuilder()
       .withCode(grpc.status.INTERNAL)
-      .withDetails("Artist details fetch failed.")
+      .withDetails("Artist details fetch failed: " + String(error))
       .build();
     callback(status);
   }

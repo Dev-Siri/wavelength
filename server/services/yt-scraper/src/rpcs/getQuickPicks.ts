@@ -3,26 +3,26 @@ import * as grpc from "@grpc/grpc-js";
 import {
   GetQuickPicksResponse,
   type GetQuickPicksRequest,
-} from "../gen/proto/yt_scraper_pb";
+} from "@/gen/proto/yt_scraper.js";
 
-import { DEFAULT_CLIENT } from "../config";
+import { DEFAULT_CLIENT } from "@/config.js";
 import {
   EmbeddedAlbum,
   EmbeddedArtist,
   QuickPick,
-} from "../gen/proto/common_pb";
-import { musicPref } from "../innertube";
-import { quickPicksSchema } from "../schemas/quick-picks";
-import { getHighestQualityThumbnail } from "../utils/thumbnail";
+} from "@/gen/proto/common.js";
+import { getYtMusicClient } from "@/innertube.js";
+import { quickPicksSchema } from "@/schemas/quick-picks.js";
+import { getHighestQualityThumbnail } from "@/utils/thumbnail.js";
 
 export default async function getQuickPicks(
   call: grpc.ServerUnaryCall<GetQuickPicksRequest, GetQuickPicksResponse>,
   callback: grpc.sendUnaryData<GetQuickPicksResponse>
 ) {
   try {
-    const region = call.request.getGl() || DEFAULT_CLIENT;
-
-    const music = await musicPref(region);
+    const music = await getYtMusicClient(call.request.gl || DEFAULT_CLIENT, {
+      passCookies: false,
+    });
     const { sections } = await music.getHomeFeed();
 
     if (!sections) {
@@ -44,48 +44,49 @@ export default async function getQuickPicks(
       return callback(status);
     }
 
-    const response = new GetQuickPicksResponse();
     const responseQuickPicks: QuickPick[] = [];
 
     for (const parsedQuickPick of parsedQuickPicks.data.contents) {
-      const responseQuickPick = new QuickPick();
-      responseQuickPick.setVideoId(parsedQuickPick.id);
-      responseQuickPick.setTitle(parsedQuickPick.title);
-
       const thumbnail = getHighestQualityThumbnail(parsedQuickPick.thumbnail);
-      if (thumbnail) responseQuickPick.setThumbnail(thumbnail.url);
+      if (!thumbnail) continue;
 
       const artists: EmbeddedArtist[] = [];
       for (const artist of parsedQuickPick.artists) {
-        const quickPicksArtists = new EmbeddedArtist();
-        quickPicksArtists.setTitle(artist.name);
-        quickPicksArtists.setBrowseId(artist.channel_id);
+        const quickPicksArtists = {
+          title: artist.name,
+          browseId: artist.channel_id,
+        } satisfies EmbeddedArtist;
 
         artists.push(quickPicksArtists);
       }
 
       if (!artists.length) continue;
 
-      responseQuickPick.setArtistsList(artists);
+      const responseQuickPick: QuickPick = {
+        videoId: parsedQuickPick.id,
+        title: parsedQuickPick.title,
+        artists,
+        thumbnail: thumbnail.url,
+      };
 
       if (parsedQuickPick.album) {
-        const quickPickAlbum = new EmbeddedAlbum();
-        quickPickAlbum.setBrowseId(parsedQuickPick.album.id);
-        quickPickAlbum.setTitle(parsedQuickPick.album.name);
+        const quickPickAlbum = {
+          browseId: parsedQuickPick.album.id,
+          title: parsedQuickPick.album.name,
+        } satisfies EmbeddedAlbum;
 
-        responseQuickPick.setAlbum(quickPickAlbum);
+        responseQuickPick.album = quickPickAlbum;
       }
 
       responseQuickPicks.push(responseQuickPick);
     }
 
-    response.setQuickPicksList(responseQuickPicks);
-    callback(null, response);
+    return callback(null, { quickPicks: responseQuickPicks });
   } catch (error) {
     console.error("Quick picks fetch failed: ", error);
     const status = new grpc.StatusBuilder()
       .withCode(grpc.status.INTERNAL)
-      .withDetails("Quick picks fetch failed.")
+      .withDetails("Quick picks fetch failed: " + String(error))
       .build();
     callback(status);
   }

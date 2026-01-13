@@ -1,13 +1,19 @@
 import * as grpc from "@grpc/grpc-js";
 
-import { ADDR_ALLOW_ALL, DEFAULT_PORT, env } from "./config";
-import { YTScraperService } from "./gen/proto/yt_scraper_grpc_pb";
-import { ytScraperServer } from "./server";
+import { ADDR_ALLOW_ALL, DEFAULT_PORT, env } from "@/config.js";
+import { YTScraperService } from "@/gen/proto/yt_scraper.js";
+import { ytScraperServer } from "@/server.js";
 
 const port = Number(env.PORT || DEFAULT_PORT);
 const address = env.ADDR || ADDR_ALLOW_ALL;
 
-const server = new grpc.Server();
+const server = new grpc.Server({
+  "grpc.keepalive_time_ms": 120000,
+  "grpc.keepalive_timeout_ms": 20000,
+  "grpc.http2.min_time_between_pings_ms": 120000,
+  "grpc.http2.max_pings_without_data": 0,
+  "grpc.http2.max_ping_strikes": 0,
+});
 const bindAddress = `${address}:${port}`;
 
 server.addService(YTScraperService, ytScraperServer);
@@ -17,5 +23,9 @@ server.bindAsync(
   (error, port) => {
     if (error) return console.error("YtScraperService startup failed: ", error);
     console.log(`YtScraperService is listening on port: ${port}`);
+    process.on("SIGTERM", () => {
+      console.log("SIGTERM received.");
+      server.tryShutdown(() => console.log("Disconnecting server."));
+    });
   }
 );

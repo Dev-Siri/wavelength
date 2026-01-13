@@ -1,21 +1,26 @@
 import * as grpc from "@grpc/grpc-js";
 
-import { EmbeddedAlbum, EmbeddedArtist, Track } from "../gen/proto/common_pb";
-import {
+import type {
+  EmbeddedAlbum,
+  EmbeddedArtist,
+  Track,
+} from "@/gen/proto/common.js";
+import type {
+  SearchTracksRequest,
   SearchTracksResponse,
-  type SearchTracksRequest,
-} from "../gen/proto/yt_scraper_pb";
-import { music } from "../innertube";
-import { searchedTracksSchema } from "../schemas/searched-tracks";
-import { getHighestQualityThumbnail } from "../utils/thumbnail";
+} from "@/gen/proto/yt_scraper.js";
+
+import { getYtMusicClient } from "@/innertube.js";
+import { searchedTracksSchema } from "@/schemas/searched-tracks.js";
+import { getHighestQualityThumbnail } from "@/utils/thumbnail.js";
 
 export default async function searchTracks(
   call: grpc.ServerUnaryCall<SearchTracksRequest, SearchTracksResponse>,
   callback: grpc.sendUnaryData<SearchTracksResponse>
 ) {
   try {
-    const query = call.request.getQuery();
-    const { contents } = await music.search(query, {
+    const music = await getYtMusicClient();
+    const { contents } = await music.search(call.request.query, {
       type: "song",
     });
 
@@ -37,7 +42,7 @@ export default async function searchTracks(
       return callback(status);
     }
 
-    const tracksList: Track[] = [];
+    const tracks: Track[] = [];
     for (const parsedTrack of parsedContents.data.contents) {
       const title = parsedTrack.flex_columns[0]?.title?.text;
       if (!title) continue;
@@ -48,51 +53,50 @@ export default async function searchTracks(
       const [, , duration] = subtitle.split("•");
       if (!duration) continue;
 
-      const track = new Track();
-
-      track.setTitle(title);
-      track.setVideoId(parsedTrack.id);
-      track.setDuration(parsedTrack.duration.seconds);
-
       const thumbnail = getHighestQualityThumbnail(parsedTrack.thumbnail);
-      if (thumbnail) track.setThumbnail(thumbnail.url);
+      if (!thumbnail) continue;
 
-      const artists = [];
+      const artists: EmbeddedArtist[] = [];
       for (const artist of parsedTrack.artists) {
-        const quickPicksArtists = new EmbeddedArtist();
-        quickPicksArtists.setTitle(artist.name);
-        quickPicksArtists.setBrowseId(artist.channel_id);
+        const quickPicksArtists = {
+          title: artist.name,
+          browseId: artist.channel_id,
+        } satisfies EmbeddedArtist;
 
         artists.push(quickPicksArtists);
       }
 
       if (!artists.length) continue;
-      track.setArtistsList(artists);
+
+      const track: Track = {
+        title: title,
+        videoId: parsedTrack.id,
+        duration: parsedTrack.duration.seconds,
+        thumbnail: thumbnail.url,
+        artists,
+        isExplicit: !!parsedTrack?.badges?.some(
+          (badge) => badge.icon_type === "MUSIC_EXPLICIT_BADGE"
+        ),
+      };
 
       if (parsedTrack.album) {
-        const quickPickAlbum = new EmbeddedAlbum();
-        quickPickAlbum.setBrowseId(parsedTrack.album.id);
-        quickPickAlbum.setTitle(parsedTrack.album.name);
+        const quickPickAlbum = {
+          browseId: parsedTrack.album.id,
+          title: parsedTrack.album.name,
+        } satisfies EmbeddedAlbum;
 
-        track.setAlbum(quickPickAlbum);
+        track.album = quickPickAlbum;
       }
 
-      const isExplicit = !!parsedTrack?.badges?.some(
-        (badge) => badge.icon_type === "MUSIC_EXPLICIT_BADGE"
-      );
-      track.setIsExplicit(isExplicit);
-
-      tracksList.push(track);
+      tracks.push(track);
     }
 
-    const response = new SearchTracksResponse();
-    response.setTracksList(tracksList);
-    callback(null, response);
+    return callback(null, { tracks });
   } catch (error) {
     console.error("Tracks search failed: ", error);
     const status = new grpc.StatusBuilder()
       .withCode(grpc.status.INTERNAL)
-      .withDetails("Tracks search failed.")
+      .withDetails("Tracks search failed: " + String(error))
       .build();
     callback(status);
   }

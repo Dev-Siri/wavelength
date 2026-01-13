@@ -24,14 +24,20 @@ COPY . .
 
 ENV NODE_ENV=production
 
-FROM base AS release
+WORKDIR /usr/src/app/services/yt-scraper
+
+RUN bun run build
+
+FROM node:latest
+
+WORKDIR /usr/src/app
 
 COPY --from=install /temp/prod/node_modules node_modules
-COPY --from=prerelease /usr/src/app/services/yt-scraper/src src
+COPY --from=prerelease /usr/src/app/services/yt-scraper/dist dist
 COPY --from=prerelease /usr/src/app/services/yt-scraper/package.json .
 
-USER bun
+USER node
 
 EXPOSE 8080
 
-ENTRYPOINT [ "bun", "start" ]
+ENTRYPOINT [ "npm", "start" ]

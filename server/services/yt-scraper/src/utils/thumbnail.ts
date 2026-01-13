@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import type { thumbnailSchema } from "../schemas/thumbnail";
+import type { thumbnailSchema } from "@/schemas/thumbnail.js";
 
 export function getHighestQualityThumbnail(
   thumbnailField: z.infer<typeof thumbnailSchema>

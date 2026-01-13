@@ -1,17 +1,18 @@
 import * as grpc from "@grpc/grpc-js";
 import { z } from "zod";
 
-import { SuggestedLink } from "../gen/proto/common_pb";
-import {
+import type { SuggestedLink } from "@/gen/proto/common.js";
+import type {
+  GetSearchSuggestionsRequest,
   GetSearchSuggestionsResponse,
-  type GetSearchSuggestionsRequest,
-} from "../gen/proto/yt_scraper_pb";
-import { music } from "../innertube";
+} from "@/gen/proto/yt_scraper.js";
+
+import { getYtMusicClient } from "@/innertube.js";
 import {
   searchSuggestionLinkSchema,
   searchSuggestionSchema,
-} from "../schemas/search-suggestion";
-import { getHighestQualityThumbnail } from "../utils/thumbnail";
+} from "@/schemas/search-suggestion.js";
+import { getHighestQualityThumbnail } from "@/utils/thumbnail.js";
 
 export default async function getSearchSuggestions(
   call: grpc.ServerUnaryCall<
@@ -21,8 +22,10 @@ export default async function getSearchSuggestions(
   callback: grpc.sendUnaryData<GetSearchSuggestionsResponse>
 ) {
   try {
-    const query = call.request.getQuery();
-    const [suggestions, links] = await music.getSearchSuggestions(query);
+    const music = await getYtMusicClient();
+    const [suggestions, links] = await music.getSearchSuggestions(
+      call.request.query
+    );
 
     if (!suggestions) {
       const status = new grpc.StatusBuilder()
@@ -52,7 +55,6 @@ export default async function getSearchSuggestions(
       return callback(status);
     }
 
-    const response = new GetSearchSuggestionsResponse();
     const suggestedQueries: string[] = [];
     const suggestedLinks: SuggestedLink[] = [];
 
@@ -60,8 +62,10 @@ export default async function getSearchSuggestions(
       suggestedQueries.push(query.suggestion.text);
     }
 
-    response.setSuggestedQueriesList(suggestedQueries);
-    response.setSuggestedLinksList(suggestedLinks);
+    const response = {
+      suggestedQueries,
+      suggestedLinks,
+    } satisfies GetSearchSuggestionsResponse;
 
     if (!links) return callback(null, response);
 
@@ -72,29 +76,29 @@ export default async function getSearchSuggestions(
     if (!parsedLinks.success) return callback(null, response);
 
     for (const link of parsedLinks.data) {
-      const suggestedLink = new SuggestedLink();
       const [titleCol, subtitleCol] = link.flex_columns;
-
-      if (!titleCol || !subtitleCol) continue;
-
-      suggestedLink.setType(link.item_type);
-      suggestedLink.setTitle(titleCol.title.text);
-      suggestedLink.setSubtitle(subtitleCol.title.text);
-      suggestedLink.setBrowseId(link.id);
-
       const thumbnail = getHighestQualityThumbnail(link.thumbnail);
 
-      if (thumbnail) suggestedLink.setThumbnail(thumbnail.url);
+      if (!titleCol || !subtitleCol || !thumbnail) continue;
+
+      const suggestedLink = {
+        type: link.item_type,
+        title: titleCol.title.text,
+        subtitle: subtitleCol.title.text,
+        browseId: link.id,
+        thumbnail: thumbnail.url,
+      } satisfies SuggestedLink;
+
       suggestedLinks.push(suggestedLink);
     }
 
-    response.setSuggestedQueriesList(suggestedQueries);
-    callback(null, response);
+    response.suggestedQueries = suggestedQueries;
+    return callback(null, response);
   } catch (error) {
     console.error("Search Suggestions fetch failed: ", error);
     const status = new grpc.StatusBuilder()
       .withCode(grpc.status.INTERNAL)
-      .withDetails("Search Suggestions fetch failed.")
+      .withDetails("Search Suggestions fetch failed: " + String(error))
       .build();
     callback(status);
   }
