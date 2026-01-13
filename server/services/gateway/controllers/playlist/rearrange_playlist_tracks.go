@@ -39,7 +39,7 @@ func RearrangePlaylistTracks(ctx *fiber.Ctx) error {
 		Updates:    grpcUpdates,
 	})
 	if err != nil {
-		go logging.Logger.Error("PlaylistService: 'RearrangePlaylistTracks' errored.", zap.Error(err))
+		logging.Logger.Error("PlaylistService: 'RearrangePlaylistTracks' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Playlist rearrangement failed.")
 	}
 

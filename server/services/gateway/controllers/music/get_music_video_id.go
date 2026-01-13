@@ -34,7 +34,7 @@ func GetMusicVideoPreviewId(ctx *fiber.Ctx) error {
 		Artist: artist,
 	})
 	if err != nil {
-		go logging.Logger.Error("MusicService: 'GetMusicVideoId' errored", zap.Error(err))
+		logging.Logger.Error("MusicService: 'GetMusicVideoId' errored", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Music video fetch from YouTube failed.")
 	}
 

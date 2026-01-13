@@ -23,7 +23,7 @@ func (m *MusicService) GetLikedTrackCount(
 	`, request.LikerEmail)
 
 	if err := row.Scan(&likeCount); err != nil {
-		go logging.Logger.Error("Like count read failed.", zap.Error(err))
+		logging.Logger.Error("Like count read failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Like count read failed.")
 	}
 

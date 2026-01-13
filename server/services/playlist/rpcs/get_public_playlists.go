@@ -32,7 +32,7 @@ func (p *PlaylistService) GetPublicPlaylists(
 	`, "%"+request.Query+"%")
 
 	if err != nil {
-		go logging.Logger.Error("Public playlists fetch failed.", zap.Error(err))
+		logging.Logger.Error("Public playlists fetch failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Public playlists fetch failed.")
 	}
 
@@ -50,7 +50,7 @@ func (p *PlaylistService) GetPublicPlaylists(
 			&playlist.CoverImage,
 			&playlist.IsPublic,
 		); err != nil {
-			go logging.Logger.Error("Parsing one of public playlists failed.", zap.Error(err))
+			logging.Logger.Error("Parsing one of public playlists failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Parsing one of public playlists failed.")
 		}
 

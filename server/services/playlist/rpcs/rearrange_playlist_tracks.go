@@ -18,7 +18,7 @@ func (p *PlaylistService) RearrangePlaylistTracks(
 ) (*emptypb.Empty, error) {
 	tx, err := shared_db.Database.Begin()
 	if err != nil {
-		go logging.Logger.Error("Transaction start failed.", zap.Error(err))
+		logging.Logger.Error("Transaction start failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Transaction start failed.")
 	}
 
@@ -31,7 +31,7 @@ func (p *PlaylistService) RearrangePlaylistTracks(
 	`)
 
 	if err != nil {
-		go logging.Logger.Error("Statement preparation failed.", zap.Error(err))
+		logging.Logger.Error("Statement preparation failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Statement preparation failed.")
 	}
 
@@ -39,13 +39,13 @@ func (p *PlaylistService) RearrangePlaylistTracks(
 
 	for _, pos := range request.Updates {
 		if _, err := stmt.Exec(pos.NewPos, request.PlaylistId, pos.PlaylistTrackId); err != nil {
-			go logging.Logger.Error("Playlist positions update failed.", zap.Error(err))
+			logging.Logger.Error("Playlist positions update failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Playlist positions update failed.")
 		}
 	}
 
 	if err := tx.Commit(); err != nil {
-		go logging.Logger.Error("Transaction commit failed.", zap.Error(err))
+		logging.Logger.Error("Transaction commit failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Transaction commit failed.")
 	}
 

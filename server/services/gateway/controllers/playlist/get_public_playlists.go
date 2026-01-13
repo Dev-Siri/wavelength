@@ -17,7 +17,7 @@ func GetPublicPlaylists(ctx *fiber.Ctx) error {
 		Query: query,
 	})
 	if err != nil {
-		go logging.Logger.Error("Public playlists fetch failed.", zap.Error(err))
+		logging.Logger.Error("Public playlists fetch failed.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Public playlists fetch failed.")
 	}
 

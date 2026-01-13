@@ -21,7 +21,7 @@ func (m *MusicService) GetMusicSearchSuggestions(
 		Query: request.Query,
 	})
 	if err != nil {
-		go logging.Logger.Error("Search results fetch failed.", zap.Error(err))
+		logging.Logger.Error("Search results fetch failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Search results fetch failed.")
 	}
 
@@ -31,7 +31,7 @@ func (m *MusicService) GetMusicSearchSuggestions(
 		subtitleParts := strings.Split(item.Subtitle, " • ")
 
 		if len(subtitleParts) < 3 {
-			go logging.Logger.Error("Subtitle does not contain all parts (3)", zap.String("subtitle", item.Subtitle))
+			logging.Logger.Error("Subtitle does not contain all parts (3)", zap.String("subtitle", item.Subtitle))
 			// It's invalid, so we skip it here.
 			continue
 		}

@@ -21,7 +21,7 @@ func SearchAlbums(ctx *fiber.Ctx) error {
 		Query: query,
 	})
 	if err != nil {
-		go logging.Logger.Error("AlbumService: 'SearchAlbums' errored.", zap.Error(err))
+		logging.Logger.Error("AlbumService: 'SearchAlbums' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Albums search failed.")
 	}
 

@@ -15,7 +15,7 @@ import (
 func createDefaultResponse(ctx *fiber.Ctx, err error) error {
 	infiniteTime := time.Date(9999, 0, 1, 0, 0, 0, 0, time.UTC)
 
-	go logging.Logger.Error("Failed to get region.", zap.Error(err))
+	logging.Logger.Error("Failed to get region.", zap.Error(err))
 
 	ctx.Cookie(&fiber.Cookie{
 		Name:     constants.RegionCookieKey,

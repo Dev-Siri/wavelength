@@ -21,7 +21,7 @@ func GetMusicTrackStats(ctx *fiber.Ctx) error {
 		VideoId: videoId,
 	})
 	if err != nil {
-		go logging.Logger.Error("MusicService: 'GetMusicTrackStats' errored.", zap.Error(err))
+		logging.Logger.Error("MusicService: 'GetMusicTrackStats' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Track statistics fetch from YouTube failed.")
 	}
 

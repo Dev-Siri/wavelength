@@ -20,7 +20,7 @@ func (a *ArtistService) SearchArtists(
 		Query: request.Query,
 	})
 	if err != nil {
-		go logging.Logger.Error("Artists search failed.", zap.Error(err))
+		logging.Logger.Error("Artists search failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Artists search failed.")
 	}
 

@@ -28,7 +28,7 @@ func IsTrackLiked(ctx *fiber.Ctx) error {
 		VideoId:    videoId,
 	})
 	if err != nil {
-		go logging.Logger.Error("MusicService: 'IsTrackLiked' errored.", zap.Error(err))
+		logging.Logger.Error("MusicService: 'IsTrackLiked' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Liked status check failed.")
 	}
 

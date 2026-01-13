@@ -20,7 +20,7 @@ func (m *MusicService) SearchMusicTracks(
 		Query: request.Query,
 	})
 	if err != nil {
-		go logging.Logger.Error("Tracks search failed.", zap.Error(err))
+		logging.Logger.Error("Tracks search failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Tracks search failed.")
 	}
 

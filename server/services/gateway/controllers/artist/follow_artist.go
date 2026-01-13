@@ -24,7 +24,7 @@ func FollowArtist(ctx *fiber.Ctx) error {
 	var parsedBody schemas.ArtistFollowSchmea
 
 	if err := json.Unmarshal(body, &parsedBody); err != nil {
-		go logging.Logger.Error("Body parse failed.", zap.Error(err))
+		logging.Logger.Error("Body parse failed.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Body parse failed.")
 	}
 
@@ -40,7 +40,7 @@ func FollowArtist(ctx *fiber.Ctx) error {
 	})
 
 	if err != nil {
-		go logging.Logger.Error("ArtistService: 'FollowArtist' errored.", zap.Error(err))
+		logging.Logger.Error("ArtistService: 'FollowArtist' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Artist follow failed. ")
 	}
 

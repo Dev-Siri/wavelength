@@ -21,7 +21,7 @@ func GetLikedTracks(ctx *fiber.Ctx) error {
 		LikerEmail: authUser.Email,
 	})
 	if err != nil {
-		go logging.Logger.Error("MusicService: 'GetLikedTracks' errored.", zap.Error(err))
+		logging.Logger.Error("MusicService: 'GetLikedTracks' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Liked tracks fetch failed.")
 	}
 

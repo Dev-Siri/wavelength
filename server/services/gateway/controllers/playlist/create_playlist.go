@@ -23,7 +23,7 @@ func CreatePlaylist(ctx *fiber.Ctx) error {
 		AuthorPhotoUrl:    authUser.PhotoUrl,
 	})
 	if err != nil {
-		go logging.Logger.Error("PlaylistService: 'CreatePlaylist' errored", zap.Error(err))
+		logging.Logger.Error("PlaylistService: 'CreatePlaylist' errored", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to create playlist.")
 	}
 

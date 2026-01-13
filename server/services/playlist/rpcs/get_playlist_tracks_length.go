@@ -97,7 +97,7 @@ func (p *PlaylistService) GetPlaylistTracksLength(
 			receivedCount = true
 		case err, ok := <-errChan:
 			if ok {
-				go logging.Logger.Error("Fetch for playlist tracks length failed.", zap.Error(err))
+				logging.Logger.Error("Fetch for playlist tracks length failed.", zap.Error(err))
 				return nil, status.Error(codes.Internal, "Fetch for playlist tracks length failed.")
 			}
 		}

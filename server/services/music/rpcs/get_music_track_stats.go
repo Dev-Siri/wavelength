@@ -19,7 +19,7 @@ func (m *MusicService) GetMusicTrackStats(
 	response, err := api.YouTubeV3Client.Videos.List([]string{"statistics"}).Id(request.VideoId).Do()
 
 	if err != nil {
-		go logging.Logger.Error("Track statistics fetch from YouTube failed.", zap.Error(err))
+		logging.Logger.Error("Track statistics fetch from YouTube failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Track statistics fetch from YouTube failed.")
 	}
 

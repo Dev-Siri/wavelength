@@ -24,7 +24,7 @@ func DeletePlaylistById(ctx *fiber.Ctx) error {
 		AuthUserEmail: authUser.Email,
 	})
 	if err != nil {
-		go logging.Logger.Error("PlaylistService: 'DeletePlaylist' errored.", zap.Error(err))
+		logging.Logger.Error("PlaylistService: 'DeletePlaylist' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Playlist deletion failed.")
 	}
 

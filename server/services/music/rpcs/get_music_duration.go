@@ -20,7 +20,7 @@ func (m *MusicService) GetMusicDuration(
 	response, err := call.Do()
 
 	if err != nil {
-		go logging.Logger.Error("Duration fetch from YouTube failed. ", zap.Error(err))
+		logging.Logger.Error("Duration fetch from YouTube failed. ", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Duration fetch from YouTube failed. ")
 	}
 

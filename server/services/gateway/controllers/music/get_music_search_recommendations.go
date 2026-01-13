@@ -19,7 +19,7 @@ func GetMusicSearchRecommendations(ctx *fiber.Ctx) error {
 		Query: readyQuery,
 	})
 	if err != nil {
-		go logging.Logger.Error("MusicService: 'GetMusicSearchSuggestions' errored.", zap.Error(err))
+		logging.Logger.Error("MusicService: 'GetMusicSearchSuggestions' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Search results fetch failed.")
 	}
 

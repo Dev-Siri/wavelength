@@ -21,7 +21,7 @@ func (m *MusicService) SearchYouTubeVideos(
 	searchResults, err := api.YouTubeV3Client.Search.List([]string{"snippet"}).Q(request.Query).MaxResults(20).Do()
 
 	if err != nil {
-		go logging.Logger.Error("YouTube videos search fetch failed.", zap.Error(err))
+		logging.Logger.Error("YouTube videos search fetch failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "YouTube videos search fetch failed.")
 	}
 

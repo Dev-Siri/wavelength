@@ -29,7 +29,7 @@ func (a *ArtistService) GetFollowedArtists(
 	`, request.FollowerEmail)
 
 	if err != nil {
-		go logging.Logger.Error("Followed artists fetch failed.", zap.Error(err))
+		logging.Logger.Error("Followed artists fetch failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Followed artists fetch failed.")
 	}
 
@@ -45,7 +45,7 @@ func (a *ArtistService) GetFollowedArtists(
 			&followedArtist.Thumbnail,
 			&followedArtist.BrowseId,
 		); err != nil {
-			go logging.Logger.Error("Parsing of one followed artist failed.", zap.Error(err))
+			logging.Logger.Error("Parsing of one followed artist failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Parsing of one followed artist failed.")
 		}
 

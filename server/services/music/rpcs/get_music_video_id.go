@@ -29,7 +29,7 @@ func (m *MusicService) GetMusicVideoId(
 		Do()
 
 	if err != nil {
-		go logging.Logger.Error("Music video fetch from YouTube failed.", zap.Error(err))
+		logging.Logger.Error("Music video fetch from YouTube failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Music video fetch from YouTube failed.")
 	}
 

@@ -20,7 +20,7 @@ func (m *MusicService) GetQuickPicks(
 		Gl: request.Gl,
 	})
 	if err != nil {
-		go logging.Logger.Error("Quick picks fetch failed.", zap.Error(err))
+		logging.Logger.Error("Quick picks fetch failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Quick picks fetch failed.")
 	}
 

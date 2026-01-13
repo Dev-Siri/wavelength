@@ -17,7 +17,7 @@ func GetArtistDetails(ctx *fiber.Ctx) error {
 		BrowseId: id,
 	})
 	if err != nil {
-		go logging.Logger.Error("ArtistService: 'GetArtistDetails' errored.", zap.Error(err))
+		logging.Logger.Error("ArtistService: 'GetArtistDetails' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Artist details fetch failed.")
 	}
 

@@ -21,7 +21,7 @@ func GetPlaylistTracksLength(ctx *fiber.Ctx) error {
 		PlaylistId: playlistId,
 	})
 	if err != nil {
-		go logging.Logger.Error("PlaylistService: 'GetPlaylistTracksLength' errored.", zap.Error(err))
+		logging.Logger.Error("PlaylistService: 'GetPlaylistTracksLength' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Playlists tracks length fetch failed.")
 	}
 

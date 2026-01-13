@@ -21,7 +21,7 @@ func GetLikedTrackCount(ctx *fiber.Ctx) error {
 		LikerEmail: authUser.Email,
 	})
 	if err != nil {
-		go logging.Logger.Error("MusicServer: 'GetLikedTrackCount' errored.", zap.Error(err))
+		logging.Logger.Error("MusicServer: 'GetLikedTrackCount' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Like count read failed.")
 	}
 

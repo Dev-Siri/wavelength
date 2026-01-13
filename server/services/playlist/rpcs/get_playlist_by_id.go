@@ -30,7 +30,7 @@ func (p *PlaylistService) GetPlaylistById(
 		LIMIT 1;
 	`, request.PlaylistId)
 	if err != nil {
-		go logging.Logger.Error("Playlist fetch failed.", zap.Error(err))
+		logging.Logger.Error("Playlist fetch failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Playlist fetch failed.")
 	}
 
@@ -48,7 +48,7 @@ func (p *PlaylistService) GetPlaylistById(
 			&playlist.CoverImage,
 			&playlist.IsPublic,
 		); err != nil {
-			go logging.Logger.Error("Playlist parse failed.", zap.Error(err))
+			logging.Logger.Error("Playlist parse failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Playlist parse failed.")
 		}
 	}

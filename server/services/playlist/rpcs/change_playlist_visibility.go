@@ -25,12 +25,12 @@ func (p *PlaylistService) ChangePlaylistVisibility(
 	var playlistActualAuthorEmail string
 
 	if err := row.Scan(&playlistActualAuthorEmail); err != nil {
-		go logging.Logger.Error("Database row scan failed.", zap.Error(err))
+		logging.Logger.Error("Database row scan failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Database row scan failed.")
 	}
 
 	if playlistActualAuthorEmail != request.AuthUserEmail {
-		go logging.Logger.Error("Visibility change cannot be performed because the authorized user is not the author of the playlist.",
+		logging.Logger.Error("Visibility change cannot be performed because the authorized user is not the author of the playlist.",
 			zap.String("playlistId", request.PlaylistId),
 			zap.String("authUserEmail", request.AuthUserEmail))
 		return nil, status.Error(codes.Unauthenticated, "Visibility change cannot be performed because the authorized user is not the author of the playlist.")
@@ -42,7 +42,7 @@ func (p *PlaylistService) ChangePlaylistVisibility(
 	`, request.PlaylistId)
 
 	if err != nil {
-		go logging.Logger.Error("Playlist visibility change failed.", zap.Error(err))
+		logging.Logger.Error("Playlist visibility change failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Playlist visibility change failed.")
 	}
 
@@ -50,7 +50,7 @@ func (p *PlaylistService) ChangePlaylistVisibility(
 
 	for rows.Next() {
 		if err := rows.Scan(&isPublic); err != nil {
-			go logging.Logger.Error("Playlist visibility change failed.", zap.Error(err))
+			logging.Logger.Error("Playlist visibility change failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Playlist visibility change failed.")
 		}
 	}
@@ -62,7 +62,7 @@ func (p *PlaylistService) ChangePlaylistVisibility(
 	`, !isPublic, request.PlaylistId)
 
 	if err != nil {
-		go logging.Logger.Error("Playlist visibility change failed.", zap.Error(err))
+		logging.Logger.Error("Playlist visibility change failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Playlist visibility change failed.")
 	}
 

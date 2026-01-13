@@ -63,7 +63,7 @@ func AddRemovePlaylistTrack(ctx *fiber.Ctx) error {
 		PlaylistId: playlistId,
 	})
 	if err != nil {
-		go logging.Logger.Error("PlaylistService: 'AddRemovePlaylistTrack' errored.", zap.Error(err))
+		logging.Logger.Error("PlaylistService: 'AddRemovePlaylistTrack' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Playlist track addition/removal failed.")
 	}
 

@@ -27,7 +27,7 @@ func (a *ArtistService) FollowArtist(
 	`, request.FollowerEmail, request.ArtistBrowseId)
 
 	if err := row.Scan(&followCount); err != nil {
-		go logging.Logger.Error("Follow count read from database failed.", zap.Error(err))
+		logging.Logger.Error("Follow count read from database failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Follow count read from database failed.")
 	}
 
@@ -38,7 +38,7 @@ func (a *ArtistService) FollowArtist(
 		`, request.FollowerEmail, request.ArtistBrowseId)
 
 		if err != nil {
-			go logging.Logger.Error("Artist unfollow failed.", zap.Error(err))
+			logging.Logger.Error("Artist unfollow failed.", zap.Error(err))
 			return nil, status.Error(fiber.StatusInternalServerError, "Artist unfollow failed.")
 		}
 
@@ -56,7 +56,7 @@ func (a *ArtistService) FollowArtist(
 		`, request.FollowerEmail, uuid.NewString(), request.ArtistName, request.ArtistThumbnail, request.ArtistBrowseId)
 
 	if err != nil {
-		go logging.Logger.Error("Artist follow failed.", zap.Error(err))
+		logging.Logger.Error("Artist follow failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Artist follow failed.")
 	}
 

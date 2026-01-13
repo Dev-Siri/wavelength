@@ -38,7 +38,7 @@ func (m *MusicService) GetLikedTracks(
 	`, request.LikerEmail)
 
 	if err != nil {
-		go logging.Logger.Error("Liked tracks fetch failed.", zap.Error(err))
+		logging.Logger.Error("Liked tracks fetch failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Liked tracks fetch failed.")
 	}
 
@@ -73,7 +73,7 @@ func (m *MusicService) GetLikedTracks(
 			&artistTitle,
 			&artistBrowseId,
 		); err != nil {
-			go logging.Logger.Error("Parsing of one liked track failed.", zap.Error(err))
+			logging.Logger.Error("Parsing of one liked track failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Parsing of one liked track failed.")
 		}
 

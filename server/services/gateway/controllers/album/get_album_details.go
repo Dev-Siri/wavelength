@@ -21,7 +21,7 @@ func GetAlbumDetails(ctx *fiber.Ctx) error {
 		AlbumId: albumId,
 	})
 	if err != nil {
-		go logging.Logger.Error("AlbumService: 'GetAlbumDetails' errored.", zap.Error(err))
+		logging.Logger.Error("AlbumService: 'GetAlbumDetails' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Album details fetch failed.")
 	}
 

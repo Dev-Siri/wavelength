@@ -59,7 +59,7 @@ func (p *PlaylistService) EditPlaylist(
 
 	_, err := shared_db.Database.Exec(query, args...)
 	if err != nil {
-		go logging.Logger.Error("Playlist edit failed.", zap.Error(err))
+		logging.Logger.Error("Playlist edit failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Playlist edit failed.")
 	}
 

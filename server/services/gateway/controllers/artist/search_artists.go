@@ -21,7 +21,7 @@ func SearchArtists(ctx *fiber.Ctx) error {
 		Query: query,
 	})
 	if err != nil {
-		go logging.Logger.Error("ArtistService: 'SearchArtists' errored.", zap.Error(err))
+		logging.Logger.Error("ArtistService: 'SearchArtists' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Artists search failed.")
 	}
 

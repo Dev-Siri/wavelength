@@ -27,7 +27,7 @@ func IsFollowingArtist(ctx *fiber.Ctx) error {
 		FollowerEmail: authUser.Email,
 	})
 	if err != nil {
-		go logging.Logger.Error("ArtistService: 'IsFollowingArtist' errored.", zap.Error(err))
+		logging.Logger.Error("ArtistService: 'IsFollowingArtist' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Artist follow status fetch failed.")
 	}
 

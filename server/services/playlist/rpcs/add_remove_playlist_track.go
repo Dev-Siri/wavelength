@@ -29,7 +29,7 @@ func (p *PlaylistService) AddRemovePlaylistTrack(
 		request.PlaylistId, request.VideoId).Scan(&songCount)
 
 	if err != nil {
-		go logging.Logger.Error("Check for existing track failed.", zap.Error(err))
+		logging.Logger.Error("Check for existing track failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Check for existing track failed.")
 	}
 
@@ -40,7 +40,7 @@ func (p *PlaylistService) AddRemovePlaylistTrack(
 		`, request.PlaylistId, request.VideoId)
 
 		if err != nil {
-			go logging.Logger.Error("Track removal failed.", zap.Error(err))
+			logging.Logger.Error("Track removal failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Track removal failed. ")
 		}
 
@@ -57,7 +57,7 @@ func (p *PlaylistService) AddRemovePlaylistTrack(
 		})
 
 		if err != nil {
-			go logging.Logger.Error("Storing artists failed.", zap.Error(err))
+			logging.Logger.Error("Storing artists failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Storing artists failed.")
 		}
 	}
@@ -70,7 +70,7 @@ func (p *PlaylistService) AddRemovePlaylistTrack(
 		request.PlaylistId).Scan(&totalSongCount)
 
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		go logging.Logger.Error("Playlist track count fetch failed.", zap.Error(err))
+		logging.Logger.Error("Playlist track count fetch failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Playlist track count fetch failed")
 	}
 
@@ -103,7 +103,7 @@ func (p *PlaylistService) AddRemovePlaylistTrack(
 	)
 
 	if err != nil {
-		go logging.Logger.Error("Playlist track addition failed.", zap.Error(err))
+		logging.Logger.Error("Playlist track addition failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Playlist track addition failed.")
 	}
 

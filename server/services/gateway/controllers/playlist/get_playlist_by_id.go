@@ -21,7 +21,7 @@ func GetPlaylistById(ctx *fiber.Ctx) error {
 		PlaylistId: playlistId,
 	})
 	if err != nil {
-		go logging.Logger.Error("PlaylistService: 'GetPlaylistById' errored.", zap.Error(err))
+		logging.Logger.Error("PlaylistService: 'GetPlaylistById' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Playlist fetch failed.")
 	}
 

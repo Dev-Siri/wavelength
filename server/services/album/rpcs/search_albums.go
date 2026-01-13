@@ -20,7 +20,7 @@ func (a *AlbumService) SearchAlbums(
 		Query: request.Query,
 	})
 	if err != nil {
-		go logging.Logger.Error("Albums search failed.", zap.Error(err))
+		logging.Logger.Error("Albums search failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Albums search failed.")
 	}
 

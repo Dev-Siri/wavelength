@@ -21,7 +21,7 @@ func SearchMusicTracks(ctx *fiber.Ctx) error {
 		Query: query,
 	})
 	if err != nil {
-		go logging.Logger.Error("MusicService: 'SearchMusicTracks' errored.", zap.Error(err))
+		logging.Logger.Error("MusicService: 'SearchMusicTracks' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Music tracks search failed.")
 	}
 

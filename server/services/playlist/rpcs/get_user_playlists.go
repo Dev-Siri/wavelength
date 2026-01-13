@@ -29,7 +29,7 @@ func (p *PlaylistService) GetUserPlaylists(
 		WHERE author_google_email = $1
 	`, request.UserEmail)
 	if err != nil {
-		go logging.Logger.Error("Playlists fetched failed.", zap.Error(err))
+		logging.Logger.Error("Playlists fetched failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Playlists fetch failed.")
 	}
 
@@ -47,7 +47,7 @@ func (p *PlaylistService) GetUserPlaylists(
 			&playlist.CoverImage,
 			&playlist.IsPublic,
 		); err != nil {
-			go logging.Logger.Error("Parsing of one playlist failed", zap.Error(err))
+			logging.Logger.Error("Parsing of one playlist failed", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Parsing of one playlist failed")
 		}
 

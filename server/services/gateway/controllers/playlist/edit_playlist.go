@@ -28,7 +28,7 @@ func EditPlaylist(ctx *fiber.Ctx) error {
 		CoverImage: playlistEditBody.CoverImage,
 	})
 	if err != nil {
-		go logging.Logger.Error("PlaylistService: 'EditPlaylist' errored.", zap.Error(err))
+		logging.Logger.Error("PlaylistService: 'EditPlaylist' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to edit playlist.")
 	}
 

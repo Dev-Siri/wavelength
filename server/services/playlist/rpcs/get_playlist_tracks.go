@@ -38,7 +38,7 @@ func (p *PlaylistService) GetPlaylistTracks(
 	`, request.PlaylistId)
 
 	if err != nil {
-		go logging.Logger.Error("Playlist tracks fetch failed.", zap.Error(err))
+		logging.Logger.Error("Playlist tracks fetch failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Playlist tracks fetch failed.")
 	}
 
@@ -75,7 +75,7 @@ func (p *PlaylistService) GetPlaylistTracks(
 			&artistTitle,
 			&artistBrowseId,
 		); err != nil {
-			go logging.Logger.Error("Parsing of one playlist track failed.", zap.Error(err))
+			logging.Logger.Error("Parsing of one playlist track failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Parsing of one playlist track failed.")
 		}
 

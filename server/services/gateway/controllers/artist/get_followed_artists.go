@@ -20,7 +20,7 @@ func GetFollowedArtists(ctx *fiber.Ctx) error {
 		FollowerEmail: authUser.Email,
 	})
 	if err != nil {
-		go logging.Logger.Error("ArtistService: 'GetFollowedArtist' errored.", zap.Error(err))
+		logging.Logger.Error("ArtistService: 'GetFollowedArtist' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Followed artists fetch failed.")
 	}
 

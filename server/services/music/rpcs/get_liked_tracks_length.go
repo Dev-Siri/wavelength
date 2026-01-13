@@ -97,7 +97,7 @@ func (m *MusicService) GetLikedTracksLength(
 			receivedCount = true
 		case err, ok := <-errChan:
 			if ok {
-				go logging.Logger.Error("Liked tracks play length fetch failed.", zap.Error(err))
+				logging.Logger.Error("Liked tracks play length fetch failed.", zap.Error(err))
 				return nil, status.Error(codes.Internal, "Liked tracks play length fetch failed.")
 			}
 		}

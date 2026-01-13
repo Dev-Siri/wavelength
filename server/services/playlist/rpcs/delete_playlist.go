@@ -25,12 +25,12 @@ func (p *PlaylistService) DeletePlaylist(
 	var playlistActualAuthorEmail string
 
 	if err := row.Scan(&playlistActualAuthorEmail); err != nil {
-		go logging.Logger.Error("Database row scan failed.", zap.Error(err))
+		logging.Logger.Error("Database row scan failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Database row scan failed.")
 	}
 
 	if playlistActualAuthorEmail != request.AuthUserEmail {
-		go logging.Logger.Error("Deletion operation cannot be performed because the authorized user is not the author of the playlist.",
+		logging.Logger.Error("Deletion operation cannot be performed because the authorized user is not the author of the playlist.",
 			zap.String("playlistId", request.PlaylistId),
 			zap.String("authUserEmail", request.AuthUserEmail))
 		return nil, status.Error(codes.Unauthenticated, "Deletion operation cannot be performed because the authorized user is not the author of the playlist.")
@@ -42,7 +42,7 @@ func (p *PlaylistService) DeletePlaylist(
 	`, request.PlaylistId)
 
 	if err != nil {
-		go logging.Logger.Error("Playlist deletion failed.", zap.Error(err))
+		logging.Logger.Error("Playlist deletion failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Playlist deletion failed.")
 	}
 

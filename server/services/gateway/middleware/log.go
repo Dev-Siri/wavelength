@@ -8,7 +8,7 @@ import (
 )
 
 func LogMiddleware(ctx *fiber.Ctx) error {
-	go logging.Logger.Info("Incoming Request.",
+	logging.Logger.Info("Incoming Request.",
 		zap.String("method", ctx.Method()),
 		zap.String("url", ctx.OriginalURL()),
 		zap.String("userAgent", string(ctx.Request().Header.UserAgent())),

@@ -21,7 +21,7 @@ func LikeTrack(ctx *fiber.Ctx) error {
 	// Versatile schema.
 	var parsedBody schemas.PlaylistTrackAdditionSchema
 	if err := json.Unmarshal(body, &parsedBody); err != nil {
-		go logging.Logger.Error("Body read failed.", zap.Error(err))
+		logging.Logger.Error("Body read failed.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Body read failed.")
 	}
 
@@ -59,7 +59,7 @@ func LikeTrack(ctx *fiber.Ctx) error {
 		LikerEmail: authUser.Email,
 	})
 	if err != nil {
-		go logging.Logger.Error("MusicService: 'LikeTrack' errored.", zap.Error(err))
+		logging.Logger.Error("MusicService: 'LikeTrack' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Like track failed.")
 	}
 

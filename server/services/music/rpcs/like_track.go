@@ -29,7 +29,7 @@ func (m *MusicService) LikeTrack(
 	`, request.LikerEmail, request.VideoId)
 
 	if err := row.Scan(&likesCount); err != nil {
-		go logging.Logger.Error("Like data count read failed.", zap.Error(err))
+		logging.Logger.Error("Like data count read failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Like data count read failed.")
 	}
 
@@ -41,7 +41,7 @@ func (m *MusicService) LikeTrack(
 		`, request.LikerEmail, request.VideoId)
 
 		if err != nil {
-			go logging.Logger.Error("Track unlike failed.", zap.Error(err))
+			logging.Logger.Error("Track unlike failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Track unlike failed.")
 		}
 
@@ -58,7 +58,7 @@ func (m *MusicService) LikeTrack(
 		})
 
 		if err != nil {
-			go logging.Logger.Error("Storing artists failed.", zap.Error(err))
+			logging.Logger.Error("Storing artists failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Storing artists failed.")
 		}
 	}
@@ -86,7 +86,7 @@ func (m *MusicService) LikeTrack(
 		request.Duration, request.VideoId, dbVideoType)
 
 	if err != nil {
-		go logging.Logger.Error("Like track failed.", zap.Error(err))
+		logging.Logger.Error("Like track failed.", zap.Error(err))
 		return nil, status.Error(fiber.StatusInternalServerError, "Like track failed.")
 	}
 

@@ -20,7 +20,7 @@ func (s *ArtistService) GetArtistDetails(
 		BrowseId: request.BrowseId,
 	})
 	if err != nil {
-		go logging.Logger.Error("Artist details fetch failed.", zap.Error(err))
+		logging.Logger.Error("Artist details fetch failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Artist details fetch failed.")
 	}
 

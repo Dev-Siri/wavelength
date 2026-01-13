@@ -25,7 +25,7 @@ func (a *ArtistService) CreateAuthoredTrackArtist(
 	`, request.BrowseId, request.AuthoredTrackId)
 
 	if err := row.Scan(&existingArtistsCount); err != nil {
-		go logging.Logger.Error("Artist count for authored track read failed.", zap.Error(err))
+		logging.Logger.Error("Artist count for authored track read failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Artist count for authored track read failed.")
 	}
 
@@ -45,7 +45,7 @@ func (a *ArtistService) CreateAuthoredTrackArtist(
 		) VALUES ( $1, $2, $3, $4 );
 	`, artistId, request.BrowseId, request.AuthoredTrackId, request.Title)
 	if err != nil {
-		go logging.Logger.Error("Authored track artist creation failed.", zap.Error(err))
+		logging.Logger.Error("Authored track artist creation failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Authored track artist creation failed.")
 	}
 

@@ -23,7 +23,7 @@ func (a *ArtistService) IsFollowingArtist(
 	`, request.BrowseId, request.FollowerEmail)
 
 	if err := row.Scan(&followingCount); err != nil {
-		go logging.Logger.Error("Following count read from database failed.", zap.Error(err))
+		logging.Logger.Error("Following count read from database failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Following count read from database failed.")
 	}
 

@@ -17,7 +17,7 @@ func GetQuickPicks(ctx *fiber.Ctx) error {
 		Gl: regionCode,
 	})
 	if err != nil {
-		go logging.Logger.Error("MusicServce: 'GetQuickPicks' errored.", zap.Error(err))
+		logging.Logger.Error("MusicServce: 'GetQuickPicks' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Quick picks fetch failed.")
 	}
 

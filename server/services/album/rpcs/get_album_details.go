@@ -20,7 +20,7 @@ func (a *AlbumService) GetAlbumDetails(
 		AlbumId: request.AlbumId,
 	})
 	if err != nil {
-		go logging.Logger.Error("Album details fetch failed.", zap.Error(err))
+		logging.Logger.Error("Album details fetch failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Album details fetch failed.")
 	}
 

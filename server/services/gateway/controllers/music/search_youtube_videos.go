@@ -21,7 +21,7 @@ func SearchYouTubeVideos(ctx *fiber.Ctx) error {
 		Query: query,
 	})
 	if err != nil {
-		go logging.Logger.Error("MusicService: 'SearchMusicVideos' errored.", zap.Error(err))
+		logging.Logger.Error("MusicService: 'SearchMusicVideos' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "YouTube videos search fetch failed.")
 	}
 
