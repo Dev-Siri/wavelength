@@ -1,7 +1,6 @@
 package diagnostics_controllers
 
 import (
-	"encoding/json"
 	"wavelength/services/gateway/models"
 	"wavelength/shared/logging"
 
@@ -12,8 +11,9 @@ import (
 func ReportError(ctx *fiber.Ctx) error {
 	var applicationDiagnostic models.ApplicationDiagnostic
 
-	if err := json.Unmarshal(ctx.Body(), &applicationDiagnostic); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Could not parse request body as an application diagnostic object: "+err.Error())
+	if err := ctx.BodyParser(&applicationDiagnostic); err != nil {
+		logging.Logger.Error("Could not parse request body as an application diagnostic object.", zap.Error(err))
+		return fiber.NewError(fiber.StatusBadRequest, "Could not parse request body as an application diagnostic object.")
 	}
 
 	logging.Logger.Error("Client-side application reported an error",

@@ -1,10 +1,10 @@
 package playlist_controllers
 
 import (
-	"encoding/json"
 	"wavelength/proto/commonpb"
 	"wavelength/proto/playlistpb"
 	"wavelength/services/gateway/clients"
+	type_constants "wavelength/services/gateway/constants/types"
 	"wavelength/services/gateway/models"
 	"wavelength/services/gateway/models/schemas"
 	"wavelength/services/gateway/validation"
@@ -24,28 +24,19 @@ func AddRemovePlaylistTrack(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Playlist ID is required.")
 	}
 
-	body := ctx.Body()
-	var parsedBody schemas.PlaylistTrackAdditionSchema
+	var body schemas.PlaylistTrackAdditionSchema
 
-	if err := json.Unmarshal(body, &parsedBody); err != nil {
+	if err := ctx.BodyParser(&body); err != nil {
 		logging.Logger.Error("Body read failed.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Body read failed.")
 	}
 
-	if !validation.IsPlaylistTrackAdditionShapeValid(parsedBody) {
+	if !validation.IsPlaylistTrackAdditionShapeValid(body) {
 		return fiber.NewError(fiber.StatusBadRequest, "Playlist track to add isn't in proper shape.")
 	}
 
-	var enumVideoType commonpb.VideoType
-
-	if parsedBody.VideoType == "uvideo" {
-		enumVideoType = commonpb.VideoType_VIDEO_TYPE_UVIDEO
-	} else {
-		enumVideoType = commonpb.VideoType_VIDEO_TYPE_TRACK
-	}
-
-	embeddedArtists := make([]*commonpb.EmbeddedArtist, 0)
-	for _, artist := range parsedBody.Artists {
+	embeddedArtists := make([]*commonpb.EmbeddedArtist, len(body.Artists))
+	for _, artist := range body.Artists {
 		embeddedArtists = append(embeddedArtists, &commonpb.EmbeddedArtist{
 			Title:    artist.Title,
 			BrowseId: artist.BrowseId,
@@ -54,12 +45,12 @@ func AddRemovePlaylistTrack(ctx *fiber.Ctx) error {
 
 	toggleResponse, err := clients.PlaylistClient.AddRemovePlaylistTrack(ctx.Context(), &playlistpb.AddRemovePlaylistTrackRequest{
 		Artists:    embeddedArtists,
-		Thumbnail:  parsedBody.Thumbnail,
-		Duration:   parsedBody.Duration,
-		IsExplicit: parsedBody.IsExplicit,
-		Title:      parsedBody.Title,
-		VideoId:    parsedBody.VideoId,
-		VideoType:  enumVideoType,
+		Thumbnail:  body.Thumbnail,
+		Duration:   body.Duration,
+		IsExplicit: body.IsExplicit,
+		Title:      body.Title,
+		VideoId:    body.VideoId,
+		VideoType:  type_constants.PlaylistTrackTypeGrpcMap[body.VideoType],
 		PlaylistId: playlistId,
 	})
 	if err != nil {

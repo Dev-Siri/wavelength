@@ -1,21 +1,20 @@
 package image_controllers
 
 import (
-	"image"
 	_ "image/jpeg"
 	_ "image/png"
-	"net/http"
+	"wavelength/proto/imagepb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
 	"wavelength/services/gateway/utils"
+	"wavelength/shared/logging"
 
-	"github.com/cenkalti/dominantcolor"
 	"github.com/gofiber/fiber/v2"
-	_ "golang.org/x/image/webp"
+	"go.uber.org/zap"
 )
 
 func GetThemeColor(ctx *fiber.Ctx) error {
 	imageUrl := ctx.Query("imageUrl")
-
 	if imageUrl == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "Image URL not provided.")
 	}
@@ -24,25 +23,13 @@ func GetThemeColor(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid image URL.")
 	}
 
-	response, err := http.Get(imageUrl)
-
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to fetch image from the provided URL: "+err.Error())
-	}
-
-	defer response.Body.Close()
-
-	img, _, err := image.Decode(response.Body)
-
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to decode image: "+err.Error())
-	}
-
-	color := dominantcolor.Find(img)
-
-	return models.Success(ctx, models.ThemeColor{
-		R: color.R,
-		G: color.G,
-		B: color.B,
+	themeColorResponse, err := clients.ImageClient.GetThemeColor(ctx.Context(), &imagepb.GetThemeColorRequest{
+		ImageUrl: imageUrl,
 	})
+	if err != nil {
+		logging.Logger.Error("ImageService: 'GetThemeColor' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Image theme color pick failed.")
+	}
+
+	return models.Success(ctx, themeColorResponse.ThemeColor)
 }

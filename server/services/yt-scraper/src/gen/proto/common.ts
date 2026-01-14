@@ -261,6 +261,12 @@ export interface FollowedArtist {
   thumbnail: string;
 }
 
+export interface ThemeColor {
+  r: number;
+  g: number;
+  b: number;
+}
+
 function createBasePlaylist(): Playlist {
   return {
     playlistId: "",
@@ -2830,6 +2836,98 @@ export const FollowedArtist: MessageFns<FollowedArtist> = {
     message.followerEmail = object.followerEmail ?? "";
     message.name = object.name ?? "";
     message.thumbnail = object.thumbnail ?? "";
+    return message;
+  },
+};
+
+function createBaseThemeColor(): ThemeColor {
+  return { r: 0, g: 0, b: 0 };
+}
+
+export const ThemeColor: MessageFns<ThemeColor> = {
+  encode(message: ThemeColor, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.r !== 0) {
+      writer.uint32(8).uint32(message.r);
+    }
+    if (message.g !== 0) {
+      writer.uint32(16).uint32(message.g);
+    }
+    if (message.b !== 0) {
+      writer.uint32(24).uint32(message.b);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ThemeColor {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseThemeColor();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.r = reader.uint32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.g = reader.uint32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.b = reader.uint32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ThemeColor {
+    return {
+      r: isSet(object.r) ? globalThis.Number(object.r) : 0,
+      g: isSet(object.g) ? globalThis.Number(object.g) : 0,
+      b: isSet(object.b) ? globalThis.Number(object.b) : 0,
+    };
+  },
+
+  toJSON(message: ThemeColor): unknown {
+    const obj: any = {};
+    if (message.r !== 0) {
+      obj.r = Math.round(message.r);
+    }
+    if (message.g !== 0) {
+      obj.g = Math.round(message.g);
+    }
+    if (message.b !== 0) {
+      obj.b = Math.round(message.b);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ThemeColor>, I>>(base?: I): ThemeColor {
+    return ThemeColor.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ThemeColor>, I>>(object: I): ThemeColor {
+    const message = createBaseThemeColor();
+    message.r = object.r ?? 0;
+    message.g = object.g ?? 0;
+    message.b = object.b ?? 0;
     return message;
   },
 };

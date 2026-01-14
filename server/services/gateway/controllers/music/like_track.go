@@ -1,7 +1,6 @@
 package music_controllers
 
 import (
-	"encoding/json"
 	"wavelength/proto/commonpb"
 	"wavelength/proto/musicpb"
 	"wavelength/services/gateway/clients"
@@ -17,10 +16,10 @@ import (
 
 func LikeTrack(ctx *fiber.Ctx) error {
 	authUser, ok := ctx.Locals("authUser").(models.AuthUser)
-	body := ctx.Body()
 	// Versatile schema.
-	var parsedBody schemas.PlaylistTrackAdditionSchema
-	if err := json.Unmarshal(body, &parsedBody); err != nil {
+	var body schemas.PlaylistTrackAdditionSchema
+
+	if err := ctx.BodyParser(&body); err != nil {
 		logging.Logger.Error("Body read failed.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Body read failed.")
 	}
@@ -29,20 +28,20 @@ func LikeTrack(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
 	}
 
-	if !validation.IsPlaylistTrackAdditionShapeValid(parsedBody) {
+	if !validation.IsPlaylistTrackAdditionShapeValid(body) {
 		return fiber.NewError(fiber.StatusBadRequest, "Liked track to add isn't in proper shape.")
 	}
 
 	var grpcVideoType commonpb.VideoType
 
-	if parsedBody.VideoType == type_constants.PlaylistTrackTypeUVideo {
+	if body.VideoType == type_constants.PlaylistTrackTypeUVideo {
 		grpcVideoType = commonpb.VideoType_VIDEO_TYPE_UVIDEO
 	} else {
 		grpcVideoType = commonpb.VideoType_VIDEO_TYPE_TRACK
 	}
 
-	embeddedArtists := make([]*commonpb.EmbeddedArtist, 0)
-	for _, artist := range parsedBody.Artists {
+	embeddedArtists := make([]*commonpb.EmbeddedArtist, len(body.Artists))
+	for _, artist := range body.Artists {
 		embeddedArtists = append(embeddedArtists, &commonpb.EmbeddedArtist{
 			Title:    artist.Title,
 			BrowseId: artist.BrowseId,
@@ -50,12 +49,12 @@ func LikeTrack(ctx *fiber.Ctx) error {
 	}
 	likedTracksResponse, err := clients.MusicClient.LikeTrack(ctx.Context(), &musicpb.LikeTrackRequest{
 		Artists:    embeddedArtists,
-		Thumbnail:  parsedBody.Thumbnail,
-		Duration:   parsedBody.Duration,
-		IsExplicit: parsedBody.IsExplicit,
-		Title:      parsedBody.Title,
+		Thumbnail:  body.Thumbnail,
+		Duration:   body.Duration,
+		IsExplicit: body.IsExplicit,
+		Title:      body.Title,
 		VideoType:  grpcVideoType,
-		VideoId:    parsedBody.VideoId,
+		VideoId:    body.VideoId,
 		LikerEmail: authUser.Email,
 	})
 	if err != nil {

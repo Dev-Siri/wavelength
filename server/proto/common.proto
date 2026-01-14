@@ -187,3 +187,9 @@ message FollowedArtist {
   string name = 4;
   string thumbnail = 5;
 }
+
+message ThemeColor {
+  uint32 r = 1;
+  uint32 g = 2;
+  uint32 b = 3;
+}

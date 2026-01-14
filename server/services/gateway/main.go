@@ -44,6 +44,10 @@ func main() {
 		logging.Logger.Fatal("Album-service client failed to connect.", zap.Error(err))
 	}
 
+	if err := clients.InitImageClient(); err != nil {
+		logging.Logger.Fatal("Image-service client failed to connect.", zap.Error(err))
+	}
+
 	if err := db.InitGeoIP(); err != nil {
 		// Intentional to not use .Fatal to continue the application bootstrapping even after failure.
 		logging.Logger.Error("Failed to initialize GeoIP Lookup Database.")

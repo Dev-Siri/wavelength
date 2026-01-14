@@ -16,6 +16,7 @@ services=(
   yt-scraper
   artist
   album
+  image
 )
 
 for svc in "${services[@]}"; do

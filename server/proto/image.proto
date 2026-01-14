@@ -1,0 +1,30 @@
+syntax = "proto3";
+package image;
+
+option go_package = "wavelength/server/proto/image;imagepb";
+
+import "proto/common.proto";
+
+service ImageService {
+  rpc GetThemeColor(GetThemeColorRequest) returns (GetThemeColorResponse);
+  rpc ResizeImage(ResizeImageRequest) returns (ResizeImageResponse);
+}
+
+message GetThemeColorRequest {
+  string image_url = 1;
+}
+
+message GetThemeColorResponse {
+  common.ThemeColor theme_color = 1;
+}
+
+message ResizeImageRequest {
+  string image_url = 1;
+  uint32 height = 2;
+  uint32 width = 3;
+}
+
+message ResizeImageResponse {
+  bytes image_data = 1;
+  string mime_type = 2;
+}

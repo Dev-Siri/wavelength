@@ -16,11 +16,14 @@ services:
       - MUSIC_CLIENT_URL=music:8082
       - ARTIST_CLIENT_URL=artist:8084
       - ALBUM_CLIENT_URL=album:8085
+      - IMAGE_CLIENT_URL=image:8086
+      - GO_ENV=dev
     depends_on:
       - playlist
       - music
       - artist
       - album
+      - image
     develop:
       watch:
         - action: rebuild
@@ -37,6 +40,7 @@ services:
     environment:
       - PORT=8081
       - ARTIST_CLIENT_URL=artist:8084
+      - GO_ENV=dev
     depends_on:
       - artist
     develop:
@@ -56,6 +60,7 @@ services:
       - PORT=8082
       - YT_SCRAPER_URL=yt-scraper:8083
       - ARTIST_CLIENT_URL=artist:8084
+      - GO_ENV=dev
     depends_on:
       - yt-scraper
       - artist
@@ -74,6 +79,7 @@ services:
     env_file: services/yt-scraper/.env
     environment:
       - PORT=8083
+      - NODE_ENV=production
     develop:
       watch:
         - action: sync
@@ -93,6 +99,7 @@ services:
     environment:
       - PORT=8084
       - YT_SCRAPER_URL=yt-scraper:8083
+      - GO_ENV=dev
     depends_on:
       - yt-scraper
     develop:
@@ -111,8 +118,24 @@ services:
     environment:
       - PORT=8085
       - YT_SCRAPER_URL=yt-scraper:8083
+      - GO_ENV=dev
     depends_on:
       - yt-scraper
+    develop:
+      watch:
+        - action: rebuild
+          path: services
+  image:
+    build:
+      platforms:
+        - linux/amd64
+      context: .
+      dockerfile: services/image/Dockerfile
+    image: wavelength/services/image
+    container_name: image
+    environment:
+      - PORT=8086
+      - GO_ENV=dev
     develop:
       watch:
         - action: rebuild
