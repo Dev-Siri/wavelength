@@ -3,6 +3,8 @@ package image_rpcs
 import (
 	"context"
 	"image"
+	_ "image/jpeg"
+	_ "image/png"
 	"net/http"
 	"wavelength/proto/commonpb"
 	"wavelength/proto/imagepb"

@@ -1,8 +1,6 @@
 package image_controllers
 
 import (
-	_ "image/jpeg"
-	_ "image/png"
 	"wavelength/proto/imagepb"
 	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
