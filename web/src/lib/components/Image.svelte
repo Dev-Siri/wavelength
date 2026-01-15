@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { fade } from "svelte/transition";
+
   import { BASE_URL } from "$lib/constants/urls.js";
 
   const {
@@ -30,4 +32,6 @@
   {loading}
   class={className}
   {...restProps}
+  in:fade
+  out:fade
 />

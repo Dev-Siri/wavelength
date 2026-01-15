@@ -23,6 +23,7 @@ export const svelteQueryKeys = {
   playlistTrackLength: (playlistId: string) => ["playlist-track-length", playlistId],
   artist: (browseId: string) => ["artist", browseId],
   search: (query: string, searchType: string) => ["search", searchType, query],
+  searchRecommendations: (query: string) => ["search-recommendations", query],
   musicVideoPreview: (title: string, artist: string) => ["music-video-preview", title, artist],
   lyrics: (videoId: string) => ["lyrics", videoId],
   themeColor: (imageUrl: string) => ["theme-color", imageUrl],

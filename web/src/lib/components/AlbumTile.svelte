@@ -3,6 +3,7 @@
 
   import { getReadableAlbumType } from "$lib/utils/format";
 
+  import ArtistLink from "./ArtistLink.svelte";
   import Image from "./Image.svelte";
   import Button from "./ui/button/button.svelte";
 
@@ -21,10 +22,11 @@
   {/key}
   <div>
     <p class="text-2xl font-medium text-wrap pt-2">{album.title}</p>
-    <p class="text-wrap">
+    <p class="text-wrap text-white text-sm">
       {getReadableAlbumType(album.albumType)}
       <span class="text-muted-foreground"> by </span>
-      {album.artist.title} <span class="text-muted-foreground">•</span>
+      <ArtistLink {...album.artist} class="text-white mr-0" />
+      <span class="text-muted-foreground">•</span>
       {album.releaseDate}
     </p>
     <div class="flex gap-2 mt-4">

@@ -21,6 +21,9 @@
   const albumDetailsQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.album(page.params.albumId ?? ""),
     queryFn: () => backendClient(`/albums/album/${page.params.albumId}`, albumDetailsSchema),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   }));
 
   $effect(() => {

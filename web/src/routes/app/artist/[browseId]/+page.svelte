@@ -27,6 +27,8 @@
   const artistQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.artist(page.params.browseId ?? ""),
     queryFn: () => backendClient(`/artists/artist/${page.params.browseId}`, artistResponseSchema),
+    staleTime: Infinity,
+    gcTime: Infinity,
   }));
 </script>
 

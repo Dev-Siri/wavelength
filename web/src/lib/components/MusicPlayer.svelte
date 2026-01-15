@@ -127,7 +127,7 @@
   });
 </script>
 
-<div class="flex bg-black h-full w-full pl-3">
+<div class="flex bg-black/35 backdrop-blur-xl backdrop-saturate-150 h-full w-full pl-3">
   <div class="hidden" bind:this={musicPlayerElement}></div>
   <section class="flex h-full w-1/3 items-center">
     <MusicPlayerTrackLabel />

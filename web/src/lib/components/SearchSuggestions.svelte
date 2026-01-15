@@ -1,10 +1,10 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import { createQuery } from "@tanstack/svelte-query";
+
+  import { svelteQueryKeys } from "$lib/constants/keys";
   import { backendClient } from "$lib/utils/query-client";
-  import {
-    searchRecommendationsSchema,
-    type SearchRecommendations,
-  } from "$lib/utils/validation/search-recommendations";
+  import { searchRecommendationsSchema } from "$lib/utils/validation/search-recommendations";
 
   let searchSuggestionsList: HTMLDivElement | null = $state(null);
   let {
@@ -21,26 +21,24 @@
     onBlur?: () => void;
   } = $props();
 
-  let searchResults: SearchRecommendations = $state({
-    matchingLinks: [],
-    matchingQueries: [],
-  });
-
-  $effect(() => {
-    async function fetchRecentSearches() {
-      if (!q) return;
-
-      const recentSearches = await backendClient(
-        "/music/search/search-recommendations",
-        searchRecommendationsSchema,
-        { searchParams: { q } },
-      );
-
-      searchResults = recentSearches;
-    }
-
-    fetchRecentSearches();
-  });
+  const cachedQueries = new Set<string>();
+  const searchRecommendationsQuery = createQuery(() => ({
+    initialData: {
+      matchingQueries: [],
+      matchingLinks: [],
+    },
+    staleTime: query => (cachedQueries.has(query.queryKey[1]) ? 1000 * 60 * 5 : 0),
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    queryKey: svelteQueryKeys.searchRecommendations(q),
+    queryFn: () => {
+      if (!cachedQueries.has(q)) cachedQueries.add(q);
+      return backendClient("/music/search/search-recommendations", searchRecommendationsSchema, {
+        searchParams: { q },
+      });
+    },
+  }));
 
   $effect(() => {
     function keyboardSuggestionNavigationHandler(e: KeyboardEvent) {
@@ -59,7 +57,10 @@
   function handleSearchSuggestionListKeyDown(e: KeyboardEvent) {
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      activeIndex = Math.min(activeIndex + 1, searchResults.matchingQueries.length - 1);
+      activeIndex = Math.min(
+        activeIndex + 1,
+        searchRecommendationsQuery.data.matchingQueries.length - 1,
+      );
     }
 
     if (e.key === "ArrowUp") {
@@ -70,14 +71,14 @@
     }
 
     if (e.key === "Enter") {
-      const term = searchResults.matchingQueries[activeIndex];
+      const term = searchRecommendationsQuery.data.matchingQueries[activeIndex];
       if (term) goto(`/app/search?q=${encodeURIComponent(term)}`);
     }
   }
 </script>
 
 <div class="bg-black border-secondary rounded-xl w-full overflow-hidden shadow-2xl">
-  {#if searchResults.matchingLinks?.length || searchResults.matchingQueries.length}
+  {#if searchRecommendationsQuery.data.matchingQueries.length || searchRecommendationsQuery.data?.matchingLinks?.length || q}
     <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <div
@@ -89,7 +90,7 @@
       onblur={onBlur}
       tabindex="0"
     >
-      {#each searchResults.matchingQueries.slice(0, 3) as searchTerm, i}
+      {#each searchRecommendationsQuery.data.matchingQueries.slice(0, 3) as searchTerm, i}
         <li
           class="flex justify-center relative items-center h-full w-full backdrop-opacity-20 z-9999"
           class:bg-secondary={i === activeIndex}

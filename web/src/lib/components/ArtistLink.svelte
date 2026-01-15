@@ -3,6 +3,7 @@
 
   import type { EmbeddedArtist } from "$lib/utils/validation/artist";
 
+  import cn from "$lib/utils/cn";
   import ArtistPreview from "./ArtistPreview.svelte";
   import Button from "./ui/button/button.svelte";
   import * as Tooltip from "./ui/tooltip";
@@ -12,9 +13,11 @@
     title,
     trailingComma,
     isUVideo,
+    class: className,
   }: EmbeddedArtist & {
     trailingComma?: boolean;
     isUVideo?: boolean;
+    class?: string;
   } = $props();
 
   const artistPagePath = isUVideo
@@ -49,7 +52,7 @@
     variant="link"
     target="_blank"
     referrerpolicy="no-referrer"
-    class="p-0 m-0 -mt-2 mr-1 text-sm text-muted-foreground"
+    class={cn("p-0 m-0 -mt-2 mr-1 text-sm text-muted-foreground", className)}
     href={artistPagePath}
     onclick={handleNavigation}
   >
@@ -61,7 +64,7 @@
       <div class="relative inline">
         <Button
           variant="link"
-          class="p-0 m-0 -mt-2 mr-1 text-sm text-muted-foreground"
+          class={cn("p-0 m-0 h-4 -mt-2 mr-1 text-sm text-muted-foreground", className)}
           href={artistPagePath}
           onclick={handleNavigation}
         >

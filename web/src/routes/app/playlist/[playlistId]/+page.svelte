@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from "$app/state";
-  import { ClockIcon, ListMusicIcon, ListPlusIcon, PlayIcon } from "@lucide/svelte";
+  import { ClockIcon, HashIcon, ListPlusIcon, PlayIcon } from "@lucide/svelte";
   import { createQuery } from "@tanstack/svelte-query";
   import { fly } from "svelte/transition";
   import { z } from "zod";
@@ -113,16 +113,16 @@
               <Image
                 src={playlist.coverImage}
                 alt="Playlist Cover"
-                class="h-48 w-48 rounded-2xl aspect-square"
-                height={192}
-                width={192}
+                class="h-52 w-52 rounded-2xl aspect-square"
+                height={208}
+                width={208}
               />
             {/key}
           {:else}
             <div class="h-48 w-48 rounded-2xl aspect-square bg-muted"></div>
           {/if}
           <div class="flex flex-col w-3/5 h-full gap-2">
-            <span class="text-lg ml-0.5 select-none">Playlist</span>
+            <span class="text-md ml-0.5 select-none">Playlist</span>
             {#if userStore.user?.email === playlist.authorGoogleEmail}
               <Dialog.Trigger class="text-start cursor-pointer">
                 <h1 class="text-6xl font-extrabold">{playlist.name}</h1>
@@ -183,12 +183,10 @@
                   <Tooltip.Trigger>
                     <button
                       type="button"
-                      class="text-white cursor-pointer font-bold bg-muted p-1.5 rounded-full duration-200 hover:bg-secondary/90 {isRearrangingList
-                        ? 'animate-bounce'
-                        : ''}"
+                      class="cursor-pointer p-1.5 rounded-full duration-200"
                       onclick={() => (isRearrangingList = !isRearrangingList)}
                     >
-                      <ListMusicIcon size={18} />
+                      <HashIcon size={18} />
                     </button>
                   </Tooltip.Trigger>
                   <Tooltip.Content>
@@ -197,7 +195,7 @@
                     </p>
                   </Tooltip.Content>
                 </Tooltip.Root>
-                <p class="flex-2">Title</p>
+                <p class="flex-2 ml-8 text-md">Title</p>
                 <ClockIcon size={18} class="mr-28" />
               </header>
               <div class="mt-2 overflow-x-hidden pb-[80%] md:pb-[40%] lg:pb-[20%]">
