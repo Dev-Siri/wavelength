@@ -33,17 +33,14 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
       return emit(PlaylistErrorState());
     }
 
-    if (connectivityResult.contains(ConnectivityResult.wifi) ||
-        connectivityResult.contains(ConnectivityResult.mobile)) {
-      final response = await PlaylistsRepo.fetchPlaylistTracks(
-        playlistId: event.playlistId,
-      );
+    final response = await PlaylistsRepo.fetchPlaylistTracks(
+      playlistId: event.playlistId,
+    );
 
-      if (response is ApiResponseSuccess<List<PlaylistTrack>>) {
-        await box.put(event.playlistId, response.data);
+    if (response is ApiResponseSuccess<List<PlaylistTrack>>) {
+      await box.put(event.playlistId, response.data);
 
-        return emit(PlaylistSuccessState(songs: response.data));
-      }
+      return emit(PlaylistSuccessState(songs: response.data));
     }
 
     emit(PlaylistErrorState());

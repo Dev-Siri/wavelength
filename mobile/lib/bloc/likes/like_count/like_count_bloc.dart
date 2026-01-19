@@ -30,17 +30,14 @@ class LikeCountBloc extends Bloc<LikeCountEvent, LikeCountState> {
       return emit(LikeCountFetchErrorState());
     }
 
-    if (connectivityResult.contains(ConnectivityResult.wifi) ||
-        connectivityResult.contains(ConnectivityResult.mobile)) {
-      final response = await TrackRepo.fetchTrackLikeCount(
-        authToken: event.authToken,
-      );
+    final response = await TrackRepo.fetchTrackLikeCount(
+      authToken: event.authToken,
+    );
 
-      if (response is ApiResponseSuccess<int>) {
-        await box.put(hiveLikeCountKey, response.data);
+    if (response is ApiResponseSuccess<int>) {
+      await box.put(hiveLikeCountKey, response.data);
 
-        return emit(LikeCountFetchSuccessState(likeCount: response.data));
-      }
+      return emit(LikeCountFetchSuccessState(likeCount: response.data));
     }
 
     emit(LikeCountFetchErrorState());

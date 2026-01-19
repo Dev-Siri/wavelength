@@ -29,17 +29,14 @@ class LikedTracksBloc extends Bloc<LikedTracksEvent, LikedTracksState> {
       return emit(LikedTracksFetchErrorState());
     }
 
-    if (connectivityResult.contains(ConnectivityResult.wifi) ||
-        connectivityResult.contains(ConnectivityResult.mobile)) {
-      final response = await TrackRepo.fetchLikedTracks(
-        authToken: event.authToken,
-      );
+    final response = await TrackRepo.fetchLikedTracks(
+      authToken: event.authToken,
+    );
 
-      if (response is ApiResponseSuccess<List<LikedTrack>>) {
-        await box.put(event.email, response.data);
+    if (response is ApiResponseSuccess<List<LikedTrack>>) {
+      await box.put(event.email, response.data);
 
-        return emit(LikedTracksFetchSuccessState(likedTracks: response.data));
-      }
+      return emit(LikedTracksFetchSuccessState(likedTracks: response.data));
     }
 
     emit(LikedTracksFetchErrorState());
