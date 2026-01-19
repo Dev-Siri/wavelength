@@ -1,7 +1,6 @@
-import "dart:io";
-
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:hive_flutter/hive_flutter.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:uuid/v4.dart";
 import "package:wavelength/api/models/api_response.dart";
@@ -16,6 +15,7 @@ import "package:wavelength/bloc/download/download_event.dart";
 import "package:wavelength/bloc/playlist/playlist_bloc.dart";
 import "package:wavelength/bloc/playlist/playlist_event.dart";
 import "package:wavelength/cache.dart";
+import "package:wavelength/constants.dart";
 import "package:wavelength/widgets/confirmation_dialog.dart";
 import "package:wavelength/widgets/ui/amplitude.dart";
 
@@ -83,6 +83,9 @@ class _PlaylistTrackTileOptionsBottomSheetState
   Future<void> _handleDownloadCacheTileTap(BuildContext context) async {
     if (_trackAlreadyDownloaded) {
       await AudioCache.deleteTrack(widget.track.videoId);
+      final box = await Hive.openBox(hiveStreamsKey);
+      await box.delete(widget.track.videoId);
+
       setState(() => _trackAlreadyDownloaded = false);
       return;
     }
@@ -148,9 +151,7 @@ class _PlaylistTrackTileOptionsBottomSheetState
                 LucideIcons.cloudDownload,
                 color: _trackAlreadyDownloaded ? Colors.red : Colors.white,
               ),
-              padding: Platform.isIOS
-                  ? const EdgeInsets.all(20)
-                  : EdgeInsets.zero,
+              padding: const EdgeInsets.all(20),
               title: Text(
                 _trackAlreadyDownloaded ? "Remove save." : "Save offline.",
                 style: TextStyle(

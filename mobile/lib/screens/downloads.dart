@@ -66,51 +66,49 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
       backgroundColor: Colors.black,
       body: BlocBuilder<DownloadBloc, DownloadState>(
         builder: (context, state) {
-          return Expanded(
-            child: ListView(
-              padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
-              children: [
-                if (state.inQueue.isNotEmpty)
-                  const Text(
-                    "Active Downloads",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                  ),
-                if (state.inQueue.isNotEmpty) const SizedBox(height: 10),
-                if (_isDownloadStalledForWifi)
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: Text(
-                      "Downloads are paused because Wi-Fi is not available. If you prefer downloading over mobile data anyway, disable the setting for Wi-Fi only downloads.",
-                      style: TextStyle(fontSize: 18, color: Colors.grey),
-                    ),
-                  ),
-                ...state.inQueue.map(
-                  (queuedDownload) => Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: QueuedTrackTile(queuedDownload: queuedDownload),
-                  ),
-                ),
+          return ListView(
+            padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
+            children: [
+              if (state.inQueue.isNotEmpty)
                 const Text(
-                  "Downloads",
+                  "Active Downloads",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                 ),
-                const SizedBox(height: 10),
-                if (_downloads.isEmpty)
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(height: MediaQuery.sizeOf(context).height / 4),
-                      const Icon(LucideIcons.cloudDownload, size: 40),
-                      const SizedBox(height: 10),
-                      const Text(
-                        "Your downloads are empty.",
-                        style: TextStyle(fontSize: 18, color: Colors.grey),
-                      ),
-                    ],
+              if (state.inQueue.isNotEmpty) const SizedBox(height: 10),
+              if (_isDownloadStalledForWifi)
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 10),
+                  child: Text(
+                    "Downloads are paused because Wi-Fi is not available. If you prefer downloading over mobile data anyway, disable the setting for Wi-Fi only downloads.",
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
                   ),
-                for (final download in _downloads) TrackTile(track: download),
-              ],
-            ),
+                ),
+              ...state.inQueue.map(
+                (queuedDownload) => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: QueuedTrackTile(queuedDownload: queuedDownload),
+                ),
+              ),
+              const Text(
+                "Downloads",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 10),
+              if (_downloads.isEmpty)
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: MediaQuery.sizeOf(context).height / 4),
+                    const Icon(LucideIcons.cloudDownload, size: 40),
+                    const SizedBox(height: 10),
+                    const Text(
+                      "Your downloads are empty.",
+                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              for (final download in _downloads) TrackTile(track: download),
+            ],
           );
         },
       ),

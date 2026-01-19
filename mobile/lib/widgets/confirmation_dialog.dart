@@ -25,7 +25,6 @@ class ConfirmationDialog extends StatelessWidget {
         ),
         AmplButton(
           color: Colors.red,
-          borderRadius: BorderRadius.zero,
           onPressed: () {
             onConfirm();
             Navigator.of(context).pop();

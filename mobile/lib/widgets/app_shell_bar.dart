@@ -24,6 +24,7 @@ class AppShellBar extends StatelessWidget implements PreferredSizeWidget {
             width: 45,
           ),
         ),
+        backgroundColor: Colors.transparent,
         leading: const UserLeadingIcon(),
         actions: const [DownloadNotificationButton()],
       ),

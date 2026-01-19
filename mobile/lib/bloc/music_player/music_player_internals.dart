@@ -31,6 +31,7 @@ class MusicPlayerInternals {
   StreamSubscription? _currentIndexSub;
   StreamSubscription? _durationSub;
   StreamSubscription? _loopModeSub;
+  StreamSubscription? _shuffleModeSub;
   StreamSubscription? _errorSub;
   StreamSubscription? _processingStateSub;
 
@@ -164,7 +165,7 @@ class MusicPlayerInternals {
       }
     });
 
-    _loopModeSub = _player.shuffleModeEnabledStream.listen((
+    _shuffleModeSub = _player.shuffleModeEnabledStream.listen((
       shuffleModeEnabled,
     ) {
       if (shuffleModeEnabled) {
@@ -193,5 +194,6 @@ class MusicPlayerInternals {
     _errorSub?.cancel();
     _loopModeSub?.cancel();
     _processingStateSub?.cancel();
+    _shuffleModeSub?.cancel();
   }
 }

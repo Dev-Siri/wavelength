@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
+import "package:hive_flutter/hive_flutter.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:uuid/v4.dart";
 import "package:wavelength/api/models/api_response.dart";
@@ -15,6 +16,7 @@ import "package:wavelength/bloc/download/download_event.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/library/library_state.dart";
 import "package:wavelength/cache.dart";
+import "package:wavelength/constants.dart";
 import "package:wavelength/widgets/ui/amplitude.dart";
 
 class AddToPlaylistBottomSheet extends StatefulWidget {
@@ -100,6 +102,9 @@ class _AddToPlaylistBottomSheetState extends State<AddToPlaylistBottomSheet> {
   Future<void> _downloadTrack() async {
     if (_isTrackDownloaded) {
       await AudioCache.deleteTrack(widget.track.videoId);
+      final box = await Hive.openBox(hiveStreamsKey);
+      await box.delete(widget.track.videoId);
+
       setState(() => _isTrackDownloaded = false);
       return;
     }

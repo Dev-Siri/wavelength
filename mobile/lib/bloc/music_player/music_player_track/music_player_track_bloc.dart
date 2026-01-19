@@ -53,6 +53,17 @@ class MusicPlayerTrackBloc
                         .toList(),
                   ),
                   artUri: Uri.parse(queueableMusic.thumbnail),
+                  extras: {
+                    "videoType": queueableMusic.videoType.toGrpc(),
+                    "embedded": {
+                      "artists": jsonEncode(
+                        queueableMusic.artists
+                            .map((artist) => artist.toJson())
+                            .toList(),
+                      ),
+                      "album": queueableMusic.album?.toJson(),
+                    },
+                  },
                 ),
               ),
             )
