@@ -17,8 +17,6 @@ class LikedTracksBloc extends Bloc<LikedTracksEvent, LikedTracksState> {
     LikedTracksFetchEvent event,
     Emitter<LikedTracksState> emit,
   ) async {
-    emit(LikedTracksFetchLoadingState());
-
     final connectivityResult = await Connectivity().checkConnectivity();
 
     final box = await Hive.openBox(hiveLikesKey);
