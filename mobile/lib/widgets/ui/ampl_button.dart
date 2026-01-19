@@ -44,7 +44,7 @@ class AmplButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (Platform.isIOS) {
+    if (Platform.isAndroid) {
       return CupertinoButton(
         padding: padding,
         onPressed: disabled ? null : onPressed,

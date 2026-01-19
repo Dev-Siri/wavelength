@@ -9,11 +9,10 @@ class FollowedArtistsCarousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 120,
+      height: 90,
       child: CarouselView.builder(
         itemExtent: 100,
         itemCount: follows.length,
-
         itemBuilder: (context, index) {
           final followedArtist = follows[index];
           return Padding(
