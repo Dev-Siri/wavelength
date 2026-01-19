@@ -48,7 +48,7 @@ class HomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Padding(
-                      padding: EdgeInsets.only(left: 10, top: 10),
+                      padding: EdgeInsets.only(left: 10, top: 5, bottom: 10),
                       child: Text(
                         "Your Follows",
                         style: TextStyle(
@@ -73,7 +73,7 @@ class HomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(left: 10, bottom: 5),
+                          padding: EdgeInsets.only(left: 10, top: 5, bottom: 5),
                           child: Text(
                             "Popular Picks",
                             style: TextStyle(

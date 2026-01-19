@@ -86,6 +86,7 @@ class LibraryScreen extends StatelessWidget {
                           FollowedArtistsCarousel(
                             follows: state.followedArtists,
                           ),
+                          const SizedBox(height: 5),
                           const LikedTracksLink(),
                           for (final playlist in state.playlists)
                             Padding(
