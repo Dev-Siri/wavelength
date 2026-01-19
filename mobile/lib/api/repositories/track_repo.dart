@@ -66,7 +66,7 @@ class TrackRepo {
         body: jsonEncode({
           "artists": track.artists.map((artist) => artist.toJson()).toList(),
           "thumbnail": track.thumbnail,
-          "duration": track.duration,
+          "duration": track.duration.toString(),
           "isExplicit": track.isExplicit,
           "title": track.title,
           "videoId": track.videoId,
@@ -282,7 +282,7 @@ class TrackRepo {
     required VideoType videoType,
   }) async {
     try {
-      final response = await http.post(
+      final response = await http.patch(
         Uri.parse("$apiGatewayUrl/music/track/likes"),
         headers: {
           "Authorization": "Bearer $authToken",
@@ -291,7 +291,7 @@ class TrackRepo {
         body: jsonEncode({
           "artists": track.artists.map((artist) => artist.toJson()).toList(),
           "thumbnail": track.thumbnail,
-          "duration": track.duration,
+          "duration": track.duration.toString(),
           "isExplicit": track.isExplicit,
           "title": track.title,
           "videoId": track.videoId,
