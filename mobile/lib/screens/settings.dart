@@ -1,17 +1,15 @@
 import "dart:io";
 
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:flutter_svg/svg.dart";
-import "package:go_router/go_router.dart";
 import "package:shared_preferences/shared_preferences.dart";
-import "package:vector_graphics/vector_graphics.dart";
 import "package:wavelength/bloc/location/location_bloc.dart";
 import "package:wavelength/bloc/location/location_state.dart";
 import "package:wavelength/cache.dart";
 import "package:wavelength/constants.dart";
 import "package:wavelength/utils/format.dart";
+import "package:wavelength/widgets/common_app_bar.dart";
+import "package:wavelength/widgets/ui/amplitude.dart";
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -71,16 +69,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        leading: BackButton(onPressed: () => context.pop()),
-        centerTitle: true,
-        title: const SvgPicture(
-          AssetBytesLoader("assets/vectors/lambda.svg.vec"),
-          height: 45,
-          width: 45,
-        ),
-      ),
+      appBar: const CommonAppBar(),
       body: Column(
         children: [
           SizedBox(
@@ -176,26 +165,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ],
                               ),
                             ),
-                            if (Platform.isIOS)
-                              Padding(
-                                padding: const EdgeInsets.only(right: 5),
-                                child: CupertinoButton(
-                                  onPressed: _clearDownloadedTracks,
-                                  padding: const EdgeInsets.all(10),
-                                  child: const Icon(
-                                    Icons.delete,
-                                    color: Colors.redAccent,
-                                  ),
-                                ),
-                              )
-                            else
-                              IconButton(
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: Platform.isIOS ? 5 : 0,
+                              ),
+                              child: AmplButton(
                                 onPressed: _clearDownloadedTracks,
-                                icon: const Icon(
+                                padding: const EdgeInsets.all(10),
+                                child: const Icon(
                                   Icons.delete,
-                                  color: Colors.red,
+                                  color: Colors.redAccent,
                                 ),
                               ),
+                            ),
                           ],
                         ),
                       ],

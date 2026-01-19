@@ -1,10 +1,14 @@
+import "dart:convert";
+
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:just_audio_background/just_audio_background.dart";
+import "package:wavelength/api/models/enums/video_type.dart";
 import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/audio/background_audio_source.dart";
 import "package:wavelength/bloc/music_player/music_player_singleton.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
+import "package:wavelength/utils/format.dart";
 
 class MusicPlayerTrackBloc
     extends Bloc<MusicPlayerTrackEvent, MusicPlayerTrackState> {
@@ -43,7 +47,11 @@ class MusicPlayerTrackBloc
                 tag: MediaItem(
                   id: queueableMusic.videoId,
                   title: queueableMusic.title,
-                  artist: queueableMusic.author,
+                  artist: formatList(
+                    queueableMusic.artists
+                        .map((artist) => artist.title)
+                        .toList(),
+                  ),
                   artUri: Uri.parse(queueableMusic.thumbnail),
                 ),
               ),
@@ -69,8 +77,21 @@ class MusicPlayerTrackBloc
             tag: MediaItem(
               id: event.queueableMusic.videoId,
               title: event.queueableMusic.title,
-              artist: event.queueableMusic.author,
+              artist: formatList(
+                event.queueableMusic.artists.map((artist) => artist.title),
+              ),
               artUri: Uri.parse(event.queueableMusic.thumbnail),
+              extras: {
+                "videoType": event.queueableMusic.videoType.toGrpc(),
+                "embedded": {
+                  "artists": jsonEncode(
+                    event.queueableMusic.artists
+                        .map((artist) => artist.toJson())
+                        .toList(),
+                  ),
+                  "album": event.queueableMusic.album?.toJson(),
+                },
+              },
             ),
           ),
         );

@@ -4,8 +4,8 @@ import "package:vector_graphics/vector_graphics_compat.dart";
 import "package:wavelength/widgets/download_notification_button.dart";
 import "package:wavelength/widgets/user_leading_icon.dart";
 
-class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const SharedAppBar({super.key});
+class AppShellBar extends StatelessWidget implements PreferredSizeWidget {
+  const AppShellBar({super.key});
 
   @override
   Size get preferredSize => Size.fromHeight(AppBar().preferredSize.height);

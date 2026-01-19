@@ -1,10 +1,12 @@
+import "dart:convert";
+
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:just_audio_background/just_audio_background.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
-import "package:wavelength/api/models/playlist_track.dart";
+import "package:wavelength/api/models/enums/video_type.dart";
 import "package:wavelength/api/models/representations/queueable_music.dart";
 import "package:wavelength/api/models/track.dart";
 import "package:wavelength/audio/background_audio_source.dart";
@@ -15,6 +17,7 @@ import "package:wavelength/bloc/music_player/music_player_track/music_player_tra
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:mini_music_visualizer/mini_music_visualizer.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
+import "package:wavelength/utils/format.dart";
 import "package:wavelength/utils/url.dart";
 import "package:wavelength/widgets/add_to_playlist_bottom_sheet.dart";
 
@@ -29,8 +32,9 @@ class TopTrackResult extends StatelessWidget {
       videoId: track.videoId,
       title: track.title,
       thumbnail: track.thumbnail,
-      author: track.author,
+      artists: track.artists,
       videoType: VideoType.track,
+      album: null,
     );
 
     await MusicPlayerSingleton().player.addAudioSource(
@@ -39,9 +43,16 @@ class TopTrackResult extends StatelessWidget {
         tag: MediaItem(
           id: track.videoId,
           title: track.title,
-          artist: track.author,
+          artist: formatList(track.artists.map((artist) => artist.title)),
           artUri: Uri.parse(track.thumbnail),
-          extras: {"videoType": "track"},
+          extras: {
+            "videoType": VideoType.track.toGrpc(),
+            "embedded": {
+              "artists": jsonEncode(
+                track.artists.map((artist) => artist.toJson()).toList(),
+              ),
+            },
+          },
         ),
       ),
     );
@@ -102,7 +113,7 @@ class TopTrackResult extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                track.author,
+                formatList(track.artists.map((artist) => artist.title)),
                 style: const TextStyle(
                   fontSize: 14,
                   color: Colors.grey,
@@ -125,16 +136,17 @@ class TopTrackResult extends StatelessWidget {
                             videoId: track.videoId,
                             title: track.title,
                             thumbnail: track.thumbnail,
-                            author: track.author,
+                            artists: track.artists,
                             duration: track.duration,
                             isExplicit: track.isExplicit,
+                            album: track.album,
                           ),
                           videoType: VideoType.track,
                         ),
                       ),
                     ),
                     child: const Icon(
-                      LucideIcons.circlePlus400,
+                      LucideIcons.circlePlus,
                       color: Colors.white,
                     ),
                   ),

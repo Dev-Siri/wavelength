@@ -1,7 +1,4 @@
-import "dart:io";
-
 import "package:cached_network_image/cached_network_image.dart";
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
@@ -14,6 +11,7 @@ import "package:wavelength/bloc/auth/auth_state.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/library/library_event.dart";
 import "package:wavelength/widgets/confirmation_dialog.dart";
+import "package:wavelength/widgets/ui/amplitude.dart";
 
 class PlaylistTile extends StatefulWidget {
   final Playlist playlist;
@@ -49,10 +47,7 @@ class _PlaylistTileState extends State<PlaylistTile> {
       );
 
       libraryBloc.add(
-        LibraryPlaylistsFetchEvent(
-          email: userEmail,
-          authToken: authBlocState.authToken,
-        ),
+        LibraryFetchEvent(email: userEmail, authToken: authBlocState.authToken),
       );
       return;
     }
@@ -70,92 +65,80 @@ class _PlaylistTileState extends State<PlaylistTile> {
 
   @override
   Widget build(BuildContext context) {
-    final Widget innerUi = Padding(
-      padding: const EdgeInsets.all(5),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (widget.playlist.coverImage != null)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: CachedNetworkImage(
-                imageUrl: widget.playlist.coverImage!,
+    return AmplButton(
+      padding: EdgeInsets.zero,
+      onPressed: () => context.push("/playlist/${widget.playlist.playlistId}"),
+      child: Padding(
+        padding: const EdgeInsets.all(5),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (widget.playlist.coverImage != null)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: CachedNetworkImage(
+                  imageUrl: widget.playlist.coverImage!,
+                  height: 60,
+                  width: 60,
+                  fit: BoxFit.cover,
+                ),
+              )
+            else
+              Container(
                 height: 60,
                 width: 60,
-                fit: BoxFit.cover,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(15),
+                ),
               ),
-            )
-          else
-            Container(
-              height: 60,
-              width: 60,
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(15),
-              ),
+            const SizedBox(width: 10),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.playlist.name,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  widget.playlist.authorName,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    height: 1,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
             ),
-          const SizedBox(width: 10),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.playlist.name,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                widget.playlist.authorName,
-                style: const TextStyle(
-                  color: Colors.grey,
-                  height: 1,
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
-          const Spacer(),
-          BlocBuilder<AuthBloc, AuthState>(
-            builder: (context, state) {
-              return IconButton(
-                icon: const Icon(LucideIcons.trash2400, color: Colors.red),
-                onPressed: () => state is AuthStateAuthorized
-                    ? showDialog(
-                        context: context,
-                        builder: (_) => ConfirmationDialog(
-                          onConfirm: () =>
-                              _deletePlaylist(userEmail: state.user.email),
-                          title: "Delete '${widget.playlist.name}' ?",
-                          content: "This action cannot be undone.",
-                        ),
-                      )
-                    : null,
-              );
-            },
-          ),
-        ],
+            const Spacer(),
+            BlocBuilder<AuthBloc, AuthState>(
+              builder: (context, state) {
+                return IconButton(
+                  icon: const Icon(LucideIcons.trash2, color: Colors.red),
+                  onPressed: () => state is AuthStateAuthorized
+                      ? showDialog(
+                          context: context,
+                          builder: (_) => ConfirmationDialog(
+                            onConfirm: () =>
+                                _deletePlaylist(userEmail: state.user.email),
+                            title: "Delete '${widget.playlist.name}' ?",
+                            content: "This action cannot be undone.",
+                          ),
+                        )
+                      : null,
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
-
-    if (Platform.isIOS) {
-      return CupertinoButton(
-        padding: EdgeInsets.zero,
-        onPressed: () =>
-            context.push("/playlist/${widget.playlist.playlistId}"),
-        child: innerUi,
-      );
-    } else {
-      return MaterialButton(
-        padding: EdgeInsets.zero,
-        onPressed: () =>
-            context.push("/playlist/${widget.playlist.playlistId}"),
-        child: innerUi,
-      );
-    }
   }
 }

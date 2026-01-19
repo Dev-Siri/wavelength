@@ -1,6 +1,5 @@
 import "dart:io";
 
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
@@ -12,6 +11,7 @@ import "package:wavelength/bloc/auth/auth_bloc.dart";
 import "package:wavelength/bloc/auth/auth_state.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/library/library_event.dart";
+import "package:wavelength/widgets/ui/amplitude.dart";
 
 class PlaylistCreationBottomSheet extends StatefulWidget {
   const PlaylistCreationBottomSheet({super.key});
@@ -48,7 +48,7 @@ class _PlaylistCreationBottomSheetState
         ),
       );
       libraryBloc.add(
-        LibraryPlaylistsFetchEvent(email: userEmail, authToken: authToken),
+        LibraryFetchEvent(email: userEmail, authToken: authToken),
       );
     } else {
       messenger.showSnackBar(
@@ -92,26 +92,16 @@ class _PlaylistCreationBottomSheetState
             children: [
               ClipRRect(
                 borderRadius: const BorderRadius.all(Radius.circular(20)),
-                child: Platform.isIOS
-                    ? CupertinoListTile(
-                        onTap: () => _createPlaylist(
-                          userEmail: state.user.email,
-                          authToken: state.authToken,
-                        ),
-                        leading: const Icon(LucideIcons.listMusic400),
-                        padding: const EdgeInsets.all(20),
-                        title: title,
-                        subtitle: subtitle,
-                      )
-                    : ListTile(
-                        onTap: () => _createPlaylist(
-                          userEmail: state.user.email,
-                          authToken: state.authToken,
-                        ),
-                        leading: const Icon(LucideIcons.listMusic400),
-                        title: title,
-                        subtitle: subtitle,
-                      ),
+                child: AmplListTile(
+                  onTap: () => _createPlaylist(
+                    userEmail: state.user.email,
+                    authToken: state.authToken,
+                  ),
+                  leading: const Icon(LucideIcons.listMusic),
+                  padding: const EdgeInsets.all(20),
+                  title: title,
+                  subtitle: subtitle,
+                ),
               ),
             ],
           ),

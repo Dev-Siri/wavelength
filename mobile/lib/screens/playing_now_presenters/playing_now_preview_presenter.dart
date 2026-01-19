@@ -2,11 +2,12 @@ import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:wavelength/api/models/api_response.dart";
+import "package:wavelength/api/models/enums/video_type.dart";
 import "package:wavelength/api/models/music_video_preview.dart";
-import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/repositories/track_repo.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
+import "package:wavelength/utils/format.dart";
 import "package:wavelength/utils/url.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_event.dart";
@@ -57,7 +58,11 @@ class _PlayingNowPreviewPresenterState
     final track = state.playingNowTrack;
 
     widget.onTrackChange(track.videoId);
-    _fetchMusicVideo(title: track.title, author: track.author);
+
+    _fetchMusicVideo(
+      title: track.title,
+      author: formatList(track.artists.map((artist) => artist.title)),
+    );
   }
 
   @override
@@ -144,7 +149,9 @@ class _PlayingNowPreviewPresenterState
                                   ),
                                 ),
                                 Text(
-                                  track.author,
+                                  formatList(
+                                    track.artists.map((artist) => artist.title),
+                                  ),
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: textColor,

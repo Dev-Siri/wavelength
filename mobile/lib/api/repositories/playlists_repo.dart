@@ -16,7 +16,7 @@ class PlaylistsRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/playlists/user/$email"),
+        Uri.parse("$apiGatewayUrl/playlists/user/$email"),
         headers: {"Authorization": "Bearer $authToken"},
       );
       final utf8BodyDecoded = utf8.decode(response.bodyBytes);
@@ -26,7 +26,7 @@ class PlaylistsRepo {
             final isSuccessful = decodedJson["success"] as bool;
 
             if (isSuccessful) {
-              final listOfItems = decodedJson["data"] as List?;
+              final listOfItems = decodedJson["data"]["playlists"] as List?;
 
               if (listOfItems == null) return ApiResponseSuccess(data: []);
 
@@ -56,7 +56,7 @@ class PlaylistsRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/playlists${q != null ? "?q=$q" : ""}"),
+        Uri.parse("$apiGatewayUrl/playlists${q != null ? "?q=$q" : ""}"),
       );
       final utf8BodyDecoded = utf8.decode(response.bodyBytes);
       final decodedResponse =
@@ -65,7 +65,7 @@ class PlaylistsRepo {
             final isSuccessful = decodedJson["success"] as bool;
 
             if (isSuccessful) {
-              final listOfItems = decodedJson["data"] as List?;
+              final listOfItems = decodedJson["data"]["playlists"] as List?;
 
               if (listOfItems == null) return ApiResponseSuccess(data: []);
 
@@ -95,7 +95,7 @@ class PlaylistsRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/playlists/playlist/$playlistId/tracks"),
+        Uri.parse("$apiGatewayUrl/playlists/playlist/$playlistId/tracks"),
       );
       final utf8BodyDecoded = utf8.decode(response.bodyBytes);
       final decodedResponse =
@@ -106,7 +106,8 @@ class PlaylistsRepo {
             final isSuccessful = decodedJson["success"] as bool;
 
             if (isSuccessful) {
-              final listOfItems = decodedJson["data"] as List?;
+              final listOfItems =
+                  decodedJson["data"]["playlistTracks"] as List?;
 
               if (listOfItems == null) return ApiResponseSuccess(data: []);
 
@@ -136,7 +137,7 @@ class PlaylistsRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/playlists/playlist/$playlistId/length"),
+        Uri.parse("$apiGatewayUrl/playlists/playlist/$playlistId/length"),
       );
       final decodedResponse =
           await compute<String, ApiResponse<PlaylistTracksLength>>((
@@ -147,7 +148,9 @@ class PlaylistsRepo {
 
             if (isSuccessful) {
               return ApiResponseSuccess(
-                data: PlaylistTracksLength.fromJson(decodedJson["data"]),
+                data: PlaylistTracksLength.fromJson(
+                  decodedJson["data"]["playlistTracksLength"],
+                ),
               );
             }
 
@@ -171,7 +174,7 @@ class PlaylistsRepo {
   }) async {
     try {
       final response = await http.post(
-        Uri.parse("$backendUrl/playlists/user/$email"),
+        Uri.parse("$apiGatewayUrl/playlists/user/$email"),
         headers: {"Authorization": "Bearer $authToken"},
       );
 
@@ -205,7 +208,7 @@ class PlaylistsRepo {
   }) async {
     try {
       final response = await http.delete(
-        Uri.parse("$backendUrl/playlists/playlist/$playlistId"),
+        Uri.parse("$apiGatewayUrl/playlists/playlist/$playlistId"),
         headers: {"Authorization": "Bearer $authToken"},
       );
 
@@ -240,7 +243,7 @@ class PlaylistsRepo {
   }) async {
     try {
       final response = await http.put(
-        Uri.parse("$backendUrl/playlists/playlist/$playlistId"),
+        Uri.parse("$apiGatewayUrl/playlists/playlist/$playlistId"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"name": playlistName, "coverImage": coverImage}),
       );
@@ -271,10 +274,12 @@ class PlaylistsRepo {
 
   static Future<ApiResponse<String>> togglePlaylistVisibility({
     required String playlistId,
+    required String authToken,
   }) async {
     try {
       final response = await http.patch(
-        Uri.parse("$backendUrl/playlists/playlist/$playlistId/visibility"),
+        Uri.parse("$apiGatewayUrl/playlists/playlist/$playlistId/visibility"),
+        headers: {"Authorization": "Bearer $authToken"},
       );
 
       final decodedResponse = await compute<String, ApiResponse<String>>((

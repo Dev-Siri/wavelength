@@ -1,14 +1,20 @@
+import "package:flutter/foundation.dart";
+import "package:wavelength/api/models/embedded.dart";
+
+@immutable
 class QuickPicksItem {
   final String videoId;
   final String title;
   final String thumbnail;
-  final String author;
+  final List<EmbeddedArtist> artists;
+  final EmbeddedAlbum? album;
 
   const QuickPicksItem({
     required this.videoId,
     required this.title,
     required this.thumbnail,
-    required this.author,
+    required this.artists,
+    required this.album,
   });
 
   factory QuickPicksItem.fromJson(Map<String, dynamic> json) {
@@ -16,7 +22,12 @@ class QuickPicksItem {
       videoId: json["videoId"] as String,
       title: json["title"] as String,
       thumbnail: json["thumbnail"] as String,
-      author: json["author"] as String,
+      artists: (json["artists"] as List)
+          .map((artist) => EmbeddedArtist.fromJson(artist))
+          .toList(),
+      album: json["album"] != null
+          ? EmbeddedAlbum.fromJson(json["album"])
+          : null,
     );
   }
 }

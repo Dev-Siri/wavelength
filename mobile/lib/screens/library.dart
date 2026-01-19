@@ -7,6 +7,7 @@ import "package:wavelength/bloc/library/library_event.dart";
 import "package:wavelength/bloc/library/library_state.dart";
 import "package:wavelength/bloc/likes/like_count/like_count_bloc.dart";
 import "package:wavelength/bloc/likes/like_count/like_count_event.dart";
+import "package:wavelength/widgets/followed_artists_carousel.dart";
 import "package:wavelength/widgets/google_login_button.dart";
 import "package:wavelength/widgets/liked_tracks_link.dart";
 import "package:wavelength/widgets/playlist_tile.dart";
@@ -21,7 +22,7 @@ class LibraryScreen extends StatelessWidget {
     required String authToken,
   }) {
     context.read<LibraryBloc>().add(
-      LibraryPlaylistsFetchEvent(email: email, authToken: authToken),
+      LibraryFetchEvent(email: email, authToken: authToken),
     );
     context.read<LikeCountBloc>().add(
       LikeCountFetchEvent(authToken: authToken),
@@ -46,7 +47,10 @@ class LibraryScreen extends StatelessWidget {
               const SizedBox(height: 16),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Text("Your Library", style: TextStyle(fontSize: 30)),
+                child: Text(
+                  "Your Library",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                ),
               ),
               const SizedBox(height: 10),
               BlocBuilder<AuthBloc, AuthState>(
@@ -77,9 +81,11 @@ class LibraryScreen extends StatelessWidget {
                           ],
                         );
                       }
-
                       return Column(
                         children: [
+                          FollowedArtistsCarousel(
+                            follows: state.followedArtists,
+                          ),
                           const LikedTracksLink(),
                           for (final playlist in state.playlists)
                             Padding(

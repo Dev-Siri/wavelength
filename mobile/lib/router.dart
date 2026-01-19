@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 import "package:wavelength/app_shell.dart";
+import "package:wavelength/bloc/album/album_bloc.dart";
 import "package:wavelength/bloc/likes/liked_tracks/liked_tracks_bloc.dart";
 import "package:wavelength/bloc/likes/liked_tracks_playlength/liked_tracks_playlength_bloc.dart";
 import "package:wavelength/bloc/public_playlists/public_playlists_bloc.dart";
@@ -10,6 +11,7 @@ import "package:wavelength/bloc/search/artists/artists_bloc.dart";
 import "package:wavelength/bloc/search/tracks/tracks_bloc.dart";
 import "package:wavelength/bloc/search/videos/videos_bloc.dart";
 import "package:wavelength/root.dart";
+import "package:wavelength/screens/album.dart";
 import "package:wavelength/screens/artist.dart";
 import "package:wavelength/screens/downloads.dart";
 import "package:wavelength/screens/edit_playlist.dart";
@@ -103,6 +105,20 @@ final router = GoRouter(
             return CustomTransitionPage(
               key: state.pageKey,
               child: ArtistScreen(browseId: id),
+              transitionsBuilder: pageSlideUpTransition,
+            );
+          },
+        ),
+        GoRoute(
+          path: "/album/:id",
+          pageBuilder: (_, state) {
+            final id = state.pathParameters["id"]!;
+            return CustomTransitionPage(
+              key: state.pageKey,
+              child: MultiBlocProvider(
+                providers: [BlocProvider(create: (_) => AlbumBloc())],
+                child: AlbumScreen(browseId: id),
+              ),
               transitionsBuilder: pageSlideUpTransition,
             );
           },

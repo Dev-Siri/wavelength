@@ -1,6 +1,5 @@
 import "package:flutter/foundation.dart";
-import "package:wavelength/api/models/artist_extra.dart";
-import "package:wavelength/api/models/individual_artist.dart";
+import "package:wavelength/api/models/artist.dart";
 
 @immutable
 sealed class ArtistState {}
@@ -12,8 +11,7 @@ class ArtistLoadingState extends ArtistState {}
 class ArtistErrorState extends ArtistState {}
 
 class ArtistSuccessState extends ArtistState {
-  final IndividualArtist artist;
-  final ArtistExtra artistExtra;
+  final Artist artist;
 
-  ArtistSuccessState({required this.artist, required this.artistExtra});
+  ArtistSuccessState({required this.artist});
 }

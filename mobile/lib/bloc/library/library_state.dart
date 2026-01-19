@@ -1,17 +1,30 @@
 import "package:flutter/foundation.dart";
+import "package:wavelength/api/models/artist.dart";
 import "package:wavelength/api/models/playlist.dart";
 
 @immutable
-sealed class LibraryState {}
+sealed class LibraryState {
+  const LibraryState();
+}
 
-class LibraryDefaultState extends LibraryState {}
+class LibraryDefaultState extends LibraryState {
+  const LibraryDefaultState();
+}
 
-class LibraryFetchLoadingState extends LibraryState {}
+class LibraryFetchLoadingState extends LibraryState {
+  const LibraryFetchLoadingState();
+}
 
-class LibraryFetchErrorState extends LibraryState {}
+class LibraryFetchErrorState extends LibraryState {
+  const LibraryFetchErrorState();
+}
 
 class LibraryFetchSuccessState extends LibraryState {
   final List<Playlist> playlists;
+  final List<FollowedArtist> followedArtists;
 
-  LibraryFetchSuccessState({required this.playlists});
+  const LibraryFetchSuccessState({
+    required this.playlists,
+    required this.followedArtists,
+  });
 }

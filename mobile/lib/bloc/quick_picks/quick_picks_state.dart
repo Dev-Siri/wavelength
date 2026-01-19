@@ -11,7 +11,7 @@ class QuickPicksLoadingState extends QuickPicksState {}
 class QuickPicksErrorState extends QuickPicksState {}
 
 class QuickPicksSuccessState extends QuickPicksState {
-  final List<QuickPicksItem> songs;
+  final List<QuickPicksItem> quickPicks;
 
-  QuickPicksSuccessState({required this.songs});
+  QuickPicksSuccessState({required this.quickPicks});
 }

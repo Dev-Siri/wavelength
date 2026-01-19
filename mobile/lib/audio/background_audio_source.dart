@@ -1,9 +1,12 @@
 import "dart:typed_data";
 
+import "package:hive_flutter/hive_flutter.dart";
 import "package:http/http.dart" as http;
 import "package:just_audio/just_audio.dart";
 import "package:wavelength/cache.dart";
+import "package:wavelength/constants.dart";
 import "package:wavelength/src/rust/api/tydle_caller.dart";
+import "package:wavelength/utils/ttl_store.dart";
 
 class BackgroundAudioSource extends StreamAudioSource {
   final String _trackId;
@@ -12,10 +15,6 @@ class BackgroundAudioSource extends StreamAudioSource {
 
   int? _fullLength;
   BackgroundAudioSource(this._trackId, {super.tag});
-
-  Future<void> _ensureUrl() async {
-    _url ??= await fetchHighestAudioStreamUrl(videoId: _trackId);
-  }
 
   @override
   Future<StreamAudioResponse> request([int? start, int? end]) async {
@@ -37,9 +36,20 @@ class BackgroundAudioSource extends StreamAudioSource {
       );
     }
 
-    _url ??= await fetchHighestAudioStreamUrl(videoId: _trackId);
+    final urlCacheBox = await Hive.openBox(hiveTempUrlKey);
+    final urlCacheStore = TtlStorage(
+      urlCacheBox,
+      ttl: const Duration(hours: ytStreamUrlSignValidityHours),
+    );
 
-    await _ensureUrl();
+    final String? cachedUrl = await urlCacheStore.get(_trackId);
+
+    if (cachedUrl != null) {
+      _url ??= cachedUrl;
+    } else {
+      _url ??= await fetchHighestAudioStreamUrl(videoId: _trackId);
+      urlCacheStore.save(hiveTempUrlKey, _url);
+    }
 
     final uri = Uri.parse(_url!);
 

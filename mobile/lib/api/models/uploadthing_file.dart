@@ -1,3 +1,6 @@
+import "package:flutter/foundation.dart";
+
+@immutable
 class UploadThingFile {
   final String url;
   final String key;

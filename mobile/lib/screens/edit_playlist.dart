@@ -21,7 +21,6 @@ import "package:wavelength/bloc/library/library_event.dart";
 import "package:wavelength/bloc/playlist/playlist_bloc.dart";
 import "package:wavelength/bloc/playlist/playlist_event.dart";
 import "package:wavelength/widgets/brand_cover_image.dart";
-import "package:wavelength/widgets/music_player_presence_adjuster.dart";
 
 @immutable
 class EditPlaylistRouteData {
@@ -111,7 +110,7 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
     if (response is ApiResponseSuccess &&
         authBlocState is AuthStateAuthorized) {
       libraryBloc.add(
-        LibraryPlaylistsFetchEvent(
+        LibraryFetchEvent(
           email: authBlocState.user.email,
           authToken: authBlocState.authToken,
         ),
@@ -157,111 +156,107 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
         ),
       ),
       backgroundColor: Colors.black,
-      body: MusicPlayerPresenceAdjuster(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 20),
-            GestureDetector(
-              onTap: _handleImagePicker,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Center(
-                    child: Opacity(
-                      opacity: 0.5,
-                      child: _pickedCoverImage == null
-                          ? BrandCoverImage(
-                              imageUrl: widget.routeData.coverImage,
-                            )
-                          : SizedBox(
-                              height: 300,
-                              width: 300,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(30),
-                                child: FutureBuilder(
-                                  future: _pickedCoverImage!.readAsBytes(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.data == null) {
-                                      return const SizedBox.shrink();
-                                    }
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(height: 20),
+          GestureDetector(
+            onTap: _handleImagePicker,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Center(
+                  child: Opacity(
+                    opacity: 0.5,
+                    child: _pickedCoverImage == null
+                        ? BrandCoverImage(imageUrl: widget.routeData.coverImage)
+                        : SizedBox(
+                            height: 300,
+                            width: 300,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(30),
+                              child: FutureBuilder(
+                                future: _pickedCoverImage!.readAsBytes(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.data == null) {
+                                    return const SizedBox.shrink();
+                                  }
 
-                                    return Image.memory(
-                                      snapshot.data!,
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
-                                ),
+                                  return Image.memory(
+                                    snapshot.data!,
+                                    fit: BoxFit.cover,
+                                  );
+                                },
                               ),
                             ),
-                    ),
-                  ),
-                  Column(
-                    children: [
-                      const Icon(LucideIcons.image400, size: 40),
-                      const SizedBox(height: 10),
-                      Text(
-                        "Click to pick${widget.routeData.coverImage == null ? " " : " a new "}cover image.",
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Platform.isIOS
-                  ? CupertinoTextField(
-                      controller: _nameInputControl,
-                      cursorColor: Colors.white,
-                      placeholder: "Playlist Name",
-                      style: const TextStyle(fontSize: 30),
-                    )
-                  : TextField(
-                      controller: _nameInputControl,
-                      cursorColor: Colors.white,
-                      decoration: const InputDecoration(
-                        hintText: "Playlist Name",
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 3),
-                        ),
-                      ),
-                      style: const TextStyle(fontSize: 30),
-                    ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                CupertinoButton(
-                  onPressed: _isLoading ? null : _confirmEdit,
-                  color: Colors.white,
-                  disabledColor: Colors.white.withAlpha(80),
-                  child: Row(
-                    children: [
-                      if (_isLoading)
-                        const Padding(
-                          padding: EdgeInsets.only(right: 10),
-                          child: SizedBox(
-                            height: 15,
-                            width: 15,
-                            child: CircularProgressIndicator.adaptive(
-                              valueColor: AlwaysStoppedAnimation(Colors.white),
-                              strokeWidth: 1,
-                            ),
                           ),
-                        ),
-                      const Text(
-                        "Confirm Edit",
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ],
                   ),
                 ),
-                const SizedBox(width: 20),
+                Column(
+                  children: [
+                    const Icon(LucideIcons.image, size: 40),
+                    const SizedBox(height: 10),
+                    Text(
+                      "Click to pick${widget.routeData.coverImage == null ? " " : " a new "}cover image.",
+                    ),
+                  ],
+                ),
               ],
             ),
-          ],
-        ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Platform.isIOS
+                ? CupertinoTextField(
+                    controller: _nameInputControl,
+                    cursorColor: Colors.white,
+                    placeholder: "Playlist Name",
+                    style: const TextStyle(fontSize: 30),
+                  )
+                : TextField(
+                    controller: _nameInputControl,
+                    cursorColor: Colors.white,
+                    decoration: const InputDecoration(
+                      hintText: "Playlist Name",
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white, width: 3),
+                      ),
+                    ),
+                    style: const TextStyle(fontSize: 30),
+                  ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              CupertinoButton(
+                onPressed: _isLoading ? null : _confirmEdit,
+                color: Colors.white,
+                disabledColor: Colors.white.withAlpha(80),
+                child: Row(
+                  children: [
+                    if (_isLoading)
+                      const Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        child: SizedBox(
+                          height: 15,
+                          width: 15,
+                          child: CircularProgressIndicator.adaptive(
+                            valueColor: AlwaysStoppedAnimation(Colors.white),
+                            strokeWidth: 1,
+                          ),
+                        ),
+                      ),
+                    const Text(
+                      "Confirm Edit",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 20),
+            ],
+          ),
+        ],
       ),
     );
   }

@@ -86,8 +86,8 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
               onPressed: _switchPresenters,
               icon: Icon(
                 _presentedScreen == PlayingNowPresenter.preview
-                    ? LucideIcons.micVocal400
-                    : LucideIcons.squarePlay400,
+                    ? LucideIcons.micVocal
+                    : LucideIcons.squarePlay,
               ),
               tooltip: _presentedScreen == PlayingNowPresenter.preview
                   ? "Lyrics"

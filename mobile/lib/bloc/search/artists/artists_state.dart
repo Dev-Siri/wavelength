@@ -11,7 +11,7 @@ class ArtistsFetchLoadingState extends ArtistsState {}
 class ArtistsFetchErrorState extends ArtistsState {}
 
 class ArtistsFetchSuccessState extends ArtistsState {
-  final List<Artist> artists;
+  final List<SearchArtist> artists;
 
   ArtistsFetchSuccessState({required this.artists});
 }

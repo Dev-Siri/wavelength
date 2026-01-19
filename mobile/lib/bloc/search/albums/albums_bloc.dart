@@ -17,7 +17,7 @@ class AlbumsBloc extends Bloc<AlbumsEvent, AlbumsState> {
     emit(AlbumsFetchLoadingState());
     final response = await SearchRepo.fetchAlbumsByQuery(query: event.query);
 
-    if (response is ApiResponseSuccess<List<Album>>) {
+    if (response is ApiResponseSuccess<List<SearchAlbum>>) {
       return emit(AlbumsFetchSuccessState(albums: response.data));
     }
 

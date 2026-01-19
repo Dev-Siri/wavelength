@@ -11,7 +11,7 @@ class AlbumsFetchLoadingState extends AlbumsState {}
 class AlbumsFetchErrorState extends AlbumsState {}
 
 class AlbumsFetchSuccessState extends AlbumsState {
-  final List<Album> albums;
+  final List<SearchAlbum> albums;
 
   AlbumsFetchSuccessState({required this.albums});
 }

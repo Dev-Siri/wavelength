@@ -2,9 +2,9 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:wavelength/bloc/search/artists/artists_bloc.dart";
 import "package:wavelength/bloc/search/artists/artists_state.dart";
-import "package:wavelength/widgets/artist_card.dart";
+import "package:wavelength/widgets/artist_tile.dart";
 import "package:wavelength/widgets/error_message_dialog.dart";
-import "package:wavelength/widgets/skeletons/playlist_tile_skeleton.dart";
+import "package:wavelength/widgets/skeletons/artist_tile_skeleton.dart";
 
 class ArtistsSearchPresenter extends StatelessWidget {
   const ArtistsSearchPresenter({super.key});
@@ -23,7 +23,7 @@ class ArtistsSearchPresenter extends StatelessWidget {
                   for (int i = 0; i < 10; i++)
                     const Padding(
                       padding: EdgeInsets.only(bottom: 10),
-                      child: PlaylistTileSkeleton(),
+                      child: ArtistTileSkeleton(),
                     ),
                 ],
               ),
@@ -63,7 +63,12 @@ class ArtistsSearchPresenter extends StatelessWidget {
             for (final artist in state.artists)
               Padding(
                 padding: const EdgeInsets.only(bottom: 15),
-                child: ArtistCard(artist: artist),
+                child: ArtistTile(
+                  browseId: artist.browseId,
+                  thumbnail: artist.thumbnail,
+                  title: artist.title,
+                  subtitle: artist.audience,
+                ),
               ),
           ],
         );

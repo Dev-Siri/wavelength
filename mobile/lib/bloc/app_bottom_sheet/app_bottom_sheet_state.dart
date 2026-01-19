@@ -1,8 +1,14 @@
 import "package:flutter/foundation.dart";
 
 @immutable
-sealed class AppBottomSheetState {}
+sealed class AppBottomSheetState {
+  const AppBottomSheetState();
+}
 
-class AppBottomSheetOpenState extends AppBottomSheetState {}
+class AppBottomSheetOpenState extends AppBottomSheetState {
+  const AppBottomSheetOpenState();
+}
 
-class AppBottomSheetClosedState extends AppBottomSheetState {}
+class AppBottomSheetClosedState extends AppBottomSheetState {
+  const AppBottomSheetClosedState();
+}

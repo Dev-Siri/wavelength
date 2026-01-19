@@ -1,39 +1,18 @@
-class SearchRecommendationItemMeta {
-  final String type;
-  final String authorOrAlbum;
-  final String playsOrAlbumRelease;
+import "package:flutter/foundation.dart";
 
-  SearchRecommendationItemMeta({
-    required this.type,
-    required this.authorOrAlbum,
-    required this.playsOrAlbumRelease,
-  });
-
-  factory SearchRecommendationItemMeta.fromJson(Map<String, dynamic> json) {
-    return SearchRecommendationItemMeta(
-      type: json["type"] as String,
-      authorOrAlbum: json["authorOrAlbum"] as String,
-      playsOrAlbumRelease: json["playsOrAlbumRelease"] as String,
-    );
-  }
-}
-
+@immutable
 class SearchRecommendationItem {
   final String thumbnail;
   final String title;
   final String subtitle;
   final String browseId;
-  final bool isExplicit;
-  final SearchRecommendationItemMeta meta;
   final String type;
 
-  SearchRecommendationItem({
+  const SearchRecommendationItem({
     required this.thumbnail,
     required this.title,
     required this.subtitle,
     required this.browseId,
-    required this.isExplicit,
-    required this.meta,
     required this.type,
   });
 
@@ -43,18 +22,17 @@ class SearchRecommendationItem {
       title: json["title"] as String,
       subtitle: json["subtitle"] as String,
       browseId: json["browseId"] as String,
-      isExplicit: json["isExplicit"] as bool,
-      meta: SearchRecommendationItemMeta.fromJson(json["meta"]),
       type: json["type"] as String,
     );
   }
 }
 
+@immutable
 class SearchRecommendations {
   final List<String> matchingQueries;
   final List<SearchRecommendationItem> matchingLinks;
 
-  SearchRecommendations({
+  const SearchRecommendations({
     required this.matchingQueries,
     required this.matchingLinks,
   });

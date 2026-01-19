@@ -1,14 +1,28 @@
-import "package:wavelength/api/models/playlist_track.dart";
+import "package:hive_flutter/adapters.dart";
+import "package:wavelength/api/models/embedded.dart";
+import "package:wavelength/api/models/enums/video_type.dart";
 
+part "liked_track.g.dart";
+
+@HiveType(typeId: 3)
 class LikedTrack {
+  @HiveField(0)
   final String likeId;
+  @HiveField(1)
   final String email;
+  @HiveField(2)
   final String title;
+  @HiveField(3)
   final String thumbnail;
+  @HiveField(4)
   final bool isExplicit;
-  final String author;
-  final String duration;
+  @HiveField(5)
+  final List<EmbeddedArtist> artists;
+  @HiveField(6)
+  final int duration;
+  @HiveField(7)
   final String videoId;
+  @HiveField(8)
   final VideoType videoType;
 
   LikedTrack({
@@ -17,7 +31,7 @@ class LikedTrack {
     required this.title,
     required this.thumbnail,
     required this.isExplicit,
-    required this.author,
+    required this.artists,
     required this.duration,
     required this.videoId,
     required this.videoType,
@@ -30,12 +44,12 @@ class LikedTrack {
       title: json["title"] as String,
       thumbnail: json["thumbnail"] as String,
       isExplicit: json["isExplicit"] as bool,
-      author: json["author"] as String,
-      duration: json["duration"] as String,
+      artists: (json["artists"] as List)
+          .map((artist) => EmbeddedArtist.fromJson(artist))
+          .toList(),
+      duration: int.parse(json["duration"]),
       videoId: json["videoId"] as String,
-      videoType: json["videoType"] == "track"
-          ? VideoType.track
-          : VideoType.uvideo,
+      videoType: VideoTypeParser.fromGrpc(json["videoType"]),
     );
   }
 }

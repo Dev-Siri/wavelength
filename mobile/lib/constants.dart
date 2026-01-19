@@ -1,15 +1,28 @@
-const backendUrl = "https://wavelength-524g.onrender.com";
+import "package:flutter_dotenv/flutter_dotenv.dart";
+
+final apiGatewayUrl = dotenv.get("API_GATEWAY_URL");
+
 const ytImgApiUrl = "https://img.youtube.com";
+const ytMusicChannelSubpathUrl = "https://music.youtube.com/channel";
 const appUpdateUrl = "https://mavelength.vercel.app/downloads";
 const defaultLocale = "US";
 const envFile = ".env";
 
 const hivePlaylistsTracksKey = "playlists_tracks";
 const hivePlaylistsKey = "playlists";
+const hiveFollowedArtistsKey = "followed_artists";
 const hiveLyricsKey = "lyrics";
+const hiveTempUrlKey = "yt_streams_url_temp";
 const hiveStreamsKey = "yt_streams";
 const hiveLikesKey = "likes";
 const hiveLikeCountKey = "like_count";
+const hiveIsFollowingKey = "followed_list";
+const hiveArtistsKey = "artists";
+const hiveAlbumsKey = "albums";
+const hivePlaylengthKey = "playlengths";
+
+// This is the known signed URL availability period.
+const ytStreamUrlSignValidityHours = 6;
 
 const settingsOptionPreferWifiForDownloads = "settings:prefer_wifi_for_streams";
 const settingsOptionPreferWifiForDownloadsDefaultValue = true;

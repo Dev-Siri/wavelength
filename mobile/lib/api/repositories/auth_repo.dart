@@ -11,7 +11,7 @@ class AuthRepo {
   static Future<ApiResponse<String>> createAuthToken(AuthUser authUser) async {
     try {
       final response = await http.post(
-        Uri.parse("$backendUrl/auth/token"),
+        Uri.parse("$apiGatewayUrl/auth/token"),
         body: jsonEncode(authUser.toJson()),
         headers: {"Content-Type": "application/json"},
       );

@@ -17,7 +17,7 @@ class SearchRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/music/search?q=$query"),
+        Uri.parse("$apiGatewayUrl/music/search?q=$query"),
       );
       final utf8BodyDecoded = utf8.decode(response.bodyBytes);
       final decodedResponse = await compute<String, ApiResponse<List<Track>>>((
@@ -27,7 +27,7 @@ class SearchRepo {
         final isSuccessful = decodedJson["success"] as bool;
 
         if (isSuccessful) {
-          final listOfItems = decodedJson["data"]["result"] as List?;
+          final listOfItems = decodedJson["data"]["tracks"] as List?;
 
           if (listOfItems == null) return ApiResponseSuccess(data: []);
 
@@ -57,7 +57,7 @@ class SearchRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/music/search/uvideos?q=$query"),
+        Uri.parse("$apiGatewayUrl/music/search/uvideos?q=$query"),
       );
       final utf8BodyDecoded = utf8.decode(response.bodyBytes);
       final decodedResponse = await compute<String, ApiResponse<List<Video>>>((
@@ -67,7 +67,7 @@ class SearchRepo {
         final isSuccessful = decodedJson["success"] as bool;
 
         if (isSuccessful) {
-          final listOfItems = decodedJson["data"] as List?;
+          final listOfItems = decodedJson["data"]["youtubeVideos"] as List?;
 
           if (listOfItems == null) return ApiResponseSuccess(data: []);
 
@@ -92,34 +92,35 @@ class SearchRepo {
     }
   }
 
-  static Future<ApiResponse<List<Artist>>> fetchArtistsByQuery({
+  static Future<ApiResponse<List<SearchArtist>>> fetchArtistsByQuery({
     required String query,
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/artists/search?q=$query&searchType=artists"),
+        Uri.parse("$apiGatewayUrl/artists/search?q=$query"),
       );
       final utf8BodyDecoded = utf8.decode(response.bodyBytes);
-      final decodedResponse = await compute<String, ApiResponse<List<Artist>>>((
-        stringResponse,
-      ) {
-        final decodedJson = jsonDecode(stringResponse);
-        final isSuccessful = decodedJson["success"] as bool;
+      final decodedResponse =
+          await compute<String, ApiResponse<List<SearchArtist>>>((
+            stringResponse,
+          ) {
+            final decodedJson = jsonDecode(stringResponse);
+            final isSuccessful = decodedJson["success"] as bool;
 
-        if (isSuccessful) {
-          final listOfItems = decodedJson["data"]["result"] as List?;
+            if (isSuccessful) {
+              final listOfItems = decodedJson["data"]["artists"] as List?;
 
-          if (listOfItems == null) return ApiResponseSuccess(data: []);
+              if (listOfItems == null) return ApiResponseSuccess(data: []);
 
-          return ApiResponseSuccess(
-            data: listOfItems
-                .map((final artist) => Artist.fromJson(artist))
-                .toList(),
-          );
-        }
+              return ApiResponseSuccess(
+                data: listOfItems
+                    .map((final artist) => SearchArtist.fromJson(artist))
+                    .toList(),
+              );
+            }
 
-        return ApiResponseError(message: decodedJson["message"] as String);
-      }, utf8BodyDecoded);
+            return ApiResponseError(message: decodedJson["message"] as String);
+          }, utf8BodyDecoded);
 
       return decodedResponse;
     } catch (e) {
@@ -137,7 +138,9 @@ class SearchRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/music/search/search-recommendations?q=$query"),
+        Uri.parse(
+          "$apiGatewayUrl/music/search/search-recommendations?q=$query",
+        ),
       );
       final utf8BodyDecoded = utf8.decode(response.bodyBytes);
       final decodedResponse =
@@ -169,30 +172,33 @@ class SearchRepo {
     }
   }
 
-  static Future<ApiResponse<List<Album>>> fetchAlbumsByQuery({
+  static Future<ApiResponse<List<SearchAlbum>>> fetchAlbumsByQuery({
     required String query,
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/albums/search?q=$query"),
+        Uri.parse("$apiGatewayUrl/albums/search?q=$query"),
       );
 
-      final decodedResponse = await compute<String, ApiResponse<List<Album>>>((
-        stringResponse,
-      ) {
-        final decodedJson = jsonDecode(stringResponse);
-        final isSuccessful = decodedJson["success"] as bool;
+      final decodedResponse =
+          await compute<String, ApiResponse<List<SearchAlbum>>>((
+            stringResponse,
+          ) {
+            final decodedJson = jsonDecode(stringResponse);
+            final isSuccessful = decodedJson["success"] as bool;
 
-        if (isSuccessful) {
-          final albums = decodedJson["data"] as List;
+            if (isSuccessful) {
+              final albums = decodedJson["data"]["albums"] as List;
 
-          return ApiResponseSuccess(
-            data: albums.map((final album) => Album.fromJson(album)).toList(),
-          );
-        }
+              return ApiResponseSuccess(
+                data: albums
+                    .map((final album) => SearchAlbum.fromJson(album))
+                    .toList(),
+              );
+            }
 
-        return ApiResponseError(message: decodedJson["message"] as String);
-      }, response.body);
+            return ApiResponseError(message: decodedJson["message"] as String);
+          }, response.body);
 
       return decodedResponse;
     } catch (e) {

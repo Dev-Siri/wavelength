@@ -20,7 +20,7 @@ class QuickPicksBloc extends Bloc<QuickPicksEvent, QuickPicksState> {
     final response = await QuickPicksRepo.fetchQuickPicks(locale: event.locale);
 
     if (response is ApiResponseSuccess<List<QuickPicksItem>>) {
-      return emit(QuickPicksSuccessState(songs: response.data));
+      return emit(QuickPicksSuccessState(quickPicks: response.data));
     }
 
     emit(QuickPicksErrorState());

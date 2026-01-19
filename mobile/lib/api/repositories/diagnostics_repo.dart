@@ -16,7 +16,7 @@ class DiagnosticsRepo {
 
     try {
       await http.post(
-        Uri.parse("$backendUrl/diagnostics/report-error"),
+        Uri.parse("$apiGatewayUrl/diagnostics/report-error"),
         body: jsonEncode({
           "error": error,
           "source": source,

@@ -1,10 +1,12 @@
 import "dart:async";
+import "dart:convert";
 
 import "package:flutter/cupertino.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:just_audio/just_audio.dart";
 import "package:just_audio_background/just_audio_background.dart";
-import "package:wavelength/api/models/playlist_track.dart";
+import "package:wavelength/api/models/embedded.dart";
+import "package:wavelength/api/models/enums/video_type.dart";
 import "package:wavelength/api/models/representations/queueable_music.dart";
 import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_bloc.dart";
@@ -14,6 +16,8 @@ import "package:wavelength/bloc/music_player/music_player_playstate/music_player
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_event.dart";
 import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_repeat_mode/music_player_repeat_mode_event.dart";
+import "package:wavelength/bloc/music_player/music_player_shuffle_mode/music_player_shuffle_mode_bloc.dart";
+import "package:wavelength/bloc/music_player/music_player_shuffle_mode/music_player_shuffle_mode_event.dart";
 import "package:wavelength/bloc/music_player/music_player_singleton.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
@@ -62,6 +66,8 @@ class MusicPlayerInternals {
     final musicPlayerPlaystateBloc = context.read<MusicPlayerPlaystateBloc>();
     final musicPlayerTrackBloc = context.read<MusicPlayerTrackBloc>();
     final musicPlayerRepeatModeBloc = context.read<MusicPlayerRepeatModeBloc>();
+    final musicPlayerShuffleModeBloc = context
+        .read<MusicPlayerShuffleModeBloc>();
 
     _errorSub = _player.errorStream.listen((error) {
       DiagnosticsRepo.reportError(
@@ -93,16 +99,28 @@ class MusicPlayerInternals {
       final tag = source.tag;
       if (tag is! MediaItem) return;
 
+      final embedded = tag.extras?["embedded"];
+      if (embedded == null) return;
+
+      final videoType = tag.extras?["videoType"] as String?;
+      final album = embedded["album"] as String?;
+      final artists = jsonDecode(embedded["artists"]) as List;
+
       musicPlayerTrackBloc.add(
         MusicPlayerTrackAutoLoadEvent(
           queueableMusic: QueueableMusic(
             videoId: tag.id,
             title: tag.title,
             thumbnail: tag.artUri?.toString() ?? "",
-            author: tag.artist ?? "",
-            videoType: tag.extras?["videoType"] == "track"
-                ? VideoType.track
-                : VideoType.uvideo,
+            artists: artists
+                .map((artist) => EmbeddedArtist.fromJson(artist))
+                .toList(),
+            album: album != null
+                ? EmbeddedAlbum.fromJson(jsonDecode(album))
+                : null,
+            videoType: videoType != null
+                ? VideoTypeParser.fromGrpc(videoType)
+                : VideoType.track,
           ),
         ),
       );
@@ -144,6 +162,16 @@ class MusicPlayerInternals {
           musicPlayerRepeatModeBloc.add(MusicPlayerRepeatModeOneEvent());
           break;
       }
+    });
+
+    _loopModeSub = _player.shuffleModeEnabledStream.listen((
+      shuffleModeEnabled,
+    ) {
+      if (shuffleModeEnabled) {
+        return musicPlayerShuffleModeBloc.add(MusicPlayerShuffleModeAllEvent());
+      }
+
+      musicPlayerShuffleModeBloc.add(MusicPlayerShuffleModeOffEvent());
     });
 
     _processingStateSub = _player.processingStateStream

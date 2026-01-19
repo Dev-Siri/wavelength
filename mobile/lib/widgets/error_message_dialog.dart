@@ -17,7 +17,7 @@ class ErrorMessageDialog extends StatelessWidget {
       child: const Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(LucideIcons.rotateCw400, size: 16, color: Colors.black),
+          Icon(LucideIcons.rotateCw, size: 16, color: Colors.black),
           SizedBox(width: 5),
           Text(
             "Try again",

@@ -1,7 +1,4 @@
-import "dart:io";
-
 import "package:cached_network_image/cached_network_image.dart";
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
@@ -11,15 +8,14 @@ import "package:wavelength/bloc/music_player/music_player_duration/music_player_
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_event.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_state.dart";
+import "package:wavelength/utils/format.dart";
 import "package:wavelength/utils/parse.dart";
+import "package:wavelength/widgets/ui/amplitude.dart";
 
-class FloatingMusicPlayerPreviewBody extends StatelessWidget {
+class MusicPlayerPreviewBody extends StatelessWidget {
   final QueueableMusic playingNowTrack;
 
-  const FloatingMusicPlayerPreviewBody({
-    super.key,
-    required this.playingNowTrack,
-  });
+  const MusicPlayerPreviewBody({super.key, required this.playingNowTrack});
 
   void _playstateButtonHandler(BuildContext context) => context
       .read<MusicPlayerPlaystateBloc>()
@@ -34,14 +30,15 @@ class FloatingMusicPlayerPreviewBody extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: CachedNetworkImage(
-              imageUrl: playingNowTrack.thumbnail,
-              fit: BoxFit.cover,
-              height: 55,
-              width: 55,
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: CachedNetworkImage(
+                imageUrl: playingNowTrack.thumbnail,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-          const SizedBox(width: 15),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,13 +47,15 @@ class FloatingMusicPlayerPreviewBody extends StatelessWidget {
                 Text(
                   playingNowTrack.title,
                   style: const TextStyle(
-                    fontSize: 17,
+                    fontSize: 15,
                     fontWeight: FontWeight.bold,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Text(
-                  playingNowTrack.author,
+                  formatList(
+                    playingNowTrack.artists.map((artist) => artist.title),
+                  ),
                   style: TextStyle(
                     fontSize: 13,
                     color: Colors.grey.shade500,
@@ -83,24 +82,15 @@ class FloatingMusicPlayerPreviewBody extends StatelessWidget {
           BlocBuilder<MusicPlayerPlaystateBloc, MusicPlayerPlaystateState>(
             builder: (context, state) {
               final isMusicPlaying = state is MusicPlayerPlaystatePlayingState;
-              final playstateButtonInnerUi = Icon(
-                isMusicPlaying ? LucideIcons.pause400 : LucideIcons.play400,
-                color: Colors.white,
-                semanticLabel: isMusicPlaying ? "Pause" : "Play",
-              );
 
-              if (Platform.isAndroid) {
-                return IconButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () => _playstateButtonHandler(context),
-                  icon: playstateButtonInnerUi,
-                );
-              }
-
-              return CupertinoButton(
+              return AmplIconButton(
                 padding: EdgeInsets.zero,
                 onPressed: () => _playstateButtonHandler(context),
-                child: playstateButtonInnerUi,
+                icon: Icon(
+                  isMusicPlaying ? LucideIcons.pause : LucideIcons.play,
+                  color: Colors.white,
+                  semanticLabel: isMusicPlaying ? "Pause" : "Play",
+                ),
               );
             },
           ),

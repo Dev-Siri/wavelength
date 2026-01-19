@@ -1,7 +1,9 @@
 import "package:flutter/cupertino.dart";
 
 @immutable
-sealed class AppBottomSheetEvent {}
+sealed class AppBottomSheetEvent {
+  const AppBottomSheetEvent();
+}
 
 class AppBottomSheetOpenEvent extends AppBottomSheetEvent {
   final BuildContext context;
@@ -25,7 +27,7 @@ class AppBottomSheetOpenEvent extends AppBottomSheetEvent {
   final AnimationStyle? sheetAnimationStyle;
   final bool? requestFocus;
 
-  AppBottomSheetOpenEvent({
+  const AppBottomSheetOpenEvent({
     required this.context,
     required this.builder,
     this.backgroundColor,
@@ -52,5 +54,5 @@ class AppBottomSheetOpenEvent extends AppBottomSheetEvent {
 class AppBottomSheetCloseEvent extends AppBottomSheetEvent {
   final BuildContext context;
 
-  AppBottomSheetCloseEvent({required this.context});
+  const AppBottomSheetCloseEvent({required this.context});
 }

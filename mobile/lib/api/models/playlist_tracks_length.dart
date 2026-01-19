@@ -1,5 +1,12 @@
+import "package:hive/hive.dart";
+
+part "playlist_tracks_length.g.dart";
+
+@HiveType(typeId: 6)
 class PlaylistTracksLength {
+  @HiveField(0)
   final int songCount;
+  @HiveField(1)
   final int songDurationSecond;
 
   const PlaylistTracksLength({
@@ -9,8 +16,8 @@ class PlaylistTracksLength {
 
   factory PlaylistTracksLength.fromJson(Map<String, dynamic> json) {
     return PlaylistTracksLength(
-      songCount: json["songCount"] as int,
-      songDurationSecond: json["songDurationSecond"] as int,
+      songCount: int.parse(json["songCount"]),
+      songDurationSecond: int.parse(json["songDurationSecond"]),
     );
   }
 }

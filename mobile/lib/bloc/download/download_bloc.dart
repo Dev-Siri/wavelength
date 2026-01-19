@@ -1,5 +1,6 @@
 import "package:connectivity_plus/connectivity_plus.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:hive/hive.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "package:wavelength/bloc/download/download_event.dart";
 import "package:wavelength/bloc/download/download_state.dart";
@@ -20,6 +21,9 @@ class DownloadBloc extends Bloc<DownloadEvent, DownloadState> {
 
     emit(state.copyWith(isDownloading: true));
 
+    final streamsStore = await Hive.openBox(hiveStreamsKey);
+
+    await streamsStore.put(current.metadata.videoId, current.metadata);
     await AudioCache.downloadAndCache(
       current.metadata.videoId,
       onProgress: (downloaded, total) {

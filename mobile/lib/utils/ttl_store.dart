@@ -1,10 +1,10 @@
 import "package:hive/hive.dart";
 
-class TempStorage {
+class TtlStorage {
   final Box _box;
   final Duration ttl;
 
-  TempStorage(this._box, {required this.ttl});
+  TtlStorage(this._box, {required this.ttl});
 
   Future<void> save(String key, dynamic value) async {
     await _box.put(key, {
@@ -27,6 +27,6 @@ class TempStorage {
       return null;
     }
 
-    return data["value"];
+    return data["value"] as dynamic;
   }
 }

@@ -15,7 +15,7 @@ class ImageRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/image/theme-color?imageUrl=$url"),
+        Uri.parse("$apiGatewayUrl/image/theme-color?imageUrl=$url"),
       );
       final decodedResponse = await compute<String, ApiResponse<ThemeColor>>((
         stringResponse,
@@ -49,7 +49,7 @@ class ImageRepo {
     try {
       final fileBytes = await imageFile.readAsBytes();
       final response = await http.post(
-        Uri.parse("$backendUrl/image/manual-upload"),
+        Uri.parse("$apiGatewayUrl/image/manual-upload"),
         body: fileBytes,
         headers: {
           "Content-Type": imageFile.mimeType ?? "application/octet-stream",

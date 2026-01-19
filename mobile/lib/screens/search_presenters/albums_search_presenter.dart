@@ -57,15 +57,28 @@ class AlbumsSearchPresenter extends StatelessWidget {
           );
         }
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (final album in state.albums)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: AlbumCard(album: album),
-              ),
-          ],
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            const spacing = 12.0;
+            final itemWidth = (constraints.maxWidth - spacing) / 2;
+
+            return Wrap(
+              spacing: spacing,
+              children: [
+                for (final album in state.albums)
+                  Container(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    width: itemWidth,
+                    child: AlbumCard(
+                      browseId: album.albumId,
+                      cover: album.thumbnail,
+                      title: album.title,
+                      albumType: album.albumType,
+                    ),
+                  ),
+              ],
+            );
+          },
         );
       },
     );

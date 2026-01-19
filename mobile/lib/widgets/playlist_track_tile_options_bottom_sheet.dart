@@ -1,12 +1,11 @@
 import "dart:io";
 
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:uuid/v4.dart";
 import "package:wavelength/api/models/api_response.dart";
-import "package:wavelength/api/models/playlist_track.dart";
+import "package:wavelength/api/models/enums/video_type.dart";
 import "package:wavelength/api/models/stream_download.dart";
 import "package:wavelength/api/models/track.dart";
 import "package:wavelength/api/repositories/track_repo.dart";
@@ -18,6 +17,7 @@ import "package:wavelength/bloc/playlist/playlist_bloc.dart";
 import "package:wavelength/bloc/playlist/playlist_event.dart";
 import "package:wavelength/cache.dart";
 import "package:wavelength/widgets/confirmation_dialog.dart";
+import "package:wavelength/widgets/ui/amplitude.dart";
 
 class PlaylistTrackTileOptionsBottomSheet extends StatefulWidget {
   final String playlistId;
@@ -130,73 +130,34 @@ class _PlaylistTrackTileOptionsBottomSheetState
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: Platform.isIOS
-                ? CupertinoListTile(
-                    onTap: _handleRemoveTileTap,
-                    leading: const Icon(
-                      LucideIcons.trash400,
-                      color: Colors.red,
-                    ),
-                    padding: const EdgeInsets.all(20),
-                    title: const Text(
-                      "Remove from playlist.",
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  )
-                : ListTile(
-                    onTap: _handleRemoveTileTap,
-                    leading: const Icon(
-                      LucideIcons.trash400,
-                      color: Colors.red,
-                    ),
-                    title: const Text(
-                      "Remove from playlist.",
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ),
+            child: AmplListTile(
+              onTap: _handleRemoveTileTap,
+              leading: const Icon(LucideIcons.trash, color: Colors.red),
+              padding: const EdgeInsets.all(20),
+              title: const Text(
+                "Remove from playlist.",
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
           ),
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: Platform.isIOS
-                ? CupertinoListTile(
-                    onTap: () => _handleDownloadCacheTileTap(context),
-                    leading: Icon(
-                      LucideIcons.cloudDownload400,
-                      color: _trackAlreadyDownloaded
-                          ? Colors.red
-                          : Colors.white,
-                    ),
-                    padding: const EdgeInsets.all(20),
-                    title: Text(
-                      _trackAlreadyDownloaded
-                          ? "Remove save."
-                          : "Save offline.",
-                      style: TextStyle(
-                        color: _trackAlreadyDownloaded
-                            ? Colors.red
-                            : Colors.white,
-                      ),
-                    ),
-                  )
-                : ListTile(
-                    onTap: () => _handleDownloadCacheTileTap(context),
-                    leading: Icon(
-                      LucideIcons.cloudDownload400,
-                      color: _trackAlreadyDownloaded
-                          ? Colors.red
-                          : Colors.white,
-                    ),
-                    title: Text(
-                      _trackAlreadyDownloaded
-                          ? "Remove save."
-                          : "Save offline.",
-                      style: TextStyle(
-                        color: _trackAlreadyDownloaded
-                            ? Colors.red
-                            : Colors.white,
-                      ),
-                    ),
-                  ),
+            child: AmplListTile(
+              onTap: () => _handleDownloadCacheTileTap(context),
+              leading: Icon(
+                LucideIcons.cloudDownload,
+                color: _trackAlreadyDownloaded ? Colors.red : Colors.white,
+              ),
+              padding: Platform.isIOS
+                  ? const EdgeInsets.all(20)
+                  : EdgeInsets.zero,
+              title: Text(
+                _trackAlreadyDownloaded ? "Remove save." : "Save offline.",
+                style: TextStyle(
+                  color: _trackAlreadyDownloaded ? Colors.red : Colors.white,
+                ),
+              ),
+            ),
           ),
         ],
       ),

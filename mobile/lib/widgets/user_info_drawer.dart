@@ -1,6 +1,3 @@
-import "dart:io";
-
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_svg/flutter_svg.dart";
@@ -13,6 +10,7 @@ import "package:wavelength/bloc/auth/auth_state.dart";
 import "package:wavelength/bloc/location/location_bloc.dart";
 import "package:wavelength/bloc/location/location_state.dart";
 import "package:wavelength/widgets/google_login_button.dart";
+import "package:wavelength/widgets/ui/amplitude.dart";
 
 class UserInfoDrawer extends StatelessWidget {
   const UserInfoDrawer({super.key});
@@ -78,46 +76,24 @@ class UserInfoDrawer extends StatelessWidget {
                             children: [
                               BlocBuilder<LocationBloc, LocationState>(
                                 builder: (context, state) {
-                                  if (Platform.isIOS) {
-                                    return CupertinoButton(
-                                      onPressed: () =>
-                                          context.push("/settings"),
-                                      child: const Icon(
-                                        LucideIcons.settings400,
-                                        color: Colors.white,
-                                      ),
-                                    );
-                                  }
-
-                                  return IconButton(
+                                  return AmplButton(
                                     onPressed: () => context.push("/settings"),
-                                    icon: const Icon(
-                                      LucideIcons.settings400,
+                                    child: const Icon(
+                                      LucideIcons.settings,
                                       color: Colors.white,
                                     ),
                                   );
                                 },
                               ),
-                              if (Platform.isIOS)
-                                CupertinoButton(
-                                  onPressed: () => context.read<AuthBloc>().add(
-                                    AuthLogoutUserEvent(),
-                                  ),
-                                  child: const Icon(
-                                    LucideIcons.logOut400,
-                                    color: Colors.red,
-                                  ),
-                                )
-                              else
-                                IconButton(
-                                  onPressed: () => context.read<AuthBloc>().add(
-                                    AuthLogoutUserEvent(),
-                                  ),
-                                  icon: const Icon(
-                                    LucideIcons.logOut400,
-                                    color: Colors.red,
-                                  ),
+                              AmplIconButton(
+                                onPressed: () => context.read<AuthBloc>().add(
+                                  AuthLogoutUserEvent(),
                                 ),
+                                icon: const Icon(
+                                  LucideIcons.logOut,
+                                  color: Colors.red,
+                                ),
+                              ),
                             ],
                           ),
                         ),

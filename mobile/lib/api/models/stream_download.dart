@@ -1,5 +1,7 @@
+import "package:flutter/foundation.dart";
 import "package:wavelength/api/models/track.dart";
 
+@immutable
 class StreamDownload {
   final String downloadId;
   final Track metadata;
@@ -7,7 +9,7 @@ class StreamDownload {
   /// Percentage of how much of the stream has been downloaded.
   final double progress;
 
-  StreamDownload({
+  const StreamDownload({
     this.progress = 0,
     required this.downloadId,
     required this.metadata,

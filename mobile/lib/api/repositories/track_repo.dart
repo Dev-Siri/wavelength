@@ -3,10 +3,10 @@ import "dart:convert";
 import "package:http/http.dart" as http;
 import "package:flutter/foundation.dart";
 import "package:wavelength/api/models/api_response.dart";
+import "package:wavelength/api/models/enums/video_type.dart";
 import "package:wavelength/api/models/liked_track.dart";
 import "package:wavelength/api/models/lyric.dart";
 import "package:wavelength/api/models/music_video_preview.dart";
-import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/playlist_tracks_length.dart";
 import "package:wavelength/api/models/track.dart";
 import "package:wavelength/api/repositories/diagnostics_repo.dart";
@@ -20,7 +20,7 @@ class TrackRepo {
     try {
       final response = await http.get(
         Uri.parse(
-          "$backendUrl/music/music-video-preview?title=$title&artist=$artist",
+          "$apiGatewayUrl/music/music-video-preview?title=$title&artist=$artist",
         ),
       );
       final decodedResponse =
@@ -57,16 +57,16 @@ class TrackRepo {
   }) async {
     try {
       final response = await http.post(
-        Uri.parse("$backendUrl/playlists/playlist/$playlistId/tracks"),
+        Uri.parse("$apiGatewayUrl/playlists/playlist/$playlistId/tracks"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
-          "author": track.author,
+          "artists": track.artists.map((artist) => artist.toJson()).toList(),
           "thumbnail": track.thumbnail,
           "duration": track.duration,
           "isExplicit": track.isExplicit,
           "title": track.title,
           "videoId": track.videoId,
-          "videoType": videoType == VideoType.track ? "track" : "uvideo",
+          "videoType": videoType.name,
         }),
       );
 
@@ -99,7 +99,7 @@ class TrackRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/music/track/$trackId/lyrics"),
+        Uri.parse("$apiGatewayUrl/music/track/$trackId/lyrics"),
       );
       final decodedResponse = await compute<String, ApiResponse<List<Lyric>>>((
         lyricsResponse,
@@ -108,7 +108,7 @@ class TrackRepo {
         final isSuccessful = decodedJson["success"] as bool;
 
         if (isSuccessful) {
-          final lyrics = decodedJson["data"] as List;
+          final lyrics = decodedJson["data"]["lyrics"] as List;
 
           return ApiResponseSuccess(
             data: lyrics.map((lyric) => Lyric.fromJson(lyric)).toList(),
@@ -134,7 +134,7 @@ class TrackRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/music/track/$trackId/duration"),
+        Uri.parse("$apiGatewayUrl/music/track/$trackId/duration"),
       );
       final decodedResponse = await compute<String, ApiResponse<int>>((
         durationResponse,
@@ -143,7 +143,7 @@ class TrackRepo {
         final isSuccessful = decodedJson["success"] as bool;
 
         if (isSuccessful) {
-          final duration = decodedJson["data"] as int;
+          final duration = decodedJson["data"]["durationSeconds"] as int;
 
           return ApiResponseSuccess(data: duration);
         }
@@ -167,7 +167,7 @@ class TrackRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/music/track/likes/count"),
+        Uri.parse("$apiGatewayUrl/music/track/likes/count"),
         headers: {"Authorization": "Bearer $authToken"},
       );
       final decodedResponse = await compute<String, ApiResponse<int>>((
@@ -177,7 +177,7 @@ class TrackRepo {
         final isSuccessful = decodedJson["success"] as bool;
 
         if (isSuccessful) {
-          final likeCount = decodedJson["data"] as int;
+          final likeCount = decodedJson["data"]["likeCount"] as int;
 
           return ApiResponseSuccess(data: likeCount);
         }
@@ -201,7 +201,7 @@ class TrackRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/music/track/likes"),
+        Uri.parse("$apiGatewayUrl/music/track/likes"),
         headers: {"Authorization": "Bearer $authToken"},
       );
       final decodedResponse =
@@ -212,7 +212,7 @@ class TrackRepo {
             final isSuccessful = decodedJson["success"] as bool;
 
             if (isSuccessful) {
-              final likedTracks = decodedJson["data"] as List;
+              final likedTracks = decodedJson["data"]["likedTracks"] as List;
 
               return ApiResponseSuccess(
                 data: likedTracks
@@ -240,7 +240,7 @@ class TrackRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/music/track/likes/length"),
+        Uri.parse("$apiGatewayUrl/music/track/likes/length"),
         headers: {"Authorization": "Bearer $authToken"},
       );
       final decodedResponse =
@@ -252,7 +252,9 @@ class TrackRepo {
 
             if (isSuccessful) {
               return ApiResponseSuccess(
-                data: PlaylistTracksLength.fromJson(decodedJson["data"]),
+                data: PlaylistTracksLength.fromJson(
+                  decodedJson["data"]["likedTracksLength"],
+                ),
               );
             }
 

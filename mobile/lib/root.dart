@@ -1,9 +1,5 @@
 import "package:flutter/material.dart";
-import "package:flutter_bloc/flutter_bloc.dart";
-import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
-import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_state.dart";
 import "package:wavelength/bloc/music_player/music_player_internals.dart";
-import "package:wavelength/widgets/floating_music_player_preview.dart";
 
 class Root extends StatefulWidget {
   final String uri;
@@ -32,40 +28,6 @@ class _RootState extends State<Root> {
 
   @override
   Widget build(BuildContext context) {
-    final stringUri = widget.uri.toString();
-    final isOutsideAppShell =
-        stringUri.startsWith("/artist") || stringUri.startsWith("/playlist");
-    final isOnPlayingNowScreen = stringUri.startsWith("/playing-now");
-
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          widget.child,
-          Center(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  bottom: isOutsideAppShell
-                      ? MediaQuery.sizeOf(context).height * 0.05
-                      : MediaQuery.sizeOf(context).height * 0.125,
-                ),
-                child: BlocBuilder<AppBottomSheetBloc, AppBottomSheetState>(
-                  builder: (context, state) {
-                    if (!isOnPlayingNowScreen &&
-                        state is AppBottomSheetClosedState) {
-                      return const FloatingMusicPlayerPreview();
-                    }
-
-                    return const SizedBox.shrink();
-                  },
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    return Scaffold(resizeToAvoidBottomInset: false, body: widget.child);
   }
 }

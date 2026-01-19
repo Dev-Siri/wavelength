@@ -10,7 +10,7 @@ import "package:wavelength/constants.dart";
 class MetaRepo {
   static Future<ApiResponse<VersionStatus>> fetchVersionStatus() async {
     try {
-      final response = await http.get(Uri.parse("$backendUrl/meta/vstatus"));
+      final response = await http.get(Uri.parse("$apiGatewayUrl/meta/vstatus"));
       final decodedResponse = await compute<String, ApiResponse<VersionStatus>>(
         (stringResponse) {
           final decodedJson = jsonDecode(stringResponse);

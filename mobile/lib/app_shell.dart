@@ -1,19 +1,15 @@
-import "dart:io";
-
 import "package:connectivity_plus/connectivity_plus.dart";
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:flutter_svg/flutter_svg.dart";
-import "package:go_router/go_router.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
+import "package:go_router/go_router.dart";
 import "package:package_info_plus/package_info_plus.dart";
-import "package:vector_graphics/vector_graphics.dart";
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/version_status.dart";
 import "package:wavelength/api/repositories/meta_repo.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
+import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_state.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
 import "package:wavelength/bloc/auth/auth_event.dart";
 import "package:wavelength/bloc/auth/auth_state.dart";
@@ -25,9 +21,9 @@ import "package:wavelength/bloc/location/location_bloc.dart";
 import "package:wavelength/bloc/location/location_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
-import "package:wavelength/widgets/music_player_presence_adjuster.dart";
+import "package:wavelength/widgets/music_player_preview.dart";
 import "package:wavelength/widgets/playlist_creation_bottom_sheet.dart";
-import "package:wavelength/widgets/shared_app_bar.dart";
+import "package:wavelength/widgets/app_shell_bar.dart";
 import "package:wavelength/widgets/update_version_dialog.dart";
 import "package:wavelength/widgets/user_info_drawer.dart";
 
@@ -52,31 +48,25 @@ class _AppShellState extends State<AppShell> {
     super.initState();
   }
 
-  List<BottomNavigationBarItem> _getBottomNavItems() => [
+  List<BottomNavigationBarItem> _getBottomNavItems() => const [
     BottomNavigationBarItem(
-      icon: SvgPicture(
-        AssetBytesLoader(
-          "assets/vectors/lambda${_activeRouteIndex == 0 ? "" : "-gray"}.svg.vec",
-        ),
-        height: 45,
-        width: 45,
-      ),
-      label: "",
+      icon: Icon(LucideIcons.house),
+      label: "Home",
       tooltip: "Home",
     ),
-    const BottomNavigationBarItem(
-      icon: Icon(LucideIcons.compass400),
-      label: "",
-      tooltip: "Explore",
+    BottomNavigationBarItem(
+      icon: Icon(LucideIcons.compass),
+      label: "Search",
+      tooltip: "Search",
     ),
-    const BottomNavigationBarItem(
-      icon: Icon(LucideIcons.library400),
-      label: "",
-      tooltip: "Your Library",
+    BottomNavigationBarItem(
+      icon: Icon(LucideIcons.library),
+      label: "Library",
+      tooltip: "Library",
     ),
-    const BottomNavigationBarItem(
-      icon: Icon(LucideIcons.plus400),
-      label: "",
+    BottomNavigationBarItem(
+      icon: Icon(LucideIcons.plus),
+      label: "Create",
       tooltip: "Create",
     ),
   ];
@@ -141,51 +131,55 @@ class _AppShellState extends State<AppShell> {
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.only(top: 8),
-          child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            appBar: const SharedAppBar(),
-            drawer: const UserInfoDrawer(),
-            body: MusicPlayerPresenceAdjuster(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: BlocConsumer<AuthBloc, AuthState>(
-                  listener: (context, state) {
-                    if (state is AuthStateAuthorized) {
-                      context.read<LibraryBloc>().add(
-                        LibraryPlaylistsFetchEvent(
-                          email: state.user.email,
-                          authToken: state.authToken,
-                        ),
-                      );
-                      context.read<LikeCountBloc>().add(
-                        LikeCountFetchEvent(authToken: state.authToken),
-                      );
-                    }
-                  },
-                  builder: (_, __) => widget.child,
-                ),
+          child: SafeArea(
+            child: Scaffold(
+              resizeToAvoidBottomInset: false,
+              appBar: const AppShellBar(),
+              drawer: const UserInfoDrawer(),
+              body: BlocConsumer<AuthBloc, AuthState>(
+                listener: (context, state) {
+                  if (state is AuthStateAuthorized) {
+                    context.read<LibraryBloc>().add(
+                      LibraryFetchEvent(
+                        email: state.user.email,
+                        authToken: state.authToken,
+                      ),
+                    );
+                    context.read<LikeCountBloc>().add(
+                      LikeCountFetchEvent(authToken: state.authToken),
+                    );
+                  }
+                },
+                builder: (_, __) => widget.child,
+              ),
+              bottomNavigationBar: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  BlocBuilder<AppBottomSheetBloc, AppBottomSheetState>(
+                    builder: (context, state) {
+                      if (state is AppBottomSheetClosedState) {
+                        return const MusicPlayerPreview();
+                      }
+
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                  Theme(
+                    data: Theme.of(
+                      context,
+                    ).copyWith(splashFactory: NoSplash.splashFactory),
+                    child: BottomNavigationBar(
+                      type: BottomNavigationBarType.fixed,
+                      selectedItemColor: Colors.white,
+                      unselectedItemColor: Colors.grey.shade600,
+                      currentIndex: _activeRouteIndex,
+                      onTap: _onScreenChange,
+                      items: _getBottomNavItems(),
+                    ),
+                  ),
+                ],
               ),
             ),
-            bottomNavigationBar: Platform.isIOS
-                ? CupertinoTabBar(
-                    height: 80,
-                    activeColor: Colors.white,
-                    inactiveColor: Colors.grey.shade600,
-                    currentIndex: _activeRouteIndex,
-                    iconSize: 25,
-                    onTap: _onScreenChange,
-                    items: _getBottomNavItems(),
-                  )
-                : BottomNavigationBar(
-                    type: BottomNavigationBarType.fixed,
-                    showSelectedLabels: false,
-                    showUnselectedLabels: false,
-                    selectedItemColor: Colors.white,
-                    unselectedItemColor: Colors.grey.shade600,
-                    currentIndex: _activeRouteIndex,
-                    onTap: _onScreenChange,
-                    items: _getBottomNavItems(),
-                  ),
           ),
         );
       },

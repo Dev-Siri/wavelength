@@ -1,7 +1,5 @@
 import "dart:async";
-import "dart:io";
 
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
@@ -24,6 +22,7 @@ import "package:wavelength/screens/search_presenters/tracks_search_presenter.dar
 import "package:wavelength/bloc/public_playlists/public_playlists_event.dart";
 import "package:wavelength/screens/search_presenters/videos_search_presenter.dart";
 import "package:wavelength/widgets/search_suggested_link.dart";
+import "package:wavelength/widgets/ui/amplitude.dart";
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -174,78 +173,74 @@ class _ExploreScreenState extends State<ExploreScreen> {
       child: ListView(
         children: [
           const SizedBox(height: 20),
-          Autocomplete(
-            optionsBuilder: (textEditingValue) => _suggestions,
-            optionsViewBuilder: (context, onSelected, options) {
-              return Column(
-                children: [
-                  ...options.take(4).map((option) {
-                    final innerUi = Container(
-                      width: double.maxFinite,
-                      padding: const EdgeInsets.all(15),
-                      child: Text(
-                        option,
-                        style: const TextStyle(color: Colors.white),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Autocomplete(
+              optionsBuilder: (textEditingValue) => _suggestions,
+              optionsViewBuilder: (context, onSelected, options) {
+                return Column(
+                  children: [
+                    ...options.take(4).map((option) {
+                      final innerUi = Container(
+                        width: double.maxFinite,
+                        padding: const EdgeInsets.all(15),
+                        child: Text(
+                          option,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      );
+
+                      return AmplButton(
+                        onPressed: () => onSelected(option),
+                        padding: EdgeInsets.zero,
+                        color: const Color.fromARGB(255, 26, 26, 26),
+                        borderRadius: BorderRadius.zero,
+                        child: innerUi,
+                      );
+                    }),
+                    ..._suggestedLinks.take(2).map((suggestedLink) {
+                      return SearchSuggestedLink(suggestedLink: suggestedLink);
+                    }),
+                  ],
+                );
+              },
+              onSelected: (option) {
+                setState(() => _searchQuery = option);
+                _onSearchChanged(option);
+                _updateSuggestions(option);
+              },
+              fieldViewBuilder:
+                  (context, controller, focusNode, onFieldSubmitted) {
+                    return TextField(
+                      controller: controller,
+                      focusNode: focusNode,
+                      onChanged: (value) {
+                        _onSearchChanged(value);
+                        _updateSuggestions(value);
+                      },
+                      style: const TextStyle(color: Colors.black),
+                      cursorColor: Colors.blue,
+                      autocorrect: false,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: "Search for ${_getInputHintText()}...",
+                        hintStyle: const TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(0),
+                          borderSide: BorderSide.none,
+                        ),
+                        prefixIcon: const Padding(
+                          padding: EdgeInsets.only(left: 6),
+                          child: Icon(LucideIcons.compass, color: Colors.grey),
+                        ),
                       ),
                     );
-
-                    return Platform.isIOS
-                        ? CupertinoButton.filled(
-                            onPressed: () => onSelected(option),
-                            padding: EdgeInsets.zero,
-                            color: const Color.fromARGB(255, 26, 26, 26),
-                            borderRadius: BorderRadius.zero,
-                            child: innerUi,
-                          )
-                        : MaterialButton(
-                            onPressed: () => onSelected(option),
-                            padding: EdgeInsets.zero,
-                            color: const Color.fromARGB(255, 26, 26, 26),
-                            child: innerUi,
-                          );
-                  }),
-                  ..._suggestedLinks.take(2).map((suggestedLink) {
-                    return SearchSuggestedLink(suggestedLink: suggestedLink);
-                  }),
-                ],
-              );
-            },
-            onSelected: (option) {
-              setState(() => _searchQuery = option);
-              _onSearchChanged(option);
-              _updateSuggestions(option);
-            },
-            fieldViewBuilder:
-                (context, controller, focusNode, onFieldSubmitted) {
-                  return TextField(
-                    controller: controller,
-                    focusNode: focusNode,
-                    onChanged: (value) {
-                      _onSearchChanged(value);
-                      _updateSuggestions(value);
-                    },
-                    style: const TextStyle(color: Colors.black),
-                    cursorColor: Colors.blue,
-                    autocorrect: false,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      hintText: "Search for ${_getInputHintText()}...",
-                      hintStyle: const TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(0),
-                        borderSide: BorderSide.none,
-                      ),
-                      prefixIcon: const Padding(
-                        padding: EdgeInsets.only(left: 6),
-                        child: Icon(LucideIcons.compass400, color: Colors.grey),
-                      ),
-                    ),
-                  );
-                },
+                  },
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 4),
@@ -305,7 +300,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
               !_areArtistsFetched &&
               !_areTracksFetched &&
               !_areVideosFetched &&
-              _areAlbumsFetched)
+              !_areAlbumsFetched)
             Padding(
               padding: EdgeInsets.only(
                 top: MediaQuery.sizeOf(context).height / 4,

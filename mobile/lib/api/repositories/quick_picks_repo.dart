@@ -13,7 +13,7 @@ class QuickPicksRepo {
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$backendUrl/music/quick-picks?regionCode=$locale"),
+        Uri.parse("$apiGatewayUrl/music/quick-picks?regionCode=$locale"),
       );
       final utf8BodyDecoded = utf8.decode(response.bodyBytes);
       final decodedResponse =
@@ -24,7 +24,7 @@ class QuickPicksRepo {
             final isSuccessful = decodedJson["success"] as bool;
 
             if (isSuccessful) {
-              final listOfItems = decodedJson["data"] as List?;
+              final listOfItems = decodedJson["data"]["quickPicks"] as List?;
 
               if (listOfItems == null) return ApiResponseSuccess(data: []);
 

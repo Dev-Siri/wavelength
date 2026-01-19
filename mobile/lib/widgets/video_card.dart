@@ -1,12 +1,10 @@
-import "dart:io";
-
 import "package:cached_network_image/cached_network_image.dart";
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:wavelength/api/models/api_response.dart";
-import "package:wavelength/api/models/playlist_track.dart";
+import "package:wavelength/api/models/embedded.dart";
+import "package:wavelength/api/models/enums/video_type.dart";
 import "package:wavelength/api/models/representations/queueable_music.dart";
 import "package:wavelength/api/models/track.dart";
 import "package:wavelength/api/models/video.dart";
@@ -15,9 +13,9 @@ import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
-import "package:wavelength/utils/parse.dart";
 import "package:wavelength/utils/url.dart";
 import "package:wavelength/widgets/add_to_playlist_bottom_sheet.dart";
+import "package:wavelength/widgets/ui/amplitude.dart";
 
 class VideoCard extends StatelessWidget {
   final Video video;
@@ -37,7 +35,13 @@ class VideoCard extends StatelessWidget {
             videoId: video.videoId,
             title: video.title,
             thumbnail: getTrackThumbnail(video.videoId),
-            author: video.author,
+            artists: [
+              EmbeddedArtist(
+                title: video.author,
+                browseId: video.authorChannelId,
+              ),
+            ],
+            album: null,
             videoType: VideoType.uvideo,
           ),
         ),
@@ -71,9 +75,15 @@ class VideoCard extends StatelessWidget {
               videoId: video.videoId,
               title: video.title,
               thumbnail: getTrackThumbnail(video.videoId),
-              author: video.author,
-              duration: durationify(Duration(seconds: duration)),
+              artists: [
+                EmbeddedArtist(
+                  title: video.author,
+                  browseId: video.authorChannelId,
+                ),
+              ],
+              duration: duration,
               isExplicit: false,
+              album: null,
             ),
             videoType: VideoType.track,
           ),
@@ -98,17 +108,11 @@ class VideoCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(30),
-              child: Platform.isAndroid
-                  ? MaterialButton(
-                      onPressed: () => _playYouTubeVideo(context),
-                      padding: EdgeInsets.zero,
-                      child: thumbnail,
-                    )
-                  : CupertinoButton(
-                      onPressed: () => _playYouTubeVideo(context),
-                      padding: EdgeInsets.zero,
-                      child: thumbnail,
-                    ),
+              child: AmplButton(
+                onPressed: () => _playYouTubeVideo(context),
+                padding: EdgeInsets.zero,
+                child: thumbnail,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
@@ -136,24 +140,14 @@ class VideoCard extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 16),
-              child: Platform.isIOS
-                  ? CupertinoButton(
-                      onPressed: () => _showPlaylistAdditionDialog(context),
-                      child: const Icon(
-                        LucideIcons.circlePlus400,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                    )
-                  : ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: MaterialButton(
-                        padding: EdgeInsets.zero,
-                        minWidth: 20,
-                        onPressed: () => _showPlaylistAdditionDialog(context),
-                        child: const Icon(LucideIcons.circlePlus400),
-                      ),
-                    ),
+              child: AmplButton(
+                onPressed: () => _showPlaylistAdditionDialog(context),
+                child: const Icon(
+                  LucideIcons.circlePlus,
+                  color: Colors.white,
+                  size: 24,
+                ),
+              ),
             ),
           ],
         ),

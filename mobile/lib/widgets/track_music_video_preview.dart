@@ -1,7 +1,10 @@
 import "package:flutter/material.dart";
+import "package:hive_flutter/adapters.dart";
 import "package:video_player/video_player.dart";
 import "package:wavelength/api/repositories/diagnostics_repo.dart";
+import "package:wavelength/constants.dart";
 import "package:wavelength/src/rust/api/tydle_caller.dart";
+import "package:wavelength/utils/ttl_store.dart";
 
 class TrackMusicVideoPreview extends StatefulWidget {
   final String musicVideoId;
@@ -17,15 +20,27 @@ class _TrackMusicVideoPreviewState extends State<TrackMusicVideoPreview> {
 
   @override
   void initState() {
-    super.initState();
     _fetchAndSetPreview();
+    super.initState();
   }
 
   Future<void> _fetchAndSetPreview() async {
     try {
-      final url = await fetchHighestVideoStreamUrl(
-        videoId: widget.musicVideoId,
+      final box = await Hive.openBox(hiveTempUrlKey);
+      final ttlStore = TtlStorage(
+        box,
+        ttl: const Duration(seconds: ytStreamUrlSignValidityHours),
       );
+      final cachedUrl = ttlStore.get(widget.musicVideoId);
+
+      String url;
+      if (cachedUrl != null) {
+        url = cachedUrl;
+      } else {
+        url = await fetchHighestVideoStreamUrl(videoId: widget.musicVideoId);
+        await ttlStore.save(widget.musicVideoId, url);
+      }
+
       _controller =
           VideoPlayerController.networkUrl(
               Uri.parse(url),
@@ -54,12 +69,18 @@ class _TrackMusicVideoPreviewState extends State<TrackMusicVideoPreview> {
       child: Opacity(
         opacity: 0.25,
         child: IgnorePointer(
-          child: FittedBox(
-            fit: BoxFit.cover,
-            child: SizedBox(
-              height: MediaQuery.sizeOf(context).width * 9 / 16,
-              width: MediaQuery.sizeOf(context).width,
-              child: VideoPlayer(_controller!),
+          child: ClipRect(
+            child: OverflowBox(
+              maxWidth: double.infinity,
+              maxHeight: double.infinity,
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: _controller!.value.size.width,
+                  height: _controller!.value.size.height,
+                  child: VideoPlayer(_controller!),
+                ),
+              ),
             ),
           ),
         ),

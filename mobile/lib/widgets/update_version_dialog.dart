@@ -1,9 +1,7 @@
-import "dart:io";
-
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:url_launcher/url_launcher.dart";
 import "package:wavelength/constants.dart";
+import "package:wavelength/widgets/ui/ampl_button.dart";
 
 class UpdateVersionDialog extends StatelessWidget {
   final String latestVersion;
@@ -35,35 +33,19 @@ class UpdateVersionDialog extends StatelessWidget {
         "You are on v$currentVersion, but the latest version is $latestVersion. Update to the latest version to ensure Wavelength continues to work without issues.",
       ),
       actions: [
-        if (Platform.isIOS)
-          CupertinoButton(
-            onPressed: () {
-              _updateApp();
-              Navigator.of(context).pop();
-            },
-            borderRadius: BorderRadius.zero,
-            color: Colors.blue,
-            child: updateButtonInnerUi,
-          )
-        else
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-            onPressed: () {
-              _updateApp();
-              Navigator.of(context).pop();
-            },
-            child: updateButtonInnerUi,
-          ),
-        if (Platform.isIOS)
-          CupertinoButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: laterButtonInnerUi,
-          )
-        else
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: laterButtonInnerUi,
-          ),
+        AmplButton(
+          onPressed: () {
+            _updateApp();
+            Navigator.of(context).pop();
+          },
+          borderRadius: BorderRadius.zero,
+          color: Colors.blue,
+          child: updateButtonInnerUi,
+        ),
+        AmplButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: laterButtonInnerUi,
+        ),
       ],
     );
   }

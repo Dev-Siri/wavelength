@@ -17,7 +17,7 @@ class ArtistsBloc extends Bloc<ArtistsEvent, ArtistsState> {
     emit(ArtistsFetchLoadingState());
     final response = await SearchRepo.fetchArtistsByQuery(query: event.query);
 
-    if (response is ApiResponseSuccess<List<Artist>>) {
+    if (response is ApiResponseSuccess<List<SearchArtist>>) {
       return emit(ArtistsFetchSuccessState(artists: response.data));
     }
 

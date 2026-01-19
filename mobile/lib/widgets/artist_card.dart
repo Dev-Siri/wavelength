@@ -1,52 +1,37 @@
 import "package:cached_network_image/cached_network_image.dart";
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
-import "package:wavelength/api/models/artist.dart";
+import "package:wavelength/widgets/ui/ampl_button.dart";
 
 class ArtistCard extends StatelessWidget {
-  final Artist artist;
+  final String browseId;
+  final String title;
+  final String thumbnail;
 
-  const ArtistCard({super.key, required this.artist});
+  const ArtistCard({
+    super.key,
+    required this.browseId,
+    required this.title,
+    required this.thumbnail,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoButton(
+    return AmplButton(
+      height: 50,
+      borderRadius: BorderRadius.circular(50),
       padding: EdgeInsets.zero,
-      onPressed: () => context.push("/artist/${artist.browseId}"),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 40,
-            foregroundImage: CachedNetworkImageProvider(artist.thumbnail),
+      onPressed: () => context.push("/artist/$browseId"),
+      child: Semantics(
+        label: title,
+        image: true,
+        child: Hero(
+          tag: "$browseId-artist",
+          child: CircleAvatar(
+            radius: 50,
+            foregroundImage: CachedNetworkImageProvider(thumbnail),
           ),
-          Container(
-            padding: const EdgeInsets.only(left: 10),
-            width: 250,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  artist.title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    overflow: TextOverflow.ellipsis,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                Text(
-                  artist.subscriberText,
-                  style: TextStyle(
-                    color: Colors.grey.shade400,
-                    overflow: TextOverflow.ellipsis,
-                    fontSize: 15,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

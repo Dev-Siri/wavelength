@@ -6,7 +6,7 @@ import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_state.dart";
 
 class AppBottomSheetBloc
     extends Bloc<AppBottomSheetEvent, AppBottomSheetState> {
-  AppBottomSheetBloc() : super(AppBottomSheetClosedState()) {
+  AppBottomSheetBloc() : super(const AppBottomSheetClosedState()) {
     on<AppBottomSheetOpenEvent>(_openAppModalSheet);
     on<AppBottomSheetCloseEvent>(_closeAppModalSheet);
   }
@@ -15,7 +15,7 @@ class AppBottomSheetBloc
     AppBottomSheetOpenEvent event,
     Emitter<AppBottomSheetState> emit,
   ) async {
-    emit(AppBottomSheetOpenState());
+    emit(const AppBottomSheetOpenState());
 
     // Reinventing the wheel is my passion.
     await showModalBottomSheet(
@@ -41,7 +41,7 @@ class AppBottomSheetBloc
       requestFocus: event.requestFocus,
     );
 
-    emit(AppBottomSheetClosedState());
+    emit(const AppBottomSheetClosedState());
   }
 
   Future<void> _closeAppModalSheet(
@@ -50,6 +50,6 @@ class AppBottomSheetBloc
   ) async {
     GoRouter.of(event.context).pop();
 
-    emit(AppBottomSheetClosedState());
+    emit(const AppBottomSheetClosedState());
   }
 }
