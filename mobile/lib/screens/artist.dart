@@ -38,8 +38,8 @@ class _ArtistScreenState extends State<ArtistScreen> {
 
   @override
   void initState() {
-    _artistBloc.add(ArtistFetchEvent(browseId: widget.browseId));
     super.initState();
+    _artistBloc.add(ArtistFetchEvent(browseId: widget.browseId));
   }
 
   Future<void> _openArtistOnYtMusic(String browseId) async {
@@ -86,6 +86,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
                 (song) => QueueableMusic(
                   videoId: song.videoId,
                   title: song.title,
+                  isExplicit: song.isExplicit,
                   thumbnail: song.thumbnail,
                   artists: [
                     EmbeddedArtist(

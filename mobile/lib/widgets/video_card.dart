@@ -34,6 +34,7 @@ class VideoCard extends StatelessWidget {
           queueableMusic: QueueableMusic(
             videoId: video.videoId,
             title: video.title,
+            isExplicit: false,
             thumbnail: getTrackThumbnail(video.videoId),
             artists: [
               EmbeddedArtist(

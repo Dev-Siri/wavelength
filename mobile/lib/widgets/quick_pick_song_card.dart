@@ -29,6 +29,7 @@ class QuickPickSongCard extends StatelessWidget {
             title: quickPicksItem.title,
             thumbnail: quickPicksItem.thumbnail,
             artists: quickPicksItem.artists,
+            isExplicit: false,
             album: quickPicksItem.album,
             videoType: VideoType.track,
           ),

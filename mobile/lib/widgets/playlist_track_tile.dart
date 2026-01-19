@@ -16,6 +16,7 @@ import "package:wavelength/utils/format.dart";
 import "package:wavelength/utils/parse.dart";
 import "package:wavelength/utils/url.dart";
 import "package:wavelength/widgets/explicit_indicator.dart";
+import "package:wavelength/widgets/like_button.dart";
 import "package:wavelength/widgets/playlist_track_tile_options_bottom_sheet.dart";
 import "package:wavelength/widgets/ui/amplitude.dart";
 
@@ -38,8 +39,8 @@ class _PlaylistTrackTileState extends State<PlaylistTrackTile> {
 
   @override
   void initState() {
-    _fetchTrackDownloadStatus();
     super.initState();
+    _fetchTrackDownloadStatus();
   }
 
   Future<void> _fetchTrackDownloadStatus() async {
@@ -55,6 +56,7 @@ class _PlaylistTrackTileState extends State<PlaylistTrackTile> {
     final queueableMusic = QueueableMusic(
       videoId: widget.playlistTrack.videoId,
       title: widget.playlistTrack.title,
+      isExplicit: widget.playlistTrack.isExplicit,
       thumbnail: getTrackThumbnail(widget.playlistTrack.videoId),
       artists: widget.playlistTrack.artists,
       videoType: widget.playlistTrack.videoType,
@@ -66,6 +68,7 @@ class _PlaylistTrackTileState extends State<PlaylistTrackTile> {
           (track) => QueueableMusic(
             videoId: track.videoId,
             title: track.title,
+            isExplicit: track.isExplicit,
             thumbnail: getTrackThumbnail(track.videoId),
             artists: track.artists,
             videoType: track.videoType,
@@ -154,7 +157,7 @@ class _PlaylistTrackTileState extends State<PlaylistTrackTile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: (MediaQuery.sizeOf(context).width / 1.4) - 50,
+                  width: (MediaQuery.sizeOf(context).width / 1.4) - 70,
                   child: Text(
                     widget.playlistTrack.title,
                     overflow: TextOverflow.ellipsis,
@@ -196,8 +199,20 @@ class _PlaylistTrackTileState extends State<PlaylistTrackTile> {
               durationify(Duration(seconds: widget.playlistTrack.duration)),
               style: const TextStyle(color: Colors.grey, fontSize: 14),
             ),
+            LikeButton(
+              track: Track(
+                videoId: widget.playlistTrack.videoId,
+                title: widget.playlistTrack.title,
+                thumbnail: widget.playlistTrack.thumbnail,
+                artists: widget.playlistTrack.artists,
+                duration: widget.playlistTrack.duration,
+                isExplicit: widget.playlistTrack.isExplicit,
+                album: null,
+              ),
+              videoType: widget.playlistTrack.videoType,
+            ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.only(right: 5),
               child: GestureDetector(
                 onTap: () => _showPlaylistTrackOptions(context),
                 child: const Icon(LucideIcons.ellipsis, color: Colors.grey),

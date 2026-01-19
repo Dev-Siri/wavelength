@@ -30,12 +30,12 @@ class _ArtistFollowButtonState extends State<ArtistFollowButton> {
 
   @override
   void initState() {
+    super.initState();
     final authState = context.read<AuthBloc>().state;
 
     if (authState is AuthStateAuthorized) {
       _fetchIsFollowing(authState.authToken);
     }
-    super.initState();
   }
 
   Future<void> _fetchIsFollowing(String authToken) async {

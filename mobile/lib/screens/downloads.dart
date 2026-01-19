@@ -26,9 +26,9 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
 
   @override
   void initState() {
+    super.initState();
     _connectivityChangeListener();
     _fetchAllDownloadedTracks();
-    super.initState();
   }
 
   Future<void> _connectivityChangeListener() async {

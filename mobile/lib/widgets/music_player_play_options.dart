@@ -6,6 +6,7 @@ import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:wavelength/api/models/embedded.dart";
 import "package:wavelength/api/models/enums/video_type.dart";
 import "package:wavelength/api/models/representations/queueable_music.dart";
+import "package:wavelength/api/models/track.dart";
 import "package:wavelength/audio/background_audio_source.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_event.dart";
@@ -17,9 +18,11 @@ import "package:wavelength/bloc/music_player/music_player_shuffle_mode/music_pla
 import "package:wavelength/bloc/music_player/music_player_singleton.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
+import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
 import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_event.dart";
 import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_state.dart";
+import "package:wavelength/widgets/like_button.dart";
 import "package:wavelength/widgets/ui/amplitude.dart";
 
 class MusicPlayerPlayOptions extends StatelessWidget {
@@ -41,17 +44,21 @@ class MusicPlayerPlayOptions extends StatelessWidget {
     final embedded = tag.extras?["embedded"];
     if (embedded == null) return;
 
-    final VideoType videoType = tag.extras?["videoType"] ?? VideoType.track;
+    final videoType = tag.extras?["videoType"] as String?;
+    final bool isExplicit = tag.extras?["isExplicit"] ?? false;
 
     trackBloc.add(
       MusicPlayerTrackAutoLoadEvent(
         queueableMusic: QueueableMusic(
           videoId: tag.id,
           title: tag.title,
+          isExplicit: isExplicit,
           thumbnail: tag.artUri?.toString() ?? "",
           artists: embedded["artists"] as List<EmbeddedArtist>,
           album: embedded["album"] as EmbeddedAlbum,
-          videoType: videoType,
+          videoType: videoType != null
+              ? VideoTypeParser.fromGrpc(videoType)
+              : VideoType.track,
         ),
       ),
     );
@@ -73,7 +80,8 @@ class MusicPlayerPlayOptions extends StatelessWidget {
     final embedded = tag.extras?["embedded"];
     if (embedded == null) return;
 
-    final VideoType videoType = tag.extras?["videoType"] ?? VideoType.track;
+    final videoType = tag.extras?["videoType"] as String?;
+    final bool isExplicit = tag.extras?["isExplicit"] ?? false;
 
     trackBloc.add(
       MusicPlayerTrackAutoLoadEvent(
@@ -81,9 +89,12 @@ class MusicPlayerPlayOptions extends StatelessWidget {
           videoId: tag.id,
           title: tag.title,
           thumbnail: tag.artUri?.toString() ?? "",
+          isExplicit: isExplicit,
           artists: embedded["artists"] as List<EmbeddedArtist>,
           album: embedded["album"] as EmbeddedAlbum,
-          videoType: videoType,
+          videoType: videoType != null
+              ? VideoTypeParser.fromGrpc(videoType)
+              : VideoType.track,
         ),
       ),
     );
@@ -131,6 +142,27 @@ class MusicPlayerPlayOptions extends StatelessWidget {
                   isMuted ? LucideIcons.volumeX : LucideIcons.volume2,
                   size: 20,
                 ),
+              );
+            },
+          ),
+          BlocBuilder<MusicPlayerTrackBloc, MusicPlayerTrackState>(
+            builder: (context, state) {
+              if (state is! MusicPlayerTrackPlayingNowState) {
+                return const SizedBox.shrink();
+              }
+
+              return LikeButton(
+                size: 20,
+                track: Track(
+                  title: state.playingNowTrack.title,
+                  album: state.playingNowTrack.album,
+                  artists: state.playingNowTrack.artists,
+                  duration: 0,
+                  isExplicit: state.playingNowTrack.isExplicit,
+                  thumbnail: state.playingNowTrack.thumbnail,
+                  videoId: state.playingNowTrack.videoId,
+                ),
+                videoType: state.playingNowTrack.videoType,
               );
             },
           ),

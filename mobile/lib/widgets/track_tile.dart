@@ -14,6 +14,7 @@ import "package:wavelength/bloc/music_player/music_player_track/music_player_tra
 import "package:wavelength/utils/format.dart";
 import "package:wavelength/widgets/add_to_playlist_bottom_sheet.dart";
 import "package:wavelength/widgets/explicit_indicator.dart";
+import "package:wavelength/widgets/like_button.dart";
 import "package:wavelength/widgets/ui/amplitude.dart";
 
 class TrackTile extends StatelessWidget {
@@ -33,6 +34,7 @@ class TrackTile extends StatelessWidget {
     final queueableMusic = QueueableMusic(
       videoId: track.videoId,
       title: track.title,
+      isExplicit: track.isExplicit,
       thumbnail: track.thumbnail,
       artists: track.artists,
       videoType: VideoType.track,
@@ -111,7 +113,7 @@ class TrackTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: (MediaQuery.sizeOf(context).width / 1.4) - 50,
+                  width: (MediaQuery.sizeOf(context).width / 1.4) - 60,
                   child: Text(
                     track.title,
                     overflow: TextOverflow.ellipsis,
@@ -145,7 +147,9 @@ class TrackTile extends StatelessWidget {
               ],
             ),
             const Spacer(),
+            LikeButton(track: track, videoType: VideoType.track),
             AmplIconButton(
+              padding: EdgeInsets.zero,
               onPressed: () => _openPlaylistOptions(context),
               icon: Icon(LucideIcons.ellipsis, color: Colors.grey.shade600),
             ),

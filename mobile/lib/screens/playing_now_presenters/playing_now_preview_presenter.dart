@@ -67,13 +67,12 @@ class _PlayingNowPreviewPresenterState
 
   @override
   void initState() {
+    super.initState();
     final musicPlayerTrackState = context.read<MusicPlayerTrackBloc>().state;
 
     if (musicPlayerTrackState is MusicPlayerTrackPlayingNowState) {
       _blocListener(context, musicPlayerTrackState);
     }
-
-    super.initState();
   }
 
   @override

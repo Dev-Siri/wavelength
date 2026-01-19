@@ -40,34 +40,32 @@ class MusicPlayerTrackBloc
       final queueContext = event.queueContext;
 
       if (queueContext != null) {
-        final replacedSources = queueContext
-            .map(
-              (final queueableMusic) => BackgroundAudioSource(
-                queueableMusic.videoId,
-                tag: MediaItem(
-                  id: queueableMusic.videoId,
-                  title: queueableMusic.title,
-                  artist: formatList(
+        final replacedSources = queueContext.map((final queueableMusic) {
+          final album = queueableMusic.album?.toJson();
+
+          return BackgroundAudioSource(
+            queueableMusic.videoId,
+            tag: MediaItem(
+              id: queueableMusic.videoId,
+              title: queueableMusic.title,
+              artist: formatList(
+                queueableMusic.artists.map((artist) => artist.title).toList(),
+              ),
+              artUri: Uri.parse(queueableMusic.thumbnail),
+              extras: {
+                "videoType": queueableMusic.videoType.toGrpc(),
+                "embedded": {
+                  "artists": jsonEncode(
                     queueableMusic.artists
-                        .map((artist) => artist.title)
+                        .map((artist) => artist.toJson())
                         .toList(),
                   ),
-                  artUri: Uri.parse(queueableMusic.thumbnail),
-                  extras: {
-                    "videoType": queueableMusic.videoType.toGrpc(),
-                    "embedded": {
-                      "artists": jsonEncode(
-                        queueableMusic.artists
-                            .map((artist) => artist.toJson())
-                            .toList(),
-                      ),
-                      "album": queueableMusic.album?.toJson(),
-                    },
-                  },
-                ),
-              ),
-            )
-            .toList();
+                  "album": album != null ? jsonEncode(album) : null,
+                },
+              },
+            ),
+          );
+        }).toList();
 
         await player.setAudioSources(replacedSources);
       }

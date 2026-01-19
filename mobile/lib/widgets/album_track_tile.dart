@@ -37,6 +37,7 @@ class AlbumTrackTile extends StatelessWidget {
       title: track.title,
       thumbnail: album.cover,
       artists: [album.artist],
+      isExplicit: track.isExplicit,
       videoType: VideoType.track,
       album: embeddedAlbum,
     );
@@ -48,6 +49,7 @@ class AlbumTrackTile extends StatelessWidget {
               (track) => QueueableMusic(
                 videoId: track.videoId,
                 title: track.title,
+                isExplicit: track.isExplicit,
                 thumbnail: album.cover,
                 artists: [album.artist],
                 album: embeddedAlbum,

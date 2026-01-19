@@ -41,11 +41,11 @@ class _AppShellState extends State<AppShell> {
 
   @override
   void initState() {
+    super.initState();
+
     context.read<LocationBloc>().add(LocationFetchEvent());
     context.read<AuthBloc>().add(AuthLocalUserFetchEvent());
     _checkVersionStatus();
-
-    super.initState();
   }
 
   List<BottomNavigationBarItem> _getBottomNavItems() => const [

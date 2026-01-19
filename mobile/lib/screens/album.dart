@@ -29,8 +29,8 @@ class AlbumScreen extends StatefulWidget {
 class _AlbumScreenState extends State<AlbumScreen> {
   @override
   void initState() {
-    context.read<AlbumBloc>().add(AlbumFetchEvent(browseId: widget.browseId));
     super.initState();
+    context.read<AlbumBloc>().add(AlbumFetchEvent(browseId: widget.browseId));
   }
 
   @override
@@ -109,6 +109,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
                       .map(
                         (track) => QueueableMusic(
                           videoId: track.videoId,
+                          isExplicit: track.isExplicit,
                           title: track.title,
                           thumbnail: state.album.cover,
                           artists: [state.album.artist],

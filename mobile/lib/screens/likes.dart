@@ -42,6 +42,7 @@ class _LikesScreenState extends State<LikesScreen> {
 
   @override
   void initState() {
+    super.initState();
     final authState = context.read<AuthBloc>().state;
 
     if (authState is AuthStateAuthorized) {
@@ -55,7 +56,6 @@ class _LikesScreenState extends State<LikesScreen> {
         LikedTracksPlaylengthFetchEvent(authToken: authState.authToken),
       );
     }
-    super.initState();
   }
 
   void _playPlaylistTracks(List<PlaylistTrack> playlistTrack) {
@@ -65,6 +65,7 @@ class _LikesScreenState extends State<LikesScreen> {
             videoId: track.videoId,
             title: track.title,
             thumbnail: track.thumbnail,
+            isExplicit: track.isExplicit,
             artists: track.artists,
             videoType: track.videoType,
             album: null,

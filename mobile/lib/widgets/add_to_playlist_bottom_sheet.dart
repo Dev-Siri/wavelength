@@ -11,6 +11,8 @@ import "package:wavelength/api/models/track.dart";
 import "package:wavelength/api/repositories/track_repo.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
+import "package:wavelength/bloc/auth/auth_bloc.dart";
+import "package:wavelength/bloc/auth/auth_state.dart";
 import "package:wavelength/bloc/download/download_bloc.dart";
 import "package:wavelength/bloc/download/download_event.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
@@ -39,14 +41,17 @@ class _AddToPlaylistBottomSheetState extends State<AddToPlaylistBottomSheet> {
 
   @override
   void initState() {
-    _fetchTrackAlreadyDownloaded();
     super.initState();
+    _fetchTrackAlreadyDownloaded();
   }
 
   Future<void> _toggleTrackFromPlaylist(
     BuildContext context,
     String playlistId,
   ) async {
+    final authState = context.read<AuthBloc>().state;
+    if (authState is! AuthStateAuthorized) return;
+
     final messenger = ScaffoldMessenger.of(context);
     final appBottomSheet = context.read<AppBottomSheetBloc>();
     final appBottomSheetCloseEvent = AppBottomSheetCloseEvent(context: context);
@@ -65,6 +70,7 @@ class _AddToPlaylistBottomSheetState extends State<AddToPlaylistBottomSheet> {
 
     final trackToggleResponse = await TrackRepo.toggleTrackFromPlaylist(
       playlistId: playlistId,
+      authToken: authState.authToken,
       videoType: widget.videoType,
       track: Track(
         videoId: widget.track.videoId,

@@ -20,8 +20,14 @@ class _TrackMusicVideoPreviewState extends State<TrackMusicVideoPreview> {
 
   @override
   void initState() {
-    _fetchAndSetPreview();
     super.initState();
+    _fetchAndSetPreview();
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
   }
 
   Future<void> _fetchAndSetPreview() async {
@@ -41,17 +47,23 @@ class _TrackMusicVideoPreviewState extends State<TrackMusicVideoPreview> {
         await ttlStore.save(widget.musicVideoId, url);
       }
 
-      _controller =
-          VideoPlayerController.networkUrl(
-              Uri.parse(url),
-              videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
-            )
-            ..initialize()
-            ..setLooping(true)
-            ..setVolume(0)
-            ..play();
-      // Display the first frame.
-      if (mounted) setState(() {});
+      final controller = VideoPlayerController.networkUrl(
+        Uri.parse(url),
+        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+      );
+
+      await controller.initialize();
+      controller
+        ..setLooping(true)
+        ..setVolume(0)
+        ..play();
+
+      if (!mounted) {
+        controller.dispose();
+        return;
+      }
+
+      setState(() => _controller = controller);
     } catch (err) {
       DiagnosticsRepo.reportError(
         error: err.toString(),
@@ -62,8 +74,6 @@ class _TrackMusicVideoPreviewState extends State<TrackMusicVideoPreview> {
 
   @override
   Widget build(BuildContext context) {
-    if (_controller == null) return const SizedBox.shrink();
-
     return Positioned.fill(
       bottom: (MediaQuery.sizeOf(context).height / 10) + 30,
       child: Opacity(
@@ -76,9 +86,10 @@ class _TrackMusicVideoPreviewState extends State<TrackMusicVideoPreview> {
               child: FittedBox(
                 fit: BoxFit.cover,
                 child: SizedBox(
-                  width: _controller!.value.size.width,
-                  height: _controller!.value.size.height,
-                  child: VideoPlayer(_controller!),
+                  key: ValueKey(_controller),
+                  width: _controller?.value.size.width,
+                  height: _controller?.value.size.height,
+                  child: _controller == null ? null : VideoPlayer(_controller!),
                 ),
               ),
             ),

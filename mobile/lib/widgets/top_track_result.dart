@@ -20,6 +20,7 @@ import "package:wavelength/bloc/music_player/music_player_track/music_player_tra
 import "package:wavelength/utils/format.dart";
 import "package:wavelength/utils/url.dart";
 import "package:wavelength/widgets/add_to_playlist_bottom_sheet.dart";
+import "package:wavelength/widgets/like_button.dart";
 
 class TopTrackResult extends StatelessWidget {
   final Track track;
@@ -32,6 +33,7 @@ class TopTrackResult extends StatelessWidget {
       videoId: track.videoId,
       title: track.title,
       thumbnail: track.thumbnail,
+      isExplicit: track.isExplicit,
       artists: track.artists,
       videoType: VideoType.track,
       album: null,
@@ -124,6 +126,7 @@ class TopTrackResult extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  LikeButton(track: track, videoType: VideoType.track),
                   CupertinoButton(
                     padding: EdgeInsets.zero,
                     onPressed: () => context.read<AppBottomSheetBloc>().add(

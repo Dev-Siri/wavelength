@@ -18,8 +18,8 @@ class PlaylistsSearchPresenter extends StatefulWidget {
 class _PlaylistsSearchPresenterState extends State<PlaylistsSearchPresenter> {
   @override
   void initState() {
-    context.read<PublicPlaylistsBloc>().add(PublicPlaylistsFetchEvent());
     super.initState();
+    context.read<PublicPlaylistsBloc>().add(PublicPlaylistsFetchEvent());
   }
 
   @override

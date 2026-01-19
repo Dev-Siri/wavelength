@@ -56,8 +56,8 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
 
   @override
   void initState() {
-    _nameInputControl.text = widget.routeData.playlistName;
     super.initState();
+    _nameInputControl.text = widget.routeData.playlistName;
   }
 
   Future<String?> _handleFileUpload() async {

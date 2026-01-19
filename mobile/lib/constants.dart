@@ -16,6 +16,7 @@ const hiveTempUrlKey = "yt_streams_url_temp";
 const hiveStreamsKey = "yt_streams";
 const hiveLikesKey = "likes";
 const hiveLikeCountKey = "like_count";
+const hiveIsLikedKey = "is_liked";
 const hiveIsFollowingKey = "followed_list";
 const hiveArtistsKey = "artists";
 const hiveAlbumsKey = "albums";

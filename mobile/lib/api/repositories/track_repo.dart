@@ -52,13 +52,17 @@ class TrackRepo {
 
   static Future<ApiResponse<String>> toggleTrackFromPlaylist({
     required String playlistId,
+    required String authToken,
     required VideoType videoType,
     required Track track,
   }) async {
     try {
       final response = await http.post(
         Uri.parse("$apiGatewayUrl/playlists/playlist/$playlistId/tracks"),
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Authorization": "Bearer $authToken",
+          "Content-Type": "application/json",
+        },
         body: jsonEncode({
           "artists": track.artists.map((artist) => artist.toJson()).toList(),
           "thumbnail": track.thumbnail,
@@ -266,7 +270,88 @@ class TrackRepo {
       final errorString = e.toString();
       DiagnosticsRepo.reportError(
         error: errorString,
-        source: "PlaylistsRepo.fetchLikedTracksLength",
+        source: "TrackRepo.fetchLikedTracksLength",
+      );
+      return ApiResponseError(message: errorString);
+    }
+  }
+
+  static Future<ApiResponse<String>> likeTrack({
+    required String authToken,
+    required Track track,
+    required VideoType videoType,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse("$apiGatewayUrl/music/track/likes"),
+        headers: {
+          "Authorization": "Bearer $authToken",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "artists": track.artists.map((artist) => artist.toJson()).toList(),
+          "thumbnail": track.thumbnail,
+          "duration": track.duration,
+          "isExplicit": track.isExplicit,
+          "title": track.title,
+          "videoId": track.videoId,
+          "videoType": videoType.name,
+        }),
+      );
+      final decodedResponse = await compute<String, ApiResponse<String>>((
+        stringResponse,
+      ) {
+        final decodedJson = jsonDecode(stringResponse);
+        final isSuccessful = decodedJson["success"] as bool;
+
+        if (isSuccessful) {
+          return ApiResponseSuccess(data: decodedJson["data"] as String);
+        }
+
+        return ApiResponseError(message: decodedJson["message"] as String);
+      }, response.body);
+
+      return decodedResponse;
+    } catch (e) {
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "TrackRepo.likeTrack",
+      );
+      return ApiResponseError(message: errorString);
+    }
+  }
+
+  static Future<ApiResponse<bool>> fetchIsAlreadyLiked({
+    required String authToken,
+    required String videoId,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$apiGatewayUrl/music/track/likes/$videoId/is-liked"),
+        headers: {"Authorization": "Bearer $authToken"},
+      );
+      final decodedResponse = await compute<String, ApiResponse<bool>>((
+        stringResponse,
+      ) {
+        final decodedJson = jsonDecode(stringResponse);
+        final isSuccessful = decodedJson["success"] as bool;
+
+        if (isSuccessful) {
+          return ApiResponseSuccess(
+            data: decodedJson["data"]["isLiked"] as bool,
+          );
+        }
+
+        return ApiResponseError(message: decodedJson["message"] as String);
+      }, response.body);
+
+      return decodedResponse;
+    } catch (e) {
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "TrackRepo.fetchIsAlreadyLiked",
       );
       return ApiResponseError(message: errorString);
     }

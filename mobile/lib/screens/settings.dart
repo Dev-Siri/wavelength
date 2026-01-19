@@ -24,9 +24,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   void initState() {
+    super.initState();
     _fetchExistingPreferWifiDownloadsState();
     _fetchStreamCacheOccupiedSize();
-    super.initState();
   }
 
   Future<void> _fetchStreamCacheOccupiedSize() async {

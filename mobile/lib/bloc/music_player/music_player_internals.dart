@@ -104,7 +104,8 @@ class MusicPlayerInternals {
       if (embedded == null) return;
 
       final videoType = tag.extras?["videoType"] as String?;
-      final album = embedded["album"] as String?;
+      final isExplicit = tag.extras?["isExplicit"] ?? false;
+      final album = embedded?["album"] as String?;
       final artists = jsonDecode(embedded["artists"]) as List;
 
       musicPlayerTrackBloc.add(
@@ -112,6 +113,7 @@ class MusicPlayerInternals {
           queueableMusic: QueueableMusic(
             videoId: tag.id,
             title: tag.title,
+            isExplicit: isExplicit,
             thumbnail: tag.artUri?.toString() ?? "",
             artists: artists
                 .map((artist) => EmbeddedArtist.fromJson(artist))

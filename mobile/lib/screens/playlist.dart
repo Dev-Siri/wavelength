@@ -53,13 +53,13 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
 
   @override
   void initState() {
+    super.initState();
     context.read<PlaylistBloc>().add(
       PlaylistFetchEvent(playlistId: widget.playlistId),
     );
     context.read<PlaylistLengthBloc>().add(
       PlaylistLengthFetchEvent(playlistId: widget.playlistId),
     );
-    super.initState();
   }
 
   Future<void> _downloadAllTracks(List<PlaylistTrack> playlistTracks) async {
@@ -284,6 +284,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                     (track) => QueueableMusic(
                                       videoId: track.videoId,
                                       title: track.title,
+                                      isExplicit: track.isExplicit,
                                       thumbnail: track.thumbnail,
                                       artists: track.artists,
                                       videoType: track.videoType,

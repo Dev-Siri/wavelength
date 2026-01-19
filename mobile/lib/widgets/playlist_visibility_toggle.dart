@@ -28,8 +28,8 @@ class _PlaylistVisibilityToggleState extends State<PlaylistVisibilityToggle> {
 
   @override
   void initState() {
-    setState(() => _isPrivate = widget.isInitiallyPrivate);
     super.initState();
+    setState(() => _isPrivate = widget.isInitiallyPrivate);
   }
 
   Future<void> _toggleVisibilityPlaylist(String authToken) async {

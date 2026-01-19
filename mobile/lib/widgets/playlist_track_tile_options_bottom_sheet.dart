@@ -10,6 +10,8 @@ import "package:wavelength/api/models/track.dart";
 import "package:wavelength/api/repositories/track_repo.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
+import "package:wavelength/bloc/auth/auth_bloc.dart";
+import "package:wavelength/bloc/auth/auth_state.dart";
 import "package:wavelength/bloc/download/download_bloc.dart";
 import "package:wavelength/bloc/download/download_event.dart";
 import "package:wavelength/bloc/playlist/playlist_bloc.dart";
@@ -41,6 +43,10 @@ class _PlaylistTrackTileOptionsBottomSheetState
   bool _trackAlreadyDownloaded = false;
 
   Future<void> _removeTrackFromPlaylist() async {
+    final authState = context.read<AuthBloc>().state;
+
+    if (authState is! AuthStateAuthorized) return;
+
     final appBottomSheet = context.read<AppBottomSheetBloc>();
     final appBottomSheetCloseEvent = AppBottomSheetCloseEvent(context: context);
     final messenger = ScaffoldMessenger.of(context);
@@ -50,6 +56,7 @@ class _PlaylistTrackTileOptionsBottomSheetState
       playlistId: widget.playlistId,
       videoType: widget.videoType,
       track: widget.track,
+      authToken: authState.authToken,
     );
     final isResponseSuccessful =
         trackToggleResponse is ApiResponseSuccess<String>;
@@ -119,8 +126,8 @@ class _PlaylistTrackTileOptionsBottomSheetState
 
   @override
   void initState() {
-    _fetchTrackAlreadyDownloaded();
     super.initState();
+    _fetchTrackAlreadyDownloaded();
   }
 
   @override

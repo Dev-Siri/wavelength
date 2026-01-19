@@ -8,6 +8,7 @@ class QueueableMusic {
   final List<EmbeddedArtist> artists;
   final EmbeddedAlbum? album;
   final VideoType videoType;
+  final bool isExplicit;
 
   const QueueableMusic({
     required this.videoId,
@@ -16,5 +17,6 @@ class QueueableMusic {
     required this.artists,
     required this.album,
     required this.videoType,
+    required this.isExplicit,
   });
 }

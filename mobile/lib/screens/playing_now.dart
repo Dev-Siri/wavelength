@@ -34,7 +34,7 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
       final g = int.parse(trackColor[1]);
       final b = int.parse(trackColor[2]);
 
-      _trackThemeColor = Color.fromRGBO(r, g, b, 1);
+      setState(() => _trackThemeColor = Color.fromRGBO(r, g, b, 1));
       return;
     }
 

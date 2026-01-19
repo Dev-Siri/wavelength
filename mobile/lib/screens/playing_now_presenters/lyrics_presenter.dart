@@ -59,8 +59,8 @@ class _LyricsPresenterState extends State<LyricsPresenter> {
 
   @override
   void initState() {
-    _triggerFetchLyricsEvent();
     super.initState();
+    _triggerFetchLyricsEvent();
   }
 
   @override
