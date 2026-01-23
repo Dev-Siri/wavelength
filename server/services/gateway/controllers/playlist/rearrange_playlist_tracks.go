@@ -17,7 +17,8 @@ func RearrangePlaylistTracks(ctx *fiber.Ctx) error {
 	var updates []schemas.TrackPositionUpdateSchema
 
 	if err := ctx.BodyParser(&updates); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid JSON body: "+err.Error())
+		logging.Logger.Error("Invalid JSON body.", zap.Error(err))
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid JSON body.")
 	}
 
 	if len(updates) == 0 {

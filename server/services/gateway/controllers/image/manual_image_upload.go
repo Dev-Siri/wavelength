@@ -10,9 +10,11 @@ import (
 	"wavelength/services/gateway/constants"
 	"wavelength/services/gateway/env"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
+	"go.uber.org/zap"
 )
 
 func ManualImageUpload(ctx *fiber.Ctx) error {
@@ -42,7 +44,8 @@ func ManualImageUpload(ctx *fiber.Ctx) error {
 	jsonPayload, err := json.Marshal(payload)
 
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while uploading the image: "+err.Error())
+		logging.Logger.Error("An error occured while uploading the image.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while uploading the image.")
 	}
 
 	jsonPayloadBuffer := bytes.NewBuffer(jsonPayload)
@@ -52,13 +55,15 @@ func ManualImageUpload(ctx *fiber.Ctx) error {
 	uploadFilesRequest.Header.Add("X-Uploadthing-Api-Key", uploadThingKey)
 
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while uploading the image: "+err.Error())
+		logging.Logger.Error("An error occured while uploading the image.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while uploading the image.")
 	}
 
 	uploadFilesResponse, err := httpClient.Do(uploadFilesRequest)
 
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while retrieving the image URL: "+err.Error())
+		logging.Logger.Error("An error occured while retrieving the image URL.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while retrieving the image URL.")
 	}
 
 	defer uploadFilesResponse.Body.Close()
@@ -68,11 +73,13 @@ func ManualImageUpload(ctx *fiber.Ctx) error {
 	bodyBytes, err := io.ReadAll(uploadFilesResponse.Body)
 
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to read upload response: "+err.Error())
+		logging.Logger.Error("Upload response read failed.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Upload response read failed.")
 	}
 
 	if err = json.Unmarshal(bodyBytes, &uploadThingResponse); err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to parse upload response: "+err.Error())
+		logging.Logger.Error("Upload response parse failed.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Upload response parse failed.")
 	}
 
 	data := uploadThingResponse.Data[0]

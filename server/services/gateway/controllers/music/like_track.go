@@ -16,28 +16,19 @@ import (
 
 func LikeTrack(ctx *fiber.Ctx) error {
 	authUser, ok := ctx.Locals("authUser").(models.AuthUser)
+	if !ok {
+		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
+	}
+
 	// Versatile schema.
 	var body schemas.PlaylistTrackAdditionSchema
-
 	if err := ctx.BodyParser(&body); err != nil {
 		logging.Logger.Error("Body read failed.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Body read failed.")
 	}
 
-	if !ok {
-		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
-	}
-
 	if !validation.IsPlaylistTrackAdditionShapeValid(body) {
 		return fiber.NewError(fiber.StatusBadRequest, "Liked track to add isn't in proper shape.")
-	}
-
-	var grpcVideoType commonpb.VideoType
-
-	if body.VideoType == type_constants.PlaylistTrackTypeUVideo {
-		grpcVideoType = commonpb.VideoType_VIDEO_TYPE_UVIDEO
-	} else {
-		grpcVideoType = commonpb.VideoType_VIDEO_TYPE_TRACK
 	}
 
 	embeddedArtists := make([]*commonpb.EmbeddedArtist, len(body.Artists))
@@ -47,13 +38,14 @@ func LikeTrack(ctx *fiber.Ctx) error {
 			BrowseId: artist.BrowseId,
 		})
 	}
+
 	likedTracksResponse, err := clients.MusicClient.LikeTrack(ctx.Context(), &musicpb.LikeTrackRequest{
 		Artists:    embeddedArtists,
 		Thumbnail:  body.Thumbnail,
 		Duration:   body.Duration,
 		IsExplicit: body.IsExplicit,
 		Title:      body.Title,
-		VideoType:  grpcVideoType,
+		VideoType:  type_constants.PlaylistTrackTypeGrpcMap[body.VideoType],
 		VideoId:    body.VideoId,
 		LikerEmail: authUser.Email,
 	})

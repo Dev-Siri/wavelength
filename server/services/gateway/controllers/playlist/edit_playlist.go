@@ -19,7 +19,8 @@ func EditPlaylist(ctx *fiber.Ctx) error {
 
 	var playlistEditBody schemas.PlaylistEditSchema
 	if err := ctx.BodyParser(&playlistEditBody); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid JSON body: "+err.Error())
+		logging.Logger.Error("Invalid JSON body.", zap.Error(err))
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid JSON body.")
 	}
 
 	_, err := clients.PlaylistClient.EditPlaylist(ctx.Context(), &playlistpb.EditPlaylistRequest{

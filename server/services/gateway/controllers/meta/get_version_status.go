@@ -6,8 +6,10 @@ import (
 	"net/http"
 	"wavelength/services/gateway/constants"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 func GetVersionStatus(ctx *fiber.Ctx) error {
@@ -15,16 +17,19 @@ func GetVersionStatus(ctx *fiber.Ctx) error {
 	response, err := http.DefaultClient.Get(githubTagUrl)
 
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get version tag from GitHub: "+err.Error())
+		logging.Logger.Error("Failed to get version tag from GitHub.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get version tag from GitHub.")
 	}
 
 	var requiredResponse models.GithubRequiredResponse
 
 	if err := json.NewDecoder(response.Body).Decode(&requiredResponse); err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to parse response from GitHub: "+err.Error())
+		logging.Logger.Error("Failed to parse response from GitHub.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Failed to parse response from GitHub.")
 	}
 
 	if requiredResponse.TagName == "" {
+		logging.Logger.Error("Failed to get version status from GitHub.")
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get version status from GitHub.")
 	}
 
