@@ -36,11 +36,11 @@ func AddRemovePlaylistTrack(ctx *fiber.Ctx) error {
 	}
 
 	embeddedArtists := make([]*commonpb.EmbeddedArtist, len(body.Artists))
-	for _, artist := range body.Artists {
-		embeddedArtists = append(embeddedArtists, &commonpb.EmbeddedArtist{
+	for i, artist := range body.Artists {
+		embeddedArtists[i] = &commonpb.EmbeddedArtist{
 			Title:    artist.Title,
 			BrowseId: artist.BrowseId,
-		})
+		}
 	}
 
 	toggleResponse, err := clients.PlaylistClient.AddRemovePlaylistTrack(ctx.Context(), &playlistpb.AddRemovePlaylistTrackRequest{

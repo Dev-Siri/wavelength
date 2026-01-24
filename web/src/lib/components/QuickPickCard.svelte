@@ -24,14 +24,14 @@
       videoType: "VIDEO_TYPE_TRACK",
     } satisfies QueueableMusic;
 
-    musicQueueStore.addToQueue(queueableTrack);
     musicQueueStore.musicPlayingNow = queueableTrack;
+    musicQueueStore.musicPlaylistContext = [];
     musicPlayerStore.visiblePanel = "playingNow";
   }
 </script>
 
 <div
-  class="h-24 flex py-2 items-center duration-200 bg-[#1c1c1c] hover:bg-muted rounded-2xl cursor-pointer group"
+  class="h-48 flex flex-col py-2 mb-[20%] items-center cursor-pointer group"
   tabindex={0}
   role="button"
   onclick={playSong}
@@ -39,7 +39,7 @@
   onmouseenter={() => (isHoveringCard = true)}
   onmouseleave={() => (isHoveringCard = false)}
 >
-  <div class="flex items-center justify-center h-24 w-24 p-2 relative aspect-square rounded-2xl">
+  <div class="flex items-center justify-center h-48 w-48 p-2 relative aspect-square rounded-2xl">
     <div class="h-full w-full aspect-square rounded-2xl relative inline-block">
       {#key quickPick.thumbnail}
         <Image
@@ -47,7 +47,7 @@
           alt="Thumbnail"
           height={192}
           width={192}
-          class="object-cover aspect-square shadow-black h-full w-full rounded-2xl"
+          class="object-cover aspect-square group-hover:opacity-60 duration-200 shadow-black h-full w-full rounded-xl"
         />
       {/key}
     </div>
@@ -59,23 +59,21 @@
       </div>
     {/if}
   </div>
-  {#if quickPick.title}
-    <Tooltip.Root>
-      <Tooltip.Trigger>
-        <p class="text-ellipsis w-full text-start text-secondary-foreground text-base">
-          {quickPick.title.length > 30 ? `${quickPick.title.slice(0, 27)}...` : quickPick.title}
-        </p>
-        <p class="text-start text-muted-foreground text-sm">
-          {#each quickPick.artists as artist, i}
-            <span>
-              {artist.title}{quickPick.artists[i + 1] ? ", " : ""}
-            </span>
-          {/each}
-        </p>
-      </Tooltip.Trigger>
-      <Tooltip.Content>
-        <p>{quickPick.title}</p>
-      </Tooltip.Content>
-    </Tooltip.Root>
-  {/if}
+  <Tooltip.Root>
+    <Tooltip.Trigger>
+      <p class="text-ellipsis w-full text-secondary-foreground text-xs">
+        {quickPick.title.length > 25 ? `${quickPick.title.slice(0, 25)}...` : quickPick.title}
+      </p>
+      <p class=" text-muted-foreground text-xs">
+        {#each quickPick.artists as artist, i}
+          <span>
+            {artist.title}{quickPick.artists[i + 1] ? ", " : ""}
+          </span>
+        {/each}
+      </p>
+    </Tooltip.Trigger>
+    <Tooltip.Content>
+      <p>{quickPick.title}</p>
+    </Tooltip.Content>
+  </Tooltip.Root>
 </div>

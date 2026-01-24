@@ -8,11 +8,12 @@
   import { followedArtistResponseSchema } from "$lib/utils/validation/artist-response";
   import { playlistsSchema } from "$lib/utils/validation/playlists.js";
 
-  import ArtistTile from "./ArtistTile.svelte";
+  import ArtistCard from "./artist/ArtistCard.svelte";
+  import ArtistTile from "./artist/ArtistTile.svelte";
   import LikedTracksLink from "./LikedTracksLink.svelte";
-  import PlaylistTile from "./PlaylistTile.svelte";
+  import PlaylistTile from "./playlist/PlaylistTile.svelte";
 
-  const { sidebarWidth }: { sidebarWidth: number } = $props();
+  const { isCollapsed }: { isCollapsed?: boolean } = $props();
 
   const playlistsQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.userPlaylists,
@@ -40,20 +41,26 @@
     </p>
   {:else if playlistsQuery.isSuccess && followedArtistsQuery.isSuccess}
     {#if playlistsQuery.data}
-      <LikedTracksLink />
+      <LikedTracksLink mode={isCollapsed ? "icon" : "full"} />
       {#key playlistsQuery.data}
         {#each playlistsQuery.data.playlists as playlist}
           <PlaylistTile
             {playlist}
-            titleClasses={sidebarWidth < 11 ? "hidden" : "w-10 overflow-hidden"}
             wrapperClick={() =>
               window.innerWidth <= 968 && goto(`/app/playlist/${playlist.playlistId}`)}
+            mode={isCollapsed ? "icon" : "full"}
           />
         {/each}
       {/key}
       {#key followedArtistsQuery.data}
         {#each followedArtistsQuery?.data.artists as artist}
-          <ArtistTile {...artist} />
+          {#if isCollapsed}
+            <div class="my-4 flex justify-center">
+              <ArtistCard height={80} width={80} {...artist} />
+            </div>
+          {:else}
+            <ArtistTile {...artist} />
+          {/if}
         {/each}
       {/key}
     {:else}

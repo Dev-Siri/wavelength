@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from "$app/state";
-  import { ArrowUpRightIcon, PlayIcon } from "@lucide/svelte";
+  import { ArrowUpRightIcon } from "@lucide/svelte";
   import { createQuery } from "@tanstack/svelte-query";
   import { fly } from "svelte/transition";
 
@@ -10,16 +10,17 @@
   import { backendClient } from "$lib/utils/query-client.js";
   import { artistResponseSchema } from "$lib/utils/validation/artist-response";
 
-  import AlbumTile from "$lib/components/AlbumTile.svelte";
-  import ArtistFollowButton from "$lib/components/ArtistFollowButton.svelte";
+  import AlbumTile from "$lib/components/album/AlbumTile.svelte";
+  import ArtistFollowButton from "$lib/components/artist/ArtistFollowButton.svelte";
   import Image from "$lib/components/Image.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
+  import PlaylistPlayOptions from "$lib/components/playlist/PlaylistPlayOptions.svelte";
   import TrackItem from "$lib/components/TrackItem.svelte";
   import { Button } from "$lib/components/ui/button";
   import * as Dialog from "$lib/components/ui/dialog";
 
   function playArtistsSongs(songs: QueueableMusic[]) {
-    musicQueueStore.addToQueue(...songs);
+    musicQueueStore.musicPlaylistContext = songs;
     musicQueueStore.musicPlayingNow = songs[0];
     musicPlayerStore.playMusic();
   }
@@ -87,25 +88,21 @@
         <div class="flex flex-col gap-2 h-full px-10 z-40 mt-6">
           <section>
             {#if artist.topSongs.length}
-              <div class="flex items-center justify-between">
-                <h4 class="p-2 mb-2 text-3xl">Top Songs</h4>
-                <Button
-                  onclick={() =>
-                    playArtistsSongs(
-                      artist.topSongs.map(track => ({
-                        ...track,
-                        artists: [artist],
-                        videoType: "VIDEO_TYPE_TRACK",
-                      })),
-                    )}
-                >
-                  <PlayIcon class="text-primary-foreground" fill="black" /> Play
-                </Button>
+              <div class="flex items-center justify-between mb-2">
+                <h4 class="text-xl font-semibold select-none">Top Songs</h4>
+                <PlaylistPlayOptions
+                  tracks={artist.topSongs.map(track => ({
+                    ...track,
+                    artists: [artist],
+                    videoType: "VIDEO_TYPE_TRACK",
+                  }))}
+                />
               </div>
               <div class="px-2">
                 {#each artist.topSongs as song}
                   <TrackItem
                     music={{ ...song, artists: [artist], duration: "" }}
+                    playCount={song.playCount}
                     toggle={{ type: "add" }}
                   />
                 {/each}
@@ -114,7 +111,7 @@
           </section>
           <section>
             {#if artist.albums.length}
-              <h4 class="p-2 mb-2 text-3xl">Albums</h4>
+              <h4 class="text-xl font-semibold select-none mb-2">Albums</h4>
               <div class="grid grid-cols-2 gap-4 px-2">
                 {#each artist.albums as album}
                   <AlbumTile album={{ ...album, artist }} />
@@ -124,7 +121,7 @@
           </section>
           <section>
             {#if artist.singlesAndEps.length}
-              <h4 class="p-2 mb-2 text-3xl">Singles & EPs</h4>
+              <h4 class="text-xl font-semibold select-none mb-2">Singles & EPs</h4>
               <div class="grid grid-cols-2 gap-4 px-2">
                 {#each artist.singlesAndEps as singlesAndEp}
                   <AlbumTile album={{ ...singlesAndEp, artist }} />

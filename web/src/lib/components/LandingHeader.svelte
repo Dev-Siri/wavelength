@@ -2,7 +2,7 @@
   import wavelengthLogo from "$lib/assets/logo.svg";
   import userStore from "$lib/stores/user.svelte";
 
-  import GoogleLoginButton from "./GoogleLoginButton.svelte";
+  import GoogleLoginButton from "./action-buttons/GoogleLoginButton.svelte";
   import UserProfileIcon from "./UserProfileIcon.svelte";
 </script>
 

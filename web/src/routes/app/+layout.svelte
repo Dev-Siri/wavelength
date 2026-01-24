@@ -1,8 +1,9 @@
 <script lang="ts">
   import { QueryClient } from "@tanstack/svelte-query";
+  import { PersistQueryClientProvider } from "@tanstack/svelte-query-persist-client";
   import { Toaster } from "svelte-french-toast";
   import { Pane, Splitpanes } from "svelte-splitpanes";
-  import { fly, slide } from "svelte/transition";
+  import { fly } from "svelte/transition";
 
   import type { Snippet } from "svelte";
 
@@ -10,15 +11,14 @@
   import musicQueueStore from "$lib/stores/music-queue.svelte.js";
   import { createIDBPersister } from "$lib/utils/cache";
 
-  import InfoOverlay from "$lib/components/InfoOverlay.svelte";
   import LyricsOverlay from "$lib/components/LyricsOverlay.svelte";
-  import MusicPlayer from "$lib/components/MusicPlayer.svelte";
-  import MusicQueueDisplay from "$lib/components/MusicQueueDisplay.svelte";
-  import NowPlayingOverlay from "$lib/components/NowPlayingOverlay.svelte";
+  import MusicPlayer from "$lib/components/music-player/MusicPlayer.svelte";
+  import MusicQueueDisplay from "$lib/components/music-queue/MusicQueueDisplay.svelte";
+  import InfoOverlay from "$lib/components/overlays/InfoOverlay.svelte";
+  import NowPlayingOverlay from "$lib/components/overlays/NowPlayingOverlay.svelte";
   import Sidebar from "$lib/components/Sidebar.svelte";
   import TopBar from "$lib/components/TopBar.svelte";
   import * as Tooltip from "$lib/components/ui/tooltip";
-  import { PersistQueryClientProvider } from "@tanstack/svelte-query-persist-client";
 
   interface PaneLimit {
     minSize: number;
@@ -37,6 +37,8 @@
   let screenSize: number | null = $state(null);
   let sidebarWidth = $state(20);
 
+  const COLLAPSED_WIDTH = 8;
+
   const defaultSizes: PaneSizes = {
     sidebar: {
       minSize: 20,
@@ -45,6 +47,7 @@
     },
     queue: {
       maxSize: 25,
+      size: 25,
       minSize: 20,
     },
     content: 80,
@@ -62,6 +65,7 @@
   }
 
   let sizes = $derived(screenSize ? calculateSidebarSize(screenSize) : defaultSizes);
+  let isSidebarCollapsed = $derived(false);
 
   $effect(() => {
     const preventRightClick = (e: MouseEvent) => e.preventDefault();
@@ -91,11 +95,9 @@
   });
 
   $effect(() => {
-    if (musicQueueStore.isMusicQueueVisible) {
-      sidebarWidth = sizes.sidebar.minSize;
-    } else {
-      sidebarWidth = sizes.sidebar.maxSize;
-    }
+    sidebarWidth = musicQueueStore.isMusicQueueVisible
+      ? sizes.sidebar.minSize
+      : sizes.sidebar.maxSize;
   });
 
   const queryClient = new QueryClient();
@@ -105,13 +107,25 @@
 <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
   <Tooltip.Provider>
     <div class="h-screen flex flex-col bg-extra-dark">
+      <TopBar />
       <Splitpanes class="flex-1 overflow-hidden" on:resize={e => (sidebarWidth = e.detail[0].size)}>
-        <Pane class="bg-extra-dark rounded-tr-md" {...sizes.sidebar}>
-          <Sidebar {sidebarWidth} />
+        <Pane
+          class="bg-extra-dark rounded-tr-md"
+          {...sizes.sidebar}
+          minSize={isSidebarCollapsed ? COLLAPSED_WIDTH : sizes.sidebar.minSize}
+          maxSize={isSidebarCollapsed ? COLLAPSED_WIDTH : sizes.sidebar.maxSize}
+          size={isSidebarCollapsed ? COLLAPSED_WIDTH : sidebarWidth}
+        >
+          <Sidebar
+            isCollapsed={isSidebarCollapsed || window.innerWidth <= 640}
+            toggleSidebar={() => (isSidebarCollapsed = !isSidebarCollapsed)}
+          />
         </Pane>
-        <Pane class="h-full w-full bg-extra-dark relative" size={sizes.content}>
-          <TopBar />
-          <main class="bg-extra-dark mt-12 h-screen z-30">
+        <Pane
+          class="h-full w-full bg-extra-dark relative"
+          size={isSidebarCollapsed ? 92 : sizes.content}
+        >
+          <main class="bg-extra-dark h-screen">
             {#if musicQueueStore.musicPlayingNow && musicPlayerStore.visiblePanel}
               <div
                 class="absolute inset-x-0 top-[10.5%] bottom-0 z-80 rounded-2xl flex flex-col overflow-hidden"
@@ -136,13 +150,13 @@
         </Pane>
         {#if musicQueueStore.isMusicQueueVisible}
           <Pane {...sizes.queue} class="z-9999">
-            <div in:slide={{ duration: 250 }} out:slide={{ duration: 100 }} class="h-full w-full">
+            <div class="h-full w-full">
               <MusicQueueDisplay />
             </div>
           </Pane>
         {/if}
       </Splitpanes>
-      <div class="h-[14%] self-end w-full">
+      <div class="h-[11%] self-end w-full">
         <MusicPlayer />
       </div>
     </div>

@@ -1,19 +1,17 @@
 <script lang="ts">
   import { page } from "$app/state";
-  import { PlayIcon } from "@lucide/svelte";
   import { createQuery } from "@tanstack/svelte-query";
   import { fly } from "svelte/transition";
 
   import { svelteQueryKeys } from "$lib/constants/keys";
-  import musicPlayerStore from "$lib/stores/music-player.svelte";
-  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte";
   import { getReadableAlbumType } from "$lib/utils/format";
   import { backendClient } from "$lib/utils/query-client";
   import { albumDetailsSchema } from "$lib/utils/validation/albums";
 
-  import AlbumTrackTile from "$lib/components/AlbumTrackTile.svelte";
+  import AlbumTrackTile from "$lib/components/album/AlbumTrackTile.svelte";
   import Image from "$lib/components/Image.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
+  import PlaylistPlayOptions from "$lib/components/playlist/PlaylistPlayOptions.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
 
   let pageTitle = $state("Album");
@@ -33,12 +31,6 @@
       pageTitle = "Album Load Failed.";
     }
   });
-
-  function playAlbum(songs: QueueableMusic[]) {
-    musicQueueStore.addToQueue(...songs);
-    musicQueueStore.musicPlayingNow = songs[0];
-    musicPlayerStore.playMusic();
-  }
 </script>
 
 <svelte:head>
@@ -72,21 +64,14 @@
             {album.totalSongCount === 1 ? "song" : "songs"}, {album.totalDuration}
           </p>
         </div>
-        <Button
-          class="mt-4"
-          onclick={() =>
-            playAlbum(
-              album.albumTracks.map(track => ({
-                ...track,
-                videoType: "VIDEO_TYPE_TRACK",
-                thumbnail: album.cover,
-                artists: [album.artist],
-              })),
-            )}
-        >
-          <PlayIcon fill="1" />
-          Play Album
-        </Button>
+        <PlaylistPlayOptions
+          tracks={album.albumTracks.map(track => ({
+            ...track,
+            videoType: "VIDEO_TYPE_TRACK",
+            thumbnail: album.cover,
+            artists: [album.artist],
+          }))}
+        />
       </div>
       <div class="h-full w-1/2 py-20 px-4 overflow-auto border-l border-l-muted">
         {#each album.albumTracks.sort((a, b) => a.positionInAlbum - b.positionInAlbum) as albumTrack}

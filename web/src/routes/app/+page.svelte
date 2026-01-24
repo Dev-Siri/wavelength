@@ -9,7 +9,7 @@
   import { followedArtistResponseSchema } from "$lib/utils/validation/artist-response";
   import { quickPicksResponseSchema } from "$lib/utils/validation/quick-picks-response.js";
 
-  import ArtistCard from "$lib/components/ArtistCard.svelte";
+  import ArtistCard from "$lib/components/artist/ArtistCard.svelte";
   import QuickPickCard from "$lib/components/QuickPickCard.svelte";
   import QuickPickCardSkeleton from "$lib/components/skeletons/QuickPickCardSkeleton.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
@@ -39,7 +39,7 @@
 
 <div class="p-6 bg-black h-screen w-full pb-[20%] overflow-auto">
   {#if followedArtistsQuery.data?.artists?.length}
-    <h2 class="scroll-m-20 text-3xl tracking-tight my-4 text-balance">Your Follows</h2>
+    <h2 class="text-xl font-semibold select-none mb-4">Your Follows</h2>
     <div
       class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 gap-2 overflow-hidden {isFollowingListCollapsed
         ? 'h-32'
@@ -61,10 +61,12 @@
       </Button>
     </div>
   {/if}
-  <h3 class="scroll-m-20 text-3xl tracking-tight my-4 text-balance">
+  <h3 class="text-xl font-semibold select-none">
     Popular Music in {codeToCountryName(regionQuery.isSuccess ? regionQuery.data : DEFAULT_REGION)}
   </h3>
-  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 w-full gap-4">
+  <div
+    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 w-full gap-12 px-2.5"
+  >
     {#if quickPicksQuery.isLoading}
       {#each new Array(10)}
         <QuickPickCardSkeleton />

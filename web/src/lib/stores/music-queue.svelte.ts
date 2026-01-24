@@ -6,25 +6,12 @@ export interface QueueableMusic extends Omit<MusicTrack, "duration" | "isExplici
 }
 
 class MusicQueueStore {
-  musicQueue = $state<QueueableMusic[]>([]);
   musicPlayingNow = $state<QueueableMusic | null>(null);
+  // Main playlist context used by all.
+  musicPlaylistContext = $state<QueueableMusic[]>([]);
+  // Stores a copy of the original playlist context when shuffle mode is enabled.
+  musicPlaylistContextPreshuffle = $state<QueueableMusic[]>([]);
   isMusicQueueVisible = $state(false);
-
-  playNext = (...tracks: QueueableMusic[]) => {
-    const uniqueTracks = tracks.filter(
-      newTrack => !this.musicQueue.some(queuedTrack => queuedTrack.videoId === newTrack.videoId),
-    );
-
-    this.musicQueue = [...uniqueTracks, ...this.musicQueue];
-  };
-
-  addToQueue = (...tracks: QueueableMusic[]) => {
-    const uniqueTracks = tracks.filter(
-      newTrack => !this.musicQueue.some(queuedTrack => queuedTrack.videoId === newTrack.videoId),
-    );
-
-    this.musicQueue = [...this.musicQueue, ...uniqueTracks];
-  };
 }
 
 const musicQueueStore = new MusicQueueStore();

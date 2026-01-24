@@ -5,8 +5,8 @@
   import { backendClient } from "$lib/utils/query-client";
   import { musicSearchResponseSchema } from "$lib/utils/validation/search-response";
 
+  import TopSearchResult from "$lib/components/search/TopSearchResult.svelte";
   import TrackItemSkeleton from "$lib/components/skeletons/TrackItemSkeleton.svelte";
-  import TopResult from "$lib/components/TopResult.svelte";
   import TrackItem from "$lib/components/TrackItem.svelte";
   import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
 
@@ -39,7 +39,7 @@
   {@const topResult = trackSearchQuery.data.tracks[0]}
   <div class="h-full w-1/2">
     <h2 class="text-2xl mb-3 font-semibold">Top Result</h2>
-    <TopResult {topResult} />
+    <TopSearchResult {topResult} />
   </div>
   <div class="h-full w-1/2">
     <h2 class="text-2xl mb-3 font-semibold">Songs</h2>

@@ -6,7 +6,7 @@
   import { youtubeVideosSchema } from "$lib/utils/validation/youtube-video";
 
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
-  import NoResults from "$lib/components/NoResults.svelte";
+  import NoSearchResults from "$lib/components/search/NoSearchResults.svelte";
   import UVideoCard from "$lib/components/UVideoCard.svelte";
 
   const { q }: { q: string } = $props();
@@ -26,7 +26,7 @@
       {/each}
     </div>
   {:else}
-    <NoResults />
+    <NoSearchResults message="No YouTube videos matched your search." />
   {/if}
 {:else}
   <div class="flex flex-col h-full pt-[20%] w-full items-center justify-center">

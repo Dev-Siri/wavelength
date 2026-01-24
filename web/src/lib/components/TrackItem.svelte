@@ -15,18 +15,20 @@
   import { backendClient } from "$lib/utils/query-client";
   import { musicTrackDurationSchema } from "$lib/utils/validation/track-length";
 
-  import ArtistLink from "./ArtistLink.svelte";
+  import ArtistLink from "./artist/ArtistLink.svelte";
   import ExplicitIndicator from "./ExplicitIndicator.svelte";
   import Image from "./Image.svelte";
-  import PlaylistToggleOptions from "./PlaylistToggleOptions.svelte";
+  import PlaylistToggleOptions from "./playlist/PlaylistToggleOptions.svelte";
   import { Button } from "./ui/button";
   import * as DropdownMenu from "./ui/dropdown-menu";
 
   const {
     music,
     toggle,
+    playCount,
   }: {
     music: MusicTrack & { videoType?: VideoType };
+    playCount?: string;
     toggle:
       | { type: "add" }
       | {
@@ -43,8 +45,8 @@
       videoType: music.videoType ?? "VIDEO_TYPE_TRACK",
     } satisfies QueueableMusic;
 
-    musicQueueStore.addToQueue(queueableTrack);
     musicQueueStore.musicPlayingNow = queueableTrack;
+    musicQueueStore.musicPlaylistContext = [];
     musicPlayerStore.visiblePanel = "playingNow";
   }
 
@@ -128,6 +130,9 @@
               isUVideo={music.videoType === "VIDEO_TYPE_UVIDEO"}
               trailingComma={music.artists.length - 1 !== music.artists.indexOf(artist)}
             />
+            {#if playCount}
+              • {playCount}
+            {/if}
           {/each}
         </p>
       </div>

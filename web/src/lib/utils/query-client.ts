@@ -71,6 +71,9 @@ async function queryClient<T extends z.ZodTypeAny>(
   } catch (error: unknown) {
     await fetch(`${PUBLIC_BACKEND_URL}/diagnostics/report-error`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         error: JSON.stringify(error),
         source: "queryClient",

@@ -5,7 +5,7 @@
   import { backendClient } from "$lib/utils/query-client";
   import { albumSearchResponseSchema } from "$lib/utils/validation/search-response";
 
-  import AlbumTile from "$lib/components/AlbumTile.svelte";
+  import AlbumTile from "$lib/components/album/AlbumTile.svelte";
   import AlbumSkeleton from "$lib/components/skeletons/AlbumSkeleton.svelte";
 
   const { q }: { q: string } = $props();

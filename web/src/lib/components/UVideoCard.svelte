@@ -36,15 +36,15 @@
       ...uvideo,
       artists: [
         {
-          title: uvideo.title,
+          title: uvideo.author,
           browseId: uvideo.authorChannelId,
         },
       ],
       videoType: "VIDEO_TYPE_UVIDEO",
     } satisfies QueueableMusic;
 
-    musicQueueStore.addToQueue(queueableTrack);
     musicQueueStore.musicPlayingNow = queueableTrack;
+    musicQueueStore.musicPlaylistContext = [];
     musicPlayerStore.visiblePanel = "playingNow";
   }
 

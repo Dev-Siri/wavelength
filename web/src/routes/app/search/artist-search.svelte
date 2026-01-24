@@ -4,7 +4,7 @@
   import { svelteQueryKeys } from "$lib/constants/keys";
   import { backendClient } from "$lib/utils/query-client";
 
-  import ArtistLabel from "$lib/components/ArtistLabel.svelte";
+  import ArtistLabel from "$lib/components/artist/ArtistLabel.svelte";
   import ArtistLabelSkeleton from "$lib/components/skeletons/ArtistLabelSkeleton.svelte";
   import { artistSearchResponseSchema } from "$lib/utils/validation/search-response";
 

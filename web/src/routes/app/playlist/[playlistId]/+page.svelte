@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from "$app/state";
-  import { ClockIcon, HashIcon, ListPlusIcon, PlayIcon } from "@lucide/svelte";
+  import { ClockIcon, HashIcon, ListPlusIcon } from "@lucide/svelte";
   import { createQuery } from "@tanstack/svelte-query";
   import { fly } from "svelte/transition";
   import { z } from "zod";
@@ -15,12 +15,13 @@
   import { themeColorSchema } from "$lib/utils/validation/theme-color";
   import { playlistTracksLengthSchema } from "$lib/utils/validation/track-length";
 
-  import ChangePlaylistVisibilityButton from "$lib/components/ChangePlaylistVisibilityButton.svelte";
+  import ChangePlaylistVisibilityButton from "$lib/components/action-buttons/ChangePlaylistVisibilityButton.svelte";
   import EditPlaylistDetailsDialog from "$lib/components/EditPlaylistDetailsDialog.svelte";
   import Image from "$lib/components/Image.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
-  import PlaylistLength from "$lib/components/PlaylistLength.svelte";
-  import PlaylistTracksList from "$lib/components/PlaylistTracksList.svelte";
+  import PlaylistLength from "$lib/components/playlist/PlaylistLength.svelte";
+  import PlaylistPlayOptions from "$lib/components/playlist/PlaylistPlayOptions.svelte";
+  import PlaylistTracksList from "$lib/components/playlist/PlaylistTracksList.svelte";
   import { Button } from "$lib/components/ui/button";
   import * as Dialog from "$lib/components/ui/dialog";
   import * as Tooltip from "$lib/components/ui/tooltip";
@@ -29,7 +30,7 @@
   let pageTitle = $state("Playlist");
 
   function playPlaylist(songs: QueueableMusic[]) {
-    musicQueueStore.addToQueue(...songs);
+    musicQueueStore.musicPlaylistContext = songs;
     musicQueueStore.musicPlayingNow = songs[0];
     musicPlayerStore.playMusic();
   }
@@ -162,13 +163,8 @@
           {:else if playlistTracksQuery.isSuccess}
             {@const { playlistTracks } = playlistTracksQuery.data}
             {#if playlistTracks.length}
-              <div class="flex items-center gap-2">
-                <Button
-                  class="rounded-full w-fit my-3 py-6 ml-1 z-10"
-                  onclick={() => playPlaylist(playlistTracks ?? [])}
-                >
-                  <PlayIcon class="text-primary-foreground" fill="black" />
-                </Button>
+              <div class="flex items-center gap-1 my-4">
+                <PlaylistPlayOptions tracks={playlistTracks} />
                 <div class="z-10">
                   <ChangePlaylistVisibilityButton
                     playlistId={playlist.playlistId}

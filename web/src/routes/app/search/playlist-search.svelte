@@ -5,8 +5,8 @@
   import { backendClient } from "$lib/utils/query-client";
   import { playlistsSchema } from "$lib/utils/validation/playlists";
 
-  import NoResults from "$lib/components/NoResults.svelte";
-  import PlaylistTile from "$lib/components/PlaylistTile.svelte";
+  import PlaylistTile from "$lib/components/playlist/PlaylistTile.svelte";
+  import NoSearchResults from "$lib/components/search/NoSearchResults.svelte";
   import TrackItemSkeleton from "$lib/components/skeletons/TrackItemSkeleton.svelte";
 
   const { q }: { q: string } = $props();
@@ -32,7 +32,7 @@
       {/each}
     {:else}
       <div class="mt-[14%]">
-        <NoResults />
+        <NoSearchResults message="No public playlists matched your search." />
       </div>
     {/if}
   {/if}

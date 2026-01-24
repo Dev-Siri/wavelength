@@ -8,6 +8,8 @@
 
   import Button from "./ui/button/button.svelte";
 
+  const { mode = "full" }: { mode?: "icon" | "full" } = $props();
+
   const likeTracksCountQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.likeCount,
     queryFn: () =>
@@ -23,26 +25,31 @@
 <a
   href="/app/likes"
   tabindex="0"
-  class="flex group cursor-pointer items-center justify-start p-2.5 pr-3 bg-[#111] hover:bg-[#1c1c1c] my-0.5 rounded-xl w-full gap-2"
+  class="flex group cursor-pointer items-center p-2.5 pr-3 bg-[#111] hover:bg-[#1c1c1c] my-0.5 rounded-xl w-full gap-2 {mode ===
+  'full'
+    ? 'justify-start'
+    : 'justify-center'}"
 >
   <Button variant="outline" class="p-0 h-15 w-15 aspect-square">
     <div class="like-gradient h-full w-full rounded-md grid place-items-center">
       <HeartIcon fill="white" />
     </div>
   </Button>
-  <div class="w-full">
-    <div class="text-start">
-      <p class="text-md">Likes</p>
-      {#if likeTracksCountQuery.isError}
-        <p class="text-xs text-red-500">An error occured.</p>
-      {:else if likeTracksCountQuery.isSuccess}
-        <p class="text-xs text-muted-foreground">
-          {likeTracksCountQuery.data.likeCount === 0 ? "No" : likeTracksCountQuery.data.likeCount}
-          {likeTracksCountQuery.data.likeCount === 1 ? "song" : "songs"}
-        </p>
-      {:else}
-        <p class="text-xs text-muted-foreground">Loading...</p>
-      {/if}
+  {#if mode === "full"}
+    <div class="w-full">
+      <div class="text-start">
+        <p class="text-md">Likes</p>
+        {#if likeTracksCountQuery.isError}
+          <p class="text-xs text-red-500">An error occured.</p>
+        {:else if likeTracksCountQuery.isSuccess}
+          <p class="text-xs text-muted-foreground">
+            {likeTracksCountQuery.data.likeCount === 0 ? "No" : likeTracksCountQuery.data.likeCount}
+            {likeTracksCountQuery.data.likeCount === 1 ? "song" : "songs"}
+          </p>
+        {:else}
+          <p class="text-xs text-muted-foreground">Loading...</p>
+        {/if}
+      </div>
     </div>
-  </div>
+  {/if}
 </a>

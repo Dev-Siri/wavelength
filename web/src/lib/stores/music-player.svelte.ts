@@ -10,6 +10,7 @@ class MusicPlayerStore {
   isPlaying = $state(false);
   visiblePanel = $state<MusicInfoPanels | null>(null);
   repeatMode = $state<MusicRepeatMode>("none");
+  isShuffleModeOn = $state(false);
   isMuted = $state(false);
   volume = $state(1);
   duration = $state(0);

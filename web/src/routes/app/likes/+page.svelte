@@ -1,11 +1,9 @@
 <script lang="ts">
-  import { ClockIcon, HeartIcon, HeartPlusIcon, PlayIcon } from "@lucide/svelte";
+  import { ClockIcon, HeartIcon, HeartPlusIcon } from "@lucide/svelte";
   import { createQuery } from "@tanstack/svelte-query";
   import { fly } from "svelte/transition";
 
   import { svelteQueryKeys } from "$lib/constants/keys.js";
-  import musicPlayerStore from "$lib/stores/music-player.svelte.js";
-  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
   import userStore from "$lib/stores/user.svelte.js";
   import { backendClient } from "$lib/utils/query-client.js";
   import { likedTracksSchema } from "$lib/utils/validation/liked-track";
@@ -13,15 +11,10 @@
 
   import Image from "$lib/components/Image.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
-  import PlaylistLength from "$lib/components/PlaylistLength.svelte";
+  import PlaylistLength from "$lib/components/playlist/PlaylistLength.svelte";
+  import PlaylistPlayOptions from "$lib/components/playlist/PlaylistPlayOptions.svelte";
   import TrackItem from "$lib/components/TrackItem.svelte";
   import { Button } from "$lib/components/ui/button";
-
-  function playLikes(songs: QueueableMusic[]) {
-    musicQueueStore.addToQueue(...songs);
-    musicQueueStore.musicPlayingNow = songs[0];
-    musicPlayerStore.playMusic();
-  }
 
   const likedTracksQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.likes,
@@ -92,13 +85,8 @@
         {:else if likedTracksQuery.isSuccess}
           {@const { likedTracks } = likedTracksQuery.data}
           {#if likedTracks.length}
-            <div class="flex items-center gap-2">
-              <Button
-                class="rounded-full w-fit my-3 py-6 ml-1 z-10"
-                onclick={() => playLikes(likedTracks ?? [])}
-              >
-                <PlayIcon class="text-primary-foreground" fill="black" />
-              </Button>
+            <div class="my-4">
+              <PlaylistPlayOptions tracks={likedTracks} />
             </div>
             <header
               class="flex pl-14 justify-around items-center gap-5 select-none text-muted-foreground"
