@@ -18,14 +18,10 @@
   }
 
   function shuffleAndPlayAll() {
-    musicPlayerStore.isShuffleModeOn = !musicPlayerStore.isShuffleModeOn;
-    if (musicPlayerStore.isShuffleModeOn) {
-      musicQueueStore.musicPlaylistContextPreshuffle = musicQueueStore.musicPlaylistContext;
-      musicQueueStore.musicPlaylistContext = shuffle(musicQueueStore.musicPlaylistContext);
-    } else {
-      musicQueueStore.musicPlaylistContext = musicQueueStore.musicPlaylistContextPreshuffle;
-      musicQueueStore.musicPlaylistContextPreshuffle = [];
-    }
+    musicPlayerStore.isShuffleModeOn = true;
+    musicQueueStore.musicPlaylistContextPreshuffle = musicQueueStore.musicPlaylistContext;
+    musicQueueStore.musicPlaylistContext = shuffle(musicQueueStore.musicPlaylistContext);
+    playAll();
   }
 </script>
 
