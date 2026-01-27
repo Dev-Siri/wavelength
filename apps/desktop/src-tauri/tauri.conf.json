@@ -1,22 +1,25 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "wavelength",
-  "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "productName": "Wavelength",
+  "mainBinaryName": "Wavelength",
+  "version": "1.2.0",
+  "identifier": "siri.dev.wavelength",
   "build": {
-    "frontendDist": "../public",
-    "devUrl": "http://localhost:5173",
-    "beforeDevCommand": "bun dev",
-    "beforeBuildCommand": "bun build"
+    "frontendDist": "https://mavelength.vercel.app",
+    "devUrl": "http://localhost:5173"
   },
   "app": {
     "windows": [
       {
         "title": "WavLen",
-        "width": 800,
-        "height": 600,
+        "width": 1340,
+        "height": 800,
+        "minHeight": 600,
+        "minWidth": 700,
         "resizable": true,
-        "fullscreen": false
+        "maximized": true,
+        "fullscreen": false,
+        "url": "/app"
       }
     ],
     "security": {
@@ -28,10 +31,12 @@
     "targets": "all",
     "icon": [
       "icons/32x32.png",
+      "icons/64x64.png",
       "icons/128x128.png",
       "icons/128x128@2x.png",
       "icons/icon.icns",
-      "icons/icon.ico"
+      "icons/icon.ico",
+      "icons/icon.png"
     ]
   }
 }
