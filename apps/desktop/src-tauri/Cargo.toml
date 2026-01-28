@@ -1,5 +1,5 @@
 [package]
-name = "Wavelength"
+name = "WavLen"
 version = "0.1.0"
 description = "Call this a glorified YouTube Music wrapper."
 authors = ["Dev-Siri"]
@@ -23,3 +23,13 @@ serde = { version = "1.0", features = ["derive"] }
 log = "0.4"
 tauri = { version = "2.9.5", features = ["tray-icon"] }
 tauri-plugin-log = "2"
+tydle = "0.1.12"
+tokio = { version = "1.49.0", features = ["full"] }
+
+[profile.release]
+# Copied from the docs: https://v2.tauri.app/concept/size
+codegen-units = 1 # Allows LLVM to perform better optimization.
+lto = true # Enables link-time-optimizations.
+opt-level = "s" # Prioritizes small binary size. Use `3` if you prefer speed.
+panic = "abort" # Higher performance by disabling panic handlers.
+strip = true # Ensures debug symbols are removed.

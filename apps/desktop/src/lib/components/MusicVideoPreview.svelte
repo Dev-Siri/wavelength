@@ -1,8 +1,7 @@
 <script lang="ts">
-  import createYouTubePlayer from "youtube-player";
-
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
+  import { WebEmbedPlayer } from "$lib/stream-player/web-embed";
 
   const { musicVideoId }: { musicVideoId: string } = $props();
 
@@ -18,15 +17,14 @@
     const currentTime = await musicPlayerStore.musicPreviewPlayer.getCurrentTime();
     const duration = await musicPlayerStore.musicPreviewPlayer.getDuration();
 
-    if (currentTime >= duration - 20)
-      await musicPlayerStore.musicPreviewPlayer.loadVideoById(musicVideoId, 10);
+    if (currentTime >= duration - 20) await musicPlayerStore.musicPreviewPlayer.load(musicVideoId);
 
-    await musicPlayerStore.musicPreviewPlayer.seekTo(currentTime + 10, true);
-    await musicPlayerStore.musicPreviewPlayer.playVideo();
+    await musicPlayerStore.musicPreviewPlayer.seek(currentTime + 10);
+    await musicPlayerStore.musicPreviewPlayer.play();
   }
 
   $effect(() => {
-    const ytPlayer = createYouTubePlayer(musicVideoPreview, {
+    const ytPlayer = new WebEmbedPlayer(musicVideoPreview, {
       playerVars: {
         controls: 0,
         loop: 1,
@@ -45,13 +43,12 @@
     async function loadVideo() {
       const playerDuration = (await musicPlayerStore.musicPlayer?.getCurrentTime()) ?? 0;
 
-      await ytPlayer.loadVideoById(
+      await ytPlayer.load(
         musicVideoId,
         musicQueueStore.musicPlayingNow?.videoType === "VIDEO_TYPE_UVIDEO" ? playerDuration : 10,
       );
 
       interval = setInterval(viewRandomChunks, 5000);
-
       await ytPlayer.mute();
     }
 
@@ -59,7 +56,7 @@
 
     return () => {
       clearInterval(interval);
-      ytPlayer.destroy();
+      ytPlayer.dispose();
     };
   });
 
@@ -74,11 +71,11 @@
       const playerDuration = (await musicPlayerStore.musicPlayer?.getCurrentTime()) ?? 0;
 
       if (musicPlayerStore.isPlaying) {
-        musicPlayerStore.musicPreviewPlayer.seekTo(playerDuration, true);
-        musicPlayerStore.musicPreviewPlayer.playVideo();
+        musicPlayerStore.musicPreviewPlayer.seek(playerDuration);
+        musicPlayerStore.musicPreviewPlayer.play();
       } else {
-        musicPlayerStore.musicPreviewPlayer.seekTo(playerDuration, true);
-        musicPlayerStore.musicPreviewPlayer.pauseVideo();
+        musicPlayerStore.musicPreviewPlayer.seek(playerDuration);
+        musicPlayerStore.musicPreviewPlayer.pause();
       }
     }
 
@@ -87,7 +84,7 @@
 </script>
 
 <div
-  class="absolute h-[140%] -mt-24 w-full opacity-10 pointer-events-none left-0 right-0 duration-200"
+  class="absolute h-[140%] -mt-24 w-full opacity-15 pointer-events-none left-0 right-0 duration-200"
   id="preview-player"
   bind:this={musicVideoPreview}
 ></div>

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
 
-  import { BASE_URL } from "$lib/constants/urls.js";
+  import { BASE_URL } from "$lib/constants/utils";
 
   const {
     src,

@@ -73,7 +73,7 @@
       {#each lyrics as lyric, i}
         <button
           type="button"
-          onclick={() => musicPlayerStore.musicPlayer?.seekTo(lyric.startMs / 1000, true)}
+          onclick={() => musicPlayerStore.musicPlayer?.seek(lyric.startMs / 1000)}
           class="font-bold text-start text-3xl cursor-pointer duration-200 hover:text-white {playerProgressMs >
             lyric.startMs && playerProgressMs < lyric.startMs + lyric.durMs
             ? 'text-white'

@@ -1,23 +1,56 @@
 <script lang="ts">
-  import createYouTubePlayer from "youtube-player";
+  import type { PlayerEvent } from "$lib/stream-player/player";
 
-  import { musicPlayerStates } from "$lib/constants/music-player";
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
 
+  import { WebEmbedPlayer } from "$lib/stream-player/web-embed";
   import MusicPlayerControls from "./MusicPlayerControls.svelte";
   import MusicPlayerPlaybackOptions from "./MusicPlayerPlaybackOptions.svelte";
   import MusicPlayerTrackLabel from "./MusicPlayerTrackLabel.svelte";
 
   let musicPlayerElement: HTMLDivElement;
 
-  async function trackProgress() {
-    if (!musicPlayerStore.musicPlayer || !musicPlayerStore.isPlaying) return;
+  // Extra handlers to sync the state with the player
+  // In case a non-application event causes the video's state to change.
+  async function handleOnPlay() {
+    musicPlayerStore.duration = (await musicPlayerStore.musicPlayer?.getDuration()) ?? 0;
+    musicPlayerStore.isPlaying = true;
+  }
 
-    const [currentTime, duration] = await Promise.all([
-      musicPlayerStore.musicPlayer.getCurrentTime(),
-      musicPlayerStore.musicPlayer.getDuration(),
-    ]);
+  const handleOnPause = () => (musicPlayerStore.isPlaying = false);
+
+  async function handleOnEnded() {
+    if (musicPlayerStore.repeatMode === "one") {
+      musicPlayerStore.playMusic();
+      return;
+    }
+
+    if (!musicQueueStore.musicPlayingNow) return;
+
+    musicPlayerStore.isPlaying = false;
+
+    const songThatWasPlayedIndex = musicQueueStore.musicPlaylistContext.findIndex(
+      track => musicQueueStore.musicPlayingNow?.title === track.title,
+    );
+    const wasSongTheLastInQueue =
+      musicQueueStore.musicPlaylistContext.length - 1 === songThatWasPlayedIndex;
+
+    let nextIndex = 0;
+
+    if (wasSongTheLastInQueue) {
+      nextIndex = 0;
+    } else {
+      nextIndex = songThatWasPlayedIndex + 1;
+    }
+
+    if (musicPlayerStore.repeatMode === "all" || !wasSongTheLastInQueue)
+      musicQueueStore.musicPlayingNow = musicQueueStore.musicPlaylistContext[nextIndex];
+  }
+
+  async function handleTimeUpdate(event: PlayerEvent<"timeupdate">) {
+    if (!musicPlayerStore.musicPlayer || !musicPlayerStore.isPlaying) return;
+    const { duration, currentTime } = event.detail;
 
     if (duration > 0) {
       const progress = (currentTime / duration) * 100;
@@ -26,50 +59,8 @@
     }
   }
 
-  async function onStateChange(event: any) {
-    const playerState = event.data;
-
-    switch (playerState) {
-      // Extra handlers to sync the state with the player
-      // In case a non-application event causes the video's state to change.
-      case musicPlayerStates.playing:
-        musicPlayerStore.duration = (await musicPlayerStore.musicPlayer?.getDuration()) ?? 0;
-        musicPlayerStore.isPlaying = true;
-        break;
-      case musicPlayerStates.paused:
-        musicPlayerStore.isPlaying = false;
-        break;
-      case musicPlayerStates.ended:
-        if (musicPlayerStore.repeatMode === "one") {
-          musicPlayerStore.playMusic();
-          break;
-        }
-
-        if (!musicQueueStore.musicPlayingNow) break;
-
-        musicPlayerStore.isPlaying = false;
-
-        const songThatWasPlayedIndex = musicQueueStore.musicPlaylistContext.findIndex(
-          track => musicQueueStore.musicPlayingNow?.title === track.title,
-        );
-        const wasSongTheLastInQueue =
-          musicQueueStore.musicPlaylistContext.length - 1 === songThatWasPlayedIndex;
-
-        let nextIndex = 0;
-
-        if (wasSongTheLastInQueue) {
-          nextIndex = 0;
-        } else {
-          nextIndex = songThatWasPlayedIndex + 1;
-        }
-
-        if (musicPlayerStore.repeatMode === "all" || !wasSongTheLastInQueue)
-          musicQueueStore.musicPlayingNow = musicQueueStore.musicPlaylistContext[nextIndex];
-    }
-  }
-
   $effect(() => {
-    const youtubePlayer = createYouTubePlayer(musicPlayerElement, {
+    const youtubePlayer = new WebEmbedPlayer(musicPlayerElement, {
       playerVars: {
         autoplay: 0,
         controls: 0,
@@ -80,9 +71,10 @@
 
     musicPlayerStore.musicPlayer = youtubePlayer;
 
-    const interval = setInterval(trackProgress, 250);
-
-    youtubePlayer.on("stateChange", onStateChange);
+    youtubePlayer.on("playing", handleOnPlay);
+    youtubePlayer.on("paused", handleOnPause);
+    youtubePlayer.on("ended", handleOnEnded);
+    youtubePlayer.on("timeupdate", handleTimeUpdate);
 
     function musicPlayerShortcuts(event: KeyboardEvent) {
       if (event.key !== " " || (document.activeElement && document.activeElement !== document.body))
@@ -96,11 +88,9 @@
     }
 
     window.addEventListener("keypress", musicPlayerShortcuts);
-
     return () => {
       window.removeEventListener("keypress", musicPlayerShortcuts);
-      clearInterval(interval);
-      youtubePlayer.destroy();
+      youtubePlayer.dispose();
     };
   });
 
@@ -109,9 +99,7 @@
       if (!musicPlayerStore.musicPlayer || !musicQueueStore.musicPlayingNow) return;
 
       musicPlayerStore.progress = 0;
-
-      await musicPlayerStore.musicPlayer.loadVideoById(musicQueueStore.musicPlayingNow.videoId);
-
+      await musicPlayerStore.musicPlayer.load(musicQueueStore.musicPlayingNow.videoId);
       musicPlayerStore.isPlaying = true;
     }
 

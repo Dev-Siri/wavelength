@@ -5,6 +5,7 @@
   "version": "1.2.0",
   "identifier": "siri.dev.wavelength",
   "build": {
+    "beforeDevCommand": "bun run dev",
     "frontendDist": "https://mavelength.vercel.app",
     "devUrl": "http://localhost:5173"
   },
@@ -22,6 +23,7 @@
         "url": "/app"
       }
     ],
+    "withGlobalTauri": true,
     "security": {
       "csp": null
     }

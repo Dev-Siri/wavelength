@@ -15,8 +15,7 @@
 
     setTimeout(async () => {
       const currentTime = (await musicPlayerStore.musicPlayer?.getCurrentTime()) ?? 0;
-
-      musicPlayerStore.musicPreviewPlayer?.seekTo(currentTime, true);
+      musicPlayerStore.musicPreviewPlayer?.seek(currentTime);
     }, 1500);
   }
 </script>

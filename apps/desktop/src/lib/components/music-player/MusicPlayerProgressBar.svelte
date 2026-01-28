@@ -18,10 +18,10 @@
     currentTime = Math.round(newTime);
     musicPlayerStore.progress = percentage * 100;
 
-    await musicPlayerStore.musicPlayer.seekTo(newTime, true);
+    await musicPlayerStore.musicPlayer.seek(newTime);
 
     if (musicQueueStore.musicPlayingNow?.videoType === "VIDEO_TYPE_UVIDEO")
-      await musicPlayerStore.musicPreviewPlayer?.seekTo(newTime, true);
+      await musicPlayerStore.musicPreviewPlayer?.seek(newTime);
   }
 
   let totalDuration = $state(0);
