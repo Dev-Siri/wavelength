@@ -53,7 +53,9 @@
             <LibraryIcon size={30} />
           </div>
           {#if !isCollapsed}
-            <h2 class="text-xl font-semibold select-none duration-200 group-hover:opacity-80">
+            <h2
+              class="text-xl font-semibold select-none duration-200 truncate group-hover:opacity-80"
+            >
               Your Library
             </h2>
           {/if}

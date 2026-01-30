@@ -58,6 +58,16 @@
     musicPlayerStore.playMusic();
     musicPlayerStore.visiblePanel = "playingNow";
   }
+
+  const coverBtnProps = $derived(
+    mode === "full"
+      ? {
+          onclick: playPlaylist,
+        }
+      : {
+          href: `/app/playlist/${playlistId}`,
+        },
+  );
 </script>
 
 <div
@@ -70,7 +80,7 @@
     ? 'justify-start'
     : 'justify-center'}"
 >
-  <Button variant="outline" class="relative p-0 h-15 w-15 aspect-square" onclick={playPlaylist}>
+  <Button variant="outline" class="relative p-0 h-15 w-15 aspect-square" {...coverBtnProps}>
     {#if coverImage}
       <Image
         src={coverImage}
@@ -84,11 +94,13 @@
         class="bg-primary-foreground rounded-md h-15 group-hover:opacity-50 duration-200 w-15"
       ></div>
     {/if}
-    <PlayIcon
-      class="absolute cursor-pointer group-hover:opacity-100 opacity-0 inset-0 top-[34%] left-1/3"
-      size={14}
-      fill="white"
-    />
+    {#if mode === "full"}
+      <PlayIcon
+        class="absolute cursor-pointer group-hover:opacity-100 opacity-0 inset-0 top-[34%] left-1/3"
+        size={14}
+        fill="white"
+      />
+    {/if}
   </Button>
   {#if mode === "full"}
     <a

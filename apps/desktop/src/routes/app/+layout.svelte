@@ -156,7 +156,7 @@
           </Pane>
         {/if}
       </Splitpanes>
-      <div class="h-[11%] self-end w-full">
+      <div class="h-[12%] self-end w-full">
         <MusicPlayer />
       </div>
     </div>

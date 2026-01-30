@@ -4,6 +4,7 @@
   import type { EmbeddedArtist } from "$lib/utils/validation/artist";
 
   import cn from "$lib/utils/cn";
+  import { openUrl } from "@tauri-apps/plugin-opener";
 
   import Button from "../ui/button/button.svelte";
   import * as Tooltip from "../ui/tooltip";
@@ -34,7 +35,7 @@
     e.preventDefault();
 
     if (isUVideo) {
-      window.open(artistPagePath);
+      openUrl(artistPagePath);
     } else {
       goto(artistPagePath);
     }

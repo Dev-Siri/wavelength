@@ -16,6 +16,7 @@
   import { musicTrackStatsResponseSchema } from "$lib/utils/validation/music-track-stats";
   import { themeColorSchema } from "$lib/utils/validation/theme-color";
 
+  import { openUrl } from "@tauri-apps/plugin-opener";
   import Image from "../Image.svelte";
   import { Button } from "../ui/button";
   import * as Tooltip from "../ui/tooltip";
@@ -74,6 +75,8 @@
       <div class="flex items-center mt-4 lg:mt-24 gap-2 justify-center w-fit flex-col lg:flex-row">
         <Button
           class="px-4 gap-2 text-muted-foreground hidden min-[800px]:flex"
+          onclick={() =>
+            openUrl(`https://youtube.com/watch?v=${musicQueueStore.musicPlayingNow?.videoId}`)}
           href="https://youtube.com/watch?v={musicQueueStore.musicPlayingNow.videoId}"
           variant="secondary"
           referrerpolicy="no-referrer"
@@ -84,6 +87,10 @@
         </Button>
         <Button
           class="px-2 gap-2 text-muted-foreground"
+          onclick={() =>
+            openUrl(
+              `https://music.youtube.com/watch?v=${musicQueueStore.musicPlayingNow?.videoId}`,
+            )}
           href="https://music.youtube.com/watch?v={musicQueueStore.musicPlayingNow.videoId}"
           variant="secondary"
           referrerpolicy="no-referrer"

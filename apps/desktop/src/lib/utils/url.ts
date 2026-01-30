@@ -1,4 +1,5 @@
 import { PUBLIC_BACKEND_URL } from "$env/static/public";
+import { isTauri } from "@tauri-apps/api/core";
 
 type UrlValidity =
   | {
@@ -33,4 +34,13 @@ export function getThumbnailUrl(videoId: string) {
 
 export function getStreamUrl(videoId: string, streamType: "audio" | "video") {
   return new URL(`/stream/playback/${videoId}/${streamType}`, PUBLIC_BACKEND_URL).toString();
+}
+
+export async function openUrl(url: string) {
+  if (isTauri()) {
+    const { openUrl } = await import("@tauri-apps/plugin-opener");
+    return await openUrl(url);
+  }
+
+  window.open(url);
 }

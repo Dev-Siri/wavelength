@@ -1,35 +1,51 @@
+use dashmap::DashMap;
+use dotenv::dotenv;
+use std::{env, sync::Arc};
+
 use tauri::{
-    tray::{TrayIcon, TrayIconBuilder},
+    menu::{Menu, MenuItem},
+    tray::TrayIconBuilder,
     Manager,
 };
 
-pub mod youtube;
+mod audio_server;
+mod cache;
+mod discord_rich_presence;
+mod youtube;
 
-use tydle::{Tydle, TydleOptions};
+use tokio::sync::Mutex;
+use tydle::Tydle;
+
+use crate::cache::CachedStream;
 
 pub struct AppState {
-    pub tydle: Tydle,
+    pub tydle: Arc<Tydle>,
+    pub stream_url_cache: DashMap<String, CachedStream>,
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    dotenv().ok();
+
+    audio_server::start_stream_server();
     tauri::Builder::default()
+        .plugin(tauri_plugin_opener::init())
         .setup(|app| {
-            let tydle_instance = Tydle::new(TydleOptions::default())?;
-            log::info!("Tydle instance initialized.");
+            let tydle = youtube::init_extractor()?;
 
-            app.manage(AppState {
-                tydle: tydle_instance,
-            });
+            app.manage(Mutex::new(AppState {
+                tydle: Arc::new(tydle),
+                stream_url_cache: DashMap::new(),
+            }));
 
-            let tray_icon: TrayIcon = TrayIconBuilder::new().tooltip("Wavelength").build(app)?;
+            let quit_i = MenuItem::with_id(app, "quit", "Quit WavLen", true, None::<&str>)?;
+            let menu = Menu::with_items(app, &[&quit_i])?;
 
-            tray_icon.on_menu_event(|app_handle, event| match event.id.0.as_str() {
-                "quit" => {
-                    app_handle.exit(0);
-                }
-                _ => {}
-            });
+            TrayIconBuilder::new()
+                .tooltip("WavLen")
+                .icon(app.default_window_icon().unwrap().clone())
+                .menu(&menu)
+                .build(app)?;
 
             if cfg!(debug_assertions) {
                 app.handle().plugin(
@@ -41,9 +57,32 @@ pub fn run() {
 
             Ok(())
         })
+        .on_window_event(|window, event| match event {
+            tauri::WindowEvent::CloseRequested { api, .. } => {
+                if cfg!(target_os = "macos") {
+                    window.hide().unwrap();
+                    api.prevent_close();
+                }
+            }
+            _ => {}
+        })
         .invoke_handler(tauri::generate_handler![
-            youtube::fetch_highest_bitrate_audio_stream_url
+            youtube::fetch_highest_bitrate_audio_stream_url,
+            youtube::fetch_highest_bitrate_video_stream_url,
         ])
-        .run(tauri::generate_context!())
-        .expect("Wavelength desktop launch failed.");
+        .build(tauri::generate_context!())
+        .expect("Wavelength desktop launch failed.")
+        .run(|app_handle, event| match event {
+            tauri::RunEvent::Reopen {
+                has_visible_windows,
+                ..
+            } => {
+                if !has_visible_windows {
+                    let window = app_handle.get_webview_window("main").unwrap();
+                    window.show().unwrap();
+                    window.set_focus().unwrap();
+                }
+            }
+            _ => {}
+        });
 }

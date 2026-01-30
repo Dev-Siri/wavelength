@@ -1,5 +1,6 @@
 <script lang="ts">
   import { ArrowLeft, DownloadIcon, HouseIcon } from "@lucide/svelte";
+  import { isTauri } from "@tauri-apps/api/core";
 
   import userStore from "$lib/stores/user.svelte.js";
 
@@ -10,7 +11,8 @@
 </script>
 
 <header
-  class="flex items-center z-50 justify-between py-3 bg-black/35 backdrop-blur-xl backdrop-saturate-150 px-4"
+  class="flex items-center z-50 justify-between py-3 bg-black/35 backdrop-blur-xl backdrop-saturate-150 px-4 {isTauri() &&
+    'pt-8'}"
 >
   <a
     href="/app"
@@ -31,14 +33,16 @@
     <GoogleLoginButton />
   {:else}
     <div class="flex items-center self-end gap-2">
-      <Button
-        href="/downloads"
-        class="flex gap-2 items-center text-muted-foreground"
-        variant="ghost"
-      >
-        <DownloadIcon />
-        <p class="text-md">Install App</p>
-      </Button>
+      {#if !isTauri()}
+        <Button
+          href="/downloads"
+          class="flex gap-2 items-center text-muted-foreground"
+          variant="ghost"
+        >
+          <DownloadIcon />
+          <p class="text-md">Install App</p>
+        </Button>
+      {/if}
       <UserProfileIcon />
     </div>
   {/if}

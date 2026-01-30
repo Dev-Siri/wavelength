@@ -1,11 +1,16 @@
 <script lang="ts">
+  import { isTauri } from "@tauri-apps/api/core";
+
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
+  import { NativePlayer } from "$lib/stream-player/native";
+  import type { StreamPlayer } from "$lib/stream-player/player";
   import { WebEmbedPlayer } from "$lib/stream-player/web-embed";
 
   const { musicVideoId }: { musicVideoId: string } = $props();
 
-  let musicVideoPreview: HTMLDivElement;
+  let musicVideoPreviewWebEmbed: HTMLDivElement | null = $state(null);
+  let musicVideoPreviewNative: HTMLVideoElement | null = $state(null);
 
   async function viewRandomChunks() {
     if (
@@ -24,39 +29,49 @@
   }
 
   $effect(() => {
-    const ytPlayer = new WebEmbedPlayer(musicVideoPreview, {
-      playerVars: {
-        controls: 0,
-        loop: 1,
-        playsinline: 0,
-        modestbranding: 1,
-        rel: 0,
-        iv_load_policy: 3,
-        disablekb: 1,
-        fs: 0,
-      },
-    });
+    let ytPlayer: StreamPlayer | null = null;
 
-    musicPlayerStore.musicPreviewPlayer = ytPlayer;
+    function initializePlayer() {
+      if (isTauri()) {
+        if (!musicVideoPreviewNative) return;
+        ytPlayer = new NativePlayer(musicVideoPreviewNative, "video");
+      } else {
+        if (!musicVideoPreviewWebEmbed) return;
+        ytPlayer = new WebEmbedPlayer(musicVideoPreviewWebEmbed, {
+          playerVars: {
+            controls: 0,
+            loop: 1,
+            playsinline: 0,
+            modestbranding: 1,
+            rel: 0,
+            iv_load_policy: 3,
+            disablekb: 1,
+            fs: 0,
+          },
+        });
+      }
+
+      musicPlayerStore.musicPreviewPlayer = ytPlayer;
+    }
     let interval: number;
 
     async function loadVideo() {
       const playerDuration = (await musicPlayerStore.musicPlayer?.getCurrentTime()) ?? 0;
 
-      await ytPlayer.load(
+      await ytPlayer?.load(
         musicVideoId,
         musicQueueStore.musicPlayingNow?.videoType === "VIDEO_TYPE_UVIDEO" ? playerDuration : 10,
       );
 
       interval = setInterval(viewRandomChunks, 5000);
-      await ytPlayer.mute();
+      await ytPlayer?.mute();
     }
 
+    initializePlayer();
     loadVideo();
-
     return () => {
       clearInterval(interval);
-      ytPlayer.dispose();
+      ytPlayer?.dispose();
     };
   });
 
@@ -81,13 +96,18 @@
 
     controlMusicVidToSong();
   });
+
+  const playerClasses =
+    "absolute h-[140%] -mt-24 w-full opacity-15 pointer-events-none left-0 right-0 duration-200";
 </script>
 
-<div
-  class="absolute h-[140%] -mt-24 w-full opacity-15 pointer-events-none left-0 right-0 duration-200"
-  id="preview-player"
-  bind:this={musicVideoPreview}
-></div>
+{#if isTauri()}
+  <video id="preview-player" loop class={playerClasses} bind:this={musicVideoPreviewNative}>
+    <track kind="captions" />
+  </video>
+{:else}
+  <div id="preview-player" class={playerClasses} bind:this={musicVideoPreviewWebEmbed}></div>
+{/if}
 
 <style>
   #preview-player::after,

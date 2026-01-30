@@ -1,15 +1,20 @@
 <script lang="ts">
-  import type { PlayerEvent } from "$lib/stream-player/player";
+  import { isTauri } from "@tauri-apps/api/core";
+
+  import type { PlayerEvent, StreamPlayer } from "$lib/stream-player/player";
 
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
-
+  import { NativePlayer } from "$lib/stream-player/native";
   import { WebEmbedPlayer } from "$lib/stream-player/web-embed";
+  import { punctuatify } from "$lib/utils/format";
+
   import MusicPlayerControls from "./MusicPlayerControls.svelte";
   import MusicPlayerPlaybackOptions from "./MusicPlayerPlaybackOptions.svelte";
   import MusicPlayerTrackLabel from "./MusicPlayerTrackLabel.svelte";
 
-  let musicPlayerElement: HTMLDivElement;
+  let webEmbedPlayer: HTMLDivElement | null = $state(null);
+  let nativePlayer: HTMLAudioElement | null = $state(null);
 
   // Extra handlers to sync the state with the player
   // In case a non-application event causes the video's state to change.
@@ -59,22 +64,56 @@
     }
   }
 
-  $effect(() => {
-    const youtubePlayer = new WebEmbedPlayer(musicPlayerElement, {
-      playerVars: {
-        autoplay: 0,
-        controls: 0,
-        disablekb: 1,
-        playsinline: 1,
-      },
+  function handleLoaded() {
+    musicPlayerStore.isPlaying = true;
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: musicQueueStore.musicPlayingNow?.title,
+      artwork: musicQueueStore.musicPlayingNow?.thumbnail
+        ? [{ src: musicQueueStore.musicPlayingNow.thumbnail }]
+        : [],
+      artist: punctuatify(
+        musicQueueStore.musicPlayingNow?.artists.map(artist => artist.title) ?? [],
+      ),
+      album: musicQueueStore.musicPlayingNow?.album?.title,
     });
+  }
 
-    musicPlayerStore.musicPlayer = youtubePlayer;
+  $effect(() => {
+    const trackLoaded = !!musicQueueStore.musicPlayingNow;
+    navigator.mediaSession.playbackState = trackLoaded
+      ? musicPlayerStore.isPlaying
+        ? "playing"
+        : "paused"
+      : "none";
+  });
 
-    youtubePlayer.on("playing", handleOnPlay);
-    youtubePlayer.on("paused", handleOnPause);
-    youtubePlayer.on("ended", handleOnEnded);
-    youtubePlayer.on("timeupdate", handleTimeUpdate);
+  $effect(() => {
+    let player: StreamPlayer | null = null;
+
+    function initializePlayer() {
+      if (isTauri()) {
+        if (!nativePlayer) return;
+        player = new NativePlayer(nativePlayer, "audio");
+      } else {
+        if (!webEmbedPlayer) return;
+        player = new WebEmbedPlayer(webEmbedPlayer, {
+          playerVars: {
+            autoplay: 0,
+            controls: 0,
+            disablekb: 1,
+            playsinline: 1,
+          },
+        });
+      }
+
+      musicPlayerStore.musicPlayer = player;
+
+      player.on("playing", handleOnPlay);
+      player.on("paused", handleOnPause);
+      player.on("ended", handleOnEnded);
+      player.on("timeupdate", handleTimeUpdate);
+      player.on("loaded", handleLoaded);
+    }
 
     function musicPlayerShortcuts(event: KeyboardEvent) {
       if (event.key !== " " || (document.activeElement && document.activeElement !== document.body))
@@ -87,10 +126,11 @@
       }
     }
 
+    initializePlayer();
     window.addEventListener("keypress", musicPlayerShortcuts);
     return () => {
       window.removeEventListener("keypress", musicPlayerShortcuts);
-      youtubePlayer.dispose();
+      player?.dispose();
     };
   });
 
@@ -100,7 +140,6 @@
 
       musicPlayerStore.progress = 0;
       await musicPlayerStore.musicPlayer.load(musicQueueStore.musicPlayingNow.videoId);
-      musicPlayerStore.isPlaying = true;
     }
 
     handleMusicPlayingNowChange();
@@ -115,8 +154,12 @@
   });
 </script>
 
-<div class="flex bg-black/35 backdrop-blur-xl backdrop-saturate-150 h-full w-full pl-2">
-  <div class="hidden" bind:this={musicPlayerElement}></div>
+<div class="flex bg-black/35 backdrop-blur-xl backdrop-saturate-150 h-full w-full pl-4 pb-2">
+  {#if isTauri()}
+    <audio class="hidden" bind:this={nativePlayer}></audio>
+  {:else}
+    <div class="hidden" bind:this={webEmbedPlayer}></div>
+  {/if}
   <section class="flex h-full w-1/3 items-center">
     <MusicPlayerTrackLabel />
   </section>

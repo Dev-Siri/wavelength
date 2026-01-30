@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "Wavelength",
-  "mainBinaryName": "Wavelength",
+  "productName": "WavLen",
+  "mainBinaryName": "WavLen",
   "version": "1.2.0",
   "identifier": "siri.dev.wavelength",
   "build": {
@@ -13,6 +13,8 @@
     "windows": [
       {
         "title": "WavLen",
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true,
         "width": 1340,
         "height": 800,
         "minHeight": 600,
@@ -23,7 +25,6 @@
         "url": "/app"
       }
     ],
-    "withGlobalTauri": true,
     "security": {
       "csp": null
     }
