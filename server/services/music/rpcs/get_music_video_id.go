@@ -19,13 +19,13 @@ func (m *MusicService) GetMusicVideoId(
 	ctx context.Context,
 	request *musicpb.GetMusicVideoIdRequest,
 ) (*musicpb.GetMusicVideoIdResponse, error) {
-	q := fmt.Sprintf("%s %s -#shorts", request.Artist, request.Title)
+	q := fmt.Sprintf("%s %s (Official Music Video)", request.Artist, request.Title)
 	response, err := api.YouTubeV3Client.Search.List([]string{"id", "snippet"}).
 		Q(q).
 		VideoCategoryId("10").
 		MaxResults(15).
 		Type("video").
-		Order("relevance").
+		Order("viewCount").
 		Do()
 
 	if err != nil {
@@ -42,6 +42,10 @@ func (m *MusicService) GetMusicVideoId(
 	videos := []SearchableYouTubeVideo{}
 
 	for _, item := range response.Items {
+		if !strings.Contains(item.Snippet.Title, request.Title) {
+			continue
+		}
+
 		videos = append(videos, SearchableYouTubeVideo{
 			VideoID: item.Id.VideoId,
 			Title:   item.Snippet.Title,
