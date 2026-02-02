@@ -34,7 +34,7 @@ func (m *MusicService) GetLikedTracks(
 		LEFT JOIN "artists" a
 		ON l.video_id = a.authored_track_id
 		WHERE l.email = $1
-		ORDER BY l.created_at;
+		ORDER BY l.created_at DESC;
 	`, request.LikerEmail)
 
 	if err != nil {
