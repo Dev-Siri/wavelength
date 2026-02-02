@@ -43,6 +43,6 @@ export const searchSuggestionLinkSchema = z.object({
 });
 
 export const correctedSearchSuggestions = z.object({
-  type: z.literal("ShowingResultsFor"),
+  type: z.union([z.literal("ShowingResultsFor"), z.literal("DidYouMean")]),
   corrected_query: z.object({ text: z.string() }),
 });

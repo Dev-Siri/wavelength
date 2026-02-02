@@ -39,8 +39,6 @@ export default async function searchTracks(
       const attemptQueryCorrectionContents =
         correctedSearchSuggestions.safeParse(contents[0]?.contents?.[0]);
       if (!attemptQueryCorrectionContents.success) {
-        console.log(attemptQueryCorrectionContents.error);
-
         const status = new grpc.StatusBuilder()
           .withCode(grpc.status.INTERNAL)
           .withDetails("YouTube Music sent an invalid response.")
