@@ -11,12 +11,13 @@ import type {
 } from "@/gen/proto/yt_scraper.js";
 
 import { getYtMusicClient } from "@/innertube.js";
+import { correctedSearchSuggestions } from "@/schemas/search-suggestion.js";
 import { searchedTracksSchema } from "@/schemas/searched-tracks.js";
 import { getHighestQualityThumbnail } from "@/utils/thumbnail.js";
 
 export default async function searchTracks(
   call: grpc.ServerUnaryCall<SearchTracksRequest, SearchTracksResponse>,
-  callback: grpc.sendUnaryData<SearchTracksResponse>
+  callback: grpc.sendUnaryData<SearchTracksResponse>,
 ) {
   try {
     const music = await getYtMusicClient();
@@ -32,7 +33,37 @@ export default async function searchTracks(
       return callback(status);
     }
 
-    const parsedContents = searchedTracksSchema.safeParse(contents[0]);
+    let parsedContents = searchedTracksSchema.safeParse(contents[0]);
+
+    if (!parsedContents.success) {
+      const attemptQueryCorrectionContents =
+        correctedSearchSuggestions.safeParse(contents[0]?.contents?.[0]);
+      if (!attemptQueryCorrectionContents.success) {
+        console.log(attemptQueryCorrectionContents.error);
+
+        const status = new grpc.StatusBuilder()
+          .withCode(grpc.status.INTERNAL)
+          .withDetails("YouTube Music sent an invalid response.")
+          .build();
+        return callback(status);
+      }
+
+      const { contents: correctedContents } = await music.search(
+        attemptQueryCorrectionContents.data.corrected_query.text,
+        {
+          type: "song",
+        },
+      );
+
+      if (!correctedContents) {
+        const status = new grpc.StatusBuilder()
+          .withCode(grpc.status.INTERNAL)
+          .withDetails("YouTube Music sent an empty response.")
+          .build();
+        return callback(status);
+      }
+      parsedContents = searchedTracksSchema.safeParse(correctedContents[0]);
+    }
 
     if (!parsedContents.success) {
       const status = new grpc.StatusBuilder()
@@ -75,7 +106,7 @@ export default async function searchTracks(
         thumbnail: thumbnail.url,
         artists,
         isExplicit: !!parsedTrack?.badges?.some(
-          (badge) => badge.icon_type === "MUSIC_EXPLICIT_BADGE"
+          (badge) => badge.icon_type === "MUSIC_EXPLICIT_BADGE",
         ),
       };
 

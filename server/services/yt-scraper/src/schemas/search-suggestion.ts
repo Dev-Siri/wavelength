@@ -41,3 +41,8 @@ export const searchSuggestionLinkSchema = z.object({
   id: z.string(),
   thumbnail: thumbnailSchema,
 });
+
+export const correctedSearchSuggestions = z.object({
+  type: z.literal("ShowingResultsFor"),
+  corrected_query: z.object({ text: z.string() }),
+});

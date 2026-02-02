@@ -16,7 +16,7 @@ export const searchedTracksSchema = z.object({
             text: z.string(),
             rtl: z.boolean(),
           }),
-        })
+        }),
       ),
       thumbnail: thumbnailSchema,
       id: z.string(),
@@ -31,9 +31,9 @@ export const searchedTracksSchema = z.object({
           z.object({
             type: z.literal("MusicInlineBadge"),
             icon_type: z.string(),
-          })
+          }),
         )
         .optional(),
-    })
+    }),
   ),
 });
