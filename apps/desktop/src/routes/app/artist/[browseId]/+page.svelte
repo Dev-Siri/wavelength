@@ -5,8 +5,6 @@
   import { fly } from "svelte/transition";
 
   import { svelteQueryKeys } from "$lib/constants/keys.js";
-  import musicPlayerStore from "$lib/stores/music-player.svelte.js";
-  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
   import { backendClient } from "$lib/utils/query-client.js";
   import { artistResponseSchema } from "$lib/utils/validation/artist-response";
 
@@ -15,15 +13,9 @@
   import Image from "$lib/components/Image.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
   import PlaylistPlayOptions from "$lib/components/playlist/PlaylistPlayOptions.svelte";
-  import TrackItem from "$lib/components/TrackItem.svelte";
+  import TrackItem from "$lib/components/track/Track.svelte";
   import { Button } from "$lib/components/ui/button";
   import * as Dialog from "$lib/components/ui/dialog";
-
-  function playArtistsSongs(songs: QueueableMusic[]) {
-    musicQueueStore.musicPlaylistContext = songs;
-    musicQueueStore.musicPlayingNow = songs[0];
-    musicPlayerStore.playMusic();
-  }
 
   const artistQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.artist(page.params.browseId ?? ""),

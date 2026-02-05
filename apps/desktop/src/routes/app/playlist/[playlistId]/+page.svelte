@@ -6,8 +6,6 @@
   import { z } from "zod";
 
   import { svelteQueryKeys } from "$lib/constants/keys.js";
-  import musicPlayerStore from "$lib/stores/music-player.svelte.js";
-  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
   import userStore from "$lib/stores/user.svelte.js";
   import { backendClient } from "$lib/utils/query-client.js";
   import { playlistTracksSchema } from "$lib/utils/validation/playlist-track";
@@ -16,6 +14,7 @@
   import { playlistTracksLengthSchema } from "$lib/utils/validation/track-length";
 
   import ChangePlaylistVisibilityButton from "$lib/components/action-buttons/ChangePlaylistVisibilityButton.svelte";
+  import DownloadButton from "$lib/components/action-buttons/DownloadButton.svelte";
   import EditPlaylistDetailsDialog from "$lib/components/EditPlaylistDetailsDialog.svelte";
   import Image from "$lib/components/Image.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
@@ -28,12 +27,6 @@
 
   let isRearrangingList = $state(false);
   let pageTitle = $state("Playlist");
-
-  function playPlaylist(songs: QueueableMusic[]) {
-    musicQueueStore.musicPlaylistContext = songs;
-    musicQueueStore.musicPlayingNow = songs[0];
-    musicPlayerStore.playMusic();
-  }
 
   const playlistQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.playlist(page.params.playlistId ?? ""),
@@ -163,14 +156,13 @@
           {:else if playlistTracksQuery.isSuccess}
             {@const { playlistTracks } = playlistTracksQuery.data}
             {#if playlistTracks.length}
-              <div class="flex items-center gap-1 my-4">
+              <div class="flex items-center gap-2 my-4">
                 <PlaylistPlayOptions tracks={playlistTracks} />
-                <div class="z-10">
-                  <ChangePlaylistVisibilityButton
-                    playlistId={playlist.playlistId}
-                    isPublic={playlist.isPublic}
-                  />
-                </div>
+                <ChangePlaylistVisibilityButton
+                  playlistId={playlist.playlistId}
+                  isPublic={playlist.isPublic}
+                />
+                <DownloadButton source="playlist" tracks={playlistTracks} />
               </div>
               <header
                 class="flex justify-around items-center gap-5 select-none text-muted-foreground"

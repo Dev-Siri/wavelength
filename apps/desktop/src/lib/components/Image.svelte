@@ -33,5 +33,4 @@
   class={className}
   {...restProps}
   in:fade
-  out:fade
 />

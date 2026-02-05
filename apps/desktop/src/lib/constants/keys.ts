@@ -16,6 +16,7 @@ export const svelteQueryKeys = {
   likes: ["likes"],
   likesLength: ["likes-length"],
   likeCount: ["like-count"],
+  downloads: ["downloads"],
   isTrackLiked: (trackId: string) => ["is-track-liked", trackId],
   album: (albumId: string) => ["album", albumId],
   playlist: (playlistId: string) => ["playlist", playlistId],

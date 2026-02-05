@@ -3,7 +3,7 @@
 
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
-  import { NativePlayer } from "$lib/stream-player/native";
+  import { NativePlayer } from "$lib/stream-player/native-player";
   import type { StreamPlayer } from "$lib/stream-player/player";
   import { WebEmbedPlayer } from "$lib/stream-player/web-embed";
 

@@ -2,16 +2,24 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "enables the default permissions",
-  "windows": [
-    "main"
-  ],
+  "windows": ["main"],
   "permissions": [
     "core:default",
-    "opener:default"
+    "opener:default",
+    "fs:default",
+    "fs:read-all",
+    "fs:write-all",
+    "fs:allow-exists",
+    {
+      "identifier": "fs:allow-mkdir",
+      "allow": [{ "path": "$APPDATA" }, { "path": "$APPDATA/**" }]
+    },
+    {
+      "identifier": "fs:scope",
+      "allow": [{ "path": "$APPDATA/**" }]
+    }
   ],
   "remote": {
-    "urls": [
-      "https://mavelength.vercel.app/app/*"
-    ]
+    "urls": ["https://mavelength.vercel.app/app/*"]
   }
 }

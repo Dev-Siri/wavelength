@@ -1,0 +1,38 @@
+<script lang="ts">
+  import { BookmarkIcon } from "@lucide/svelte";
+  import { createQuery } from "@tanstack/svelte-query";
+  import { isTauri } from "@tauri-apps/api/core";
+
+  import { svelteQueryKeys } from "$lib/constants/keys";
+  import { fetchDownloads } from "$lib/utils/download";
+
+  import TrackItem from "$lib/components/TrackItem.svelte";
+
+  $effect(() => {
+    if (!isTauri()) history.back();
+  });
+
+  const downloadsQuery = createQuery(() => ({
+    queryKey: svelteQueryKeys.downloads,
+    queryFn: fetchDownloads,
+  }));
+</script>
+
+<div class="h-full w-full overflow-y-auto pb-[20%] bg-black p-4">
+  <header class="flex items-center gap-2">
+    <BookmarkIcon size={18} />
+    <h1 class="text-xl font-semibold select-none duration-200">Your Downloads</h1>
+  </header>
+  {#if downloadsQuery.data?.length}
+    <div class="mt-2">
+      {#each downloadsQuery.data as download}
+        <TrackItem music={download} toggle={{ type: "add" }} />
+      {/each}
+    </div>
+  {:else}
+    <div class="h-1/2 w-full flex flex-col gap-2 items-center justify-center">
+      <span class="font-black text-8xl select-none">λ</span>
+      <p class="text-lg">You have no songs downloaded.</p>
+    </div>
+  {/if}
+</div>

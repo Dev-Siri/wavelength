@@ -1,4 +1,5 @@
 import { STREAM_PLAYBACK_URL } from "$lib/constants/utils";
+import { getDownloadedStreamPath, isAlreadyDownloaded } from "$lib/utils/download";
 import { StreamPlayer } from "./player";
 
 export class NativePlayer extends StreamPlayer {
@@ -41,7 +42,6 @@ export class NativePlayer extends StreamPlayer {
     this.playerElement.muted = false;
   }
 
-  // Listen to events on the YouTube Player and dispatch them from WebEmbedPlayer.
   private forwardEvents() {
     this.playerElement.addEventListener("playing", this.playingHandler);
     this.playerElement.addEventListener("paused", this.pausedHandler);
@@ -51,18 +51,34 @@ export class NativePlayer extends StreamPlayer {
 
   async load(videoId: string, startingSeconds?: number) {
     const { invoke } = await import("@tauri-apps/api/core");
-    const streamUrl = await invoke<string | null | undefined>(
-      `fetch_highest_bitrate_${this.resource}_stream_url`,
-      { videoId },
-    );
 
-    if (!streamUrl) return;
-
+    // Resetting the player: Causing a stop on another load actually provides a more "predictable" UX,
+    // Than having the song continually play until the next track loads.
+    await this.pause();
+    this.playerElement.setAttribute("src", "");
     this.playerElement.setAttribute("autoplay", "true");
-    this.playerElement.setAttribute(
-      "src",
-      `${STREAM_PLAYBACK_URL}/stream-playback?url=${encodeURIComponent(streamUrl)}`,
-    );
+
+    if ((await isAlreadyDownloaded(videoId)) && this.resource !== "video") {
+      const path = await getDownloadedStreamPath(videoId);
+
+      this.playerElement.setAttribute(
+        "src",
+        `${STREAM_PLAYBACK_URL}/local-playback?url=${encodeURIComponent(path)}`,
+      );
+    } else {
+      const streamUrl = await invoke<string | null | undefined>(
+        `fetch_highest_bitrate_${this.resource}_stream_url`,
+        { videoId },
+      );
+
+      if (!streamUrl) return;
+
+      this.playerElement.setAttribute(
+        "src",
+        `${STREAM_PLAYBACK_URL}/stream-playback?url=${encodeURIComponent(streamUrl)}`,
+      );
+    }
+
     if (startingSeconds) this.playerElement.currentTime = startingSeconds;
     this.dispatchEvent(this.createEvent("loaded"));
   }

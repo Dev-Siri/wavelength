@@ -1,24 +1,12 @@
-use std::env;
-
 use anyhow::anyhow;
-use base64::{prelude::BASE64_STANDARD, Engine};
 use tauri::{Result, State};
 use tokio::sync::Mutex;
-use tydle::{
-    cookies::parse_netscape_cookies, Cipher, Extract, Filterable, Tydle, TydleOptions, VideoId,
-    YtStreamSource,
-};
+use tydle::{Extract, Filterable, Tydle, TydleOptions, VideoId, YtStreamSource};
 
 use crate::{cache::CachedStream, AppState};
 
 pub fn init_extractor() -> anyhow::Result<Tydle> {
-    let cookies_base64 = env::var("COOKIES_BASE64")?;
-    let cookies_bytes = BASE64_STANDARD.decode(cookies_base64)?;
-    let cookies = String::from_utf8(cookies_bytes)?;
-    let tydle_instance = Tydle::new(TydleOptions {
-        auth_cookies: parse_netscape_cookies(cookies)?,
-        ..Default::default()
-    })?;
+    let tydle_instance = Tydle::new(TydleOptions::default())?;
 
     log::info!("Tydle instance initialized.");
     Ok(tydle_instance)
@@ -41,7 +29,9 @@ pub async fn fetch_highest_bitrate_audio_stream_url(
     let yt_stream_response = state.tydle.get_streams(&id).await?;
     let audio_streams = yt_stream_response
         .streams
-        .only_signatures()
+        .only_urls()
+        .audio_only()
+        .with_highest_bitrate()
         .into_iter()
         .filter(|s| s.codec.acodec.is_some())
         .collect::<Vec<_>>();
@@ -50,19 +40,9 @@ pub async fn fetch_highest_bitrate_audio_stream_url(
         return Err(anyhow!("Failed to get any audio streams.").into());
     };
 
-    let YtStreamSource::Signature(signature) = stream.source else {
+    let YtStreamSource::URL(source) = stream.source else {
         return Err(anyhow!("No suitable audio streams available.").into());
     };
-
-    let tydle = state.tydle.clone();
-    let player_url = yt_stream_response.player_url.clone();
-
-    let source = tauri::async_runtime::spawn_blocking(move || {
-        tauri::async_runtime::block_on(async {
-            tydle.decipher_signature(signature, player_url).await
-        })
-    })
-    .await??;
 
     state
         .stream_url_cache
@@ -89,7 +69,9 @@ pub async fn fetch_highest_bitrate_video_stream_url(
     let yt_stream_response = state.tydle.get_streams(&id).await?;
     let audio_streams = yt_stream_response
         .streams
-        .only_signatures()
+        .only_urls()
+        .video_only()
+        .with_highest_bitrate()
         .into_iter()
         .filter(|s| s.codec.vcodec.is_some())
         .collect::<Vec<_>>();
@@ -98,19 +80,9 @@ pub async fn fetch_highest_bitrate_video_stream_url(
         return Err(anyhow!("Failed to get any video streams.").into());
     };
 
-    let YtStreamSource::Signature(signature) = stream.source else {
+    let YtStreamSource::URL(source) = stream.source else {
         return Err(anyhow!("No suitable video streams available.").into());
     };
-
-    let tydle = state.tydle.clone();
-    let player_url = yt_stream_response.player_url.clone();
-
-    let source = tauri::async_runtime::spawn_blocking(move || {
-        tauri::async_runtime::block_on(async {
-            tydle.decipher_signature(signature, player_url).await
-        })
-    })
-    .await??;
 
     state
         .stream_url_cache

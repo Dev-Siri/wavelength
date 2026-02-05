@@ -1,5 +1,4 @@
 use dashmap::DashMap;
-use dotenv::dotenv;
 use std::{env, sync::Arc};
 
 use tauri::{
@@ -10,7 +9,8 @@ use tauri::{
 
 mod audio_server;
 mod cache;
-mod discord_rich_presence;
+mod download;
+mod stream_downloader;
 mod youtube;
 
 use tokio::sync::Mutex;
@@ -25,10 +25,9 @@ pub struct AppState {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    dotenv().ok();
-
     audio_server::start_stream_server();
     tauri::Builder::default()
+        .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
             let tydle = youtube::init_extractor()?;
@@ -69,6 +68,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             youtube::fetch_highest_bitrate_audio_stream_url,
             youtube::fetch_highest_bitrate_video_stream_url,
+            download::download_track
         ])
         .build(tauri::generate_context!())
         .expect("Wavelength desktop launch failed.")

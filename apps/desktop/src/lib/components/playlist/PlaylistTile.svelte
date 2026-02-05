@@ -133,13 +133,13 @@
         </DropdownMenu.Trigger>
         <DropdownMenu.Content>
           <Dialog.Trigger class="w-full">
-            <DropdownMenu.Item class="py-3 w-full gap-1 items-center">
+            <DropdownMenu.Item class="w-full">
               <PencilIcon size={16} />
               Edit details
             </DropdownMenu.Item>
           </Dialog.Trigger>
           <DropdownMenu.Item
-            class="py-3 pr-20 gap-1 items-center text-red-500"
+            class="pr-20 text-red-500"
             onclick={() => playlistDeleteMutation.mutate()}
           >
             <Trash2Icon size={16} />

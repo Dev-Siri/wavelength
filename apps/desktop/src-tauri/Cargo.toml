@@ -23,16 +23,18 @@ serde = { version = "1.0", features = ["derive"] }
 log = "0.4"
 tauri = { version = "2.9.5", features = ["tray-icon"] }
 tauri-plugin-log = "2"
-tydle = { version = "0.1.12", features = ["cipher"] }
+tydle = "0.1.13"
 tokio = { version = "1.49.0", features = ["full"] }
 reqwest = { version = "0.13.1", features = ["stream"] }
 anyhow = "1.0.100"
 base64 = "0.22.1"
-dotenv = "0.15.0"
 dashmap = "6.1.0"
 axum = "0.8.4"
 tower-http = { version = "0.6.8", features = ["cors"] }
 tauri-plugin-opener = "2"
+tauri-plugin-fs = "2"
+num_cpus = "1.17.0"
+tokio-util = "0.7.18"
 
 [profile.release]
 # Copied from the docs: https://v2.tauri.app/concept/size

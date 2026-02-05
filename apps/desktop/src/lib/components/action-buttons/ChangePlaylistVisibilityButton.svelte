@@ -36,7 +36,7 @@
 
 <Button
   variant="secondary"
-  class="flex items-center gap-1 ml-1 mt-0"
+  class="flex items-center gap-1 mt-0"
   onclick={() => visibilityChangeMutation.mutate()}
 >
   {#if isPublic}

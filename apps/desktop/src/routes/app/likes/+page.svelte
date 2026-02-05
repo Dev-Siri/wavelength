@@ -13,7 +13,7 @@
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
   import PlaylistLength from "$lib/components/playlist/PlaylistLength.svelte";
   import PlaylistPlayOptions from "$lib/components/playlist/PlaylistPlayOptions.svelte";
-  import TrackItem from "$lib/components/TrackItem.svelte";
+  import TrackItem from "$lib/components/track/Track.svelte";
   import { Button } from "$lib/components/ui/button";
 
   const likedTracksQuery = createQuery(() => ({
@@ -89,7 +89,7 @@
               <PlaylistPlayOptions tracks={likedTracks} />
             </div>
             <header
-              class="flex pl-14 justify-around items-center gap-5 select-none text-muted-foreground"
+              class="flex pl-[7%] justify-around items-center gap-5 select-none text-muted-foreground"
             >
               <p class="flex-2">Title</p>
               <ClockIcon size={18} class="mr-28" />

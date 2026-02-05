@@ -2,7 +2,7 @@
   import type { PlaylistTrack } from "$lib/utils/validation/playlist-track";
   import type { Playlist } from "$lib/utils/validation/playlists";
 
-  import TrackItem from "../TrackItem.svelte";
+  import TrackItem from "../track/Track.svelte";
 
   const {
     isRearrangingList,

@@ -27,7 +27,7 @@
   $effect(() => {
     if (albumDetailsQuery.isSuccess) {
       pageTitle = `${albumDetailsQuery.data.album.title} by ${albumDetailsQuery.data.album.artist.title}`;
-    } else {
+    } else if (albumDetailsQuery.isError) {
       pageTitle = "Album Load Failed.";
     }
   });
@@ -49,9 +49,9 @@
         {#key album.cover}
           <Image src={album.cover} alt="Album Cover" height={300} width={300} class="rounded-2xl" />
         {/key}
-        <h1 class="text-2xl pt-4">{album.title}</h1>
-        <div class="flex items-center gap-12">
-          <p class="text-md">
+        <h1 class="text-2xl pt-4 w-2/3 text-center">{album.title}</h1>
+        <div class="text-center mb-4">
+          <p class="text-sm">
             <span class="text-muted-foreground">{getReadableAlbumType(album.albumType)} by</span>
             <Button variant="link" href="/app/artist/{album.artist.browseId}" class="px-0">
               {album.artist.title}
@@ -59,7 +59,7 @@
             <span class="text-muted-foreground">•</span>
             {album.release}
           </p>
-          <p class="text-md">
+          <p class="text-sm">
             {album.totalSongCount}
             {album.totalSongCount === 1 ? "song" : "songs"}, {album.totalDuration}
           </p>

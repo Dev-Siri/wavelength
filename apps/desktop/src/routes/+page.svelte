@@ -25,11 +25,11 @@
   >
     <section class="flex flex-col h-full items-center lg:items-start w-full lg:w-2/5">
       <h1
-        class="font-black leading-tight text-balance text-center lg:text-start text-3xl sm:text-4xl md:text-6xl lg:text-5xl"
+        class="text-primary leading-tighter text-4xl font-semibold tracking-tight text-balance lg:leading-[1.1] lg:font-semibold xl:text-5xl xl:tracking-tighter max-w-4xltext-center lg:text-start"
       >
         Music you love, <br />right at your fingertips.
       </h1>
-      <p class="text-lg sm:text-xl lg:text-2xl my-6 ml-1 text-center text-balance lg:text-start">
+      <p class="text-foreground max-w-3xl text-base text-balance sm:text-lg my-4">
         Ad-free, offline downloads, $0/month.
       </p>
       <div class="flex gap-2">

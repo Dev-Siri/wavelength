@@ -24,17 +24,14 @@
       </div>
     </DropdownMenu.Trigger>
     <DropdownMenu.Content>
-      <DropdownMenu.Label class="text-end text-xl leading-none">
+      <DropdownMenu.Label class="text-end text-lg leading-none">
         {userStore.user.name}
       </DropdownMenu.Label>
-      <DropdownMenu.Label class="text-end text-sm font-normal -mt-2">
+      <DropdownMenu.Label class="text-end text-xs text-muted-foreground font-normal -mt-2">
         {userStore.user.email ?? ""}
       </DropdownMenu.Label>
       <DropdownMenu.Separator />
-      <DropdownMenu.Item
-        onclick={() => signOut()}
-        class="py-3 pr-40 gap-1 items-center text-red-500"
-      >
+      <DropdownMenu.Item onclick={() => signOut()} class="pr-40 gap-1 items-center text-red-500">
         <LogOutIcon size={16} />
         Logout
       </DropdownMenu.Item>

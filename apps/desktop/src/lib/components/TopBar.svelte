@@ -33,16 +33,16 @@
     <GoogleLoginButton />
   {:else}
     <div class="flex items-center self-end gap-2">
-      {#if !isTauri()}
-        <Button
-          href="/downloads"
-          class="flex gap-2 items-center text-muted-foreground"
-          variant="ghost"
-        >
-          <DownloadIcon />
+      <Button
+        href={isTauri() ? "/app/downloads" : "/downloads"}
+        class="flex gap-2 items-center text-muted-foreground"
+        variant="ghost"
+      >
+        <DownloadIcon />
+        {#if !isTauri()}
           <p class="text-md">Install App</p>
-        </Button>
-      {/if}
+        {/if}
+      </Button>
       <UserProfileIcon />
     </div>
   {/if}

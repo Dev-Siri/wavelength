@@ -131,16 +131,19 @@
     </div>
   </button>
   {#if playlistsQuery.data?.playlists}
-    <DropdownMenu.Content>
-      {#each playlistsQuery.data.playlists as playlist}
-        <DropdownMenu.Item
-          onclick={() => addToPlaylistMutation.mutate(playlist.playlistId)}
-          class="flex py-3 gap-2"
-        >
-          <PlusIcon size={20} /> Add to {playlist.name}
-        </DropdownMenu.Item>
-      {/each}
-    </DropdownMenu.Content>
+    <DropdownMenu.Sub>
+      <DropdownMenu.SubTrigger>
+        <PlusIcon size={20} />
+        Add to playlist
+      </DropdownMenu.SubTrigger>
+      <DropdownMenu.SubContent>
+        {#each playlistsQuery.data.playlists as playlist}
+          <DropdownMenu.Item onclick={() => addToPlaylistMutation.mutate(playlist.playlistId)}>
+            {playlist.name}
+          </DropdownMenu.Item>
+        {/each}
+      </DropdownMenu.SubContent>
+    </DropdownMenu.Sub>
   {/if}
 </DropdownMenu.Root>
 

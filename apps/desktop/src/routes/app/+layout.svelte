@@ -11,6 +11,7 @@
   import musicQueueStore from "$lib/stores/music-queue.svelte.js";
   import { createIDBPersister } from "$lib/utils/cache";
 
+  import BackgroundDownloadManager from "$lib/components/BackgroundDownloadManager.svelte";
   import LyricsOverlay from "$lib/components/LyricsOverlay.svelte";
   import MusicPlayer from "$lib/components/music-player/MusicPlayer.svelte";
   import MusicQueueDisplay from "$lib/components/music-queue/MusicQueueDisplay.svelte";
@@ -105,64 +106,69 @@
 </script>
 
 <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
-  <Tooltip.Provider>
-    <div class="h-screen flex flex-col bg-extra-dark">
-      <TopBar />
-      <Splitpanes class="flex-1 overflow-hidden" on:resize={e => (sidebarWidth = e.detail[0].size)}>
-        <Pane
-          class="bg-extra-dark rounded-tr-md"
-          {...sizes.sidebar}
-          minSize={isSidebarCollapsed ? COLLAPSED_WIDTH : sizes.sidebar.minSize}
-          maxSize={isSidebarCollapsed ? COLLAPSED_WIDTH : sizes.sidebar.maxSize}
-          size={isSidebarCollapsed ? COLLAPSED_WIDTH : sidebarWidth}
+  <BackgroundDownloadManager>
+    <Tooltip.Provider>
+      <div class="h-screen flex flex-col bg-extra-dark">
+        <TopBar />
+        <Splitpanes
+          class="flex-1 overflow-hidden"
+          on:resize={e => (sidebarWidth = e.detail[0].size)}
         >
-          <Sidebar
-            isCollapsed={isSidebarCollapsed || window.innerWidth <= 640}
-            toggleSidebar={() => (isSidebarCollapsed = !isSidebarCollapsed)}
-          />
-        </Pane>
-        <Pane
-          class="h-full w-full bg-extra-dark relative"
-          size={isSidebarCollapsed ? 92 : sizes.content}
-        >
-          <main class="bg-extra-dark h-screen">
-            {#if musicQueueStore.musicPlayingNow && musicPlayerStore.visiblePanel}
-              <div
-                class="absolute inset-x-0 top-[10.5%] bottom-0 z-80 rounded-2xl flex flex-col overflow-hidden"
-                in:fly={{ y: 20, duration: 250 }}
-                out:fly={{ y: 20, duration: 100 }}
-              >
-                <InfoOverlay>
-                  {#if musicPlayerStore.visiblePanel === "playingNow"}
-                    <div in:fly={{ x: -200, y: 0 }} out:fly={{ x: -200, y: 0 }}>
-                      <NowPlayingOverlay />
-                    </div>
-                  {:else if musicPlayerStore.visiblePanel === "lyrics"}
-                    <div in:fly={{ x: -200, y: 0 }} out:fly={{ x: 400, y: 0 }}>
-                      <LyricsOverlay />
-                    </div>
-                  {/if}
-                </InfoOverlay>
-              </div>
-            {/if}
-            {@render children?.()}
-          </main>
-        </Pane>
-        {#if musicQueueStore.isMusicQueueVisible}
-          <Pane {...sizes.queue} class="z-9999">
-            <div class="h-full w-full">
-              <MusicQueueDisplay />
-            </div>
+          <Pane
+            class="bg-extra-dark rounded-tr-md"
+            {...sizes.sidebar}
+            minSize={isSidebarCollapsed ? COLLAPSED_WIDTH : sizes.sidebar.minSize}
+            maxSize={isSidebarCollapsed ? COLLAPSED_WIDTH : sizes.sidebar.maxSize}
+            size={isSidebarCollapsed ? COLLAPSED_WIDTH : sidebarWidth}
+          >
+            <Sidebar
+              isCollapsed={isSidebarCollapsed || window.innerWidth <= 640}
+              toggleSidebar={() => (isSidebarCollapsed = !isSidebarCollapsed)}
+            />
           </Pane>
-        {/if}
-      </Splitpanes>
-      <div class="h-[12%] self-end w-full">
-        <MusicPlayer />
+          <Pane
+            class="h-full w-full bg-extra-dark relative"
+            size={isSidebarCollapsed ? 92 : sizes.content}
+          >
+            <main class="bg-extra-dark h-screen">
+              {#if musicQueueStore.musicPlayingNow && musicPlayerStore.visiblePanel}
+                <div
+                  class="absolute inset-x-0 top-[10.5%] bottom-0 z-80 rounded-2xl flex flex-col overflow-hidden"
+                  in:fly={{ y: 20, duration: 250 }}
+                  out:fly={{ y: 20, duration: 100 }}
+                >
+                  <InfoOverlay>
+                    {#if musicPlayerStore.visiblePanel === "playingNow"}
+                      <div in:fly={{ x: -200, y: 0 }} out:fly={{ x: -200, y: 0 }}>
+                        <NowPlayingOverlay />
+                      </div>
+                    {:else if musicPlayerStore.visiblePanel === "lyrics"}
+                      <div in:fly={{ x: -200, y: 0 }} out:fly={{ x: 400, y: 0 }}>
+                        <LyricsOverlay />
+                      </div>
+                    {/if}
+                  </InfoOverlay>
+                </div>
+              {/if}
+              {@render children?.()}
+            </main>
+          </Pane>
+          {#if musicQueueStore.isMusicQueueVisible}
+            <Pane {...sizes.queue} class="z-9999">
+              <div class="h-full w-full">
+                <MusicQueueDisplay />
+              </div>
+            </Pane>
+          {/if}
+        </Splitpanes>
+        <div class="h-[12%] self-end w-full">
+          <MusicPlayer />
+        </div>
       </div>
-    </div>
-  </Tooltip.Provider>
-  <Toaster
-    position="bottom-right"
-    toastOptions={{ style: `background-color: #111; color: white;` }}
-  />
+    </Tooltip.Provider>
+    <Toaster
+      position="bottom-right"
+      toastOptions={{ style: `background-color: #111; color: white;` }}
+    />
+  </BackgroundDownloadManager>
 </PersistQueryClientProvider>

@@ -5,7 +5,7 @@
 
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
-  import { NativePlayer } from "$lib/stream-player/native";
+  import { NativePlayer } from "$lib/stream-player/native-player";
   import { WebEmbedPlayer } from "$lib/stream-player/web-embed";
   import { punctuatify } from "$lib/utils/format";
 
@@ -26,10 +26,7 @@
   const handleOnPause = () => (musicPlayerStore.isPlaying = false);
 
   async function handleOnEnded() {
-    if (musicPlayerStore.repeatMode === "one") {
-      musicPlayerStore.playMusic();
-      return;
-    }
+    if (musicPlayerStore.repeatMode === "one") return musicPlayerStore.playMusic();
 
     if (!musicQueueStore.musicPlayingNow) return;
 
@@ -64,7 +61,7 @@
     }
   }
 
-  function handleLoaded() {
+  async function handleLoaded() {
     musicPlayerStore.isPlaying = true;
     navigator.mediaSession.metadata = new MediaMetadata({
       title: musicQueueStore.musicPlayingNow?.title,
