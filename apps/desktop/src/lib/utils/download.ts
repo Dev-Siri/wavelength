@@ -23,7 +23,10 @@ export async function getDownloadedStreamPath(videoId: string) {
 export async function fetchDownloads() {
   const savedDownloadsMeta = await get(DOWNLOAD_DIR);
 
-  if (!savedDownloadsMeta) return await set(DOWNLOAD_DIR, "[]");
+  if (!savedDownloadsMeta) {
+    await set(DOWNLOAD_DIR, "[]");
+    return [];
+  }
 
   const downloadsMeta = JSON.parse(savedDownloadsMeta);
   const parsedDownloads = downloadMetaSchema.safeParse(downloadsMeta);
