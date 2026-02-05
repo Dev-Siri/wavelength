@@ -1,11 +1,7 @@
 use dashmap::DashMap;
 use std::{env, sync::Arc};
 
-use tauri::{
-    menu::{Menu, MenuItem},
-    tray::TrayIconBuilder,
-    Manager,
-};
+use tauri::{tray::TrayIconBuilder, Manager};
 
 mod audio_server;
 mod cache;
@@ -37,13 +33,9 @@ pub fn run() {
                 stream_url_cache: DashMap::new(),
             }));
 
-            let quit_i = MenuItem::with_id(app, "quit", "Quit WavLen", true, None::<&str>)?;
-            let menu = Menu::with_items(app, &[&quit_i])?;
-
             TrayIconBuilder::new()
                 .tooltip("WavLen")
                 .icon(app.default_window_icon().unwrap().clone())
-                .menu(&menu)
                 .build(app)?;
 
             if cfg!(debug_assertions) {
