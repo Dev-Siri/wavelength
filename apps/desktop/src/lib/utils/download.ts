@@ -22,6 +22,9 @@ export async function getDownloadedStreamPath(videoId: string) {
 
 export async function fetchDownloads() {
   const savedDownloadsMeta = await get(DOWNLOAD_DIR);
+
+  if (!savedDownloadsMeta) return await set(DOWNLOAD_DIR, "[]");
+
   const downloadsMeta = JSON.parse(savedDownloadsMeta);
   const parsedDownloads = downloadMetaSchema.safeParse(downloadsMeta);
 
@@ -33,6 +36,9 @@ export async function fetchDownloads() {
 
 export async function updateDownloads(newDownload: MusicTrack) {
   const savedDownloadsMeta = await get(DOWNLOAD_DIR);
+
+  if (!savedDownloadsMeta) return await set(DOWNLOAD_DIR, "[]");
+
   const downloadsMeta = JSON.parse(savedDownloadsMeta);
   const parsedDownloads = downloadMetaSchema.safeParse(downloadsMeta);
 
@@ -47,6 +53,9 @@ export async function updateDownloads(newDownload: MusicTrack) {
 
 export async function deleteDownload(videoId: string) {
   const savedDownloadsMeta = await get(DOWNLOAD_DIR);
+
+  if (!savedDownloadsMeta) return await set(DOWNLOAD_DIR, "[]");
+
   const downloadsMeta = JSON.parse(savedDownloadsMeta);
   const parsedDownloads = downloadMetaSchema.safeParse(downloadsMeta);
 
