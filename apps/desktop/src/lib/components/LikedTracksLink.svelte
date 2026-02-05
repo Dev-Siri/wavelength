@@ -25,7 +25,7 @@
 <a
   href="/app/likes"
   tabindex="0"
-  class="flex group cursor-pointer items-center p-2.5 pr-3 bg-[#111] hover:bg-[#1c1c1c] my-0.5 rounded-xl w-full gap-2 {mode ===
+  class="flex group cursor-pointer items-center p-2.5 pr-3 hover:bg-[#1c1c1c] my-0.5 rounded-xl w-full gap-2 {mode ===
   'full'
     ? 'justify-start'
     : 'justify-center'}"

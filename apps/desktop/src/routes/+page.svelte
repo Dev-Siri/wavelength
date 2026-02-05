@@ -25,7 +25,7 @@
   >
     <section class="flex flex-col h-full items-center lg:items-start w-full lg:w-2/5">
       <h1
-        class="text-primary leading-tighter text-4xl font-semibold tracking-tight text-balance lg:leading-[1.1] lg:font-semibold xl:text-5xl xl:tracking-tighter max-w-4xltext-center lg:text-start"
+        class="text-primary leading-tighter text-4xl font-semibold tracking-tight text-balance lg:leading-[1.1] xl:text-5xl xl:tracking-tighter max-w-4xltext-center lg:text-start"
       >
         Music you love, <br />right at your fingertips.
       </h1>

@@ -74,7 +74,7 @@
     class:focused-input={isInputFocused}
     onsubmit={handleSearch}
   >
-    <SearchIcon size={20} />
+    <SearchIcon size={18} />
     <input
       type="text"
       name="q"

@@ -20,7 +20,7 @@
   );
 </script>
 
-<div class="h-full w-full bg-black/90">
+<div class="h-full w-full bg-[#111] rounded-xl">
   <header class="flex justify-between items-center px-4 pt-2">
     <p class="text-xl font-semibold select-none">Queue</p>
     <Button

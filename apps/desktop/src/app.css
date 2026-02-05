@@ -85,7 +85,7 @@ body {
 }
 
 .splitpanes .splitpanes__splitter {
-  @apply bg-primary-foreground! duration-200! hover:bg-secondary-foreground!;
+  @apply bg-black! duration-200! hover:bg-secondary!;
 }
 
 .default-theme.splitpanes--vertical > .splitpanes__splitter,

@@ -36,7 +36,7 @@
   }));
 </script>
 
-<aside class="h-full overflow-y-auto bg-black">
+<aside class="h-full overflow-y-auto bg-[#111]">
   <div class="flex flex-col h-full w-full px-3 mt-2 gap-2">
     {#if userStore.user}
       <div
@@ -49,7 +49,7 @@
           onkeydown={toggleSidebar}
           onclick={toggleSidebar}
         >
-          <div class={cn(buttonVariants({ variant: "ghost" }), "px-2.5")}>
+          <div class={cn(buttonVariants({ variant: "ghost", size: "icon" }))}>
             <LibraryIcon size={30} />
           </div>
           {#if !isCollapsed}
@@ -60,11 +60,7 @@
             </h2>
           {/if}
         </div>
-        <Button
-          variant="ghost"
-          class="rounded-full px-3"
-          onclick={() => createPlaylistMutation.mutate()}
-        >
+        <Button variant="ghost" size="icon" onclick={() => createPlaylistMutation.mutate()}>
           <PlusIcon size={30} />
         </Button>
       </div>

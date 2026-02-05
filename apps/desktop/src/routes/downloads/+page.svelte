@@ -1,12 +1,11 @@
 <script>
   import { ChevronLeft } from "@lucide/svelte";
 
+  import { APP_DOWNLOAD_LINKS } from "$lib/constants/download";
+
   import LandingHeader from "$lib/components/LandingHeader.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import AndroidLogo from "$lib/components/vectors/AndroidLogo.svelte";
-
-  const downloadUrl =
-    "https://github.com/Dev-Siri/wavelength/releases/latest/download/app-release.apk";
 </script>
 
 <LandingHeader />
@@ -18,7 +17,7 @@
     </Button>
     <h1 class="block text-4xl py-4">Download for Android</h1>
     <Button
-      href={downloadUrl}
+      href={APP_DOWNLOAD_LINKS.android}
       class="flex gap-2 px-4 items-center"
       size="lg"
       download

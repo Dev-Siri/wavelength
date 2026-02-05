@@ -6,6 +6,7 @@
   import { svelteQueryKeys } from "$lib/constants/keys";
   import { fetchDownloads } from "$lib/utils/download";
 
+  import Logo from "$lib/components/Logo.svelte";
   import TrackItem from "$lib/components/TrackItem.svelte";
 
   $effect(() => {
@@ -31,7 +32,7 @@
     </div>
   {:else}
     <div class="h-1/2 w-full flex flex-col gap-2 items-center justify-center">
-      <span class="font-black text-8xl select-none">λ</span>
+      <Logo />
       <p class="text-lg">You have no songs downloaded.</p>
     </div>
   {/if}

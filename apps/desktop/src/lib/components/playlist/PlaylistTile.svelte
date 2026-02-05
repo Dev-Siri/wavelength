@@ -75,7 +75,7 @@
   tabindex={0}
   onkeydown={wrapperClick}
   onclick={wrapperClick}
-  class="flex group cursor-pointer items-center p-2.5 pr-3 bg-[#111] hover:bg-[#1c1c1c] duration-200 my-0.5 rounded-xl w-full gap-2 {wrapperClasses} {mode ===
+  class="flex group cursor-pointer items-center p-2.5 pr-3 hover:bg-[#1c1c1c] duration-200 my-0.5 rounded-xl w-full gap-2 {wrapperClasses} {mode ===
   'full'
     ? 'justify-start'
     : 'justify-center'}"

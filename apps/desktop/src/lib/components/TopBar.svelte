@@ -5,26 +5,32 @@
   import userStore from "$lib/stores/user.svelte.js";
 
   import GoogleLoginButton from "./action-buttons/GoogleLoginButton.svelte";
+  import Logo from "./Logo.svelte";
   import SearchBar from "./search/SearchBar.svelte";
   import Button from "./ui/button/button.svelte";
   import UserProfileIcon from "./UserProfileIcon.svelte";
 </script>
 
 <header
-  class="flex items-center z-50 justify-between py-3 bg-black/35 backdrop-blur-xl backdrop-saturate-150 px-4 {isTauri() &&
+  class="flex items-center z-50 justify-between py-2 bg-black/35 backdrop-blur-xl backdrop-saturate-150 px-4 {isTauri() &&
     'pt-8'}"
 >
   <a
     href="/app"
     class="flex items-center w-fit p-4 py-2 duration-200 rounded-full hover:bg-primary-foreground"
   >
-    <span class="font-black text-5xl select-none">λ</span>
+    <Logo />
   </a>
-  <div class="flex gap-2 items-center w-1/2 pl-2">
-    <Button onclick={() => history.back()} variant="secondary" class="rounded-full">
+  <div class="flex gap-2 h-full items-center w-1/2 pl-2">
+    <Button
+      onclick={() => history.back()}
+      variant="secondary"
+      size="icon"
+      class="rounded-full px-4"
+    >
       <ArrowLeft />
     </Button>
-    <Button href="/" variant="secondary" class="rounded-full">
+    <Button href="/" variant="secondary" size="icon" class="rounded-full px-4">
       <HouseIcon />
     </Button>
     <SearchBar />
@@ -34,7 +40,7 @@
   {:else}
     <div class="flex items-center self-end gap-2">
       <Button
-        href={isTauri() ? "/app/downloads" : "/downloads"}
+        href={isTauri() ? "/app/downloads" : "/app/app-link"}
         class="flex gap-2 items-center text-muted-foreground"
         variant="ghost"
       >
