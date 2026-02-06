@@ -7,7 +7,7 @@
   import { fetchDownloads } from "$lib/utils/download";
 
   import Logo from "$lib/components/Logo.svelte";
-  import TrackItem from "$lib/components/TrackItem.svelte";
+  import Track from "$lib/components/track/Track.svelte";
 
   $effect(() => {
     if (!isTauri()) history.back();
@@ -27,7 +27,7 @@
   {#if downloadsQuery.data?.length}
     <div class="mt-2">
       {#each downloadsQuery.data as download}
-        <TrackItem music={download} toggle={{ type: "add" }} />
+        <Track music={download} toggle={{ type: "add" }} />
       {/each}
     </div>
   {:else}
