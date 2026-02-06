@@ -7,6 +7,7 @@
 
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
   import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
+  import userStore from "$lib/stores/user.svelte";
   import { durationify } from "$lib/utils/format";
 
   import ArtistLink from "../artist/ArtistLink.svelte";
@@ -97,7 +98,9 @@
         <div class="pr-[18%]"></div>
       {/if}
     </div>
-    <TrackLikeButton {music} />
+    {#if userStore.user}
+      <TrackLikeButton {music} />
+    {/if}
     <DropdownMenu.Trigger class="h-full">
       <Button variant="ghost" class="flex items-center justify-center px-1 text-muted-foreground">
         <EllipsisIcon />
