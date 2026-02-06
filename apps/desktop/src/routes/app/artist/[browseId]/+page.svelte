@@ -8,7 +8,7 @@
   import { backendClient } from "$lib/utils/query-client.js";
   import { artistResponseSchema } from "$lib/utils/validation/artist-response";
 
-  import AlbumTile from "$lib/components/album/AlbumTile.svelte";
+  import AlbumCard from "$lib/components/album/AlbumCard.svelte";
   import ArtistFollowButton from "$lib/components/artist/ArtistFollowButton.svelte";
   import Image from "$lib/components/Image.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
@@ -104,9 +104,9 @@
           <section>
             {#if artist.albums.length}
               <h4 class="text-xl font-semibold select-none mb-2">Albums</h4>
-              <div class="grid grid-cols-2 gap-4 px-2">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-2">
                 {#each artist.albums as album}
-                  <AlbumTile album={{ ...album, artist }} />
+                  <AlbumCard album={{ ...album, artist }} />
                 {/each}
               </div>
             {/if}
@@ -114,9 +114,9 @@
           <section>
             {#if artist.singlesAndEps.length}
               <h4 class="text-xl font-semibold select-none mb-2">Singles & EPs</h4>
-              <div class="grid grid-cols-2 gap-4 px-2">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-2">
                 {#each artist.singlesAndEps as singlesAndEp}
-                  <AlbumTile album={{ ...singlesAndEp, artist }} />
+                  <AlbumCard album={{ ...singlesAndEp, artist }} />
                 {/each}
               </div>
             {/if}

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { PlayIcon } from "@lucide/svelte";
+  import { EllipsisIcon, PlayIcon } from "@lucide/svelte";
   import { fly } from "svelte/transition";
 
   import type { MusicTrack } from "$lib/utils/validation/music-track";
@@ -9,7 +9,10 @@
   import { punctuatify } from "$lib/utils/format";
 
   import Image from "../Image.svelte";
+  import PlaylistToggleOptions from "../playlist/PlaylistToggleOptions.svelte";
+  import TrackLikeButton from "../track/TrackLikeButton.svelte";
   import { Button } from "../ui/button";
+  import * as DropdownMenu from "../ui/dropdown-menu";
 
   const { topResult }: { topResult: MusicTrack } = $props();
 
@@ -25,7 +28,7 @@
 </script>
 
 <div
-  class="relative w-full bg-muted bg-opacity-40 rounded-2xl h-full p-5 hover:bg-muted duration-200"
+  class="relative w-full bg-muted bg-opacity-40 rounded-2xl h-full p-5 duration-200"
   tabindex={0}
   role="button"
   onclick={playSong}
@@ -33,6 +36,19 @@
   onmouseenter={() => (isHoveringCard = true)}
   onmouseleave={() => (isHoveringCard = false)}
 >
+  <div class="flex absolute right-5">
+    <TrackLikeButton music={topResult} />
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger>
+        <Button variant="ghost" size="sm">
+          <EllipsisIcon class="text-gray-400" />
+        </Button>
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content>
+        <PlaylistToggleOptions music={topResult} toggle={{ type: "add" }} />
+      </DropdownMenu.Content>
+    </DropdownMenu.Root>
+  </div>
   <Image
     src={topResult.thumbnail}
     alt="Top Result Thumbnail"

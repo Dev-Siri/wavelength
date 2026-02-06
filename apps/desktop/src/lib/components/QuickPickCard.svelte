@@ -64,7 +64,7 @@
       <p class="text-ellipsis w-full text-secondary-foreground text-xs">
         {quickPick.title.length > 25 ? `${quickPick.title.slice(0, 25)}...` : quickPick.title}
       </p>
-      <p class=" text-muted-foreground text-xs">
+      <p class="text-muted-foreground text-xs">
         {#each quickPick.artists as artist, i}
           <span>
             {artist.title}{quickPick.artists[i + 1] ? ", " : ""}
