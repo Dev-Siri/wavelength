@@ -8,15 +8,17 @@ import (
 )
 
 func registerPlaylistRoutes(app *fiber.App) {
-	app.Get("/playlists", playlist_controllers.GetPublicPlaylists)
-	app.Post("/playlists/user/:email", middleware.JwtAuthMiddleware, playlist_controllers.CreatePlaylist)
-	app.Get("/playlists/user/:email", middleware.JwtAuthMiddleware, playlist_controllers.GetUserPlaylists)
-	app.Get("/playlists/playlist/:playlistId", playlist_controllers.GetPlaylistById)
-	app.Delete("/playlists/playlist/:playlistId", middleware.JwtAuthMiddleware, playlist_controllers.DeletePlaylistById)
-	app.Put("/playlists/playlist/:playlistId", playlist_controllers.EditPlaylist)
-	app.Get("/playlists/playlist/:playlistId/length", playlist_controllers.GetPlaylistTracksLength)
-	app.Get("/playlists/playlist/:playlistId/tracks", playlist_controllers.GetPlaylistTracks)
-	app.Post("/playlists/playlist/:playlistId/tracks", playlist_controllers.AddRemovePlaylistTrack)
-	app.Put("/playlists/playlist/:playlistId/tracks", playlist_controllers.RearrangePlaylistTracks)
-	app.Patch("/playlists/playlist/:playlistId/visibility", middleware.JwtAuthMiddleware, playlist_controllers.ChangePlaylistVisibility)
+	playlists := app.Group("/playlists")
+
+	playlists.Get("/", playlist_controllers.GetPublicPlaylists)
+	playlists.Post("/user/:email", middleware.JwtAuthMiddleware, playlist_controllers.CreatePlaylist)
+	playlists.Get("/user/:email", middleware.JwtAuthMiddleware, playlist_controllers.GetUserPlaylists)
+	playlists.Get("/playlist/:playlistId", playlist_controllers.GetPlaylistById)
+	playlists.Delete("/playlist/:playlistId", middleware.JwtAuthMiddleware, playlist_controllers.DeletePlaylistById)
+	playlists.Put("/playlist/:playlistId", playlist_controllers.EditPlaylist)
+	playlists.Get("/playlist/:playlistId/length", playlist_controllers.GetPlaylistTracksLength)
+	playlists.Get("/playlist/:playlistId/tracks", playlist_controllers.GetPlaylistTracks)
+	playlists.Post("/playlist/:playlistId/tracks", playlist_controllers.AddRemovePlaylistTrack)
+	playlists.Put("/playlist/:playlistId/tracks", playlist_controllers.RearrangePlaylistTracks)
+	playlists.Patch("/playlist/:playlistId/visibility", middleware.JwtAuthMiddleware, playlist_controllers.ChangePlaylistVisibility)
 }

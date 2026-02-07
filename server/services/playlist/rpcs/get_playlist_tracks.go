@@ -2,9 +2,11 @@ package playlist_rpcs
 
 import (
 	"context"
+	"database/sql"
 	"html"
 	"wavelength/proto/commonpb"
 	"wavelength/proto/playlistpb"
+	shared_type_constants "wavelength/shared/constants/types"
 	shared_db "wavelength/shared/db"
 	"wavelength/shared/logging"
 
@@ -30,10 +32,14 @@ func (p *PlaylistService) GetPlaylistTracks(
 			pt.playlist_id,
 
 			a.title AS artist_title,
-			a.browse_id AS artist_browse_id
+			a.browse_id AS artist_browse_id,
+			al.title AS album_title,
+			al.browse_id AS album_browse_id
 		FROM "playlist_tracks" pt
 		LEFT JOIN "artists" a
 		ON pt.video_id = a.authored_track_id
+		LEFT JOIN "albums" al
+		ON pt.video_id = al.track_id
 		WHERE pt.playlist_id = $1
 	`, request.PlaylistId)
 
@@ -60,6 +66,8 @@ func (p *PlaylistService) GetPlaylistTracks(
 
 			artistTitle    string
 			artistBrowseId string
+			albumTitle     sql.NullString
+			albumBrowseId  sql.NullString
 		)
 
 		if err := rows.Scan(
@@ -74,6 +82,8 @@ func (p *PlaylistService) GetPlaylistTracks(
 			&playlistId,
 			&artistTitle,
 			&artistBrowseId,
+			&albumTitle,
+			&albumBrowseId,
 		); err != nil {
 			logging.Logger.Error("Parsing of one playlist track failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Parsing of one playlist track failed.")
@@ -91,12 +101,14 @@ func (p *PlaylistService) GetPlaylistTracks(
 				VideoId:            videoId,
 				PlaylistId:         playlistId,
 				Artists:            []*commonpb.EmbeddedArtist{},
+				VideoType:          shared_type_constants.PlaylistTrackTypeGrpcMap[shared_type_constants.PlaylistTrackType(videoType)],
 			}
 
-			if videoType == "uvideo" {
-				track.VideoType = commonpb.VideoType_VIDEO_TYPE_UVIDEO
-			} else {
-				track.VideoType = commonpb.VideoType_VIDEO_TYPE_TRACK
+			if albumTitle.Valid && albumBrowseId.Valid {
+				track.Album = &commonpb.EmbeddedAlbum{
+					Title:    albumTitle.String,
+					BrowseId: albumBrowseId.String,
+				}
 			}
 
 			tracks[playlistTrackId] = track

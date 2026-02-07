@@ -6,10 +6,10 @@
 
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
   import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
-  import { durationify } from "$lib/utils/format";
 
   import ExplicitIndicator from "../ExplicitIndicator.svelte";
   import PlaylistToggleOptions from "../playlist/PlaylistToggleOptions.svelte";
+  import TrackDuration from "../track/TrackDuration.svelte";
   import { Button } from "../ui/button";
   import * as DropdownMenu from "../ui/dropdown-menu";
 
@@ -57,9 +57,7 @@
           {music.title.length > 45 ? `${music.title.slice(0, 44).trim()}...` : music.title}
         </p>
       </div>
-      <p class="self-center text-sm text-muted-foreground pl-[9%]">
-        {durationify(Number(music.duration))}
-      </p>
+      <TrackDuration duration={music.duration} />
     </div>
     {#if music.duration !== ""}
       <DropdownMenu.Trigger class="h-full">

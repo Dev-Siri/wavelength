@@ -1,18 +1,19 @@
 package schemas
 
-import type_constants "wavelength/services/gateway/constants/types"
+import shared_type_constants "wavelength/shared/constants/types"
 
 type PlaylistTrackAdditionSchema struct {
-	Thumbnail  string                              `json:"thumbnail"`
-	Duration   string                              `json:"duration"`
-	IsExplicit bool                                `json:"isExplicit"`
-	Title      string                              `json:"title"`
-	VideoId    string                              `json:"videoId"`
-	VideoType  type_constants.PlaylistTrackType    `json:"videoType"`
-	Artists    []PlaylistTrackAdditionArtistSchema `json:"artists"`
+	Thumbnail  string                                    `json:"thumbnail"`
+	Duration   string                                    `json:"duration"`
+	IsExplicit bool                                      `json:"isExplicit"`
+	Title      string                                    `json:"title"`
+	VideoId    string                                    `json:"videoId"`
+	VideoType  shared_type_constants.PlaylistTrackType   `json:"videoType"`
+	Artists    []PlaylistTrackAdditionEmbeddedDataSchema `json:"artists"`
+	Album      *PlaylistTrackAdditionEmbeddedDataSchema  `json:"album"`
 }
 
-type PlaylistTrackAdditionArtistSchema struct {
+type PlaylistTrackAdditionEmbeddedDataSchema struct {
 	Title    string `json:"title"`
 	BrowseId string `json:"browseId"`
 }

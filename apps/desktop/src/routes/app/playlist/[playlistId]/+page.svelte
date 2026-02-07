@@ -2,6 +2,7 @@
   import { page } from "$app/state";
   import { ClockIcon, HashIcon, ListPlusIcon } from "@lucide/svelte";
   import { createQuery } from "@tanstack/svelte-query";
+  import { isTauri } from "@tauri-apps/api/core";
   import { fly } from "svelte/transition";
   import { z } from "zod";
 
@@ -162,31 +163,39 @@
                   playlistId={playlist.playlistId}
                   isPublic={playlist.isPublic}
                 />
-                <DownloadButton source="playlist" tracks={playlistTracks} />
+                {#if isTauri()}
+                  <DownloadButton source="playlist" tracks={playlistTracks} />
+                {/if}
               </div>
-              <header
-                class="flex justify-around items-center gap-5 select-none text-muted-foreground"
-              >
-                <Tooltip.Root>
-                  <Tooltip.Trigger>
-                    <button
-                      type="button"
-                      class="cursor-pointer p-1.5 rounded-full duration-200"
-                      onclick={() => (isRearrangingList = !isRearrangingList)}
-                    >
-                      <HashIcon size={18} />
-                    </button>
-                  </Tooltip.Trigger>
-                  <Tooltip.Content>
-                    <p>
-                      {isRearrangingList ? "Stop" : "Enable"} Rearranging Tracks
-                    </p>
-                  </Tooltip.Content>
-                </Tooltip.Root>
-                <p class="flex-2 ml-8 text-md">Title</p>
-                <ClockIcon size={18} class="mr-28" />
+              <header class="flex items-center select-none text-muted-foreground">
+                <section class="flex items-center gap-10 w-1/3">
+                  <Tooltip.Root>
+                    <Tooltip.Trigger>
+                      <button
+                        type="button"
+                        class="cursor-pointer p-1.5 rounded-full duration-200"
+                        onclick={() => (isRearrangingList = !isRearrangingList)}
+                      >
+                        <HashIcon size={14} />
+                      </button>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>
+                      <p>
+                        {isRearrangingList ? "Stop" : "Enable"} Rearranging Tracks
+                      </p>
+                    </Tooltip.Content>
+                  </Tooltip.Root>
+                  <p class="text-sm">Title</p>
+                </section>
+                <section class="flex justify-center w-1/3">
+                  <p class="text-sm">Album</p>
+                </section>
+                <section class="flex justify-center w-1/3">
+                  <ClockIcon size={14} class="ml-20" />
+                </section>
               </header>
-              <div class="mt-2 overflow-x-hidden pb-[80%] md:pb-[40%] lg:pb-[20%]">
+              <div class="bg-secondary h-[1px] w-full my-2.5 rounded-full"></div>
+              <div class="mt-2 overflow-x-hidden pb-[20%]">
                 {#key playlistTracks}
                   <PlaylistTracksList {playlistTracks} {playlist} {isRearrangingList} />
                 {/key}

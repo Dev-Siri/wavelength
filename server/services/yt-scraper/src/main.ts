@@ -23,9 +23,11 @@ server.bindAsync(
   (error, port) => {
     if (error) return console.error("YtScraperService startup failed: ", error);
     console.log(`YtScraperService is listening on port: ${port}`);
-    process.on("SIGTERM", () => {
-      console.log("SIGTERM received.");
-      server.tryShutdown(() => console.log("Disconnecting server."));
-    });
-  }
+  },
 );
+
+const postShutdown = () =>
+  console.log("YtScraperService has been disconnected.");
+
+process.on("SIGTERM", () => server.tryShutdown(postShutdown));
+process.on("SIGINT", () => server.tryShutdown(postShutdown));

@@ -1,9 +1,8 @@
-package clients
+package shared_clients
 
 import (
 	"wavelength/proto/albumpb"
-	"wavelength/services/gateway/env"
-	shared_clients "wavelength/shared/clients"
+	shared_env "wavelength/shared/env"
 
 	"google.golang.org/grpc"
 )
@@ -11,12 +10,12 @@ import (
 var AlbumClient albumpb.AlbumServiceClient
 
 func InitAlbumClient() error {
-	addr, err := env.GetAlbumClientURL()
+	addr, err := shared_env.GetAlbumClientURL()
 	if err != nil {
 		return err
 	}
 
-	creds, err := shared_clients.GetTransportCreds()
+	creds, err := GetTransportCreds()
 	if err != nil {
 		return err
 	}

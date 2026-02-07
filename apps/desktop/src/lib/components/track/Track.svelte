@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { EllipsisIcon, PlayIcon } from "@lucide/svelte";
+  import { EllipsisIcon } from "@lucide/svelte";
 
   import type { MusicTrack } from "$lib/utils/validation/music-track";
   import type { VideoType } from "$lib/utils/validation/playlist-track";
@@ -8,23 +8,26 @@
   import musicPlayerStore from "$lib/stores/music-player.svelte.js";
   import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
   import userStore from "$lib/stores/user.svelte";
-  import { durationify } from "$lib/utils/format";
 
+  import AlbumLink from "../album/AlbumLink.svelte";
   import ArtistLink from "../artist/ArtistLink.svelte";
   import ExplicitIndicator from "../ExplicitIndicator.svelte";
-  import Image from "../Image.svelte";
   import PlaylistToggleOptions from "../playlist/PlaylistToggleOptions.svelte";
   import { Button } from "../ui/button";
   import * as DropdownMenu from "../ui/dropdown-menu";
+  import TrackCover from "./TrackCover.svelte";
+  import TrackDuration from "./TrackDuration.svelte";
   import TrackLikeButton from "./TrackLikeButton.svelte";
 
   const {
     music,
     toggle,
     playCount,
+    showAlbum = true,
   }: {
     music: MusicTrack & { videoType?: VideoType };
     playCount?: string;
+    showAlbum?: boolean;
     toggle:
       | { type: "add" }
       | {
@@ -47,30 +50,15 @@
 
 <DropdownMenu.Root>
   <div
-    class="flex rounded-2xl justify-between items-center duration-200 p-1.5 gap-2 hover:bg-muted w-full pr-4 group cursor-pointer"
+    tabindex={0}
+    role="button"
+    onclick={playSong}
+    onkeydown={e => (e.key === "Enter" || e.key === "Space") && playSong()}
+    class="flex rounded-2xl justify-between items-center duration-200 p-1.5 gap-2 hover:bg-muted/70 w-full pr-4 group cursor-pointer"
   >
-    <div
-      tabindex={0}
-      role="button"
-      onclick={playSong}
-      onkeydown={e => (e.key === "Enter" || e.key === "Space") && playSong()}
-      class="flex gap-2 text-start w-full"
-    >
-      <div
-        class="flex flex-col aspect-square items-center justify-center relative group-hover:rounded-lg h-16 w-16 duration-200"
-      >
-        <PlayIcon class="absolute hidden group-hover:block z-50" size={18} fill="white" />
-        {#key music.thumbnail}
-          <Image
-            src={music.thumbnail}
-            alt="Thumbnail"
-            class="rounded-2xl aspect-square object-cover h-full w-full group-hover:opacity-40"
-            height={64}
-            width={70}
-          />
-        {/key}
-      </div>
-      <div class="flex flex-col gap-2 w-full mt-2">
+    <div class="flex gap-2 {showAlbum && music.album ? 'w-1/3' : 'w-2/3'}">
+      <TrackCover thumbnail={music.thumbnail} />
+      <div class="flex flex-col gap-2 w-fit mt-2">
         <p class="leading-none text-md">
           {music.title.length > 45 ? `${music.title.slice(0, 44).trim()}...` : music.title}
         </p>
@@ -90,22 +78,25 @@
           {/each}
         </p>
       </div>
-      {#if music.duration}
-        <p class="self-center text-sm text-muted-foreground pl-[9%]">
-          {durationify(Number(music.duration))}
-        </p>
-      {:else}
-        <div class="pr-[18%]"></div>
-      {/if}
     </div>
-    {#if userStore.user}
-      <TrackLikeButton {music} />
+    {#if showAlbum && music.album}
+      <div class="grid place-items-center w-1/3">
+        <AlbumLink {...music.album} />
+      </div>
     {/if}
-    <DropdownMenu.Trigger class="h-full">
-      <Button variant="ghost" class="flex items-center justify-center px-1 text-muted-foreground">
-        <EllipsisIcon />
-      </Button>
-    </DropdownMenu.Trigger>
+    <div class="flex items-center justify-end gap-2 w-1/3">
+      {#if userStore.user}
+        <TrackLikeButton {music} />
+      {/if}
+      {#if music.duration}
+        <TrackDuration duration={music.duration} />
+      {/if}
+      <DropdownMenu.Trigger class="h-full">
+        <Button variant="ghost" size="icon" class="text-muted-foreground">
+          <EllipsisIcon />
+        </Button>
+      </DropdownMenu.Trigger>
+    </div>
   </div>
   <DropdownMenu.Content>
     <PlaylistToggleOptions {music} {toggle} />

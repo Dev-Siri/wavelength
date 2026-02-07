@@ -115,6 +115,7 @@ export interface PlaylistTrack {
   videoType: VideoType;
   playlistId: string;
   artists: EmbeddedArtist[];
+  album?: EmbeddedAlbum | undefined;
 }
 
 export interface TracksLength {
@@ -132,6 +133,7 @@ export interface LikedTrack {
   videoId: string;
   videoType: VideoType;
   artists: EmbeddedArtist[];
+  album?: EmbeddedAlbum | undefined;
 }
 
 export interface SuggestedLink {
@@ -443,6 +445,7 @@ function createBasePlaylistTrack(): PlaylistTrack {
     videoType: 0,
     playlistId: "",
     artists: [],
+    album: undefined,
   };
 }
 
@@ -477,6 +480,9 @@ export const PlaylistTrack: MessageFns<PlaylistTrack> = {
     }
     for (const v of message.artists) {
       EmbeddedArtist.encode(v!, writer.uint32(90).fork()).join();
+    }
+    if (message.album !== undefined) {
+      EmbeddedAlbum.encode(message.album, writer.uint32(98).fork()).join();
     }
     return writer;
   },
@@ -568,6 +574,14 @@ export const PlaylistTrack: MessageFns<PlaylistTrack> = {
           message.artists.push(EmbeddedArtist.decode(reader, reader.uint32()));
           continue;
         }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.album = EmbeddedAlbum.decode(reader, reader.uint32());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -591,6 +605,7 @@ export const PlaylistTrack: MessageFns<PlaylistTrack> = {
       artists: globalThis.Array.isArray(object?.artists)
         ? object.artists.map((e: any) => EmbeddedArtist.fromJSON(e))
         : [],
+      album: isSet(object.album) ? EmbeddedAlbum.fromJSON(object.album) : undefined,
     };
   },
 
@@ -626,6 +641,9 @@ export const PlaylistTrack: MessageFns<PlaylistTrack> = {
     if (message.artists?.length) {
       obj.artists = message.artists.map((e) => EmbeddedArtist.toJSON(e));
     }
+    if (message.album !== undefined) {
+      obj.album = EmbeddedAlbum.toJSON(message.album);
+    }
     return obj;
   },
 
@@ -644,6 +662,9 @@ export const PlaylistTrack: MessageFns<PlaylistTrack> = {
     message.videoType = object.videoType ?? 0;
     message.playlistId = object.playlistId ?? "";
     message.artists = object.artists?.map((e) => EmbeddedArtist.fromPartial(e)) || [];
+    message.album = (object.album !== undefined && object.album !== null)
+      ? EmbeddedAlbum.fromPartial(object.album)
+      : undefined;
     return message;
   },
 };
@@ -735,6 +756,7 @@ function createBaseLikedTrack(): LikedTrack {
     videoId: "",
     videoType: 0,
     artists: [],
+    album: undefined,
   };
 }
 
@@ -766,6 +788,9 @@ export const LikedTrack: MessageFns<LikedTrack> = {
     }
     for (const v of message.artists) {
       EmbeddedArtist.encode(v!, writer.uint32(74).fork()).join();
+    }
+    if (message.album !== undefined) {
+      EmbeddedAlbum.encode(message.album, writer.uint32(82).fork()).join();
     }
     return writer;
   },
@@ -849,6 +874,14 @@ export const LikedTrack: MessageFns<LikedTrack> = {
           message.artists.push(EmbeddedArtist.decode(reader, reader.uint32()));
           continue;
         }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.album = EmbeddedAlbum.decode(reader, reader.uint32());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -871,6 +904,7 @@ export const LikedTrack: MessageFns<LikedTrack> = {
       artists: globalThis.Array.isArray(object?.artists)
         ? object.artists.map((e: any) => EmbeddedArtist.fromJSON(e))
         : [],
+      album: isSet(object.album) ? EmbeddedAlbum.fromJSON(object.album) : undefined,
     };
   },
 
@@ -903,6 +937,9 @@ export const LikedTrack: MessageFns<LikedTrack> = {
     if (message.artists?.length) {
       obj.artists = message.artists.map((e) => EmbeddedArtist.toJSON(e));
     }
+    if (message.album !== undefined) {
+      obj.album = EmbeddedAlbum.toJSON(message.album);
+    }
     return obj;
   },
 
@@ -920,6 +957,9 @@ export const LikedTrack: MessageFns<LikedTrack> = {
     message.videoId = object.videoId ?? "";
     message.videoType = object.videoType ?? 0;
     message.artists = object.artists?.map((e) => EmbeddedArtist.fromPartial(e)) || [];
+    message.album = (object.album !== undefined && object.album !== null)
+      ? EmbeddedAlbum.fromPartial(object.album)
+      : undefined;
     return message;
   },
 };

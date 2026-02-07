@@ -2,8 +2,8 @@ package album_controllers
 
 import (
 	"wavelength/proto/albumpb"
-	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
+	shared_clients "wavelength/shared/clients"
 	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
@@ -17,7 +17,7 @@ func SearchAlbums(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Query (q) is required for searching albums.")
 	}
 
-	albumSearchResponse, err := clients.AlbumClient.SearchAlbums(ctx.Context(), &albumpb.SearchAlbumsRequest{
+	albumSearchResponse, err := shared_clients.AlbumClient.SearchAlbums(ctx.Context(), &albumpb.SearchAlbumsRequest{
 		Query: query,
 	})
 	if err != nil {

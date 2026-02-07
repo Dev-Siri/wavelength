@@ -3,11 +3,13 @@ package album;
 
 option go_package = "wavelength/server/proto/album;albumpb";
 
+import "google/protobuf/empty.proto";
 import "proto/common.proto";
 
 service AlbumService {
   rpc GetAlbumDetails(GetAlbumDetailsRequest) returns (GetAlbumDetailsResponse);
   rpc SearchAlbums(SearchAlbumsRequest) returns (SearchAlbumsResponse);
+  rpc CreateTrackAlbum(CreateTrackAlbumRequest) returns (google.protobuf.Empty);
 }
 
 message GetAlbumDetailsRequest {
@@ -24,4 +26,10 @@ message SearchAlbumsRequest {
 
 message SearchAlbumsResponse {
   repeated common.SearchAlbum albums = 1;
+}
+
+message CreateTrackAlbumRequest {
+  string browse_id = 1;
+  string track_id = 2;
+  string title = 3;
 }

@@ -7,6 +7,8 @@ import (
 )
 
 func registerAlbumRoutes(app *fiber.App) {
-	app.Get("/albums/search", album_controllers.SearchAlbums)
-	app.Get("/albums/album/:albumId", album_controllers.GetAlbumDetails)
+	albums := app.Group("/albums")
+
+	albums.Get("/search", album_controllers.SearchAlbums)
+	albums.Get("/album/:albumId", album_controllers.GetAlbumDetails)
 }

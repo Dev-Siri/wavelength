@@ -227,6 +227,7 @@ type PlaylistTrack struct {
 	VideoType          VideoType              `protobuf:"varint,9,opt,name=video_type,json=videoType,proto3,enum=common.VideoType" json:"video_type,omitempty"`
 	PlaylistId         string                 `protobuf:"bytes,10,opt,name=playlist_id,json=playlistId,proto3" json:"playlist_id,omitempty"`
 	Artists            []*EmbeddedArtist      `protobuf:"bytes,11,rep,name=artists,proto3" json:"artists,omitempty"`
+	Album              *EmbeddedAlbum         `protobuf:"bytes,12,opt,name=album,proto3,oneof" json:"album,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -331,6 +332,13 @@ func (x *PlaylistTrack) GetArtists() []*EmbeddedArtist {
 	return nil
 }
 
+func (x *PlaylistTrack) GetAlbum() *EmbeddedAlbum {
+	if x != nil {
+		return x.Album
+	}
+	return nil
+}
+
 type TracksLength struct {
 	state              protoimpl.MessageState `protogen:"open.v1"`
 	SongCount          uint64                 `protobuf:"varint,1,opt,name=song_count,json=songCount,proto3" json:"song_count,omitempty"`
@@ -394,6 +402,7 @@ type LikedTrack struct {
 	VideoId       string                 `protobuf:"bytes,7,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
 	VideoType     VideoType              `protobuf:"varint,8,opt,name=video_type,json=videoType,proto3,enum=common.VideoType" json:"video_type,omitempty"`
 	Artists       []*EmbeddedArtist      `protobuf:"bytes,9,rep,name=artists,proto3" json:"artists,omitempty"`
+	Album         *EmbeddedAlbum         `protobuf:"bytes,10,opt,name=album,proto3,oneof" json:"album,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -487,6 +496,13 @@ func (x *LikedTrack) GetVideoType() VideoType {
 func (x *LikedTrack) GetArtists() []*EmbeddedArtist {
 	if x != nil {
 		return x.Artists
+	}
+	return nil
+}
+
+func (x *LikedTrack) GetAlbum() *EmbeddedAlbum {
+	if x != nil {
+		return x.Album
 	}
 	return nil
 }
@@ -1721,7 +1737,7 @@ const file_proto_common_proto_rawDesc = "" +
 	"coverImage\x88\x01\x01B\f\n" +
 	"\n" +
 	"_is_publicB\x0e\n" +
-	"\f_cover_image\"\x93\x03\n" +
+	"\f_cover_image\"\xcf\x03\n" +
 	"\rPlaylistTrack\x12*\n" +
 	"\x11playlist_track_id\x18\x01 \x01(\tR\x0fplaylistTrackId\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1c\n" +
@@ -1736,12 +1752,14 @@ const file_proto_common_proto_rawDesc = "" +
 	"\vplaylist_id\x18\n" +
 	" \x01(\tR\n" +
 	"playlistId\x120\n" +
-	"\aartists\x18\v \x03(\v2\x16.common.EmbeddedArtistR\aartistsB\x0e\n" +
-	"\f_is_explicit\"_\n" +
+	"\aartists\x18\v \x03(\v2\x16.common.EmbeddedArtistR\aartists\x120\n" +
+	"\x05album\x18\f \x01(\v2\x15.common.EmbeddedAlbumH\x01R\x05album\x88\x01\x01B\x0e\n" +
+	"\f_is_explicitB\b\n" +
+	"\x06_album\"_\n" +
 	"\fTracksLength\x12\x1d\n" +
 	"\n" +
 	"song_count\x18\x01 \x01(\x04R\tsongCount\x120\n" +
-	"\x14song_duration_second\x18\x02 \x01(\x04R\x12songDurationSecond\"\xc0\x02\n" +
+	"\x14song_duration_second\x18\x02 \x01(\x04R\x12songDurationSecond\"\xfc\x02\n" +
 	"\n" +
 	"LikedTrack\x12\x17\n" +
 	"\alike_id\x18\x01 \x01(\tR\x06likeId\x12\x14\n" +
@@ -1754,8 +1772,11 @@ const file_proto_common_proto_rawDesc = "" +
 	"\bvideo_id\x18\a \x01(\tR\avideoId\x120\n" +
 	"\n" +
 	"video_type\x18\b \x01(\x0e2\x11.common.VideoTypeR\tvideoType\x120\n" +
-	"\aartists\x18\t \x03(\v2\x16.common.EmbeddedArtistR\aartistsB\x0e\n" +
-	"\f_is_explicit\"\x90\x01\n" +
+	"\aartists\x18\t \x03(\v2\x16.common.EmbeddedArtistR\aartists\x120\n" +
+	"\x05album\x18\n" +
+	" \x01(\v2\x15.common.EmbeddedAlbumH\x01R\x05album\x88\x01\x01B\x0e\n" +
+	"\f_is_explicitB\b\n" +
+	"\x06_album\"\x90\x01\n" +
 	"\rSuggestedLink\x12\x1c\n" +
 	"\tthumbnail\x18\x01 \x01(\tR\tthumbnail\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1a\n" +
@@ -1919,27 +1940,29 @@ var file_proto_common_proto_goTypes = []any{
 var file_proto_common_proto_depIdxs = []int32{
 	0,  // 0: common.PlaylistTrack.video_type:type_name -> common.VideoType
 	8,  // 1: common.PlaylistTrack.artists:type_name -> common.EmbeddedArtist
-	0,  // 2: common.LikedTrack.video_type:type_name -> common.VideoType
-	8,  // 3: common.LikedTrack.artists:type_name -> common.EmbeddedArtist
-	8,  // 4: common.QuickPick.artists:type_name -> common.EmbeddedArtist
-	7,  // 5: common.QuickPick.album:type_name -> common.EmbeddedAlbum
-	1,  // 6: common.Album.album_type:type_name -> common.AlbumType
-	8,  // 7: common.Album.artist:type_name -> common.EmbeddedArtist
-	12, // 8: common.Album.album_tracks:type_name -> common.AlbumTrack
-	8,  // 9: common.Track.artists:type_name -> common.EmbeddedArtist
-	7,  // 10: common.Track.album:type_name -> common.EmbeddedAlbum
-	20, // 11: common.Artist.top_songs:type_name -> common.Artist.TopSongTrack
-	21, // 12: common.Artist.albums:type_name -> common.Artist.ArtistAlbum
-	21, // 13: common.Artist.singles_and_eps:type_name -> common.Artist.ArtistAlbum
-	1,  // 14: common.SearchAlbum.album_type:type_name -> common.AlbumType
-	8,  // 15: common.SearchAlbum.artist:type_name -> common.EmbeddedArtist
-	7,  // 16: common.Artist.TopSongTrack.album:type_name -> common.EmbeddedAlbum
-	1,  // 17: common.Artist.ArtistAlbum.album_type:type_name -> common.AlbumType
-	18, // [18:18] is the sub-list for method output_type
-	18, // [18:18] is the sub-list for method input_type
-	18, // [18:18] is the sub-list for extension type_name
-	18, // [18:18] is the sub-list for extension extendee
-	0,  // [0:18] is the sub-list for field type_name
+	7,  // 2: common.PlaylistTrack.album:type_name -> common.EmbeddedAlbum
+	0,  // 3: common.LikedTrack.video_type:type_name -> common.VideoType
+	8,  // 4: common.LikedTrack.artists:type_name -> common.EmbeddedArtist
+	7,  // 5: common.LikedTrack.album:type_name -> common.EmbeddedAlbum
+	8,  // 6: common.QuickPick.artists:type_name -> common.EmbeddedArtist
+	7,  // 7: common.QuickPick.album:type_name -> common.EmbeddedAlbum
+	1,  // 8: common.Album.album_type:type_name -> common.AlbumType
+	8,  // 9: common.Album.artist:type_name -> common.EmbeddedArtist
+	12, // 10: common.Album.album_tracks:type_name -> common.AlbumTrack
+	8,  // 11: common.Track.artists:type_name -> common.EmbeddedArtist
+	7,  // 12: common.Track.album:type_name -> common.EmbeddedAlbum
+	20, // 13: common.Artist.top_songs:type_name -> common.Artist.TopSongTrack
+	21, // 14: common.Artist.albums:type_name -> common.Artist.ArtistAlbum
+	21, // 15: common.Artist.singles_and_eps:type_name -> common.Artist.ArtistAlbum
+	1,  // 16: common.SearchAlbum.album_type:type_name -> common.AlbumType
+	8,  // 17: common.SearchAlbum.artist:type_name -> common.EmbeddedArtist
+	7,  // 18: common.Artist.TopSongTrack.album:type_name -> common.EmbeddedAlbum
+	1,  // 19: common.Artist.ArtistAlbum.album_type:type_name -> common.AlbumType
+	20, // [20:20] is the sub-list for method output_type
+	20, // [20:20] is the sub-list for method input_type
+	20, // [20:20] is the sub-list for extension type_name
+	20, // [20:20] is the sub-list for extension extendee
+	0,  // [0:20] is the sub-list for field type_name
 }
 
 func init() { file_proto_common_proto_init() }

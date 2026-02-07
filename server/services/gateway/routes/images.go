@@ -7,6 +7,8 @@ import (
 )
 
 func registerImageRoutes(app *fiber.App) {
-	app.Get("/image/theme-color", image_controllers.GetThemeColor)
-	app.Post("/image/manual-upload", image_controllers.ManualImageUpload)
+	images := app.Group("/image")
+
+	images.Get("/theme-color", image_controllers.GetThemeColor)
+	images.Post("/manual-upload", image_controllers.ManualImageUpload)
 }

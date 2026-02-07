@@ -81,6 +81,7 @@ type LikeTrackRequest struct {
 	VideoType     commonpb.VideoType         `protobuf:"varint,7,opt,name=video_type,json=videoType,proto3,enum=common.VideoType" json:"video_type,omitempty"`
 	LikerEmail    string                     `protobuf:"bytes,9,opt,name=liker_email,json=likerEmail,proto3" json:"liker_email,omitempty"`
 	VideoId       string                     `protobuf:"bytes,10,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	Album         *commonpb.EmbeddedAlbum    `protobuf:"bytes,11,opt,name=album,proto3,oneof" json:"album,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -169,6 +170,13 @@ func (x *LikeTrackRequest) GetVideoId() string {
 		return x.VideoId
 	}
 	return ""
+}
+
+func (x *LikeTrackRequest) GetAlbum() *commonpb.EmbeddedAlbum {
+	if x != nil {
+		return x.Album
+	}
+	return nil
 }
 
 type LikeTrackResponse struct {
@@ -1356,7 +1364,7 @@ var File_proto_music_proto protoreflect.FileDescriptor
 
 const file_proto_music_proto_rawDesc = "" +
 	"\n" +
-	"\x11proto/music.proto\x12\x05music\x1a\x12proto/common.proto\"\xa3\x02\n" +
+	"\x11proto/music.proto\x12\x05music\x1a\x12proto/common.proto\"\xdf\x02\n" +
 	"\x10LikeTrackRequest\x120\n" +
 	"\aartists\x18\x01 \x03(\v2\x16.common.EmbeddedArtistR\aartists\x12\x1c\n" +
 	"\tthumbnail\x18\x02 \x01(\tR\tthumbnail\x12\x1a\n" +
@@ -1369,7 +1377,9 @@ const file_proto_music_proto_rawDesc = "" +
 	"\vliker_email\x18\t \x01(\tR\n" +
 	"likerEmail\x12\x19\n" +
 	"\bvideo_id\x18\n" +
-	" \x01(\tR\avideoId\"\xa4\x01\n" +
+	" \x01(\tR\avideoId\x120\n" +
+	"\x05album\x18\v \x01(\v2\x15.common.EmbeddedAlbumH\x00R\x05album\x88\x01\x01B\b\n" +
+	"\x06_album\"\xa4\x01\n" +
 	"\x11LikeTrackResponse\x12>\n" +
 	"\tlike_type\x18\x01 \x01(\x0e2!.music.LikeTrackResponse.LikeTypeR\blikeType\"O\n" +
 	"\bLikeType\x12\x19\n" +
@@ -1499,54 +1509,56 @@ var file_proto_music_proto_goTypes = []any{
 	(*GetMusicSearchSuggestionsResponse_SearchSuggestedLink_SearchSuggestedLinkMeta)(nil), // 26: music.GetMusicSearchSuggestionsResponse.SearchSuggestedLink.SearchSuggestedLinkMeta
 	(*commonpb.EmbeddedArtist)(nil),  // 27: common.EmbeddedArtist
 	(commonpb.VideoType)(0),          // 28: common.VideoType
-	(*commonpb.TracksLength)(nil),    // 29: common.TracksLength
-	(*commonpb.LikedTrack)(nil),      // 30: common.LikedTrack
-	(*commonpb.QuickPick)(nil),       // 31: common.QuickPick
-	(*commonpb.MusicTrackStats)(nil), // 32: common.MusicTrackStats
-	(*commonpb.YouTubeVideo)(nil),    // 33: common.YouTubeVideo
-	(*commonpb.Track)(nil),           // 34: common.Track
+	(*commonpb.EmbeddedAlbum)(nil),   // 29: common.EmbeddedAlbum
+	(*commonpb.TracksLength)(nil),    // 30: common.TracksLength
+	(*commonpb.LikedTrack)(nil),      // 31: common.LikedTrack
+	(*commonpb.QuickPick)(nil),       // 32: common.QuickPick
+	(*commonpb.MusicTrackStats)(nil), // 33: common.MusicTrackStats
+	(*commonpb.YouTubeVideo)(nil),    // 34: common.YouTubeVideo
+	(*commonpb.Track)(nil),           // 35: common.Track
 }
 var file_proto_music_proto_depIdxs = []int32{
 	27, // 0: music.LikeTrackRequest.artists:type_name -> common.EmbeddedArtist
 	28, // 1: music.LikeTrackRequest.video_type:type_name -> common.VideoType
-	0,  // 2: music.LikeTrackResponse.like_type:type_name -> music.LikeTrackResponse.LikeType
-	25, // 3: music.GetMusicSearchSuggestionsResponse.matching_links:type_name -> music.GetMusicSearchSuggestionsResponse.SearchSuggestedLink
-	29, // 4: music.GetLikedTracksLengthResponse.liked_tracks_length:type_name -> common.TracksLength
-	30, // 5: music.GetLikedTracksResponse.liked_tracks:type_name -> common.LikedTrack
-	31, // 6: music.GetQuickPicksResponse.quick_picks:type_name -> common.QuickPick
-	32, // 7: music.GetMusicTrackStatsResponse.music_track_stats:type_name -> common.MusicTrackStats
-	33, // 8: music.SearchYouTubeVideosResponse.youtube_videos:type_name -> common.YouTubeVideo
-	34, // 9: music.SearchMusicTracksResponse.tracks:type_name -> common.Track
-	26, // 10: music.GetMusicSearchSuggestionsResponse.SearchSuggestedLink.meta:type_name -> music.GetMusicSearchSuggestionsResponse.SearchSuggestedLink.SearchSuggestedLinkMeta
-	1,  // 11: music.MusicService.LikeTrack:input_type -> music.LikeTrackRequest
-	5,  // 12: music.MusicService.IsTrackLiked:input_type -> music.IsTrackLikedRequest
-	7,  // 13: music.MusicService.GetLikedTrackCount:input_type -> music.GetLikedTrackCountRequest
-	9,  // 14: music.MusicService.GetLikedTracksLength:input_type -> music.GetLikedTracksLengthRequest
-	11, // 15: music.MusicService.GetLikedTracks:input_type -> music.GetLikedTracksRequest
-	3,  // 16: music.MusicService.GetMusicSearchSuggestions:input_type -> music.GetMusicSearchSuggestionsRequest
-	13, // 17: music.MusicService.GetQuickPicks:input_type -> music.GetQuickPicksRequest
-	15, // 18: music.MusicService.GetMusicDuration:input_type -> music.GetMusicDurationRequest
-	17, // 19: music.MusicService.GetMusicTrackStats:input_type -> music.GetMusicTrackStatsRequest
-	21, // 20: music.MusicService.GetMusicVideoId:input_type -> music.GetMusicVideoIdRequest
-	23, // 21: music.MusicService.SearchMusicTracks:input_type -> music.SearchMusicTracksRequest
-	19, // 22: music.MusicService.SearchYouTubeVideos:input_type -> music.SearchYouTubeVideosRequest
-	2,  // 23: music.MusicService.LikeTrack:output_type -> music.LikeTrackResponse
-	6,  // 24: music.MusicService.IsTrackLiked:output_type -> music.IsTrackLikedResponse
-	8,  // 25: music.MusicService.GetLikedTrackCount:output_type -> music.GetLikedTrackCountResponse
-	10, // 26: music.MusicService.GetLikedTracksLength:output_type -> music.GetLikedTracksLengthResponse
-	12, // 27: music.MusicService.GetLikedTracks:output_type -> music.GetLikedTracksResponse
-	4,  // 28: music.MusicService.GetMusicSearchSuggestions:output_type -> music.GetMusicSearchSuggestionsResponse
-	14, // 29: music.MusicService.GetQuickPicks:output_type -> music.GetQuickPicksResponse
-	16, // 30: music.MusicService.GetMusicDuration:output_type -> music.GetMusicDurationResponse
-	18, // 31: music.MusicService.GetMusicTrackStats:output_type -> music.GetMusicTrackStatsResponse
-	22, // 32: music.MusicService.GetMusicVideoId:output_type -> music.GetMusicVideoIdResponse
-	24, // 33: music.MusicService.SearchMusicTracks:output_type -> music.SearchMusicTracksResponse
-	20, // 34: music.MusicService.SearchYouTubeVideos:output_type -> music.SearchYouTubeVideosResponse
-	23, // [23:35] is the sub-list for method output_type
-	11, // [11:23] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	29, // 2: music.LikeTrackRequest.album:type_name -> common.EmbeddedAlbum
+	0,  // 3: music.LikeTrackResponse.like_type:type_name -> music.LikeTrackResponse.LikeType
+	25, // 4: music.GetMusicSearchSuggestionsResponse.matching_links:type_name -> music.GetMusicSearchSuggestionsResponse.SearchSuggestedLink
+	30, // 5: music.GetLikedTracksLengthResponse.liked_tracks_length:type_name -> common.TracksLength
+	31, // 6: music.GetLikedTracksResponse.liked_tracks:type_name -> common.LikedTrack
+	32, // 7: music.GetQuickPicksResponse.quick_picks:type_name -> common.QuickPick
+	33, // 8: music.GetMusicTrackStatsResponse.music_track_stats:type_name -> common.MusicTrackStats
+	34, // 9: music.SearchYouTubeVideosResponse.youtube_videos:type_name -> common.YouTubeVideo
+	35, // 10: music.SearchMusicTracksResponse.tracks:type_name -> common.Track
+	26, // 11: music.GetMusicSearchSuggestionsResponse.SearchSuggestedLink.meta:type_name -> music.GetMusicSearchSuggestionsResponse.SearchSuggestedLink.SearchSuggestedLinkMeta
+	1,  // 12: music.MusicService.LikeTrack:input_type -> music.LikeTrackRequest
+	5,  // 13: music.MusicService.IsTrackLiked:input_type -> music.IsTrackLikedRequest
+	7,  // 14: music.MusicService.GetLikedTrackCount:input_type -> music.GetLikedTrackCountRequest
+	9,  // 15: music.MusicService.GetLikedTracksLength:input_type -> music.GetLikedTracksLengthRequest
+	11, // 16: music.MusicService.GetLikedTracks:input_type -> music.GetLikedTracksRequest
+	3,  // 17: music.MusicService.GetMusicSearchSuggestions:input_type -> music.GetMusicSearchSuggestionsRequest
+	13, // 18: music.MusicService.GetQuickPicks:input_type -> music.GetQuickPicksRequest
+	15, // 19: music.MusicService.GetMusicDuration:input_type -> music.GetMusicDurationRequest
+	17, // 20: music.MusicService.GetMusicTrackStats:input_type -> music.GetMusicTrackStatsRequest
+	21, // 21: music.MusicService.GetMusicVideoId:input_type -> music.GetMusicVideoIdRequest
+	23, // 22: music.MusicService.SearchMusicTracks:input_type -> music.SearchMusicTracksRequest
+	19, // 23: music.MusicService.SearchYouTubeVideos:input_type -> music.SearchYouTubeVideosRequest
+	2,  // 24: music.MusicService.LikeTrack:output_type -> music.LikeTrackResponse
+	6,  // 25: music.MusicService.IsTrackLiked:output_type -> music.IsTrackLikedResponse
+	8,  // 26: music.MusicService.GetLikedTrackCount:output_type -> music.GetLikedTrackCountResponse
+	10, // 27: music.MusicService.GetLikedTracksLength:output_type -> music.GetLikedTracksLengthResponse
+	12, // 28: music.MusicService.GetLikedTracks:output_type -> music.GetLikedTracksResponse
+	4,  // 29: music.MusicService.GetMusicSearchSuggestions:output_type -> music.GetMusicSearchSuggestionsResponse
+	14, // 30: music.MusicService.GetQuickPicks:output_type -> music.GetQuickPicksResponse
+	16, // 31: music.MusicService.GetMusicDuration:output_type -> music.GetMusicDurationResponse
+	18, // 32: music.MusicService.GetMusicTrackStats:output_type -> music.GetMusicTrackStatsResponse
+	22, // 33: music.MusicService.GetMusicVideoId:output_type -> music.GetMusicVideoIdResponse
+	24, // 34: music.MusicService.SearchMusicTracks:output_type -> music.SearchMusicTracksResponse
+	20, // 35: music.MusicService.SearchYouTubeVideos:output_type -> music.SearchYouTubeVideosResponse
+	24, // [24:36] is the sub-list for method output_type
+	12, // [12:24] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_proto_music_proto_init() }
@@ -1554,6 +1566,7 @@ func file_proto_music_proto_init() {
 	if File_proto_music_proto != nil {
 		return
 	}
+	file_proto_music_proto_msgTypes[0].OneofWrappers = []any{}
 	file_proto_music_proto_msgTypes[5].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

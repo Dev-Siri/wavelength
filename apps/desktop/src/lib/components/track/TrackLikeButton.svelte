@@ -55,15 +55,25 @@
       });
     },
   }));
+
+  function handleLike(
+    e:
+      | (MouseEvent & { currentTarget: EventTarget & HTMLButtonElement })
+      | (MouseEvent & { currentTarget: EventTarget & HTMLAnchorElement }),
+  ) {
+    e.stopPropagation();
+    likeMutation.mutate();
+  }
 </script>
 
 <Button
   variant="ghost"
-  class="flex items-center p-0 mx-4 justify-center text-muted-foreground {isTrackLikedQuery.data
-    ?.isLiked
+  size="icon"
+  class="flex items-center justify-center text-muted-foreground hover:bg-transparent {isTrackLikedQuery
+    .data?.isLiked
     ? 'text-red-500'
     : ''}"
-  onclick={() => likeMutation.mutate()}
+  onclick={handleLike}
 >
   {#if isTrackLikedQuery.data?.isLiked}
     <HeartIcon fill="red" />

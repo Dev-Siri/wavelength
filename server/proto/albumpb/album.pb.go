@@ -9,6 +9,7 @@ package albumpb
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -198,11 +199,71 @@ func (x *SearchAlbumsResponse) GetAlbums() []*commonpb.SearchAlbum {
 	return nil
 }
 
+type CreateTrackAlbumRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	BrowseId      string                 `protobuf:"bytes,1,opt,name=browse_id,json=browseId,proto3" json:"browse_id,omitempty"`
+	TrackId       string                 `protobuf:"bytes,2,opt,name=track_id,json=trackId,proto3" json:"track_id,omitempty"`
+	Title         string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateTrackAlbumRequest) Reset() {
+	*x = CreateTrackAlbumRequest{}
+	mi := &file_proto_album_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateTrackAlbumRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateTrackAlbumRequest) ProtoMessage() {}
+
+func (x *CreateTrackAlbumRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_album_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateTrackAlbumRequest.ProtoReflect.Descriptor instead.
+func (*CreateTrackAlbumRequest) Descriptor() ([]byte, []int) {
+	return file_proto_album_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *CreateTrackAlbumRequest) GetBrowseId() string {
+	if x != nil {
+		return x.BrowseId
+	}
+	return ""
+}
+
+func (x *CreateTrackAlbumRequest) GetTrackId() string {
+	if x != nil {
+		return x.TrackId
+	}
+	return ""
+}
+
+func (x *CreateTrackAlbumRequest) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
 var File_proto_album_proto protoreflect.FileDescriptor
 
 const file_proto_album_proto_rawDesc = "" +
 	"\n" +
-	"\x11proto/album.proto\x12\x05album\x1a\x12proto/common.proto\"3\n" +
+	"\x11proto/album.proto\x12\x05album\x1a\x1bgoogle/protobuf/empty.proto\x1a\x12proto/common.proto\"3\n" +
 	"\x16GetAlbumDetailsRequest\x12\x19\n" +
 	"\balbum_id\x18\x01 \x01(\tR\aalbumId\">\n" +
 	"\x17GetAlbumDetailsResponse\x12#\n" +
@@ -210,10 +271,15 @@ const file_proto_album_proto_rawDesc = "" +
 	"\x13SearchAlbumsRequest\x12\x14\n" +
 	"\x05query\x18\x01 \x01(\tR\x05query\"C\n" +
 	"\x14SearchAlbumsResponse\x12+\n" +
-	"\x06albums\x18\x01 \x03(\v2\x13.common.SearchAlbumR\x06albums2\xa9\x01\n" +
+	"\x06albums\x18\x01 \x03(\v2\x13.common.SearchAlbumR\x06albums\"g\n" +
+	"\x17CreateTrackAlbumRequest\x12\x1b\n" +
+	"\tbrowse_id\x18\x01 \x01(\tR\bbrowseId\x12\x19\n" +
+	"\btrack_id\x18\x02 \x01(\tR\atrackId\x12\x14\n" +
+	"\x05title\x18\x03 \x01(\tR\x05title2\xf5\x01\n" +
 	"\fAlbumService\x12P\n" +
 	"\x0fGetAlbumDetails\x12\x1d.album.GetAlbumDetailsRequest\x1a\x1e.album.GetAlbumDetailsResponse\x12G\n" +
-	"\fSearchAlbums\x12\x1a.album.SearchAlbumsRequest\x1a\x1b.album.SearchAlbumsResponseB'Z%wavelength/server/proto/album;albumpbb\x06proto3"
+	"\fSearchAlbums\x12\x1a.album.SearchAlbumsRequest\x1a\x1b.album.SearchAlbumsResponse\x12J\n" +
+	"\x10CreateTrackAlbum\x12\x1e.album.CreateTrackAlbumRequest\x1a\x16.google.protobuf.EmptyB'Z%wavelength/server/proto/album;albumpbb\x06proto3"
 
 var (
 	file_proto_album_proto_rawDescOnce sync.Once
@@ -227,24 +293,28 @@ func file_proto_album_proto_rawDescGZIP() []byte {
 	return file_proto_album_proto_rawDescData
 }
 
-var file_proto_album_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_proto_album_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_proto_album_proto_goTypes = []any{
 	(*GetAlbumDetailsRequest)(nil),  // 0: album.GetAlbumDetailsRequest
 	(*GetAlbumDetailsResponse)(nil), // 1: album.GetAlbumDetailsResponse
 	(*SearchAlbumsRequest)(nil),     // 2: album.SearchAlbumsRequest
 	(*SearchAlbumsResponse)(nil),    // 3: album.SearchAlbumsResponse
-	(*commonpb.Album)(nil),          // 4: common.Album
-	(*commonpb.SearchAlbum)(nil),    // 5: common.SearchAlbum
+	(*CreateTrackAlbumRequest)(nil), // 4: album.CreateTrackAlbumRequest
+	(*commonpb.Album)(nil),          // 5: common.Album
+	(*commonpb.SearchAlbum)(nil),    // 6: common.SearchAlbum
+	(*emptypb.Empty)(nil),           // 7: google.protobuf.Empty
 }
 var file_proto_album_proto_depIdxs = []int32{
-	4, // 0: album.GetAlbumDetailsResponse.album:type_name -> common.Album
-	5, // 1: album.SearchAlbumsResponse.albums:type_name -> common.SearchAlbum
+	5, // 0: album.GetAlbumDetailsResponse.album:type_name -> common.Album
+	6, // 1: album.SearchAlbumsResponse.albums:type_name -> common.SearchAlbum
 	0, // 2: album.AlbumService.GetAlbumDetails:input_type -> album.GetAlbumDetailsRequest
 	2, // 3: album.AlbumService.SearchAlbums:input_type -> album.SearchAlbumsRequest
-	1, // 4: album.AlbumService.GetAlbumDetails:output_type -> album.GetAlbumDetailsResponse
-	3, // 5: album.AlbumService.SearchAlbums:output_type -> album.SearchAlbumsResponse
-	4, // [4:6] is the sub-list for method output_type
-	2, // [2:4] is the sub-list for method input_type
+	4, // 4: album.AlbumService.CreateTrackAlbum:input_type -> album.CreateTrackAlbumRequest
+	1, // 5: album.AlbumService.GetAlbumDetails:output_type -> album.GetAlbumDetailsResponse
+	3, // 6: album.AlbumService.SearchAlbums:output_type -> album.SearchAlbumsResponse
+	7, // 7: album.AlbumService.CreateTrackAlbum:output_type -> google.protobuf.Empty
+	5, // [5:8] is the sub-list for method output_type
+	2, // [2:5] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
 	2, // [2:2] is the sub-list for extension extendee
 	0, // [0:2] is the sub-list for field type_name
@@ -261,7 +331,7 @@ func file_proto_album_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_album_proto_rawDesc), len(file_proto_album_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

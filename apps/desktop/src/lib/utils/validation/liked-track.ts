@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { embeddedAlbumSchema } from "./albums";
 import { embeddedArtistSchema } from "./artist";
 import { videoTypeSchema } from "./playlist-track";
 
@@ -13,6 +14,7 @@ export const likedTrackSchema = z.object({
   videoId: z.string(),
   videoType: videoTypeSchema,
   artists: z.array(embeddedArtistSchema),
+  album: z.optional(embeddedAlbumSchema),
 });
 
 export const likedTracksSchema = z.object({

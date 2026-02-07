@@ -8,9 +8,11 @@ import (
 )
 
 func registerArtistRoutes(app *fiber.App) {
-	app.Get("/artists/artist/:id", artist_controllers.GetArtistDetails)
-	app.Get("/artists/search", artist_controllers.SearchArtists)
-	app.Get("/artists/followed", middleware.JwtAuthMiddleware, artist_controllers.GetFollowedArtists)
-	app.Get("/artists/followed/:browseId/is-following", middleware.JwtAuthMiddleware, artist_controllers.IsFollowingArtist)
-	app.Post("/artists/followed", middleware.JwtAuthMiddleware, artist_controllers.FollowArtist)
+	artists := app.Group("/artists")
+
+	artists.Get("/artist/:id", artist_controllers.GetArtistDetails)
+	artists.Get("/search", artist_controllers.SearchArtists)
+	artists.Get("/followed", middleware.JwtAuthMiddleware, artist_controllers.GetFollowedArtists)
+	artists.Get("/followed/:browseId/is-following", middleware.JwtAuthMiddleware, artist_controllers.IsFollowingArtist)
+	artists.Post("/followed", middleware.JwtAuthMiddleware, artist_controllers.FollowArtist)
 }

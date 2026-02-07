@@ -1,4 +1,4 @@
-package type_constants
+package shared_type_constants
 
 import "wavelength/proto/commonpb"
 

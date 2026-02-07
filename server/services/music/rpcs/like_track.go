@@ -2,12 +2,11 @@ package music_rpcs
 
 import (
 	"context"
-	"wavelength/proto/artistpb"
 	"wavelength/proto/commonpb"
 	"wavelength/proto/musicpb"
-	shared_clients "wavelength/shared/clients"
 	shared_db "wavelength/shared/db"
 	"wavelength/shared/logging"
+	shared_musicmeta "wavelength/shared/musicmeta"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -50,17 +49,14 @@ func (m *MusicService) LikeTrack(
 		}, nil
 	}
 
-	for _, artist := range request.Artists {
-		_, err := shared_clients.ArtistClient.CreateAuthoredTrackArtist(ctx, &artistpb.CreateAuthoredTrackArtistRequest{
-			AuthoredTrackId: request.VideoId,
-			BrowseId:        artist.BrowseId,
-			Title:           artist.Title,
-		})
+	if err := shared_musicmeta.PrestoreArtists(request.VideoId, request.Artists); err != nil {
+		logging.Logger.Error("Artist prestorage failed.", zap.Error(err))
+		return nil, status.Error(codes.Internal, "Artist prestorage failed.")
+	}
 
-		if err != nil {
-			logging.Logger.Error("Storing artists failed.", zap.Error(err))
-			return nil, status.Error(codes.Internal, "Storing artists failed.")
-		}
+	if err := shared_musicmeta.PrestoreAlbum(request.VideoId, request.Album); err != nil {
+		logging.Logger.Error("Album prestorage failed.", zap.Error(err))
+		return nil, status.Error(codes.Internal, "Album prestorage failed.")
 	}
 
 	// Perform a like.

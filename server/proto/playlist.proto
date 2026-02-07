@@ -58,6 +58,7 @@ message AddRemovePlaylistTrackRequest {
   string video_id = 6;
   common.VideoType video_type = 7;
   string playlist_id = 8;
+  optional common.EmbeddedAlbum album = 9;
 }
 
 message AddRemovePlaylistTrackResponse {

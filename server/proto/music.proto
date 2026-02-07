@@ -29,6 +29,7 @@ message LikeTrackRequest {
   common.VideoType video_type = 7;
   string liker_email = 9;
   string video_id = 10;
+  optional common.EmbeddedAlbum album = 11;
 }
 
 message LikeTrackResponse {

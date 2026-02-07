@@ -379,6 +379,7 @@ type AddRemovePlaylistTrackRequest struct {
 	VideoId       string                     `protobuf:"bytes,6,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
 	VideoType     commonpb.VideoType         `protobuf:"varint,7,opt,name=video_type,json=videoType,proto3,enum=common.VideoType" json:"video_type,omitempty"`
 	PlaylistId    string                     `protobuf:"bytes,8,opt,name=playlist_id,json=playlistId,proto3" json:"playlist_id,omitempty"`
+	Album         *commonpb.EmbeddedAlbum    `protobuf:"bytes,9,opt,name=album,proto3,oneof" json:"album,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -467,6 +468,13 @@ func (x *AddRemovePlaylistTrackRequest) GetPlaylistId() string {
 		return x.PlaylistId
 	}
 	return ""
+}
+
+func (x *AddRemovePlaylistTrackRequest) GetAlbum() *commonpb.EmbeddedAlbum {
+	if x != nil {
+		return x.Album
+	}
+	return nil
 }
 
 type AddRemovePlaylistTrackResponse struct {
@@ -1009,7 +1017,7 @@ const file_proto_playlist_proto_rawDesc = "" +
 	"\vplaylist_id\x18\x01 \x01(\tR\n" +
 	"playlistId\"G\n" +
 	"\x17GetPlaylistByIdResponse\x12,\n" +
-	"\bplaylist\x18\x01 \x01(\v2\x10.common.PlaylistR\bplaylist\"\xb0\x02\n" +
+	"\bplaylist\x18\x01 \x01(\v2\x10.common.PlaylistR\bplaylist\"\xec\x02\n" +
 	"\x1dAddRemovePlaylistTrackRequest\x120\n" +
 	"\aartists\x18\x01 \x03(\v2\x16.common.EmbeddedArtistR\aartists\x12\x1c\n" +
 	"\tthumbnail\x18\x02 \x01(\tR\tthumbnail\x12\x1a\n" +
@@ -1021,7 +1029,9 @@ const file_proto_playlist_proto_rawDesc = "" +
 	"\n" +
 	"video_type\x18\a \x01(\x0e2\x11.common.VideoTypeR\tvideoType\x12\x1f\n" +
 	"\vplaylist_id\x18\b \x01(\tR\n" +
-	"playlistId\"\x96\x02\n" +
+	"playlistId\x120\n" +
+	"\x05album\x18\t \x01(\v2\x15.common.EmbeddedAlbumH\x00R\x05album\x88\x01\x01B\b\n" +
+	"\x06_album\"\x96\x02\n" +
 	"\x1eAddRemovePlaylistTrackResponse\x12a\n" +
 	"\vtoggle_type\x18\x01 \x01(\x0e2@.playlist.AddRemovePlaylistTrackResponse.PlaylistTrackToggleTypeR\n" +
 	"toggleType\"\x90\x01\n" +
@@ -1108,47 +1118,49 @@ var file_proto_playlist_proto_goTypes = []any{
 	(*commonpb.Playlist)(nil),                                     // 19: common.Playlist
 	(*commonpb.EmbeddedArtist)(nil),                               // 20: common.EmbeddedArtist
 	(commonpb.VideoType)(0),                                       // 21: common.VideoType
-	(*commonpb.PlaylistTrack)(nil),                                // 22: common.PlaylistTrack
-	(*commonpb.TracksLength)(nil),                                 // 23: common.TracksLength
-	(*emptypb.Empty)(nil),                                         // 24: google.protobuf.Empty
+	(*commonpb.EmbeddedAlbum)(nil),                                // 22: common.EmbeddedAlbum
+	(*commonpb.PlaylistTrack)(nil),                                // 23: common.PlaylistTrack
+	(*commonpb.TracksLength)(nil),                                 // 24: common.TracksLength
+	(*emptypb.Empty)(nil),                                         // 25: google.protobuf.Empty
 }
 var file_proto_playlist_proto_depIdxs = []int32{
 	19, // 0: playlist.GetUserPlaylistsResponse.playlists:type_name -> common.Playlist
 	19, // 1: playlist.GetPlaylistByIdResponse.playlist:type_name -> common.Playlist
 	20, // 2: playlist.AddRemovePlaylistTrackRequest.artists:type_name -> common.EmbeddedArtist
 	21, // 3: playlist.AddRemovePlaylistTrackRequest.video_type:type_name -> common.VideoType
-	0,  // 4: playlist.AddRemovePlaylistTrackResponse.toggle_type:type_name -> playlist.AddRemovePlaylistTrackResponse.PlaylistTrackToggleType
-	18, // 5: playlist.RearrangePlaylistTracksRequest.updates:type_name -> playlist.RearrangePlaylistTracksRequest.PlaylistTrackPosUpdate
-	22, // 6: playlist.GetPlaylistTracksResponse.playlist_tracks:type_name -> common.PlaylistTrack
-	23, // 7: playlist.PlaylistTracksLengthResponse.playlist_tracks_length:type_name -> common.TracksLength
-	19, // 8: playlist.GetPublicPlaylistsResponse.playlists:type_name -> common.Playlist
-	16, // 9: playlist.PlaylistService.GetPublicPlaylists:input_type -> playlist.GetPublicPlaylistsRequest
-	14, // 10: playlist.PlaylistService.GetPlaylistTracksLength:input_type -> playlist.PlaylistTracksLengthRequest
-	7,  // 11: playlist.PlaylistService.AddRemovePlaylistTrack:input_type -> playlist.AddRemovePlaylistTrackRequest
-	13, // 12: playlist.PlaylistService.ChangePlaylistVisibility:input_type -> playlist.ChangePlaylistVisibilityRequest
-	9,  // 13: playlist.PlaylistService.RearrangePlaylistTracks:input_type -> playlist.RearrangePlaylistTracksRequest
-	12, // 14: playlist.PlaylistService.DeletePlaylist:input_type -> playlist.DeletePlaylistRequest
-	10, // 15: playlist.PlaylistService.GetPlaylistTracks:input_type -> playlist.GetPlaylistTracksRequest
-	3,  // 16: playlist.PlaylistService.GetUserPlaylists:input_type -> playlist.GetUserPlaylistsRequest
-	5,  // 17: playlist.PlaylistService.GetPlaylistById:input_type -> playlist.GetPlaylistByIdRequest
-	1,  // 18: playlist.PlaylistService.EditPlaylist:input_type -> playlist.EditPlaylistRequest
-	2,  // 19: playlist.PlaylistService.CreatePlaylist:input_type -> playlist.CreatePlaylistRequest
-	17, // 20: playlist.PlaylistService.GetPublicPlaylists:output_type -> playlist.GetPublicPlaylistsResponse
-	15, // 21: playlist.PlaylistService.GetPlaylistTracksLength:output_type -> playlist.PlaylistTracksLengthResponse
-	8,  // 22: playlist.PlaylistService.AddRemovePlaylistTrack:output_type -> playlist.AddRemovePlaylistTrackResponse
-	24, // 23: playlist.PlaylistService.ChangePlaylistVisibility:output_type -> google.protobuf.Empty
-	24, // 24: playlist.PlaylistService.RearrangePlaylistTracks:output_type -> google.protobuf.Empty
-	24, // 25: playlist.PlaylistService.DeletePlaylist:output_type -> google.protobuf.Empty
-	11, // 26: playlist.PlaylistService.GetPlaylistTracks:output_type -> playlist.GetPlaylistTracksResponse
-	4,  // 27: playlist.PlaylistService.GetUserPlaylists:output_type -> playlist.GetUserPlaylistsResponse
-	6,  // 28: playlist.PlaylistService.GetPlaylistById:output_type -> playlist.GetPlaylistByIdResponse
-	24, // 29: playlist.PlaylistService.EditPlaylist:output_type -> google.protobuf.Empty
-	24, // 30: playlist.PlaylistService.CreatePlaylist:output_type -> google.protobuf.Empty
-	20, // [20:31] is the sub-list for method output_type
-	9,  // [9:20] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	22, // 4: playlist.AddRemovePlaylistTrackRequest.album:type_name -> common.EmbeddedAlbum
+	0,  // 5: playlist.AddRemovePlaylistTrackResponse.toggle_type:type_name -> playlist.AddRemovePlaylistTrackResponse.PlaylistTrackToggleType
+	18, // 6: playlist.RearrangePlaylistTracksRequest.updates:type_name -> playlist.RearrangePlaylistTracksRequest.PlaylistTrackPosUpdate
+	23, // 7: playlist.GetPlaylistTracksResponse.playlist_tracks:type_name -> common.PlaylistTrack
+	24, // 8: playlist.PlaylistTracksLengthResponse.playlist_tracks_length:type_name -> common.TracksLength
+	19, // 9: playlist.GetPublicPlaylistsResponse.playlists:type_name -> common.Playlist
+	16, // 10: playlist.PlaylistService.GetPublicPlaylists:input_type -> playlist.GetPublicPlaylistsRequest
+	14, // 11: playlist.PlaylistService.GetPlaylistTracksLength:input_type -> playlist.PlaylistTracksLengthRequest
+	7,  // 12: playlist.PlaylistService.AddRemovePlaylistTrack:input_type -> playlist.AddRemovePlaylistTrackRequest
+	13, // 13: playlist.PlaylistService.ChangePlaylistVisibility:input_type -> playlist.ChangePlaylistVisibilityRequest
+	9,  // 14: playlist.PlaylistService.RearrangePlaylistTracks:input_type -> playlist.RearrangePlaylistTracksRequest
+	12, // 15: playlist.PlaylistService.DeletePlaylist:input_type -> playlist.DeletePlaylistRequest
+	10, // 16: playlist.PlaylistService.GetPlaylistTracks:input_type -> playlist.GetPlaylistTracksRequest
+	3,  // 17: playlist.PlaylistService.GetUserPlaylists:input_type -> playlist.GetUserPlaylistsRequest
+	5,  // 18: playlist.PlaylistService.GetPlaylistById:input_type -> playlist.GetPlaylistByIdRequest
+	1,  // 19: playlist.PlaylistService.EditPlaylist:input_type -> playlist.EditPlaylistRequest
+	2,  // 20: playlist.PlaylistService.CreatePlaylist:input_type -> playlist.CreatePlaylistRequest
+	17, // 21: playlist.PlaylistService.GetPublicPlaylists:output_type -> playlist.GetPublicPlaylistsResponse
+	15, // 22: playlist.PlaylistService.GetPlaylistTracksLength:output_type -> playlist.PlaylistTracksLengthResponse
+	8,  // 23: playlist.PlaylistService.AddRemovePlaylistTrack:output_type -> playlist.AddRemovePlaylistTrackResponse
+	25, // 24: playlist.PlaylistService.ChangePlaylistVisibility:output_type -> google.protobuf.Empty
+	25, // 25: playlist.PlaylistService.RearrangePlaylistTracks:output_type -> google.protobuf.Empty
+	25, // 26: playlist.PlaylistService.DeletePlaylist:output_type -> google.protobuf.Empty
+	11, // 27: playlist.PlaylistService.GetPlaylistTracks:output_type -> playlist.GetPlaylistTracksResponse
+	4,  // 28: playlist.PlaylistService.GetUserPlaylists:output_type -> playlist.GetUserPlaylistsResponse
+	6,  // 29: playlist.PlaylistService.GetPlaylistById:output_type -> playlist.GetPlaylistByIdResponse
+	25, // 30: playlist.PlaylistService.EditPlaylist:output_type -> google.protobuf.Empty
+	25, // 31: playlist.PlaylistService.CreatePlaylist:output_type -> google.protobuf.Empty
+	21, // [21:32] is the sub-list for method output_type
+	10, // [10:21] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_proto_playlist_proto_init() }
@@ -1156,6 +1168,7 @@ func file_proto_playlist_proto_init() {
 	if File_proto_playlist_proto != nil {
 		return
 	}
+	file_proto_playlist_proto_msgTypes[6].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

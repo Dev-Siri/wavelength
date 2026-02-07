@@ -2,8 +2,8 @@ package album_controllers
 
 import (
 	"wavelength/proto/albumpb"
-	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
+	shared_clients "wavelength/shared/clients"
 	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
@@ -17,7 +17,7 @@ func GetAlbumDetails(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Album ID is required for searching albums.")
 	}
 
-	albumDetailsResponse, err := clients.AlbumClient.GetAlbumDetails(ctx.Context(), &albumpb.GetAlbumDetailsRequest{
+	albumDetailsResponse, err := shared_clients.AlbumClient.GetAlbumDetails(ctx.Context(), &albumpb.GetAlbumDetailsRequest{
 		AlbumId: albumId,
 	})
 	if err != nil {

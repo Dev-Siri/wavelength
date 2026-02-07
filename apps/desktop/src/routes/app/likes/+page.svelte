@@ -88,12 +88,18 @@
             <div class="my-4">
               <PlaylistPlayOptions tracks={likedTracks} />
             </div>
-            <header
-              class="flex pl-[7%] justify-around items-center gap-5 select-none text-muted-foreground"
-            >
-              <p class="flex-2">Title</p>
-              <ClockIcon size={18} class="mr-28" />
+            <header class="flex items-center select-none text-muted-foreground">
+              <section class="flex pl-16 items-center gap-10 w-1/3">
+                <p class="text-sm">Title</p>
+              </section>
+              <section class="flex justify-center w-1/3">
+                <p class="text-sm">Album</p>
+              </section>
+              <section class="flex justify-center w-1/3">
+                <ClockIcon size={14} class="ml-20" />
+              </section>
             </header>
+            <div class="bg-secondary h-[1px] w-full my-2.5 rounded-full"></div>
             <div class="mt-2 overflow-x-hidden pb-[80%] md:pb-[40%] lg:pb-[20%]">
               {#key likedTracks}
                 {#each likedTracks as likedTrack}

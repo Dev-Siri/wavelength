@@ -2,7 +2,7 @@ package shared_clients
 
 import (
 	"wavelength/proto/artistpb"
-	"wavelength/services/gateway/env"
+	shared_env "wavelength/shared/env"
 
 	"google.golang.org/grpc"
 )
@@ -10,7 +10,7 @@ import (
 var ArtistClient artistpb.ArtistServiceClient
 
 func InitArtistClient() error {
-	addr, err := env.GetArtistClientURL()
+	addr, err := shared_env.GetArtistClientURL()
 	if err != nil {
 		return err
 	}

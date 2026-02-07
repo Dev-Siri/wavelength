@@ -44,6 +44,10 @@ func main() {
 		logging.Logger.Fatal("Artist-service client failed to connect.", zap.Error(err))
 	}
 
+	if err := shared_clients.InitAlbumClient(); err != nil {
+		logging.Logger.Fatal("Album-service client failed to connect.", zap.Error(err))
+	}
+
 	if err := api.InitializeYouTubeV3Client(); err != nil {
 		logging.Logger.Fatal("Failed to initialize YouTube V3 client.", zap.Error(err))
 	}

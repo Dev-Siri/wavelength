@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -19,8 +20,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AlbumService_GetAlbumDetails_FullMethodName = "/album.AlbumService/GetAlbumDetails"
-	AlbumService_SearchAlbums_FullMethodName    = "/album.AlbumService/SearchAlbums"
+	AlbumService_GetAlbumDetails_FullMethodName  = "/album.AlbumService/GetAlbumDetails"
+	AlbumService_SearchAlbums_FullMethodName     = "/album.AlbumService/SearchAlbums"
+	AlbumService_CreateTrackAlbum_FullMethodName = "/album.AlbumService/CreateTrackAlbum"
 )
 
 // AlbumServiceClient is the client API for AlbumService service.
@@ -29,6 +31,7 @@ const (
 type AlbumServiceClient interface {
 	GetAlbumDetails(ctx context.Context, in *GetAlbumDetailsRequest, opts ...grpc.CallOption) (*GetAlbumDetailsResponse, error)
 	SearchAlbums(ctx context.Context, in *SearchAlbumsRequest, opts ...grpc.CallOption) (*SearchAlbumsResponse, error)
+	CreateTrackAlbum(ctx context.Context, in *CreateTrackAlbumRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type albumServiceClient struct {
@@ -59,12 +62,23 @@ func (c *albumServiceClient) SearchAlbums(ctx context.Context, in *SearchAlbumsR
 	return out, nil
 }
 
+func (c *albumServiceClient) CreateTrackAlbum(ctx context.Context, in *CreateTrackAlbumRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, AlbumService_CreateTrackAlbum_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AlbumServiceServer is the server API for AlbumService service.
 // All implementations must embed UnimplementedAlbumServiceServer
 // for forward compatibility.
 type AlbumServiceServer interface {
 	GetAlbumDetails(context.Context, *GetAlbumDetailsRequest) (*GetAlbumDetailsResponse, error)
 	SearchAlbums(context.Context, *SearchAlbumsRequest) (*SearchAlbumsResponse, error)
+	CreateTrackAlbum(context.Context, *CreateTrackAlbumRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedAlbumServiceServer()
 }
 
@@ -80,6 +94,9 @@ func (UnimplementedAlbumServiceServer) GetAlbumDetails(context.Context, *GetAlbu
 }
 func (UnimplementedAlbumServiceServer) SearchAlbums(context.Context, *SearchAlbumsRequest) (*SearchAlbumsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method SearchAlbums not implemented")
+}
+func (UnimplementedAlbumServiceServer) CreateTrackAlbum(context.Context, *CreateTrackAlbumRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateTrackAlbum not implemented")
 }
 func (UnimplementedAlbumServiceServer) mustEmbedUnimplementedAlbumServiceServer() {}
 func (UnimplementedAlbumServiceServer) testEmbeddedByValue()                      {}
@@ -138,6 +155,24 @@ func _AlbumService_SearchAlbums_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AlbumService_CreateTrackAlbum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateTrackAlbumRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlbumServiceServer).CreateTrackAlbum(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AlbumService_CreateTrackAlbum_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlbumServiceServer).CreateTrackAlbum(ctx, req.(*CreateTrackAlbumRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AlbumService_ServiceDesc is the grpc.ServiceDesc for AlbumService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +187,10 @@ var AlbumService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchAlbums",
 			Handler:    _AlbumService_SearchAlbums_Handler,
+		},
+		{
+			MethodName: "CreateTrackAlbum",
+			Handler:    _AlbumService_CreateTrackAlbum_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

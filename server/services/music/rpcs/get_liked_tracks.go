@@ -2,9 +2,11 @@ package music_rpcs
 
 import (
 	"context"
+	"database/sql"
 	"html"
 	"wavelength/proto/commonpb"
 	"wavelength/proto/musicpb"
+	shared_type_constants "wavelength/shared/constants/types"
 	shared_db "wavelength/shared/db"
 	"wavelength/shared/logging"
 
@@ -29,10 +31,14 @@ func (m *MusicService) GetLikedTracks(
 			l.video_type,
 
 			a.title AS artist_title,
-			a.browse_id AS artist_browse_id
+			a.browse_id AS artist_browse_id,
+			al.title AS album_title,
+			al.browse_id AS album_browse_id
 		FROM "likes" l
 		LEFT JOIN "artists" a
 		ON l.video_id = a.authored_track_id
+		LEFT JOIN "albums" al
+		ON l.video_id = al.track_id
 		WHERE l.email = $1
 		ORDER BY l.created_at DESC;
 	`, request.LikerEmail)
@@ -59,6 +65,8 @@ func (m *MusicService) GetLikedTracks(
 
 			artistTitle    string
 			artistBrowseId string
+			albumTitle     sql.NullString
+			albumBrowseId  sql.NullString
 		)
 
 		if err := rows.Scan(
@@ -72,6 +80,8 @@ func (m *MusicService) GetLikedTracks(
 			&videoType,
 			&artistTitle,
 			&artistBrowseId,
+			&albumTitle,
+			&albumBrowseId,
 		); err != nil {
 			logging.Logger.Error("Parsing of one liked track failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Parsing of one liked track failed.")
@@ -88,12 +98,14 @@ func (m *MusicService) GetLikedTracks(
 				VideoId:    videoId,
 				Email:      email,
 				Artists:    []*commonpb.EmbeddedArtist{},
+				VideoType:  shared_type_constants.PlaylistTrackTypeGrpcMap[shared_type_constants.PlaylistTrackType(videoType)],
 			}
 
-			if videoType == "uvideo" {
-				track.VideoType = commonpb.VideoType_VIDEO_TYPE_UVIDEO
-			} else {
-				track.VideoType = commonpb.VideoType_VIDEO_TYPE_TRACK
+			if albumTitle.Valid && albumBrowseId.Valid {
+				track.Album = &commonpb.EmbeddedAlbum{
+					Title:    albumTitle.String,
+					BrowseId: albumBrowseId.String,
+				}
 			}
 
 			tracks[likeId] = track

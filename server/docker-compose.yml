@@ -40,9 +40,11 @@ services:
     environment:
       - PORT=8081
       - ARTIST_CLIENT_URL=artist:8084
+      - ALBUM_CLIENT_URL=album:8085
       - GO_ENV=dev
     depends_on:
       - artist
+      - album
     develop:
       watch:
         - action: rebuild
@@ -60,10 +62,12 @@ services:
       - PORT=8082
       - YT_SCRAPER_URL=yt-scraper:8083
       - ARTIST_CLIENT_URL=artist:8084
+      - ALBUM_CLIENT_URL=album:8085
       - GO_ENV=dev
     depends_on:
       - yt-scraper
       - artist
+      - album
     develop:
       watch:
         - action: rebuild

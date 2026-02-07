@@ -4,10 +4,10 @@ import (
 	"wavelength/proto/commonpb"
 	"wavelength/proto/musicpb"
 	"wavelength/services/gateway/clients"
-	type_constants "wavelength/services/gateway/constants/types"
 	"wavelength/services/gateway/models"
 	"wavelength/services/gateway/models/schemas"
 	"wavelength/services/gateway/validation"
+	shared_type_constants "wavelength/shared/constants/types"
 	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
@@ -39,15 +39,24 @@ func LikeTrack(ctx *fiber.Ctx) error {
 		}
 	}
 
+	var embeddedAlbum *commonpb.EmbeddedAlbum
+	if body.Album != nil {
+		embeddedAlbum = &commonpb.EmbeddedAlbum{
+			Title:    body.Album.Title,
+			BrowseId: body.Album.BrowseId,
+		}
+	}
+
 	likedTracksResponse, err := clients.MusicClient.LikeTrack(ctx.Context(), &musicpb.LikeTrackRequest{
 		Artists:    embeddedArtists,
 		Thumbnail:  body.Thumbnail,
 		Duration:   body.Duration,
 		IsExplicit: body.IsExplicit,
 		Title:      body.Title,
-		VideoType:  type_constants.PlaylistTrackTypeGrpcMap[body.VideoType],
+		VideoType:  shared_type_constants.PlaylistTrackTypeGrpcMap[body.VideoType],
 		VideoId:    body.VideoId,
 		LikerEmail: authUser.Email,
+		Album:      embeddedAlbum,
 	})
 	if err != nil {
 		logging.Logger.Error("MusicService: 'LikeTrack' errored.", zap.Error(err))

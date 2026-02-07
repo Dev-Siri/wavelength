@@ -38,7 +38,7 @@
   {#if mode === "full"}
     <div class="w-full">
       <div class="text-start">
-        <p class="text-md">Likes</p>
+        <p class="text-md">Liked Songs</p>
         {#if likeTracksCountQuery.isError}
           <p class="text-xs text-red-500">An error occured.</p>
         {:else if likeTracksCountQuery.isSuccess}

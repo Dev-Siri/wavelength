@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"wavelength/services/gateway/clients"
+	"wavelength/services/gateway/constants"
 	error_controllers "wavelength/services/gateway/controllers/errors"
 	"wavelength/services/gateway/db"
 	"wavelength/services/gateway/env"
@@ -15,6 +16,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/healthcheck"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 	"go.uber.org/zap"
 )
@@ -40,7 +42,7 @@ func main() {
 		logging.Logger.Fatal("Artist-service client failed to connect.", zap.Error(err))
 	}
 
-	if err := clients.InitAlbumClient(); err != nil {
+	if err := shared_clients.InitAlbumClient(); err != nil {
 		logging.Logger.Fatal("Album-service client failed to connect.", zap.Error(err))
 	}
 
@@ -64,6 +66,15 @@ func main() {
 	staticDir := env.GetStaticDir()
 
 	app.Use(requestid.New())
+	app.Use(limiter.New(limiter.Config{
+		Max:        constants.RateLimitMaxRequests,
+		Expiration: constants.RateLimitExpiration,
+		Next: func(ctx *fiber.Ctx) bool {
+			return ctx.Path() == "/healthz" || ctx.Path() == "/search/search-recommendations"
+		},
+		LimitReached:      error_controllers.RateLimitExceededHandler,
+		LimiterMiddleware: limiter.SlidingWindow{},
+	}))
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: env.GetCorsOrigin(),
 	}))

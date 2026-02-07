@@ -33,6 +33,7 @@ message PlaylistTrack {
   string playlist_id = 10;
 
   repeated EmbeddedArtist artists = 11;
+  optional EmbeddedAlbum album = 12;
 }
 
 message TracksLength {
@@ -51,6 +52,7 @@ message LikedTrack {
   VideoType video_type = 8;
   
   repeated EmbeddedArtist artists = 9;
+  optional EmbeddedAlbum album = 10;
 }
 
 message SuggestedLink {

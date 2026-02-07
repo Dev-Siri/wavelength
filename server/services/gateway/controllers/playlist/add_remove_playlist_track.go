@@ -4,10 +4,10 @@ import (
 	"wavelength/proto/commonpb"
 	"wavelength/proto/playlistpb"
 	"wavelength/services/gateway/clients"
-	type_constants "wavelength/services/gateway/constants/types"
 	"wavelength/services/gateway/models"
 	"wavelength/services/gateway/models/schemas"
 	"wavelength/services/gateway/validation"
+	shared_type_constants "wavelength/shared/constants/types"
 	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
@@ -43,6 +43,14 @@ func AddRemovePlaylistTrack(ctx *fiber.Ctx) error {
 		}
 	}
 
+	var embeddedAlbum *commonpb.EmbeddedAlbum
+	if body.Album != nil {
+		embeddedAlbum = &commonpb.EmbeddedAlbum{
+			Title:    body.Album.Title,
+			BrowseId: body.Album.BrowseId,
+		}
+	}
+
 	toggleResponse, err := clients.PlaylistClient.AddRemovePlaylistTrack(ctx.Context(), &playlistpb.AddRemovePlaylistTrackRequest{
 		Artists:    embeddedArtists,
 		Thumbnail:  body.Thumbnail,
@@ -50,8 +58,9 @@ func AddRemovePlaylistTrack(ctx *fiber.Ctx) error {
 		IsExplicit: body.IsExplicit,
 		Title:      body.Title,
 		VideoId:    body.VideoId,
-		VideoType:  type_constants.PlaylistTrackTypeGrpcMap[body.VideoType],
+		VideoType:  shared_type_constants.PlaylistTrackTypeGrpcMap[body.VideoType],
 		PlaylistId: playlistId,
+		Album:      embeddedAlbum,
 	})
 	if err != nil {
 		logging.Logger.Error("PlaylistService: 'AddRemovePlaylistTrack' errored.", zap.Error(err))
