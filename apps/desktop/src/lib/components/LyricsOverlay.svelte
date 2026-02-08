@@ -29,7 +29,9 @@
           {
             searchParams: {
               title: musicQueueStore.musicPlayingNow?.title ?? "",
-              artist: (musicQueueStore.musicPlayingNow?.artists ?? []).join(","),
+              artist: (musicQueueStore.musicPlayingNow?.artists ?? [])
+                .map(artist => artist.title)
+                .join(","),
             },
           },
         );
