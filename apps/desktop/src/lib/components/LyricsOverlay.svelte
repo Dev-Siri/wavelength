@@ -7,7 +7,7 @@
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
   import { backendClient } from "$lib/utils/query-client.js";
-  import { lyricsSchema } from "$lib/utils/validation/lyric";
+  import { lyricSchema, lyricsSchema } from "$lib/utils/validation/lyric";
 
   import LoadingSpinner from "./LoadingSpinner.svelte";
 
@@ -23,7 +23,7 @@
       const cachedLyrics = await get(`lyrics-${musicQueueStore.musicPlayingNow?.videoId}`);
 
       if (!cachedLyrics) {
-        const lyrics = await backendClient(
+        const { lyrics } = await backendClient(
           `/music/track/${musicQueueStore.musicPlayingNow?.videoId}/lyrics`,
           lyricsSchema,
           {
@@ -39,7 +39,7 @@
       }
 
       const parsedLyricsString = z.string().parse(cachedLyrics);
-      const lyrics = lyricsSchema.parse(parsedLyricsString);
+      const lyrics = z.array(lyricSchema).parse(parsedLyricsString);
 
       return lyrics;
     },
