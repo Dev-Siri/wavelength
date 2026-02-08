@@ -26,6 +26,12 @@
         const lyrics = await backendClient(
           `/music/track/${musicQueueStore.musicPlayingNow?.videoId}/lyrics`,
           lyricsSchema,
+          {
+            searchParams: {
+              title: musicQueueStore.musicPlayingNow?.title ?? "",
+              artist: musicQueueStore.musicPlayingNow?.artists.join(",") ?? "",
+            },
+          },
         );
 
         await set(`lyrics-${musicQueueStore.musicPlayingNow?.videoId}`, JSON.stringify(lyrics));
