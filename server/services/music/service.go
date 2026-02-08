@@ -52,6 +52,8 @@ func main() {
 		logging.Logger.Fatal("Failed to initialize YouTube V3 client.", zap.Error(err))
 	}
 
+	api.InitLyricsClient()
+
 	port := shared_env.GetPORT()
 	addr := ":" + port
 

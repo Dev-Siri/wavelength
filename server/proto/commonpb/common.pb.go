@@ -1559,6 +1559,66 @@ func (x *ThemeColor) GetB() uint32 {
 	return 0
 }
 
+type Lyric struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Text          string                 `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
+	StartMs       int32                  `protobuf:"varint,2,opt,name=start_ms,json=startMs,proto3" json:"start_ms,omitempty"`
+	DurMs         int32                  `protobuf:"varint,3,opt,name=dur_ms,json=durMs,proto3" json:"dur_ms,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Lyric) Reset() {
+	*x = Lyric{}
+	mi := &file_proto_common_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Lyric) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Lyric) ProtoMessage() {}
+
+func (x *Lyric) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Lyric.ProtoReflect.Descriptor instead.
+func (*Lyric) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *Lyric) GetText() string {
+	if x != nil {
+		return x.Text
+	}
+	return ""
+}
+
+func (x *Lyric) GetStartMs() int32 {
+	if x != nil {
+		return x.StartMs
+	}
+	return 0
+}
+
+func (x *Lyric) GetDurMs() int32 {
+	if x != nil {
+		return x.DurMs
+	}
+	return 0
+}
+
 type Artist_TopSongTrack struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	VideoId       string                 `protobuf:"bytes,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
@@ -1573,7 +1633,7 @@ type Artist_TopSongTrack struct {
 
 func (x *Artist_TopSongTrack) Reset() {
 	*x = Artist_TopSongTrack{}
-	mi := &file_proto_common_proto_msgTypes[18]
+	mi := &file_proto_common_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1585,7 +1645,7 @@ func (x *Artist_TopSongTrack) String() string {
 func (*Artist_TopSongTrack) ProtoMessage() {}
 
 func (x *Artist_TopSongTrack) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_common_proto_msgTypes[18]
+	mi := &file_proto_common_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1656,7 +1716,7 @@ type Artist_ArtistAlbum struct {
 
 func (x *Artist_ArtistAlbum) Reset() {
 	*x = Artist_ArtistAlbum{}
-	mi := &file_proto_common_proto_msgTypes[19]
+	mi := &file_proto_common_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1668,7 +1728,7 @@ func (x *Artist_ArtistAlbum) String() string {
 func (*Artist_ArtistAlbum) ProtoMessage() {}
 
 func (x *Artist_ArtistAlbum) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_common_proto_msgTypes[19]
+	mi := &file_proto_common_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1888,7 +1948,11 @@ const file_proto_common_proto_rawDesc = "" +
 	"ThemeColor\x12\f\n" +
 	"\x01r\x18\x01 \x01(\rR\x01r\x12\f\n" +
 	"\x01g\x18\x02 \x01(\rR\x01g\x12\f\n" +
-	"\x01b\x18\x03 \x01(\rR\x01b*T\n" +
+	"\x01b\x18\x03 \x01(\rR\x01b\"M\n" +
+	"\x05Lyric\x12\x12\n" +
+	"\x04text\x18\x01 \x01(\tR\x04text\x12\x19\n" +
+	"\bstart_ms\x18\x02 \x01(\x05R\astartMs\x12\x15\n" +
+	"\x06dur_ms\x18\x03 \x01(\x05R\x05durMs*T\n" +
 	"\tVideoType\x12\x1a\n" +
 	"\x16VIDEO_TYPE_UNSPECIFIED\x10\x00\x12\x14\n" +
 	"\x10VIDEO_TYPE_TRACK\x10\x01\x12\x15\n" +
@@ -1912,7 +1976,7 @@ func file_proto_common_proto_rawDescGZIP() []byte {
 }
 
 var file_proto_common_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_proto_common_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
+var file_proto_common_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
 var file_proto_common_proto_goTypes = []any{
 	(VideoType)(0),              // 0: common.VideoType
 	(AlbumType)(0),              // 1: common.AlbumType
@@ -1934,8 +1998,9 @@ var file_proto_common_proto_goTypes = []any{
 	(*SearchAlbum)(nil),         // 17: common.SearchAlbum
 	(*FollowedArtist)(nil),      // 18: common.FollowedArtist
 	(*ThemeColor)(nil),          // 19: common.ThemeColor
-	(*Artist_TopSongTrack)(nil), // 20: common.Artist.TopSongTrack
-	(*Artist_ArtistAlbum)(nil),  // 21: common.Artist.ArtistAlbum
+	(*Lyric)(nil),               // 20: common.Lyric
+	(*Artist_TopSongTrack)(nil), // 21: common.Artist.TopSongTrack
+	(*Artist_ArtistAlbum)(nil),  // 22: common.Artist.ArtistAlbum
 }
 var file_proto_common_proto_depIdxs = []int32{
 	0,  // 0: common.PlaylistTrack.video_type:type_name -> common.VideoType
@@ -1951,9 +2016,9 @@ var file_proto_common_proto_depIdxs = []int32{
 	12, // 10: common.Album.album_tracks:type_name -> common.AlbumTrack
 	8,  // 11: common.Track.artists:type_name -> common.EmbeddedArtist
 	7,  // 12: common.Track.album:type_name -> common.EmbeddedAlbum
-	20, // 13: common.Artist.top_songs:type_name -> common.Artist.TopSongTrack
-	21, // 14: common.Artist.albums:type_name -> common.Artist.ArtistAlbum
-	21, // 15: common.Artist.singles_and_eps:type_name -> common.Artist.ArtistAlbum
+	21, // 13: common.Artist.top_songs:type_name -> common.Artist.TopSongTrack
+	22, // 14: common.Artist.albums:type_name -> common.Artist.ArtistAlbum
+	22, // 15: common.Artist.singles_and_eps:type_name -> common.Artist.ArtistAlbum
 	1,  // 16: common.SearchAlbum.album_type:type_name -> common.AlbumType
 	8,  // 17: common.SearchAlbum.artist:type_name -> common.EmbeddedArtist
 	7,  // 18: common.Artist.TopSongTrack.album:type_name -> common.EmbeddedAlbum
@@ -1976,14 +2041,14 @@ func file_proto_common_proto_init() {
 	file_proto_common_proto_msgTypes[7].OneofWrappers = []any{}
 	file_proto_common_proto_msgTypes[10].OneofWrappers = []any{}
 	file_proto_common_proto_msgTypes[12].OneofWrappers = []any{}
-	file_proto_common_proto_msgTypes[18].OneofWrappers = []any{}
+	file_proto_common_proto_msgTypes[19].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_common_proto_rawDesc), len(file_proto_common_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   20,
+			NumMessages:   21,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

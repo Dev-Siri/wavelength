@@ -31,6 +31,7 @@ const (
 	MusicService_GetMusicVideoId_FullMethodName           = "/music.MusicService/GetMusicVideoId"
 	MusicService_SearchMusicTracks_FullMethodName         = "/music.MusicService/SearchMusicTracks"
 	MusicService_SearchYouTubeVideos_FullMethodName       = "/music.MusicService/SearchYouTubeVideos"
+	MusicService_GetMusicLyrics_FullMethodName            = "/music.MusicService/GetMusicLyrics"
 )
 
 // MusicServiceClient is the client API for MusicService service.
@@ -49,6 +50,7 @@ type MusicServiceClient interface {
 	GetMusicVideoId(ctx context.Context, in *GetMusicVideoIdRequest, opts ...grpc.CallOption) (*GetMusicVideoIdResponse, error)
 	SearchMusicTracks(ctx context.Context, in *SearchMusicTracksRequest, opts ...grpc.CallOption) (*SearchMusicTracksResponse, error)
 	SearchYouTubeVideos(ctx context.Context, in *SearchYouTubeVideosRequest, opts ...grpc.CallOption) (*SearchYouTubeVideosResponse, error)
+	GetMusicLyrics(ctx context.Context, in *GetMusicLyricsRequest, opts ...grpc.CallOption) (*GetMusicLyricsResponse, error)
 }
 
 type musicServiceClient struct {
@@ -179,6 +181,16 @@ func (c *musicServiceClient) SearchYouTubeVideos(ctx context.Context, in *Search
 	return out, nil
 }
 
+func (c *musicServiceClient) GetMusicLyrics(ctx context.Context, in *GetMusicLyricsRequest, opts ...grpc.CallOption) (*GetMusicLyricsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetMusicLyricsResponse)
+	err := c.cc.Invoke(ctx, MusicService_GetMusicLyrics_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MusicServiceServer is the server API for MusicService service.
 // All implementations must embed UnimplementedMusicServiceServer
 // for forward compatibility.
@@ -195,6 +207,7 @@ type MusicServiceServer interface {
 	GetMusicVideoId(context.Context, *GetMusicVideoIdRequest) (*GetMusicVideoIdResponse, error)
 	SearchMusicTracks(context.Context, *SearchMusicTracksRequest) (*SearchMusicTracksResponse, error)
 	SearchYouTubeVideos(context.Context, *SearchYouTubeVideosRequest) (*SearchYouTubeVideosResponse, error)
+	GetMusicLyrics(context.Context, *GetMusicLyricsRequest) (*GetMusicLyricsResponse, error)
 	mustEmbedUnimplementedMusicServiceServer()
 }
 
@@ -240,6 +253,9 @@ func (UnimplementedMusicServiceServer) SearchMusicTracks(context.Context, *Searc
 }
 func (UnimplementedMusicServiceServer) SearchYouTubeVideos(context.Context, *SearchYouTubeVideosRequest) (*SearchYouTubeVideosResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method SearchYouTubeVideos not implemented")
+}
+func (UnimplementedMusicServiceServer) GetMusicLyrics(context.Context, *GetMusicLyricsRequest) (*GetMusicLyricsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetMusicLyrics not implemented")
 }
 func (UnimplementedMusicServiceServer) mustEmbedUnimplementedMusicServiceServer() {}
 func (UnimplementedMusicServiceServer) testEmbeddedByValue()                      {}
@@ -478,6 +494,24 @@ func _MusicService_SearchYouTubeVideos_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MusicService_GetMusicLyrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMusicLyricsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MusicServiceServer).GetMusicLyrics(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MusicService_GetMusicLyrics_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MusicServiceServer).GetMusicLyrics(ctx, req.(*GetMusicLyricsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MusicService_ServiceDesc is the grpc.ServiceDesc for MusicService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -532,6 +566,10 @@ var MusicService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchYouTubeVideos",
 			Handler:    _MusicService_SearchYouTubeVideos_Handler,
+		},
+		{
+			MethodName: "GetMusicLyrics",
+			Handler:    _MusicService_GetMusicLyrics_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

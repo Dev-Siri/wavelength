@@ -195,3 +195,9 @@ message ThemeColor {
   uint32 g = 2;
   uint32 b = 3;
 }
+
+message Lyric {
+  string text = 1;
+  int32 start_ms = 2;
+  int32 dur_ms = 3;
+}

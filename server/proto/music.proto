@@ -18,6 +18,7 @@ service MusicService {
   rpc GetMusicVideoId(GetMusicVideoIdRequest) returns (GetMusicVideoIdResponse);
   rpc SearchMusicTracks(SearchMusicTracksRequest) returns (SearchMusicTracksResponse);
   rpc SearchYouTubeVideos(SearchYouTubeVideosRequest) returns (SearchYouTubeVideosResponse);
+  rpc GetMusicLyrics(GetMusicLyricsRequest) returns (GetMusicLyricsResponse);
 }
 
 message LikeTrackRequest {
@@ -145,4 +146,13 @@ message SearchMusicTracksRequest {
 
 message SearchMusicTracksResponse {
   repeated common.Track tracks = 1;
+}
+
+message GetMusicLyricsRequest {
+  string title = 1;
+  string artist = 2;
+}
+
+message GetMusicLyricsResponse {
+  repeated common.Lyric lyrics = 1;
 }

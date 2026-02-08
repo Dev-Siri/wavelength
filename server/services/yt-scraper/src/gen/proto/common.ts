@@ -269,6 +269,12 @@ export interface ThemeColor {
   b: number;
 }
 
+export interface Lyric {
+  text: string;
+  startMs: number;
+  durMs: number;
+}
+
 function createBasePlaylist(): Playlist {
   return {
     playlistId: "",
@@ -2968,6 +2974,98 @@ export const ThemeColor: MessageFns<ThemeColor> = {
     message.r = object.r ?? 0;
     message.g = object.g ?? 0;
     message.b = object.b ?? 0;
+    return message;
+  },
+};
+
+function createBaseLyric(): Lyric {
+  return { text: "", startMs: 0, durMs: 0 };
+}
+
+export const Lyric: MessageFns<Lyric> = {
+  encode(message: Lyric, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.text !== "") {
+      writer.uint32(10).string(message.text);
+    }
+    if (message.startMs !== 0) {
+      writer.uint32(16).int32(message.startMs);
+    }
+    if (message.durMs !== 0) {
+      writer.uint32(24).int32(message.durMs);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Lyric {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLyric();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.text = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.startMs = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.durMs = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Lyric {
+    return {
+      text: isSet(object.text) ? globalThis.String(object.text) : "",
+      startMs: isSet(object.startMs) ? globalThis.Number(object.startMs) : 0,
+      durMs: isSet(object.durMs) ? globalThis.Number(object.durMs) : 0,
+    };
+  },
+
+  toJSON(message: Lyric): unknown {
+    const obj: any = {};
+    if (message.text !== "") {
+      obj.text = message.text;
+    }
+    if (message.startMs !== 0) {
+      obj.startMs = Math.round(message.startMs);
+    }
+    if (message.durMs !== 0) {
+      obj.durMs = Math.round(message.durMs);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<Lyric>, I>>(base?: I): Lyric {
+    return Lyric.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<Lyric>, I>>(object: I): Lyric {
+    const message = createBaseLyric();
+    message.text = object.text ?? "";
+    message.startMs = object.startMs ?? 0;
+    message.durMs = object.durMs ?? 0;
     return message;
   },
 };

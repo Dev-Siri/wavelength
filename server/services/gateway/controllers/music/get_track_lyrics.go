@@ -1,80 +1,34 @@
 package music_controllers
 
 import (
+	"wavelength/proto/musicpb"
+	"wavelength/services/gateway/clients"
 	"wavelength/services/gateway/models"
+	"wavelength/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 func GetTrackLyrics(ctx *fiber.Ctx) error {
-	// videoId := ctx.Params("videoId")
+	title := ctx.Query("title")
+	if title == "" {
+		return fiber.NewError(fiber.StatusBadRequest, "Title is required.")
+	}
 
-	// if videoId == "" {
-	// 	return fiber.NewError(fiber.StatusBadRequest, "Video ID is required.")
-	// }
+	artist := ctx.Query("artist")
+	if artist == "" {
+		return fiber.NewError(fiber.StatusBadRequest, "Artist is required.")
+	}
 
-	// matchedSongs, err := api.YouTubeClient.GetMatchedSong(videoId)
+	lyrics, err := clients.MusicClient.GetMusicLyrics(ctx.Context(), &musicpb.GetMusicLyricsRequest{
+		Title:  title,
+		Artist: artist,
+	})
+	if err != nil {
+		logging.Logger.Error("MusicService: 'GetMusicLyrics' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Lyrics fetch failed.")
+	}
 
-	// if err != nil {
-	// 	return fiber.NewError(fiber.StatusInternalServerError, "No lyrics available: "+err.Error())
-	// }
-
-	// var spotifySong *api_models.SongMatch = nil
-
-	// for _, matchedSong := range matchedSongs {
-	// 	if matchedSong.Platform == type_constants.SongPlatformSpotify {
-	// 		spotifySong = &matchedSong
-	// 	}
-	// }
-
-	// if spotifySong == nil || spotifySong.UniqueId == nil {
-	// 	return fiber.NewError(fiber.StatusInternalServerError, "No lyrics available.")
-	// }
-
-	// spotifySongUniqueId := *spotifySong.UniqueId
-	// spotifySongIdParts := strings.Split(spotifySongUniqueId, "|")
-	// spotifyTrackId := spotifySongIdParts[len(spotifySongIdParts)-1]
-
-	// if spotifyTrackId == "" {
-	// 	return fiber.NewError(fiber.StatusInternalServerError, "No lyrics available.")
-	// }
-
-	// lyricsUrl := fmt.Sprintf("%s/v1/track/lyrics", constants.LyricsRapidApiUrl)
-	// request, err := http.NewRequest(http.MethodGet, lyricsUrl, nil)
-
-	// if err != nil {
-	// 	return fiber.NewError(fiber.StatusInternalServerError, "Failed to get lyrics: "+err.Error())
-	// }
-
-	// rapidApiKey, _ := env.GetRapidApiKeys()
-	// lyricsRapidApiHost := env.GetLyricsRapidApiHost()
-
-	// request.Header.Set("X-RapidApi-Key", rapidApiKey)
-	// request.Header.Set("X-RapidApi-Host", lyricsRapidApiHost)
-
-	// queryParams := request.URL.Query()
-
-	// queryParams.Set("trackId", spotifyTrackId)
-	// queryParams.Set("format", "json")
-	// queryParams.Set("removeNote", "false")
-
-	// request.URL.RawQuery = queryParams.Encode()
-
-	// httpClient := &http.Client{}
-	// lyricsResponse, err := httpClient.Do(request)
-
-	// if err != nil {
-	// 	return fiber.NewError(fiber.StatusInternalServerError, "Failed to get lyrics: "+err.Error())
-	// }
-
-	// defer lyricsResponse.Body.Close()
-
-	// var lyrics []api_models.Lyric
-
-	// if err := json.NewDecoder(lyricsResponse.Body).Decode(&lyrics); err != nil {
-	// 	return fiber.NewError(fiber.StatusInternalServerError, "Failed to get lyrics: "+err.Error())
-	// }
-
-	// return models.Success(ctx, lyrics)
-	return models.Error(ctx, "Unimplemented.")
+	return models.Success(ctx, lyrics)
 }
