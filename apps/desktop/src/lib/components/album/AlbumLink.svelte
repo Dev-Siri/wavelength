@@ -29,5 +29,5 @@
   href={albumPath}
   onclick={handleNavigation}
 >
-  {title}
+  {title.length > 50 ? `${title.slice(0, 49).trim()}...` : title}
 </Button>
