@@ -18,7 +18,7 @@ import {
   type ServiceError,
   type UntypedServiceImplementation,
 } from "@grpc/grpc-js";
-import { Album, Artist, QuickPick, SearchAlbum, SearchArtist, SuggestedLink, Track } from "./common.js";
+import { Album, Artist, QuickPick, SearchAlbum, SearchArtist, SuggestedLink, Track, YouTubeVideo } from "./common.js";
 
 export const protobufPackage = "yt_scraper";
 
@@ -78,6 +78,14 @@ export interface GetArtistDetailsRequest {
 
 export interface GetArtistDetailsResponse {
   artist: Artist | undefined;
+}
+
+export interface SearchYouTubeVideosRequest {
+  query: string;
+}
+
+export interface SearchYouTubeVideosResponse {
+  videos: YouTubeVideo[];
 }
 
 function createBaseGetSearchSuggestionsRequest(): GetSearchSuggestionsRequest {
@@ -926,6 +934,124 @@ export const GetArtistDetailsResponse: MessageFns<GetArtistDetailsResponse> = {
   },
 };
 
+function createBaseSearchYouTubeVideosRequest(): SearchYouTubeVideosRequest {
+  return { query: "" };
+}
+
+export const SearchYouTubeVideosRequest: MessageFns<SearchYouTubeVideosRequest> = {
+  encode(message: SearchYouTubeVideosRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.query !== "") {
+      writer.uint32(10).string(message.query);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SearchYouTubeVideosRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchYouTubeVideosRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.query = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchYouTubeVideosRequest {
+    return { query: isSet(object.query) ? globalThis.String(object.query) : "" };
+  },
+
+  toJSON(message: SearchYouTubeVideosRequest): unknown {
+    const obj: any = {};
+    if (message.query !== "") {
+      obj.query = message.query;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<SearchYouTubeVideosRequest>, I>>(base?: I): SearchYouTubeVideosRequest {
+    return SearchYouTubeVideosRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<SearchYouTubeVideosRequest>, I>>(object: I): SearchYouTubeVideosRequest {
+    const message = createBaseSearchYouTubeVideosRequest();
+    message.query = object.query ?? "";
+    return message;
+  },
+};
+
+function createBaseSearchYouTubeVideosResponse(): SearchYouTubeVideosResponse {
+  return { videos: [] };
+}
+
+export const SearchYouTubeVideosResponse: MessageFns<SearchYouTubeVideosResponse> = {
+  encode(message: SearchYouTubeVideosResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.videos) {
+      YouTubeVideo.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SearchYouTubeVideosResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchYouTubeVideosResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.videos.push(YouTubeVideo.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchYouTubeVideosResponse {
+    return {
+      videos: globalThis.Array.isArray(object?.videos) ? object.videos.map((e: any) => YouTubeVideo.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: SearchYouTubeVideosResponse): unknown {
+    const obj: any = {};
+    if (message.videos?.length) {
+      obj.videos = message.videos.map((e) => YouTubeVideo.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<SearchYouTubeVideosResponse>, I>>(base?: I): SearchYouTubeVideosResponse {
+    return SearchYouTubeVideosResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<SearchYouTubeVideosResponse>, I>>(object: I): SearchYouTubeVideosResponse {
+    const message = createBaseSearchYouTubeVideosResponse();
+    message.videos = object.videos?.map((e) => YouTubeVideo.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 export type YTScraperService = typeof YTScraperService;
 export const YTScraperService = {
   getSearchSuggestions: {
@@ -1001,6 +1127,17 @@ export const YTScraperService = {
       Buffer.from(SearchAlbumsResponse.encode(value).finish()),
     responseDeserialize: (value: Buffer): SearchAlbumsResponse => SearchAlbumsResponse.decode(value),
   },
+  searchYouTubeVideos: {
+    path: "/yt_scraper.YTScraper/SearchYouTubeVideos",
+    requestStream: false,
+    responseStream: false,
+    requestSerialize: (value: SearchYouTubeVideosRequest): Buffer =>
+      Buffer.from(SearchYouTubeVideosRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer): SearchYouTubeVideosRequest => SearchYouTubeVideosRequest.decode(value),
+    responseSerialize: (value: SearchYouTubeVideosResponse): Buffer =>
+      Buffer.from(SearchYouTubeVideosResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer): SearchYouTubeVideosResponse => SearchYouTubeVideosResponse.decode(value),
+  },
 } as const;
 
 export interface YTScraperServer extends UntypedServiceImplementation {
@@ -1011,6 +1148,7 @@ export interface YTScraperServer extends UntypedServiceImplementation {
   searchTracks: handleUnaryCall<SearchTracksRequest, SearchTracksResponse>;
   searchArtists: handleUnaryCall<SearchArtistsRequest, SearchArtistsResponse>;
   searchAlbums: handleUnaryCall<SearchAlbumsRequest, SearchAlbumsResponse>;
+  searchYouTubeVideos: handleUnaryCall<SearchYouTubeVideosRequest, SearchYouTubeVideosResponse>;
 }
 
 export interface YTScraperClient extends Client {
@@ -1118,6 +1256,21 @@ export interface YTScraperClient extends Client {
     metadata: Metadata,
     options: Partial<CallOptions>,
     callback: (error: ServiceError | null, response: SearchAlbumsResponse) => void,
+  ): ClientUnaryCall;
+  searchYouTubeVideos(
+    request: SearchYouTubeVideosRequest,
+    callback: (error: ServiceError | null, response: SearchYouTubeVideosResponse) => void,
+  ): ClientUnaryCall;
+  searchYouTubeVideos(
+    request: SearchYouTubeVideosRequest,
+    metadata: Metadata,
+    callback: (error: ServiceError | null, response: SearchYouTubeVideosResponse) => void,
+  ): ClientUnaryCall;
+  searchYouTubeVideos(
+    request: SearchYouTubeVideosRequest,
+    metadata: Metadata,
+    options: Partial<CallOptions>,
+    callback: (error: ServiceError | null, response: SearchYouTubeVideosResponse) => void,
   ): ClientUnaryCall;
 }
 

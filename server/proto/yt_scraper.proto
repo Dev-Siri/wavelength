@@ -13,6 +13,7 @@ service YTScraper {
   rpc SearchTracks(SearchTracksRequest) returns (SearchTracksResponse);
   rpc SearchArtists(SearchArtistsRequest) returns (SearchArtistsResponse);
   rpc SearchAlbums(SearchAlbumsRequest) returns (SearchAlbumsResponse);
+  rpc SearchYouTubeVideos(SearchYouTubeVideosRequest) returns (SearchYouTubeVideosResponse);
 }
 
 message GetSearchSuggestionsRequest {
@@ -71,4 +72,12 @@ message GetArtistDetailsRequest {
 
 message GetArtistDetailsResponse {
   common.Artist artist = 1;
+}
+
+message SearchYouTubeVideosRequest {
+  string query = 1;
+}
+
+message SearchYouTubeVideosResponse {
+  repeated common.YouTubeVideo videos = 1;
 }

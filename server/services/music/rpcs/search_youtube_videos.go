@@ -5,8 +5,8 @@ import (
 	"html"
 	"wavelength/proto/commonpb"
 	"wavelength/proto/musicpb"
-	"wavelength/services/music/api"
-	"wavelength/services/music/utils"
+	"wavelength/proto/yt_scraperpb"
+	shared_clients "wavelength/shared/clients"
 	"wavelength/shared/logging"
 
 	"go.uber.org/zap"
@@ -18,30 +18,27 @@ func (m *MusicService) SearchYouTubeVideos(
 	ctx context.Context,
 	request *musicpb.SearchYouTubeVideosRequest,
 ) (*musicpb.SearchYouTubeVideosResponse, error) {
-	searchResults, err := api.YouTubeV3Client.Search.List([]string{"snippet"}).Q(request.Query).MaxResults(20).Do()
-
+	videosResponse, err := shared_clients.YtScraperClient.SearchYouTubeVideos(ctx, &yt_scraperpb.SearchYouTubeVideosRequest{
+		Query: request.Query,
+	})
 	if err != nil {
-		logging.Logger.Error("YouTube videos search fetch failed.", zap.Error(err))
-		return nil, status.Error(codes.Internal, "YouTube videos search fetch failed.")
+		logging.Logger.Error("YouTube videos fetch failed.", zap.Error(err))
+		return nil, status.Error(codes.Internal, "YouTube videos fetch failed.")
 	}
 
-	if len(searchResults.Items) == 0 {
+	if len(videosResponse.Videos) == 0 {
 		return nil, status.Error(codes.NotFound, "No search results for that query.")
 	}
 
-	var youtubeVideos []*commonpb.YouTubeVideo
+	youtubeVideos := make([]*commonpb.YouTubeVideo, len(videosResponse.Videos))
 
-	for _, item := range searchResults.Items {
-		if item.Id.VideoId == "" {
-			continue
-		}
-
+	for _, ytVideo := range videosResponse.Videos {
 		video := commonpb.YouTubeVideo{
-			VideoId:         item.Id.VideoId,
-			Title:           html.UnescapeString(item.Snippet.Title),
-			Thumbnail:       utils.GetHighestPossibleThumbnailUrl(item.Snippet.Thumbnails),
-			Author:          item.Snippet.ChannelTitle,
-			AuthorChannelId: item.Snippet.ChannelId,
+			VideoId:         ytVideo.VideoId,
+			Title:           html.UnescapeString(ytVideo.Title),
+			Thumbnail:       ytVideo.Thumbnail,
+			Author:          ytVideo.Author,
+			AuthorChannelId: ytVideo.AuthorChannelId,
 		}
 
 		youtubeVideos = append(youtubeVideos, &video)

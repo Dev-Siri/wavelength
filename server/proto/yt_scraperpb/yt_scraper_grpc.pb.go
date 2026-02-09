@@ -26,6 +26,7 @@ const (
 	YTScraper_SearchTracks_FullMethodName         = "/yt_scraper.YTScraper/SearchTracks"
 	YTScraper_SearchArtists_FullMethodName        = "/yt_scraper.YTScraper/SearchArtists"
 	YTScraper_SearchAlbums_FullMethodName         = "/yt_scraper.YTScraper/SearchAlbums"
+	YTScraper_SearchYouTubeVideos_FullMethodName  = "/yt_scraper.YTScraper/SearchYouTubeVideos"
 )
 
 // YTScraperClient is the client API for YTScraper service.
@@ -39,6 +40,7 @@ type YTScraperClient interface {
 	SearchTracks(ctx context.Context, in *SearchTracksRequest, opts ...grpc.CallOption) (*SearchTracksResponse, error)
 	SearchArtists(ctx context.Context, in *SearchArtistsRequest, opts ...grpc.CallOption) (*SearchArtistsResponse, error)
 	SearchAlbums(ctx context.Context, in *SearchAlbumsRequest, opts ...grpc.CallOption) (*SearchAlbumsResponse, error)
+	SearchYouTubeVideos(ctx context.Context, in *SearchYouTubeVideosRequest, opts ...grpc.CallOption) (*SearchYouTubeVideosResponse, error)
 }
 
 type yTScraperClient struct {
@@ -119,6 +121,16 @@ func (c *yTScraperClient) SearchAlbums(ctx context.Context, in *SearchAlbumsRequ
 	return out, nil
 }
 
+func (c *yTScraperClient) SearchYouTubeVideos(ctx context.Context, in *SearchYouTubeVideosRequest, opts ...grpc.CallOption) (*SearchYouTubeVideosResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SearchYouTubeVideosResponse)
+	err := c.cc.Invoke(ctx, YTScraper_SearchYouTubeVideos_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // YTScraperServer is the server API for YTScraper service.
 // All implementations must embed UnimplementedYTScraperServer
 // for forward compatibility.
@@ -130,6 +142,7 @@ type YTScraperServer interface {
 	SearchTracks(context.Context, *SearchTracksRequest) (*SearchTracksResponse, error)
 	SearchArtists(context.Context, *SearchArtistsRequest) (*SearchArtistsResponse, error)
 	SearchAlbums(context.Context, *SearchAlbumsRequest) (*SearchAlbumsResponse, error)
+	SearchYouTubeVideos(context.Context, *SearchYouTubeVideosRequest) (*SearchYouTubeVideosResponse, error)
 	mustEmbedUnimplementedYTScraperServer()
 }
 
@@ -160,6 +173,9 @@ func (UnimplementedYTScraperServer) SearchArtists(context.Context, *SearchArtist
 }
 func (UnimplementedYTScraperServer) SearchAlbums(context.Context, *SearchAlbumsRequest) (*SearchAlbumsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method SearchAlbums not implemented")
+}
+func (UnimplementedYTScraperServer) SearchYouTubeVideos(context.Context, *SearchYouTubeVideosRequest) (*SearchYouTubeVideosResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SearchYouTubeVideos not implemented")
 }
 func (UnimplementedYTScraperServer) mustEmbedUnimplementedYTScraperServer() {}
 func (UnimplementedYTScraperServer) testEmbeddedByValue()                   {}
@@ -308,6 +324,24 @@ func _YTScraper_SearchAlbums_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _YTScraper_SearchYouTubeVideos_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchYouTubeVideosRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(YTScraperServer).SearchYouTubeVideos(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: YTScraper_SearchYouTubeVideos_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(YTScraperServer).SearchYouTubeVideos(ctx, req.(*SearchYouTubeVideosRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // YTScraper_ServiceDesc is the grpc.ServiceDesc for YTScraper service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -342,6 +376,10 @@ var YTScraper_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchAlbums",
 			Handler:    _YTScraper_SearchAlbums_Handler,
+		},
+		{
+			MethodName: "SearchYouTubeVideos",
+			Handler:    _YTScraper_SearchYouTubeVideos_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
