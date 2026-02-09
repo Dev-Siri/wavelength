@@ -31,7 +31,7 @@ class TopTrackResult extends StatelessWidget {
       isExplicit: track.isExplicit,
       artists: track.artists,
       videoType: VideoType.track,
-      album: null,
+      album: track.album,
     );
 
     trackBloc.add(MusicPlayerTrackLoadEvent(queueableMusic: queueableMusic));

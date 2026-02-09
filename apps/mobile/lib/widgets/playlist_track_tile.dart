@@ -61,7 +61,7 @@ class _PlaylistTrackTileState extends State<PlaylistTrackTile> {
       thumbnail: getTrackThumbnail(widget.playlistTrack.videoId),
       artists: widget.playlistTrack.artists,
       videoType: widget.playlistTrack.videoType,
-      album: null,
+      album: widget.playlistTrack.album,
     );
 
     final queue = widget.allPlaylistTracks
@@ -73,7 +73,7 @@ class _PlaylistTrackTileState extends State<PlaylistTrackTile> {
             thumbnail: getTrackThumbnail(track.videoId),
             artists: track.artists,
             videoType: track.videoType,
-            album: null,
+            album: track.album,
           ),
         )
         .toList();
@@ -95,7 +95,7 @@ class _PlaylistTrackTileState extends State<PlaylistTrackTile> {
       artists: widget.playlistTrack.artists,
       duration: widget.playlistTrack.duration,
       isExplicit: widget.playlistTrack.isExplicit,
-      album: null,
+      album: widget.playlistTrack.album,
     );
 
     context.read<AppBottomSheetBloc>().add(
@@ -227,7 +227,7 @@ class _PlaylistTrackTileState extends State<PlaylistTrackTile> {
                 artists: widget.playlistTrack.artists,
                 duration: widget.playlistTrack.duration,
                 isExplicit: widget.playlistTrack.isExplicit,
-                album: null,
+                album: widget.playlistTrack.album,
               ),
               videoType: widget.playlistTrack.videoType,
             ),

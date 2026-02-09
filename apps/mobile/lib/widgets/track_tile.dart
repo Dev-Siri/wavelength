@@ -40,7 +40,7 @@ class TrackTile extends StatelessWidget {
       thumbnail: track.thumbnail,
       artists: track.artists,
       videoType: VideoType.track,
-      album: null,
+      album: track.album,
     );
 
     trackBloc.add(

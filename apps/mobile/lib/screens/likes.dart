@@ -68,7 +68,7 @@ class _LikesScreenState extends State<LikesScreen> {
             isExplicit: track.isExplicit,
             artists: track.artists,
             videoType: track.videoType,
-            album: null,
+            album: track.album,
           ),
         )
         .toList();
@@ -111,7 +111,7 @@ class _LikesScreenState extends State<LikesScreen> {
               artists: track.artists,
               duration: track.duration,
               isExplicit: track.isExplicit,
-              album: null,
+              album: track.album,
             ),
           ),
         ),

@@ -91,7 +91,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
               artists: track.artists,
               duration: track.duration,
               isExplicit: track.isExplicit,
-              album: null,
+              album: track.album,
             ),
           ),
         ),
@@ -289,7 +289,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                       thumbnail: track.thumbnail,
                                       artists: track.artists,
                                       videoType: track.videoType,
-                                      album: null,
+                                      album: track.album,
                                     ),
                                   )
                                   .toList(),

@@ -71,6 +71,7 @@ class TrackRepo {
           "title": track.title,
           "videoId": track.videoId,
           "videoType": videoType.name,
+          "album": track.album?.toJson(),
         }),
       );
 
@@ -300,6 +301,7 @@ class TrackRepo {
           "title": track.title,
           "videoId": track.videoId,
           "videoType": videoType.name,
+          "album": track.album?.toJson(),
         }),
       );
       final decodedResponse = await compute<String, ApiResponse<String>>((
