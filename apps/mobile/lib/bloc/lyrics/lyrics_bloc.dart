@@ -28,7 +28,11 @@ class LyricsBloc extends Bloc<LyricsEvent, LyricsState> {
 
     emit(LyricsFetchLoadingState());
 
-    final response = await TrackRepo.fetchTrackLyrics(trackId: event.trackId);
+    final response = await TrackRepo.fetchTrackLyrics(
+      title: event.title,
+      artist: event.artist,
+      trackId: event.trackId,
+    );
 
     if (response is ApiResponseSuccess<List<Lyric>>) {
       await box.put(event.trackId, response.data);

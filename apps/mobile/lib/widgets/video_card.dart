@@ -14,7 +14,7 @@ import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:wavelength/utils/url.dart";
-import "package:wavelength/widgets/add_to_playlist_bottom_sheet.dart";
+import "package:wavelength/widgets/track_options_bottom_sheet.dart";
 import "package:wavelength/widgets/ui/amplitude.dart";
 
 class VideoCard extends StatelessWidget {
@@ -71,7 +71,7 @@ class VideoCard extends StatelessWidget {
           context: context,
           isScrollControlled: true,
           useRootNavigator: true,
-          builder: (context) => AddToPlaylistBottomSheet(
+          builder: (context) => TrackOptionsBottomSheet(
             track: Track(
               videoId: video.videoId,
               title: video.title,

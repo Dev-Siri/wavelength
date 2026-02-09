@@ -24,6 +24,8 @@ class LikedTrack {
   final String videoId;
   @HiveField(8)
   final VideoType videoType;
+  @HiveField(9)
+  final EmbeddedAlbum? album;
 
   LikedTrack({
     required this.likeId,
@@ -35,9 +37,11 @@ class LikedTrack {
     required this.duration,
     required this.videoId,
     required this.videoType,
+    required this.album,
   });
 
   factory LikedTrack.fromJson(Map<String, dynamic> json) {
+    final album = json["album"];
     return LikedTrack(
       likeId: json["likeId"] as String,
       email: json["email"] as String,
@@ -50,6 +54,7 @@ class LikedTrack {
       duration: int.parse(json["duration"]),
       videoId: json["videoId"] as String,
       videoType: VideoTypeParser.fromGrpc(json["videoType"]),
+      album: album == null ? null : EmbeddedAlbum.fromJson(album),
     );
   }
 }

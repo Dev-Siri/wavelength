@@ -21,22 +21,28 @@ import "package:wavelength/cache.dart";
 import "package:wavelength/constants.dart";
 import "package:wavelength/widgets/ui/amplitude.dart";
 
-class AddToPlaylistBottomSheet extends StatefulWidget {
+class TrackOptionsBottomSheet extends StatefulWidget {
   final Track track;
   final VideoType videoType;
+  final Widget? extendedList;
 
-  const AddToPlaylistBottomSheet({
+  /// When provided, will filter the list of playlists to not show "Add this song to..." for a particular playlist.
+  final String? excludePlaylistId;
+
+  const TrackOptionsBottomSheet({
     super.key,
     required this.track,
     required this.videoType,
+    this.extendedList,
+    this.excludePlaylistId,
   });
 
   @override
-  State<AddToPlaylistBottomSheet> createState() =>
-      _AddToPlaylistBottomSheetState();
+  State<TrackOptionsBottomSheet> createState() =>
+      _TrackOptionsBottomSheetState();
 }
 
-class _AddToPlaylistBottomSheetState extends State<AddToPlaylistBottomSheet> {
+class _TrackOptionsBottomSheetState extends State<TrackOptionsBottomSheet> {
   bool _isTrackDownloaded = false;
 
   @override
@@ -250,6 +256,10 @@ class _AddToPlaylistBottomSheetState extends State<AddToPlaylistBottomSheet> {
                   ),
                 ),
                 ...state.playlists.map((playlist) {
+                  if (playlist.playlistId == widget.excludePlaylistId) {
+                    return const SizedBox.shrink();
+                  }
+
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: AmplListTile(
@@ -270,6 +280,7 @@ class _AddToPlaylistBottomSheetState extends State<AddToPlaylistBottomSheet> {
                     ),
                   );
                 }),
+                if (widget.extendedList != null) widget.extendedList!,
               ],
             ),
           ),

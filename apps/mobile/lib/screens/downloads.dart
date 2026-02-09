@@ -107,7 +107,8 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
                     ),
                   ],
                 ),
-              for (final download in _downloads) TrackTile(track: download),
+              for (final download in _downloads)
+                TrackTile(contextId: "downloads", track: download),
             ],
           );
         },

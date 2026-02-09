@@ -100,10 +100,14 @@ class TrackRepo {
 
   static Future<ApiResponse<List<Lyric>>> fetchTrackLyrics({
     required String trackId,
+    required String title,
+    required String artist,
   }) async {
     try {
       final response = await http.get(
-        Uri.parse("$apiGatewayUrl/music/track/$trackId/lyrics"),
+        Uri.parse(
+          "$apiGatewayUrl/music/track/$trackId/lyrics?title=$title&artist=$artist",
+        ),
       );
       final decodedResponse = await compute<String, ApiResponse<List<Lyric>>>((
         lyricsResponse,

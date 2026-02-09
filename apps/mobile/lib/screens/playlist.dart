@@ -279,6 +279,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: PlayOptions(
+                              contextId: playlist.playlistId,
                               songs: state.songs
                                   .map(
                                     (track) => QueueableMusic(

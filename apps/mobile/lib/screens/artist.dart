@@ -192,7 +192,10 @@ class _ArtistScreenState extends State<ArtistScreen> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(top: 16, left: 8),
-                        child: PlayOptions(songs: queueableSongs),
+                        child: PlayOptions(
+                          contextId: "${state.artist.browseId}-top-songs",
+                          songs: queueableSongs,
+                        ),
                       ),
                       const SizedBox(height: 10),
                       Expanded(
@@ -202,6 +205,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
                           itemBuilder: (context, index) {
                             final song = state.artist.topSongs[index];
                             return TrackTile(
+                              contextId: "${state.artist.browseId}-top-songs",
                               queueContext: queueableSongs,
                               playCount: song.playCount,
                               track: Track(

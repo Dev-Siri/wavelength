@@ -26,13 +26,14 @@ class LikedTrackAdapter extends TypeAdapter<LikedTrack> {
       duration: fields[6] as int,
       videoId: fields[7] as String,
       videoType: fields[8] as VideoType,
+      album: fields[9] as EmbeddedAlbum?,
     );
   }
 
   @override
   void write(BinaryWriter writer, LikedTrack obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.likeId)
       ..writeByte(1)
@@ -50,7 +51,9 @@ class LikedTrackAdapter extends TypeAdapter<LikedTrack> {
       ..writeByte(7)
       ..write(obj.videoId)
       ..writeByte(8)
-      ..write(obj.videoType);
+      ..write(obj.videoType)
+      ..writeByte(9)
+      ..write(obj.album);
   }
 
   @override

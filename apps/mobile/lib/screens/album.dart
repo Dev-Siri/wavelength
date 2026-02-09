@@ -105,6 +105,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
                   vertical: 10,
                 ),
                 child: PlayOptions(
+                  contextId: "${widget.browseId}-album",
                   songs: state.album.albumTracks
                       .map(
                         (track) => QueueableMusic(

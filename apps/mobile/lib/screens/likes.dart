@@ -75,6 +75,7 @@ class _LikesScreenState extends State<LikesScreen> {
 
     context.read<MusicPlayerTrackBloc>().add(
       MusicPlayerTrackLoadEvent(
+        contextId: "likes",
         queueableMusic: queueableSongs.first,
         queueContext: queueableSongs,
       ),
@@ -252,6 +253,7 @@ class _LikesScreenState extends State<LikesScreen> {
                   videoId: likedTrack.videoId,
                   videoType: likedTrack.videoType,
                   playlistId: "likes",
+                  album: likedTrack.album,
                 );
               }).toList();
 
@@ -302,6 +304,7 @@ class _LikesScreenState extends State<LikesScreen> {
                           videoId: song.videoId,
                           videoType: song.videoType,
                           playlistId: song.playlistId,
+                          album: song.album,
                         ),
                         allPlaylistTracks: compatibleTracks,
                       ),

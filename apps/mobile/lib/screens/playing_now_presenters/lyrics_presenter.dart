@@ -51,6 +51,10 @@ class _LyricsPresenterState extends State<LyricsPresenter> {
     if (musicPlayerTrackState is MusicPlayerTrackPlayingNowState) {
       _lyricsBloc.add(
         LyricsFetchEvent(
+          title: musicPlayerTrackState.playingNowTrack.title,
+          artist: musicPlayerTrackState.playingNowTrack.artists
+              .map((artist) => artist.title)
+              .join(","),
           trackId: musicPlayerTrackState.playingNowTrack.videoId,
         ),
       );

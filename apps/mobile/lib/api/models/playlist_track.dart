@@ -26,6 +26,8 @@ class PlaylistTrack {
   final VideoType videoType;
   @HiveField(9)
   final String playlistId;
+  @HiveField(10)
+  final EmbeddedAlbum? album;
 
   PlaylistTrack({
     required this.playlistTrackId,
@@ -38,9 +40,11 @@ class PlaylistTrack {
     required this.videoId,
     required this.videoType,
     required this.playlistId,
+    required this.album,
   });
 
   factory PlaylistTrack.fromJson(Map<String, dynamic> json) {
+    final album = json["album"];
     return PlaylistTrack(
       playlistTrackId: json["playlistTrackId"] as String,
       title: json["title"] as String,
@@ -54,6 +58,7 @@ class PlaylistTrack {
       videoId: json["videoId"] as String,
       videoType: VideoTypeParser.fromGrpc(json["videoType"]),
       playlistId: json["playlistId"] as String,
+      album: album == null ? null : EmbeddedAlbum.fromJson(album),
     );
   }
 }

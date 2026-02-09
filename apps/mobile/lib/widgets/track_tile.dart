@@ -12,12 +12,13 @@ import "package:wavelength/bloc/music_player/music_player_track/music_player_tra
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
 import "package:wavelength/utils/format.dart";
-import "package:wavelength/widgets/add_to_playlist_bottom_sheet.dart";
+import "package:wavelength/widgets/track_options_bottom_sheet.dart";
 import "package:wavelength/widgets/explicit_indicator.dart";
 import "package:wavelength/widgets/like_button.dart";
 import "package:wavelength/widgets/ui/amplitude.dart";
 
 class TrackTile extends StatelessWidget {
+  final String? contextId;
   final List<QueueableMusic> queueContext;
   final String? playCount;
   final Track track;
@@ -26,6 +27,7 @@ class TrackTile extends StatelessWidget {
     super.key,
     this.queueContext = const [],
     this.playCount,
+    this.contextId,
     required this.track,
   });
 
@@ -43,6 +45,7 @@ class TrackTile extends StatelessWidget {
 
     trackBloc.add(
       MusicPlayerTrackLoadEvent(
+        contextId: contextId,
         queueContext: queueContext.isNotEmpty ? queueContext : null,
         queueableMusic: queueableMusic,
       ),
@@ -55,10 +58,8 @@ class TrackTile extends StatelessWidget {
           context: context,
           isScrollControlled: true,
           useRootNavigator: true,
-          builder: (context) => AddToPlaylistBottomSheet(
-            track: track,
-            videoType: VideoType.track,
-          ),
+          builder: (context) =>
+              TrackOptionsBottomSheet(track: track, videoType: VideoType.track),
         ),
       );
 

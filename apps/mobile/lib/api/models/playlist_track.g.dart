@@ -27,13 +27,14 @@ class PlaylistTrackAdapter extends TypeAdapter<PlaylistTrack> {
       videoId: fields[7] as String,
       videoType: fields[8] as VideoType,
       playlistId: fields[9] as String,
+      album: fields[10] as EmbeddedAlbum?,
     );
   }
 
   @override
   void write(BinaryWriter writer, PlaylistTrack obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.playlistTrackId)
       ..writeByte(1)
@@ -53,7 +54,9 @@ class PlaylistTrackAdapter extends TypeAdapter<PlaylistTrack> {
       ..writeByte(8)
       ..write(obj.videoType)
       ..writeByte(9)
-      ..write(obj.playlistId);
+      ..write(obj.playlistId)
+      ..writeByte(10)
+      ..write(obj.album);
   }
 
   @override

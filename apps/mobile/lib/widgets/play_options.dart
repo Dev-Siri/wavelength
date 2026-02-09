@@ -8,13 +8,15 @@ import "package:wavelength/bloc/music_player/music_player_track/music_player_tra
 import "package:wavelength/widgets/ui/ampl_button.dart";
 
 class PlayOptions extends StatelessWidget {
+  final String contextId;
   final List<QueueableMusic> songs;
 
-  const PlayOptions({super.key, required this.songs});
+  const PlayOptions({super.key, required this.contextId, required this.songs});
 
   void _playAll(BuildContext context) {
     context.read<MusicPlayerTrackBloc>().add(
       MusicPlayerTrackLoadEvent(
+        contextId: contextId,
         queueContext: songs,
         queueableMusic: songs.first,
       ),

@@ -17,7 +17,8 @@ import "package:wavelength/utils/parse.dart";
 import "package:wavelength/utils/url.dart";
 import "package:wavelength/widgets/explicit_indicator.dart";
 import "package:wavelength/widgets/like_button.dart";
-import "package:wavelength/widgets/playlist_track_tile_options_bottom_sheet.dart";
+import "package:wavelength/widgets/playlist_track_extended_options.dart";
+import "package:wavelength/widgets/track_options_bottom_sheet.dart";
 import "package:wavelength/widgets/ui/amplitude.dart";
 
 class PlaylistTrackTile extends StatefulWidget {
@@ -79,31 +80,39 @@ class _PlaylistTrackTileState extends State<PlaylistTrackTile> {
 
     context.read<MusicPlayerTrackBloc>().add(
       MusicPlayerTrackLoadEvent(
+        contextId: widget.playlistTrack.playlistId,
         queueableMusic: queueableMusic,
         queueContext: queue,
       ),
     );
   }
 
-  void _showPlaylistTrackOptions(BuildContext context) =>
-      context.read<AppBottomSheetBloc>().add(
-        AppBottomSheetOpenEvent(
-          context: context,
-          builder: (_) => PlaylistTrackTileOptionsBottomSheet(
+  void _showPlaylistTrackOptions(BuildContext context) {
+    final track = Track(
+      videoId: widget.playlistTrack.videoId,
+      title: widget.playlistTrack.title,
+      thumbnail: widget.playlistTrack.thumbnail,
+      artists: widget.playlistTrack.artists,
+      duration: widget.playlistTrack.duration,
+      isExplicit: widget.playlistTrack.isExplicit,
+      album: null,
+    );
+
+    context.read<AppBottomSheetBloc>().add(
+      AppBottomSheetOpenEvent(
+        context: context,
+        builder: (_) => TrackOptionsBottomSheet(
+          extendedList: PlaylistTrackExtendedOptions(
             playlistId: widget.playlistTrack.playlistId,
+            track: track,
             videoType: widget.playlistTrack.videoType,
-            track: Track(
-              videoId: widget.playlistTrack.videoId,
-              title: widget.playlistTrack.title,
-              thumbnail: widget.playlistTrack.thumbnail,
-              artists: widget.playlistTrack.artists,
-              duration: widget.playlistTrack.duration,
-              isExplicit: widget.playlistTrack.isExplicit,
-              album: null,
-            ),
           ),
+          videoType: widget.playlistTrack.videoType,
+          track: track,
         ),
-      );
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -161,22 +170,33 @@ class _PlaylistTrackTileState extends State<PlaylistTrackTile> {
                   child: Text(
                     widget.playlistTrack.title,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
-                      color: _isTrackDownloaded ? Colors.white : Colors.grey,
+                      color: Colors.white,
                     ),
                   ),
                 ),
                 Row(
                   children: [
+                    if (_isTrackDownloaded)
+                      const Padding(
+                        padding: EdgeInsets.only(right: 5),
+                        child: Icon(
+                          LucideIcons.circleArrowDown,
+                          size: 16,
+                          color: Colors.grey,
+                        ),
+                      ),
                     if (widget.playlistTrack.isExplicit)
                       const Padding(
                         padding: EdgeInsets.only(right: 5),
                         child: ExplicitIndicator(),
                       ),
                     SizedBox(
-                      width: MediaQuery.sizeOf(context).width / 2,
+                      width:
+                          (MediaQuery.sizeOf(context).width / 2) -
+                          (_isTrackDownloaded ? 20 : 0),
                       child: Text(
                         formatList(
                           widget.playlistTrack.artists.map(
