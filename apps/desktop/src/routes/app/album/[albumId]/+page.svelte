@@ -68,6 +68,10 @@
           tracks={album.albumTracks.map(track => ({
             ...track,
             videoType: "VIDEO_TYPE_TRACK",
+            album: {
+              title: album.title,
+              browseId: page.params.albumId ?? "",
+            },
             thumbnail: album.cover,
             artists: [album.artist],
           }))}
@@ -78,6 +82,10 @@
           <AlbumTrackTile
             music={{
               ...albumTrack,
+              album: {
+                title: album.title,
+                browseId: page.params.albumId ?? "",
+              },
               thumbnail: album.cover,
               artists: [album.artist],
             }}

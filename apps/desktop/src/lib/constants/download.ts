@@ -2,6 +2,7 @@ import type { Platform } from "$lib/utils/platform";
 
 export const DOWNLOAD_DIR = "downloads";
 export const DOWNLOAD_STREAM_EXT = "m4a";
+export const DOWNLOAD_MUSIC_VIDEO_PREVIEW_STREAM_EXT = "mp4";
 
 export const APP_REPO_LATEST_RELEASE_LINK =
   "https://github.com/Dev-Siri/wavelength/releases/latest/download";

@@ -5217,13 +5217,14 @@ dependencies = [
 
 [[package]]
 name = "tydle"
-version = "0.1.13"
+version = "0.1.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fb51baa4f6809e67d3faa301adcc5feba61b0201dd8a5a9f62de68487ca78c12"
+checksum = "7af0c943375a3e88a565667f43863906f2322552776987ad74172d4c5f9ff6de"
 dependencies = [
  "anyhow",
  "clap",
  "colored",
+ "dashmap",
  "env_logger",
  "fancy-regex",
  "js-sys",

@@ -130,9 +130,9 @@
           : musicPlayerStore.playMusic}
       >
         {#if musicPlayerStore.isPlaying}
-          <PauseIcon fill="black" size={20} font-weight="normal" />
+          <PauseIcon fill="black" size={20} />
         {:else}
-          <PlayIcon fill="black" size={20} font-weight="normal" />
+          <PlayIcon fill="black" size={20} />
         {/if}
       </Button>
     </Tooltip.Trigger>

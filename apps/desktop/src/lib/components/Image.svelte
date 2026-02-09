@@ -20,17 +20,7 @@
     class?: string;
   } & Record<string, unknown> = $props();
 
-  let imageUrl = $state(`${BASE_URL}/api/image?url=${encodeURIComponent(src)}`);
+  const imageUrl = $derived(`${BASE_URL}/api/image?url=${encodeURIComponent(src)}`);
 </script>
 
-<img
-  src={imageUrl}
-  onerror={() => (imageUrl = `${BASE_URL}/api/image/fallback?url=${encodeURIComponent(src)}`)}
-  {alt}
-  {height}
-  {width}
-  {loading}
-  class={className}
-  {...restProps}
-  in:fade
-/>
+<img src={imageUrl} {alt} {height} {width} {loading} class={className} {...restProps} in:fade />

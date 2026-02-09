@@ -52,7 +52,6 @@
     "@vercel/speed-insights": "^1.2.0",
     "bits-ui": "^2.14.0",
     "idb-keyval": "^6.2.2",
-    "sharp": "^0.34.4",
     "svelte-french-toast": "^1.2.0",
     "svelte-splitpanes": "^8.0.9",
     "tailwind-merge": "^3.3.1",

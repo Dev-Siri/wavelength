@@ -1,12 +1,22 @@
+use std::path::PathBuf;
+
 use anyhow::anyhow;
 use tauri::{Result, State};
 use tokio::sync::Mutex;
-use tydle::{Extract, Filterable, Tydle, TydleOptions, VideoId, YtStreamSource};
+use tydle::{
+    DiskCacheStore, Ext, Extract, Filterable, Tydle, TydleOptions, VideoId, YtStreamSource,
+};
 
 use crate::{cache::CachedStream, AppState};
 
-pub fn init_extractor() -> anyhow::Result<Tydle> {
-    let tydle_instance = Tydle::new(TydleOptions::default())?;
+pub fn init_extractor(
+    cache_path: PathBuf,
+) -> anyhow::Result<Tydle<DiskCacheStore, DiskCacheStore>> {
+    let tydle_instance = Tydle::new_with_cache(
+        TydleOptions::default(),
+        DiskCacheStore::new(cache_path.clone()),
+        DiskCacheStore::new(cache_path),
+    )?;
 
     log::info!("Tydle instance initialized.");
     Ok(tydle_instance)
@@ -67,16 +77,16 @@ pub async fn fetch_highest_bitrate_video_stream_url(
 
     let id = VideoId::new(video_id)?;
     let yt_stream_response = state.tydle.get_streams(&id).await?;
-    let audio_streams = yt_stream_response
+    let mut video_streams = yt_stream_response
         .streams
         .only_urls()
         .video_only()
-        .with_highest_bitrate()
         .into_iter()
-        .filter(|s| s.codec.vcodec.is_some())
         .collect::<Vec<_>>();
 
-    let Some(stream) = audio_streams.first().cloned() else {
+    video_streams.sort_by_key(|s| !matches!(s.ext, Ext::Mp4 | Ext::M4a));
+
+    let Some(stream) = video_streams.first().cloned() else {
         return Err(anyhow!("Failed to get any video streams.").into());
     };
 

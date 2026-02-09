@@ -1,5 +1,10 @@
 import { STREAM_PLAYBACK_URL } from "$lib/constants/utils";
-import { getDownloadedStreamPath, isAlreadyDownloaded } from "$lib/utils/download";
+import {
+  getDownloadedMusicVideoStreamPath,
+  getDownloadedStreamPath,
+  isAlreadyDownloaded,
+  isMusicVideoAlreadyDownloaded,
+} from "$lib/utils/download";
 import { StreamPlayer } from "./player";
 
 export class NativePlayer extends StreamPlayer {
@@ -49,6 +54,25 @@ export class NativePlayer extends StreamPlayer {
     this.playerElement.addEventListener("timeupdate", this.timeUpdateHandler);
   }
 
+  async fetchDownloadedSource(videoId: string) {
+    switch (this.resource) {
+      case "audio": {
+        const isAudioDownloaded = await isAlreadyDownloaded(videoId);
+        if (!isAudioDownloaded) return;
+
+        const downloadedStream = await getDownloadedStreamPath(videoId);
+        return downloadedStream;
+      }
+      case "video": {
+        const isVideoDownloaded = await isMusicVideoAlreadyDownloaded(videoId);
+        if (!isVideoDownloaded) return;
+
+        const downloadedStream = await getDownloadedMusicVideoStreamPath(videoId);
+        return downloadedStream;
+      }
+    }
+  }
+
   async load(videoId: string, startingSeconds?: number) {
     const { invoke } = await import("@tauri-apps/api/core");
 
@@ -58,12 +82,12 @@ export class NativePlayer extends StreamPlayer {
     this.playerElement.setAttribute("src", "");
     this.playerElement.setAttribute("autoplay", "true");
 
-    if ((await isAlreadyDownloaded(videoId)) && this.resource !== "video") {
-      const path = await getDownloadedStreamPath(videoId);
+    const downloadedStreamUrl = await this.fetchDownloadedSource(videoId);
 
+    if (downloadedStreamUrl) {
       this.playerElement.setAttribute(
         "src",
-        `${STREAM_PLAYBACK_URL}/local-playback?url=${encodeURIComponent(path)}`,
+        `${STREAM_PLAYBACK_URL}/local-playback?url=${encodeURIComponent(downloadedStreamUrl)}`,
       );
     } else {
       const streamUrl = await invoke<string | null | undefined>(

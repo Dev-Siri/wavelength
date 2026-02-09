@@ -10,12 +10,12 @@ mod stream_downloader;
 mod youtube;
 
 use tokio::sync::Mutex;
-use tydle::Tydle;
+use tydle::{DiskCacheStore, Tydle};
 
 use crate::cache::CachedStream;
 
 pub struct AppState {
-    pub tydle: Arc<Tydle>,
+    pub tydle: Arc<Tydle<DiskCacheStore, DiskCacheStore>>,
     pub stream_url_cache: DashMap<String, CachedStream>,
 }
 
@@ -26,7 +26,7 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
-            let tydle = youtube::init_extractor()?;
+            let tydle = youtube::init_extractor(app.path().cache_dir()?)?;
 
             app.manage(Mutex::new(AppState {
                 tydle: Arc::new(tydle),

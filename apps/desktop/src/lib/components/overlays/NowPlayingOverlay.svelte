@@ -82,8 +82,9 @@
           referrerpolicy="no-referrer"
           target="_blank"
         >
-          <YoutubeIcon class="text-red-500 stroke-1" size={35} /> Open on YouTube <ArrowUpRightIcon
-          />
+          <YoutubeIcon class="text-red-500 stroke-1" size={35} />
+          Open on YouTube
+          <ArrowUpRightIcon />
         </Button>
         <Button
           class="px-2 gap-2 text-muted-foreground"

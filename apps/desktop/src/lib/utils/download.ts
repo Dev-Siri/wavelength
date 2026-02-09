@@ -3,7 +3,11 @@ import { get, set } from "idb-keyval";
 
 import type { MusicTrack } from "./validation/music-track";
 
-import { DOWNLOAD_DIR, DOWNLOAD_STREAM_EXT } from "$lib/constants/download";
+import {
+  DOWNLOAD_DIR,
+  DOWNLOAD_MUSIC_VIDEO_PREVIEW_STREAM_EXT,
+  DOWNLOAD_STREAM_EXT,
+} from "$lib/constants/download";
 import { downloadMetaSchema } from "./validation/downloads";
 
 export async function getDownloadsPath() {
@@ -18,6 +22,11 @@ export async function getDownloadsPath() {
 export async function getDownloadedStreamPath(videoId: string) {
   const downloadsPath = await getDownloadsPath();
   return `${downloadsPath}/${videoId}.${DOWNLOAD_STREAM_EXT}`;
+}
+
+export async function getDownloadedMusicVideoStreamPath(videoId: string) {
+  const downloadsPath = await getDownloadsPath();
+  return `${downloadsPath}/${videoId}.${DOWNLOAD_MUSIC_VIDEO_PREVIEW_STREAM_EXT}`;
 }
 
 export async function fetchDownloads() {
@@ -75,4 +84,13 @@ export async function isAlreadyDownloaded(videoId: string) {
   const trackPath = await getDownloadedStreamPath(videoId);
 
   return await exists(trackPath);
+}
+
+export async function isMusicVideoAlreadyDownloaded(videoId: string) {
+  if (!isTauri()) return;
+
+  const { exists } = await import("@tauri-apps/plugin-fs");
+  const previewTrackPath = await getDownloadedMusicVideoStreamPath(videoId);
+
+  return await exists(previewTrackPath);
 }

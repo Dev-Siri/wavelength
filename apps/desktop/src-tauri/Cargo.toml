@@ -23,7 +23,7 @@ serde = { version = "1.0", features = ["derive"] }
 log = "0.4"
 tauri = { version = "2.9.5", features = ["tray-icon"] }
 tauri-plugin-log = "2"
-tydle = "0.1.13"
+tydle = "0.1.14"
 tokio = { version = "1.49.0", features = ["full"] }
 reqwest = { version = "0.13.1", features = ["stream"] }
 anyhow = "1.0.100"
