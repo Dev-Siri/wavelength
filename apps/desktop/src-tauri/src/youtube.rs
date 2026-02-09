@@ -3,9 +3,7 @@ use std::path::PathBuf;
 use anyhow::anyhow;
 use tauri::{Result, State};
 use tokio::sync::Mutex;
-use tydle::{
-    DiskCacheStore, Ext, Extract, Filterable, Tydle, TydleOptions, VideoId, YtStreamSource,
-};
+use tydle::{DiskCacheStore, Extract, Filterable, Tydle, TydleOptions, VideoId, YtStreamSource};
 
 use crate::{cache::CachedStream, AppState};
 
@@ -77,7 +75,7 @@ pub async fn fetch_highest_bitrate_video_stream_url(
 
     let id = VideoId::new(video_id)?;
     let yt_stream_response = state.tydle.get_streams(&id).await?;
-    let mut video_streams = yt_stream_response
+    let video_streams = yt_stream_response
         .streams
         .only_urls()
         .video_only()
