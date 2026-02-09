@@ -84,13 +84,6 @@ pub async fn fetch_highest_bitrate_video_stream_url(
         .into_iter()
         .collect::<Vec<_>>();
 
-    video_streams.sort_by_key(|s| {
-        (
-            s.codec.acodec.is_some(),
-            !matches!(s.ext, Ext::Mp4 | Ext::M4a),
-        )
-    });
-
     let Some(stream) = video_streams.first().cloned() else {
         return Err(anyhow!("Failed to get any video streams.").into());
     };
