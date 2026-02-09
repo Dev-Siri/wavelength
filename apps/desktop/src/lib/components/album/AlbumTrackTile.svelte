@@ -47,7 +47,7 @@
       role="button"
       onclick={playSong}
       onkeydown={e => (e.key === "Enter" || e.key === "Space") && playSong()}
-      class="flex gap-2 text-start w-full"
+      class="flex items-center gap-2 text-start w-full"
     >
       <div class="flex items-center gap-2 w-full">
         {#if music.isExplicit}
