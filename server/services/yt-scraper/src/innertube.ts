@@ -10,6 +10,7 @@ export async function getYtClient(gl?: string) {
     innertube = await Innertube.create({
       fetch,
       location: gl,
+      device_category: "desktop",
     });
     lastInit = Date.now();
   }
