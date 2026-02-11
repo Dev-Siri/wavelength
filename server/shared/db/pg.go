@@ -2,7 +2,8 @@ package shared_db
 
 import (
 	"database/sql"
-	shared_env "wavelength/shared/env"
+
+	shared_env "github.com/Dev-Siri/wavelength/server/shared/env"
 
 	_ "github.com/lib/pq"
 )

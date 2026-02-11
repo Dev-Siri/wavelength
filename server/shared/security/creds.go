@@ -1,9 +1,10 @@
-package shared_clients
+package security
 
 import (
 	"crypto/tls"
 	"crypto/x509"
-	shared_type_constants "wavelength/shared/constants/types"
+
+	shared_type_constants "github.com/Dev-Siri/wavelength/server/shared/constants/types"
 
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"

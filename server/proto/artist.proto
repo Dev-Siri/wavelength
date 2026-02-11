@@ -1,7 +1,7 @@
 syntax = "proto3";
 package artist;
 
-option go_package = "wavelength/server/proto/artist;artistpb";
+option go_package = "github.com/Dev-Siri/wavelength/server/proto/artist;artistpb";
 
 import "google/protobuf/empty.proto";
 import "proto/common.proto";

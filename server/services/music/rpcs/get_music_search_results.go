@@ -3,10 +3,11 @@ package music_rpcs
 import (
 	"context"
 	"strings"
-	"wavelength/proto/musicpb"
-	"wavelength/proto/yt_scraperpb"
-	shared_clients "wavelength/shared/clients"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/proto/musicpb"
+	"github.com/Dev-Siri/wavelength/server/proto/yt_scraperpb"
+	"github.com/Dev-Siri/wavelength/server/shared/clients"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
@@ -17,7 +18,7 @@ func (m *MusicService) GetMusicSearchSuggestions(
 	ctx context.Context,
 	request *musicpb.GetMusicSearchSuggestionsRequest,
 ) (*musicpb.GetMusicSearchSuggestionsResponse, error) {
-	response, err := shared_clients.YtScraperClient.GetSearchSuggestions(ctx, &yt_scraperpb.GetSearchSuggestionsRequest{
+	response, err := clients.YtScraperClient.GetSearchSuggestions(ctx, &yt_scraperpb.GetSearchSuggestionsRequest{
 		Query: request.Query,
 	})
 	if err != nil {

@@ -2,7 +2,8 @@ package shared_env
 
 import (
 	"os"
-	"wavelength/services/gateway/constants"
+
+	"github.com/Dev-Siri/wavelength/server/services/gateway/constants"
 
 	"github.com/joho/godotenv"
 )

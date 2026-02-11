@@ -3,12 +3,13 @@ package main
 import (
 	"log"
 	"net"
-	"wavelength/proto/playlistpb"
-	playlist_rpcs "wavelength/services/playlist/rpcs"
-	shared_clients "wavelength/shared/clients"
-	shared_db "wavelength/shared/db"
-	shared_env "wavelength/shared/env"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/proto/playlistpb"
+	playlist_rpcs "github.com/Dev-Siri/wavelength/server/services/playlist/rpcs"
+	"github.com/Dev-Siri/wavelength/server/shared/clients"
+	shared_db "github.com/Dev-Siri/wavelength/server/shared/db"
+	shared_env "github.com/Dev-Siri/wavelength/server/shared/env"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -35,11 +36,11 @@ func main() {
 		}()
 	}
 
-	if err := shared_clients.InitArtistClient(); err != nil {
+	if err := clients.InitArtistClient(); err != nil {
 		logging.Logger.Fatal("Artist-service client failed to connect.", zap.Error(err))
 	}
 
-	if err := shared_clients.InitAlbumClient(); err != nil {
+	if err := clients.InitAlbumClient(); err != nil {
 		logging.Logger.Fatal("Album-service client failed to connect.", zap.Error(err))
 	}
 

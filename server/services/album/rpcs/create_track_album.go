@@ -2,9 +2,10 @@ package album_rpcs
 
 import (
 	"context"
-	"wavelength/proto/albumpb"
-	shared_db "wavelength/shared/db"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/proto/albumpb"
+	shared_db "github.com/Dev-Siri/wavelength/server/shared/db"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"

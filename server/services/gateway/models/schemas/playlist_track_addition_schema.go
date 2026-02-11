@@ -1,6 +1,6 @@
 package schemas
 
-import shared_type_constants "wavelength/shared/constants/types"
+import shared_type_constants "github.com/Dev-Siri/wavelength/server/shared/constants/types"
 
 type PlaylistTrackAdditionSchema struct {
 	Thumbnail  string                                    `json:"thumbnail"`

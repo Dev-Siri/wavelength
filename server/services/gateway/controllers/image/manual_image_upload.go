@@ -7,10 +7,11 @@ import (
 	"mime/multipart"
 	"net/http"
 	"path/filepath"
-	"wavelength/services/gateway/constants"
-	"wavelength/services/gateway/env"
-	"wavelength/services/gateway/models"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/services/gateway/constants"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/env"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"

@@ -2,7 +2,8 @@ package api
 
 import (
 	"context"
-	"wavelength/services/music/env"
+
+	"github.com/Dev-Siri/wavelength/server/services/music/env"
 
 	"google.golang.org/api/option"
 	"google.golang.org/api/youtube/v3"

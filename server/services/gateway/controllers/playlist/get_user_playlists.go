@@ -1,10 +1,10 @@
 package playlist_controllers
 
 import (
-	"wavelength/proto/playlistpb"
-	"wavelength/services/gateway/clients"
-	"wavelength/services/gateway/models"
-	"wavelength/shared/logging"
+	"github.com/Dev-Siri/wavelength/server/proto/playlistpb"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
+	"github.com/Dev-Siri/wavelength/server/shared/clients"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"

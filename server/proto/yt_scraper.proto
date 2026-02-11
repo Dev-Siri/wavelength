@@ -1,7 +1,7 @@
 syntax = "proto3";
 package yt_scraper;
 
-option go_package = "wavelength/server/proto/yt_scraper;yt_scraperpb";
+option go_package = "github.com/Dev-Siri/wavelength/server/proto/yt_scraper;yt_scraperpb";
 
 import "proto/common.proto";
 

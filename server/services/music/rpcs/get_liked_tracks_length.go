@@ -3,10 +3,11 @@ package music_rpcs
 import (
 	"context"
 	"sync"
-	"wavelength/proto/commonpb"
-	"wavelength/proto/musicpb"
-	shared_db "wavelength/shared/db"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/proto/commonpb"
+	"github.com/Dev-Siri/wavelength/server/proto/musicpb"
+	shared_db "github.com/Dev-Siri/wavelength/server/shared/db"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"

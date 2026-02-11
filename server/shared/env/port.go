@@ -2,7 +2,8 @@ package shared_env
 
 import (
 	"os"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 )
 
 func GetPORT() string {

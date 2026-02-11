@@ -1,9 +1,9 @@
 package clients
 
 import (
-	"wavelength/proto/musicpb"
-	"wavelength/services/gateway/env"
-	shared_clients "wavelength/shared/clients"
+	"github.com/Dev-Siri/wavelength/server/proto/musicpb"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/env"
+	"github.com/Dev-Siri/wavelength/server/shared/security"
 
 	"google.golang.org/grpc"
 )
@@ -16,7 +16,7 @@ func InitMusicClient() error {
 		return err
 	}
 
-	creds, err := shared_clients.GetTransportCreds()
+	creds, err := security.GetTransportCreds()
 	if err != nil {
 		return err
 	}

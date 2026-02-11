@@ -4,11 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"html"
-	"wavelength/proto/commonpb"
-	"wavelength/proto/playlistpb"
-	shared_type_constants "wavelength/shared/constants/types"
-	shared_db "wavelength/shared/db"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/proto/commonpb"
+	"github.com/Dev-Siri/wavelength/server/proto/playlistpb"
+	shared_type_constants "github.com/Dev-Siri/wavelength/server/shared/constants/types"
+	shared_db "github.com/Dev-Siri/wavelength/server/shared/db"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"

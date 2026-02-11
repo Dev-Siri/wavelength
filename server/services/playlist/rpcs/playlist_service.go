@@ -1,6 +1,6 @@
 package playlist_rpcs
 
-import "wavelength/proto/playlistpb"
+import "github.com/Dev-Siri/wavelength/server/proto/playlistpb"
 
 type PlaylistService struct {
 	playlistpb.UnimplementedPlaylistServiceServer

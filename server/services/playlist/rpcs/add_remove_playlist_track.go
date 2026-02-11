@@ -4,11 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"wavelength/proto/commonpb"
-	"wavelength/proto/playlistpb"
-	shared_db "wavelength/shared/db"
-	"wavelength/shared/logging"
-	shared_musicmeta "wavelength/shared/musicmeta"
+
+	"github.com/Dev-Siri/wavelength/server/proto/commonpb"
+	"github.com/Dev-Siri/wavelength/server/proto/playlistpb"
+	shared_db "github.com/Dev-Siri/wavelength/server/shared/db"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
+	shared_musicmeta "github.com/Dev-Siri/wavelength/server/shared/musicmeta"
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"

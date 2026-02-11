@@ -1,7 +1,7 @@
 package logging
 
 import (
-	shared_type_constants "wavelength/shared/constants/types"
+	shared_type_constants "github.com/Dev-Siri/wavelength/server/shared/constants/types"
 
 	"go.uber.org/zap"
 )

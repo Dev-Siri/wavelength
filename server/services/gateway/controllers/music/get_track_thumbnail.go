@@ -2,10 +2,11 @@ package music_controllers
 
 import (
 	"fmt"
-	"wavelength/proto/imagepb"
-	"wavelength/services/gateway/clients"
-	"wavelength/services/gateway/constants"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/proto/imagepb"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/constants"
+	"github.com/Dev-Siri/wavelength/server/shared/clients"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"

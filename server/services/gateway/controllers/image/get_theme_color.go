@@ -1,11 +1,11 @@
 package image_controllers
 
 import (
-	"wavelength/proto/imagepb"
-	"wavelength/services/gateway/clients"
-	"wavelength/services/gateway/models"
-	"wavelength/services/gateway/utils"
-	"wavelength/shared/logging"
+	"github.com/Dev-Siri/wavelength/server/proto/imagepb"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/utils"
+	"github.com/Dev-Siri/wavelength/server/shared/clients"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"

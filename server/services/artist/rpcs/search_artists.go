@@ -2,10 +2,11 @@ package artist_rpcs
 
 import (
 	"context"
-	"wavelength/proto/artistpb"
-	"wavelength/proto/yt_scraperpb"
-	shared_clients "wavelength/shared/clients"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/proto/artistpb"
+	"github.com/Dev-Siri/wavelength/server/proto/yt_scraperpb"
+	"github.com/Dev-Siri/wavelength/server/shared/clients"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
@@ -16,7 +17,7 @@ func (a *ArtistService) SearchArtists(
 	ctx context.Context,
 	request *artistpb.SearchArtistsRequest,
 ) (*artistpb.SearchArtistsResponse, error) {
-	searchArtistsResponse, err := shared_clients.YtScraperClient.SearchArtists(ctx, &yt_scraperpb.SearchArtistsRequest{
+	searchArtistsResponse, err := clients.YtScraperClient.SearchArtists(ctx, &yt_scraperpb.SearchArtistsRequest{
 		Query: request.Query,
 	})
 	if err != nil {

@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"html"
 	"strings"
-	"wavelength/proto/commonpb"
-	"wavelength/proto/musicpb"
-	"wavelength/proto/yt_scraperpb"
-	shared_clients "wavelength/shared/clients"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/proto/commonpb"
+	"github.com/Dev-Siri/wavelength/server/proto/musicpb"
+	"github.com/Dev-Siri/wavelength/server/proto/yt_scraperpb"
+	"github.com/Dev-Siri/wavelength/server/shared/clients"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"github.com/sahilm/fuzzy"
 	"go.uber.org/zap"
@@ -22,7 +23,7 @@ func (m *MusicService) GetMusicVideoId(
 	request *musicpb.GetMusicVideoIdRequest,
 ) (*musicpb.GetMusicVideoIdResponse, error) {
 	q := fmt.Sprintf("%s %s (Official Music Video)", request.Artist, request.Title)
-	videosResponse, err := shared_clients.YtScraperClient.SearchYouTubeVideos(ctx, &yt_scraperpb.SearchYouTubeVideosRequest{
+	videosResponse, err := clients.YtScraperClient.SearchYouTubeVideos(ctx, &yt_scraperpb.SearchYouTubeVideosRequest{
 		Query: q,
 	})
 	if err != nil {

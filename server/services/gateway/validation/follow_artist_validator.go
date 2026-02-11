@@ -1,8 +1,8 @@
 package validation
 
 import (
-	"wavelength/services/gateway/models/schemas"
-	"wavelength/services/gateway/utils"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/models/schemas"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/utils"
 )
 
 func IsFollowArtistShapeValid(schema schemas.ArtistFollowSchema) bool {

@@ -2,10 +2,11 @@ package music_rpcs
 
 import (
 	"context"
-	"wavelength/proto/musicpb"
-	"wavelength/proto/yt_scraperpb"
-	shared_clients "wavelength/shared/clients"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/proto/musicpb"
+	"github.com/Dev-Siri/wavelength/server/proto/yt_scraperpb"
+	"github.com/Dev-Siri/wavelength/server/shared/clients"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
@@ -16,7 +17,7 @@ func (m *MusicService) GetQuickPicks(
 	ctx context.Context,
 	request *musicpb.GetQuickPicksRequest,
 ) (*musicpb.GetQuickPicksResponse, error) {
-	quickPicksResponse, err := shared_clients.YtScraperClient.GetQuickPicks(ctx, &yt_scraperpb.GetQuickPicksRequest{
+	quickPicksResponse, err := clients.YtScraperClient.GetQuickPicks(ctx, &yt_scraperpb.GetQuickPicksRequest{
 		Gl: request.Gl,
 	})
 	if err != nil {

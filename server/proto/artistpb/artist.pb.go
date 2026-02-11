@@ -7,13 +7,13 @@
 package artistpb
 
 import (
+	commonpb "github.com/Dev-Siri/wavelength/server/proto/commonpb"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
-	commonpb "wavelength/proto/commonpb"
 )
 
 const (
@@ -550,7 +550,7 @@ const file_proto_artist_proto_rawDesc = "" +
 	"\rSearchArtists\x12\x1c.artist.SearchArtistsRequest\x1a\x1d.artist.SearchArtistsResponse\x12C\n" +
 	"\fFollowArtist\x12\x1b.artist.FollowArtistRequest\x1a\x16.google.protobuf.Empty\x12X\n" +
 	"\x11IsFollowingArtist\x12 .artist.IsFollowingArtistRequest\x1a!.artist.IsFollowingArtistResponse\x12]\n" +
-	"\x19CreateAuthoredTrackArtist\x12(.artist.CreateAuthoredTrackArtistRequest\x1a\x16.google.protobuf.EmptyB)Z'wavelength/server/proto/artist;artistpbb\x06proto3"
+	"\x19CreateAuthoredTrackArtist\x12(.artist.CreateAuthoredTrackArtistRequest\x1a\x16.google.protobuf.EmptyB=Z;github.com/Dev-Siri/wavelength/server/proto/artist;artistpbb\x06proto3"
 
 var (
 	file_proto_artist_proto_rawDescOnce sync.Once

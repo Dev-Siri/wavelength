@@ -1,7 +1,7 @@
 package routes
 
 import (
-	album_controllers "wavelength/services/gateway/controllers/album"
+	album_controllers "github.com/Dev-Siri/wavelength/server/services/gateway/controllers/album"
 
 	"github.com/gofiber/fiber/v2"
 )

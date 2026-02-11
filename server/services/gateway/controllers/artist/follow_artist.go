@@ -1,12 +1,12 @@
 package artist_controllers
 
 import (
-	"wavelength/proto/artistpb"
-	"wavelength/services/gateway/models"
-	"wavelength/services/gateway/models/schemas"
-	"wavelength/services/gateway/validation"
-	shared_clients "wavelength/shared/clients"
-	"wavelength/shared/logging"
+	"github.com/Dev-Siri/wavelength/server/proto/artistpb"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/models/schemas"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/validation"
+	"github.com/Dev-Siri/wavelength/server/shared/clients"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -28,7 +28,7 @@ func FollowArtist(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Body is not in valid shape.")
 	}
 
-	_, err := shared_clients.ArtistClient.FollowArtist(ctx.Context(), &artistpb.FollowArtistRequest{
+	_, err := clients.ArtistClient.FollowArtist(ctx.Context(), &artistpb.FollowArtistRequest{
 		FollowerEmail:   authUser.Email,
 		ArtistName:      body.Name,
 		ArtistThumbnail: body.Thumbnail,

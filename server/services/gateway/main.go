@@ -2,16 +2,16 @@ package main
 
 import (
 	"log"
-	"wavelength/services/gateway/clients"
-	"wavelength/services/gateway/constants"
-	error_controllers "wavelength/services/gateway/controllers/errors"
-	"wavelength/services/gateway/db"
-	"wavelength/services/gateway/env"
-	"wavelength/services/gateway/middleware"
-	"wavelength/services/gateway/routes"
-	shared_clients "wavelength/shared/clients"
-	shared_env "wavelength/shared/env"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/services/gateway/constants"
+	error_controllers "github.com/Dev-Siri/wavelength/server/services/gateway/controllers/errors"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/db"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/env"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/middleware"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/routes"
+	"github.com/Dev-Siri/wavelength/server/shared/clients"
+	shared_env "github.com/Dev-Siri/wavelength/server/shared/env"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -38,11 +38,11 @@ func main() {
 		logging.Logger.Fatal("Music-service client failed to connect.", zap.Error(err))
 	}
 
-	if err := shared_clients.InitArtistClient(); err != nil {
+	if err := clients.InitArtistClient(); err != nil {
 		logging.Logger.Fatal("Artist-service client failed to connect.", zap.Error(err))
 	}
 
-	if err := shared_clients.InitAlbumClient(); err != nil {
+	if err := clients.InitAlbumClient(); err != nil {
 		logging.Logger.Fatal("Album-service client failed to connect.", zap.Error(err))
 	}
 

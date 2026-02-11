@@ -1,7 +1,7 @@
 package routes
 
 import (
-	auth_controllers "wavelength/services/gateway/controllers/auth"
+	auth_controllers "github.com/Dev-Siri/wavelength/server/services/gateway/controllers/auth"
 
 	"github.com/gofiber/fiber/v2"
 )

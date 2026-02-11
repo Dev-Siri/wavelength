@@ -1,6 +1,6 @@
 package album_rpcs
 
-import "wavelength/proto/albumpb"
+import "github.com/Dev-Siri/wavelength/server/proto/albumpb"
 
 type AlbumService struct {
 	albumpb.UnimplementedAlbumServiceServer

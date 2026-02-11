@@ -1961,7 +1961,7 @@ const file_proto_common_proto_rawDesc = "" +
 	"\x16ALBUM_TYPE_UNSPECIFIED\x10\x00\x12\x14\n" +
 	"\x10ALBUM_TYPE_ALBUM\x10\x01\x12\x15\n" +
 	"\x11ALBUM_TYPE_SINGLE\x10\x02\x12\x11\n" +
-	"\rALBUM_TYPE_EP\x10\x03B\x1bZ\x19wavelength/proto/commonpbb\x06proto3"
+	"\rALBUM_TYPE_EP\x10\x03B6Z4github.com/Dev-Siri/wavelength/server/proto/commonpbb\x06proto3"
 
 var (
 	file_proto_common_proto_rawDescOnce sync.Once

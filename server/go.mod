@@ -1,4 +1,4 @@
-module wavelength
+module github.com/Dev-Siri/wavelength/server
 
 go 1.24.1
 

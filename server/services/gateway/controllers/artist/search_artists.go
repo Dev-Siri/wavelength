@@ -1,10 +1,10 @@
 package artist_controllers
 
 import (
-	"wavelength/proto/artistpb"
-	"wavelength/services/gateway/models"
-	shared_clients "wavelength/shared/clients"
-	"wavelength/shared/logging"
+	"github.com/Dev-Siri/wavelength/server/proto/artistpb"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
+	"github.com/Dev-Siri/wavelength/server/shared/clients"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -17,7 +17,7 @@ func SearchArtists(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Query (q) is required for searching artists.")
 	}
 
-	searchResults, err := shared_clients.ArtistClient.SearchArtists(ctx.Context(), &artistpb.SearchArtistsRequest{
+	searchResults, err := clients.ArtistClient.SearchArtists(ctx.Context(), &artistpb.SearchArtistsRequest{
 		Query: query,
 	})
 	if err != nil {

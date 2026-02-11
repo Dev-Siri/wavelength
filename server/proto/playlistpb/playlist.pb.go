@@ -7,13 +7,13 @@
 package playlistpb
 
 import (
+	commonpb "github.com/Dev-Siri/wavelength/server/proto/commonpb"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
-	commonpb "wavelength/proto/commonpb"
 )
 
 const (
@@ -1079,7 +1079,7 @@ const file_proto_playlist_proto_rawDesc = "" +
 	"\x10GetUserPlaylists\x12!.playlist.GetUserPlaylistsRequest\x1a\".playlist.GetUserPlaylistsResponse\x12V\n" +
 	"\x0fGetPlaylistById\x12 .playlist.GetPlaylistByIdRequest\x1a!.playlist.GetPlaylistByIdResponse\x12E\n" +
 	"\fEditPlaylist\x12\x1d.playlist.EditPlaylistRequest\x1a\x16.google.protobuf.Empty\x12I\n" +
-	"\x0eCreatePlaylist\x12\x1f.playlist.CreatePlaylistRequest\x1a\x16.google.protobuf.EmptyB-Z+wavelength/server/proto/playlist;playlistpbb\x06proto3"
+	"\x0eCreatePlaylist\x12\x1f.playlist.CreatePlaylistRequest\x1a\x16.google.protobuf.EmptyBAZ?github.com/Dev-Siri/wavelength/server/proto/playlist;playlistpbb\x06proto3"
 
 var (
 	file_proto_playlist_proto_rawDescOnce sync.Once

@@ -2,10 +2,11 @@ package music_rpcs
 
 import (
 	"context"
-	"wavelength/proto/musicpb"
-	"wavelength/services/music/api"
-	"wavelength/services/music/utils"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/proto/musicpb"
+	"github.com/Dev-Siri/wavelength/server/services/music/api"
+	"github.com/Dev-Siri/wavelength/server/services/music/utils"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"

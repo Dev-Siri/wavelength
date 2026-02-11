@@ -3,12 +3,13 @@ package main
 import (
 	"log"
 	"net"
-	"wavelength/proto/albumpb"
-	album_rpcs "wavelength/services/album/rpcs"
-	shared_clients "wavelength/shared/clients"
-	shared_db "wavelength/shared/db"
-	shared_env "wavelength/shared/env"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/proto/albumpb"
+	album_rpcs "github.com/Dev-Siri/wavelength/server/services/album/rpcs"
+	"github.com/Dev-Siri/wavelength/server/shared/clients"
+	shared_db "github.com/Dev-Siri/wavelength/server/shared/db"
+	shared_env "github.com/Dev-Siri/wavelength/server/shared/env"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -23,7 +24,7 @@ func main() {
 		logging.Logger.Error("Failed to initialize environment variables.", zap.Error(err))
 	}
 
-	if err := shared_clients.InitYtScraperClient(); err != nil {
+	if err := clients.InitYtScraperClient(); err != nil {
 		logging.Logger.Fatal("YtScraper-service client failed to connect.", zap.Error(err))
 	}
 

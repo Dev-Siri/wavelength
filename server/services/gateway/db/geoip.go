@@ -9,8 +9,9 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"wavelength/services/gateway/constants"
-	"wavelength/services/gateway/env"
+
+	"github.com/Dev-Siri/wavelength/server/services/gateway/constants"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/env"
 
 	"github.com/oschwald/geoip2-golang/v2"
 )

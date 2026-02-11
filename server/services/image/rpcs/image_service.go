@@ -1,6 +1,6 @@
 package image_rpcs
 
-import "wavelength/proto/imagepb"
+import "github.com/Dev-Siri/wavelength/server/proto/imagepb"
 
 type ImageService struct {
 	imagepb.UnimplementedImageServiceServer

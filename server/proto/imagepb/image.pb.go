@@ -7,12 +7,12 @@
 package imagepb
 
 import (
+	commonpb "github.com/Dev-Siri/wavelength/server/proto/commonpb"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
-	commonpb "wavelength/proto/commonpb"
 )
 
 const (
@@ -242,7 +242,7 @@ const file_proto_image_proto_rawDesc = "" +
 	"\tmime_type\x18\x02 \x01(\tR\bmimeType2\xa0\x01\n" +
 	"\fImageService\x12J\n" +
 	"\rGetThemeColor\x12\x1b.image.GetThemeColorRequest\x1a\x1c.image.GetThemeColorResponse\x12D\n" +
-	"\vResizeImage\x12\x19.image.ResizeImageRequest\x1a\x1a.image.ResizeImageResponseB'Z%wavelength/server/proto/image;imagepbb\x06proto3"
+	"\vResizeImage\x12\x19.image.ResizeImageRequest\x1a\x1a.image.ResizeImageResponseB;Z9github.com/Dev-Siri/wavelength/server/proto/image;imagepbb\x06proto3"
 
 var (
 	file_proto_image_proto_rawDescOnce sync.Once

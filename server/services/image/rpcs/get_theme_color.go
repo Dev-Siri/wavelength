@@ -6,9 +6,10 @@ import (
 	_ "image/jpeg"
 	_ "image/png"
 	"net/http"
-	"wavelength/proto/commonpb"
-	"wavelength/proto/imagepb"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/proto/commonpb"
+	"github.com/Dev-Siri/wavelength/server/proto/imagepb"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"github.com/cenkalti/dominantcolor"
 	"go.uber.org/zap"

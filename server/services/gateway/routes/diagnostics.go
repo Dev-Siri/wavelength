@@ -1,7 +1,7 @@
 package routes
 
 import (
-	diagnostics_controllers "wavelength/services/gateway/controllers/diagnostics"
+	diagnostics_controllers "github.com/Dev-Siri/wavelength/server/services/gateway/controllers/diagnostics"
 
 	"github.com/gofiber/fiber/v2"
 )

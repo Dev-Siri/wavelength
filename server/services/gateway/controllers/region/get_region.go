@@ -3,10 +3,11 @@ package region_controllers
 import (
 	"net/netip"
 	"time"
-	"wavelength/services/gateway/constants"
-	"wavelength/services/gateway/db"
-	"wavelength/services/gateway/models"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/services/gateway/constants"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/db"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"

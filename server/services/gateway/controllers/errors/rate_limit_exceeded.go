@@ -1,7 +1,7 @@
 package error_controllers
 
 import (
-	"wavelength/services/gateway/models"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
 
 	"github.com/gofiber/fiber/v2"
 )

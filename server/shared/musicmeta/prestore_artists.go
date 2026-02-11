@@ -2,14 +2,15 @@ package shared_musicmeta
 
 import (
 	"context"
-	"wavelength/proto/artistpb"
-	"wavelength/proto/commonpb"
-	shared_clients "wavelength/shared/clients"
+
+	"github.com/Dev-Siri/wavelength/server/proto/artistpb"
+	"github.com/Dev-Siri/wavelength/server/proto/commonpb"
+	"github.com/Dev-Siri/wavelength/server/shared/clients"
 )
 
 func PrestoreArtists(videoId string, artists []*commonpb.EmbeddedArtist) error {
 	for _, artist := range artists {
-		_, err := shared_clients.ArtistClient.CreateAuthoredTrackArtist(context.Background(), &artistpb.CreateAuthoredTrackArtistRequest{
+		_, err := clients.ArtistClient.CreateAuthoredTrackArtist(context.Background(), &artistpb.CreateAuthoredTrackArtistRequest{
 			AuthoredTrackId: videoId,
 			BrowseId:        artist.BrowseId,
 			Title:           artist.Title,

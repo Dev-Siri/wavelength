@@ -4,8 +4,9 @@ import (
 	"context"
 	"io"
 	"net/http"
-	"wavelength/proto/imagepb"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/proto/imagepb"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"github.com/h2non/bimg"
 	"go.uber.org/zap"

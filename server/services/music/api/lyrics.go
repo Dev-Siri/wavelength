@@ -3,8 +3,9 @@ package api
 import (
 	"encoding/json"
 	"net/http"
-	"wavelength/proto/commonpb"
-	"wavelength/services/music/env"
+
+	"github.com/Dev-Siri/wavelength/server/proto/commonpb"
+	"github.com/Dev-Siri/wavelength/server/services/music/env"
 )
 
 var Lyrics *LyricsClient

@@ -2,11 +2,12 @@ package music_rpcs
 
 import (
 	"context"
-	"wavelength/proto/commonpb"
-	"wavelength/proto/musicpb"
-	shared_db "wavelength/shared/db"
-	"wavelength/shared/logging"
-	shared_musicmeta "wavelength/shared/musicmeta"
+
+	"github.com/Dev-Siri/wavelength/server/proto/commonpb"
+	"github.com/Dev-Siri/wavelength/server/proto/musicpb"
+	shared_db "github.com/Dev-Siri/wavelength/server/shared/db"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
+	shared_musicmeta "github.com/Dev-Siri/wavelength/server/shared/musicmeta"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"

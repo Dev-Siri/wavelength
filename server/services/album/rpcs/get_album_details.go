@@ -2,10 +2,11 @@ package album_rpcs
 
 import (
 	"context"
-	"wavelength/proto/albumpb"
-	"wavelength/proto/yt_scraperpb"
-	shared_clients "wavelength/shared/clients"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/proto/albumpb"
+	"github.com/Dev-Siri/wavelength/server/proto/yt_scraperpb"
+	"github.com/Dev-Siri/wavelength/server/shared/clients"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
@@ -16,7 +17,7 @@ func (a *AlbumService) GetAlbumDetails(
 	ctx context.Context,
 	request *albumpb.GetAlbumDetailsRequest,
 ) (*albumpb.GetAlbumDetailsResponse, error) {
-	albumDetailsResponse, err := shared_clients.YtScraperClient.GetAlbumDetails(ctx, &yt_scraperpb.GetAlbumDetailsRequest{
+	albumDetailsResponse, err := clients.YtScraperClient.GetAlbumDetails(ctx, &yt_scraperpb.GetAlbumDetailsRequest{
 		AlbumId: request.AlbumId,
 	})
 	if err != nil {

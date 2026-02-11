@@ -1,6 +1,6 @@
 package shared_type_constants
 
-import "wavelength/proto/commonpb"
+import "github.com/Dev-Siri/wavelength/server/proto/commonpb"
 
 type PlaylistTrackType string
 

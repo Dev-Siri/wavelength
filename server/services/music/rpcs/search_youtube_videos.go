@@ -3,11 +3,12 @@ package music_rpcs
 import (
 	"context"
 	"html"
-	"wavelength/proto/commonpb"
-	"wavelength/proto/musicpb"
-	"wavelength/proto/yt_scraperpb"
-	shared_clients "wavelength/shared/clients"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/proto/commonpb"
+	"github.com/Dev-Siri/wavelength/server/proto/musicpb"
+	"github.com/Dev-Siri/wavelength/server/proto/yt_scraperpb"
+	"github.com/Dev-Siri/wavelength/server/shared/clients"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
@@ -18,7 +19,7 @@ func (m *MusicService) SearchYouTubeVideos(
 	ctx context.Context,
 	request *musicpb.SearchYouTubeVideosRequest,
 ) (*musicpb.SearchYouTubeVideosResponse, error) {
-	videosResponse, err := shared_clients.YtScraperClient.SearchYouTubeVideos(ctx, &yt_scraperpb.SearchYouTubeVideosRequest{
+	videosResponse, err := clients.YtScraperClient.SearchYouTubeVideos(ctx, &yt_scraperpb.SearchYouTubeVideosRequest{
 		Query: request.Query,
 	})
 	if err != nil {

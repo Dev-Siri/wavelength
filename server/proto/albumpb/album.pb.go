@@ -7,13 +7,13 @@
 package albumpb
 
 import (
+	commonpb "github.com/Dev-Siri/wavelength/server/proto/commonpb"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
-	commonpb "wavelength/proto/commonpb"
 )
 
 const (
@@ -279,7 +279,7 @@ const file_proto_album_proto_rawDesc = "" +
 	"\fAlbumService\x12P\n" +
 	"\x0fGetAlbumDetails\x12\x1d.album.GetAlbumDetailsRequest\x1a\x1e.album.GetAlbumDetailsResponse\x12G\n" +
 	"\fSearchAlbums\x12\x1a.album.SearchAlbumsRequest\x1a\x1b.album.SearchAlbumsResponse\x12J\n" +
-	"\x10CreateTrackAlbum\x12\x1e.album.CreateTrackAlbumRequest\x1a\x16.google.protobuf.EmptyB'Z%wavelength/server/proto/album;albumpbb\x06proto3"
+	"\x10CreateTrackAlbum\x12\x1e.album.CreateTrackAlbumRequest\x1a\x16.google.protobuf.EmptyB;Z9github.com/Dev-Siri/wavelength/server/proto/album;albumpbb\x06proto3"
 
 var (
 	file_proto_album_proto_rawDescOnce sync.Once

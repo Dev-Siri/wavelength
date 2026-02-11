@@ -3,10 +3,11 @@ package main
 import (
 	"log"
 	"net"
-	"wavelength/proto/imagepb"
-	image_rpcs "wavelength/services/image/rpcs"
-	shared_env "wavelength/shared/env"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/proto/imagepb"
+	image_rpcs "github.com/Dev-Siri/wavelength/server/services/image/rpcs"
+	shared_env "github.com/Dev-Siri/wavelength/server/shared/env"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"

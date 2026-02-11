@@ -1,6 +1,6 @@
 package artist_rpcs
 
-import "wavelength/proto/artistpb"
+import "github.com/Dev-Siri/wavelength/server/proto/artistpb"
 
 type ArtistService struct {
 	artistpb.UnimplementedArtistServiceServer

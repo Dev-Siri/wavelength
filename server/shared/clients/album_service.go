@@ -1,8 +1,9 @@
-package shared_clients
+package clients
 
 import (
-	"wavelength/proto/albumpb"
-	shared_env "wavelength/shared/env"
+	"github.com/Dev-Siri/wavelength/server/proto/albumpb"
+	shared_env "github.com/Dev-Siri/wavelength/server/shared/env"
+	"github.com/Dev-Siri/wavelength/server/shared/security"
 
 	"google.golang.org/grpc"
 )
@@ -15,7 +16,7 @@ func InitAlbumClient() error {
 		return err
 	}
 
-	creds, err := GetTransportCreds()
+	creds, err := security.GetTransportCreds()
 	if err != nil {
 		return err
 	}

@@ -1,8 +1,9 @@
-package shared_clients
+package clients
 
 import (
-	"wavelength/proto/yt_scraperpb"
-	shared_env "wavelength/shared/env"
+	"github.com/Dev-Siri/wavelength/server/proto/yt_scraperpb"
+	shared_env "github.com/Dev-Siri/wavelength/server/shared/env"
+	"github.com/Dev-Siri/wavelength/server/shared/security"
 
 	"google.golang.org/grpc"
 )
@@ -15,7 +16,7 @@ func InitYtScraperClient() error {
 		return err
 	}
 
-	creds, err := GetTransportCreds()
+	creds, err := security.GetTransportCreds()
 	if err != nil {
 		return err
 	}

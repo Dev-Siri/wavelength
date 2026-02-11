@@ -1,6 +1,6 @@
 package music_rpcs
 
-import "wavelength/proto/musicpb"
+import "github.com/Dev-Siri/wavelength/server/proto/musicpb"
 
 type MusicService struct {
 	musicpb.UnimplementedMusicServiceServer

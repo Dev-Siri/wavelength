@@ -2,9 +2,10 @@ package playlist_rpcs
 
 import (
 	"context"
-	"wavelength/proto/playlistpb"
-	shared_db "wavelength/shared/db"
-	"wavelength/shared/logging"
+
+	"github.com/Dev-Siri/wavelength/server/proto/playlistpb"
+	shared_db "github.com/Dev-Siri/wavelength/server/shared/db"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"

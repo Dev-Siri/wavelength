@@ -1,10 +1,10 @@
 package artist_controllers
 
 import (
-	"wavelength/proto/artistpb"
-	"wavelength/services/gateway/models"
-	shared_clients "wavelength/shared/clients"
-	"wavelength/shared/logging"
+	"github.com/Dev-Siri/wavelength/server/proto/artistpb"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
+	"github.com/Dev-Siri/wavelength/server/shared/clients"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -22,7 +22,7 @@ func IsFollowingArtist(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
 	}
 
-	isFollowingResponse, err := shared_clients.ArtistClient.IsFollowingArtist(ctx.Context(), &artistpb.IsFollowingArtistRequest{
+	isFollowingResponse, err := clients.ArtistClient.IsFollowingArtist(ctx.Context(), &artistpb.IsFollowingArtistRequest{
 		BrowseId:      browseId,
 		FollowerEmail: authUser.Email,
 	})

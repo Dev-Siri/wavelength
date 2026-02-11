@@ -7,12 +7,12 @@
 package yt_scraperpb
 
 import (
+	commonpb "github.com/Dev-Siri/wavelength/server/proto/commonpb"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
-	commonpb "wavelength/proto/commonpb"
 )
 
 const (
@@ -783,7 +783,7 @@ const file_proto_yt_scraper_proto_rawDesc = "" +
 	"\fSearchTracks\x12\x1f.yt_scraper.SearchTracksRequest\x1a .yt_scraper.SearchTracksResponse\x12T\n" +
 	"\rSearchArtists\x12 .yt_scraper.SearchArtistsRequest\x1a!.yt_scraper.SearchArtistsResponse\x12Q\n" +
 	"\fSearchAlbums\x12\x1f.yt_scraper.SearchAlbumsRequest\x1a .yt_scraper.SearchAlbumsResponse\x12f\n" +
-	"\x13SearchYouTubeVideos\x12&.yt_scraper.SearchYouTubeVideosRequest\x1a'.yt_scraper.SearchYouTubeVideosResponseB1Z/wavelength/server/proto/yt_scraper;yt_scraperpbb\x06proto3"
+	"\x13SearchYouTubeVideos\x12&.yt_scraper.SearchYouTubeVideosRequest\x1a'.yt_scraper.SearchYouTubeVideosResponseBEZCgithub.com/Dev-Siri/wavelength/server/proto/yt_scraper;yt_scraperpbb\x06proto3"
 
 var (
 	file_proto_yt_scraper_proto_rawDescOnce sync.Once

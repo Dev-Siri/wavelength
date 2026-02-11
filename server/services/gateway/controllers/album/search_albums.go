@@ -1,10 +1,10 @@
 package album_controllers
 
 import (
-	"wavelength/proto/albumpb"
-	"wavelength/services/gateway/models"
-	shared_clients "wavelength/shared/clients"
-	"wavelength/shared/logging"
+	"github.com/Dev-Siri/wavelength/server/proto/albumpb"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
+	"github.com/Dev-Siri/wavelength/server/shared/clients"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -17,7 +17,7 @@ func SearchAlbums(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Query (q) is required for searching albums.")
 	}
 
-	albumSearchResponse, err := shared_clients.AlbumClient.SearchAlbums(ctx.Context(), &albumpb.SearchAlbumsRequest{
+	albumSearchResponse, err := clients.AlbumClient.SearchAlbums(ctx.Context(), &albumpb.SearchAlbumsRequest{
 		Query: query,
 	})
 	if err != nil {

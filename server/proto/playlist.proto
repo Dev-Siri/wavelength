@@ -1,7 +1,7 @@
 syntax = "proto3";
 package playlist;
 
-option go_package = "wavelength/server/proto/playlist;playlistpb";
+option go_package = "github.com/Dev-Siri/wavelength/server/proto/playlist;playlistpb";
 
 import "google/protobuf/empty.proto";
 import "proto/common.proto";

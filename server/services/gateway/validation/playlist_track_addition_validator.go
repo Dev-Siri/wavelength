@@ -1,8 +1,8 @@
 package validation
 
 import (
-	"wavelength/services/gateway/models/schemas"
-	shared_type_constants "wavelength/shared/constants/types"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/models/schemas"
+	shared_type_constants "github.com/Dev-Siri/wavelength/server/shared/constants/types"
 )
 
 func IsPlaylistTrackAdditionShapeValid(schema schemas.PlaylistTrackAdditionSchema) bool {

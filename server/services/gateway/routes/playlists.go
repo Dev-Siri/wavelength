@@ -1,8 +1,8 @@
 package routes
 
 import (
-	playlist_controllers "wavelength/services/gateway/controllers/playlist"
-	"wavelength/services/gateway/middleware"
+	playlist_controllers "github.com/Dev-Siri/wavelength/server/services/gateway/controllers/playlist"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/middleware"
 
 	"github.com/gofiber/fiber/v2"
 )

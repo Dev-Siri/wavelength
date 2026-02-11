@@ -1,10 +1,10 @@
 package artist_controllers
 
 import (
-	"wavelength/proto/artistpb"
-	"wavelength/services/gateway/models"
-	shared_clients "wavelength/shared/clients"
-	"wavelength/shared/logging"
+	"github.com/Dev-Siri/wavelength/server/proto/artistpb"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
+	"github.com/Dev-Siri/wavelength/server/shared/clients"
+	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -13,7 +13,7 @@ import (
 func GetArtistDetails(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
-	artistDetailsResponse, err := shared_clients.ArtistClient.GetArtistDetails(ctx.Context(), &artistpb.GetArtistDetailsRequest{
+	artistDetailsResponse, err := clients.ArtistClient.GetArtistDetails(ctx.Context(), &artistpb.GetArtistDetailsRequest{
 		BrowseId: id,
 	})
 	if err != nil {

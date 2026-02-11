@@ -1,7 +1,7 @@
 package routes
 
 import (
-	image_controllers "wavelength/services/gateway/controllers/image"
+	image_controllers "github.com/Dev-Siri/wavelength/server/services/gateway/controllers/image"
 
 	"github.com/gofiber/fiber/v2"
 )

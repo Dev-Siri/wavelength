@@ -1,7 +1,7 @@
 package routes
 
 import (
-	region_controllers "wavelength/services/gateway/controllers/region"
+	region_controllers "github.com/Dev-Siri/wavelength/server/services/gateway/controllers/region"
 
 	"github.com/gofiber/fiber/v2"
 )

@@ -7,12 +7,12 @@
 package musicpb
 
 import (
+	commonpb "github.com/Dev-Siri/wavelength/server/proto/commonpb"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
-	commonpb "wavelength/proto/commonpb"
 )
 
 const (
@@ -1565,7 +1565,7 @@ const file_proto_music_proto_rawDesc = "" +
 	"\x0fGetMusicVideoId\x12\x1d.music.GetMusicVideoIdRequest\x1a\x1e.music.GetMusicVideoIdResponse\x12V\n" +
 	"\x11SearchMusicTracks\x12\x1f.music.SearchMusicTracksRequest\x1a .music.SearchMusicTracksResponse\x12\\\n" +
 	"\x13SearchYouTubeVideos\x12!.music.SearchYouTubeVideosRequest\x1a\".music.SearchYouTubeVideosResponse\x12M\n" +
-	"\x0eGetMusicLyrics\x12\x1c.music.GetMusicLyricsRequest\x1a\x1d.music.GetMusicLyricsResponseB'Z%wavelength/server/proto/music;musicpbb\x06proto3"
+	"\x0eGetMusicLyrics\x12\x1c.music.GetMusicLyricsRequest\x1a\x1d.music.GetMusicLyricsResponseB;Z9github.com/Dev-Siri/wavelength/server/proto/music;musicpbb\x06proto3"
 
 var (
 	file_proto_music_proto_rawDescOnce sync.Once
