@@ -33,16 +33,14 @@ func (m *MusicService) SearchYouTubeVideos(
 
 	youtubeVideos := make([]*commonpb.YouTubeVideo, len(videosResponse.Videos))
 
-	for _, ytVideo := range videosResponse.Videos {
-		video := commonpb.YouTubeVideo{
+	for i, ytVideo := range videosResponse.Videos {
+		youtubeVideos[i] = &commonpb.YouTubeVideo{
 			VideoId:         ytVideo.VideoId,
 			Title:           html.UnescapeString(ytVideo.Title),
 			Thumbnail:       ytVideo.Thumbnail,
 			Author:          ytVideo.Author,
 			AuthorChannelId: ytVideo.AuthorChannelId,
 		}
-
-		youtubeVideos = append(youtubeVideos, &video)
 	}
 
 	return &musicpb.SearchYouTubeVideosResponse{
