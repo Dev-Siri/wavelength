@@ -105,4 +105,8 @@ export class WebEmbedPlayer extends StreamPlayer {
   async getDuration() {
     return this.player.getDuration();
   }
+
+  async setVolume(newVolume: number) {
+    return this.player.setVolume(newVolume * 100);
+  }
 }

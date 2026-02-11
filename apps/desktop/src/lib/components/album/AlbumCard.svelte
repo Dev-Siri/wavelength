@@ -24,15 +24,13 @@
       </span>
     </div>
     <div class="h-full w-full aspect-square rounded-2xl relative inline-block">
-      {#key album.thumbnail}
-        <Image
-          src={album.thumbnail}
-          alt="Album {album.title}'s Thumbnail"
-          height={192}
-          width={192}
-          class="object-cover aspect-square group-hover:opacity-60 duration-200 shadow-black h-full w-full rounded-xl"
-        />
-      {/key}
+      <Image
+        src={album.thumbnail}
+        alt="Album {album.title}'s Thumbnail"
+        height={192}
+        width={192}
+        class="object-cover aspect-square group-hover:opacity-60 duration-200 shadow-black h-full w-full rounded-xl"
+      />
     </div>
   </div>
   <Tooltip.Root>

@@ -17,7 +17,7 @@
   });
 
   $effect(() => {
-    localStorage.setItem(localStorageKeys.volume, musicPlayerStore.volume.toString());
+    musicPlayerStore.setVolume(musicPlayerStore.volume);
   });
 </script>
 
@@ -25,7 +25,7 @@
   <Button
     variant="ghost"
     class="px-3 rounded-full select-none outline-hidden"
-    onclick={() => (musicPlayerStore.isMuted = !musicPlayerStore.isMuted)}
+    onclick={() => musicPlayerStore.toggleMute()}
   >
     {#if musicPlayerStore.isMuted}
       <VolumeOffIcon size={20} />

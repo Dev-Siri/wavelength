@@ -28,6 +28,7 @@
   async function handleOnEnded() {
     if (musicPlayerStore.repeatMode === "one") return musicPlayerStore.playMusic();
 
+    musicPlayerStore.currentTime = 0;
     if (!musicQueueStore.musicPlayingNow) return;
 
     musicPlayerStore.isPlaying = false;
@@ -54,24 +55,21 @@
     if (!musicPlayerStore.musicPlayer || !musicPlayerStore.isPlaying) return;
     const { duration, currentTime } = event.detail;
 
-    if (duration > 0) {
-      const progress = (currentTime / duration) * 100;
-
-      musicPlayerStore.progress = progress;
-    }
+    musicPlayerStore.duration = duration;
+    musicPlayerStore.currentTime = currentTime;
   }
 
   async function handleLoaded() {
     musicPlayerStore.isPlaying = true;
+
+    if (!musicQueueStore.musicPlayingNow) return;
+    const { title, thumbnail, artists, album } = musicQueueStore.musicPlayingNow;
+
     navigator.mediaSession.metadata = new MediaMetadata({
-      title: musicQueueStore.musicPlayingNow?.title,
-      artwork: musicQueueStore.musicPlayingNow?.thumbnail
-        ? [{ src: musicQueueStore.musicPlayingNow.thumbnail }]
-        : [],
-      artist: punctuatify(
-        musicQueueStore.musicPlayingNow?.artists.map(artist => artist.title) ?? [],
-      ),
-      album: musicQueueStore.musicPlayingNow?.album?.title,
+      title,
+      artwork: thumbnail ? [{ src: thumbnail }] : [],
+      artist: punctuatify(artists.map(artist => artist.title) ?? []),
+      album: album?.title,
     });
   }
 
@@ -140,14 +138,6 @@
     }
 
     handleMusicPlayingNowChange();
-  });
-
-  $effect(() => {
-    if (musicPlayerStore.isMuted) {
-      musicPlayerStore.musicPlayer?.mute();
-    } else {
-      musicPlayerStore.musicPlayer?.unMute();
-    }
   });
 </script>
 

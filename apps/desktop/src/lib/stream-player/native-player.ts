@@ -138,4 +138,8 @@ export class NativePlayer extends StreamPlayer {
     const duration = this.playerElement.duration;
     return isNaN(duration) ? 0 : duration;
   }
+
+  async setVolume(newVolume: number) {
+    this.playerElement.volume = newVolume;
+  }
 }

@@ -9,6 +9,8 @@ export abstract class StreamPlayer extends EventTarget {
   abstract seek(to: number): Promise<void>;
   abstract getDuration(): Promise<number>;
   abstract getCurrentTime(): Promise<number>;
+  /** @param newVolume Volume of the stream in the range 0.00 to 1.00 */
+  abstract setVolume(newVolume: number): Promise<void>;
 
   // Some people call this polymorphism.
   createEvent<K extends PlayerEventName>(

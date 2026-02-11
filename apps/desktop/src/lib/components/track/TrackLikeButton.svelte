@@ -25,12 +25,14 @@
       ),
   }));
 
+  let isLiked = $derived(isTrackLikedQuery.data?.isLiked);
+
   const likeMutation = createMutation(() => ({
     mutationKey: svelteMutationKeys.likeTrack(music.videoId),
     async mutationFn() {
       let duration = music.duration;
 
-      if (duration === "") {
+      if (!duration) {
         const fetchedDuration = await backendClient(
           `/music/track/${music.videoId}/duration`,
           musicTrackDurationSchema,
@@ -38,6 +40,7 @@
         duration = fetchedDuration.durationSeconds.toString();
       }
 
+      isLiked = !isLiked;
       return backendClient("/music/track/likes", z.string(), {
         method: "PATCH",
         body: {
@@ -47,7 +50,10 @@
         },
       });
     },
-    onError: () => toast.error("Failed to like track."),
+    onError() {
+      isLiked = !isLiked;
+      toast.error("Like failed.");
+    },
     onSuccess() {
       isTrackLikedQuery.refetch();
       queryClient.invalidateQueries({
@@ -64,18 +70,17 @@
     e.stopPropagation();
     likeMutation.mutate();
   }
+
+  const likedClasses = $derived(isLiked ? "text-red-500" : "");
 </script>
 
 <Button
   variant="ghost"
   size="icon"
-  class="flex items-center justify-center text-muted-foreground hover:bg-transparent {isTrackLikedQuery
-    .data?.isLiked
-    ? 'text-red-500'
-    : ''}"
+  class="flex items-center justify-center text-muted-foreground hover:bg-transparent {likedClasses}"
   onclick={handleLike}
 >
-  {#if isTrackLikedQuery.data?.isLiked}
+  {#if isLiked}
     <HeartIcon fill="red" />
   {:else}
     <HeartIcon />
