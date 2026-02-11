@@ -17,6 +17,7 @@
 
   const playlistsQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.userPlaylists,
+    networkMode: "offlineFirst",
     async queryFn() {
       if (!userStore.user) return;
 

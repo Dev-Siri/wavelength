@@ -29,6 +29,9 @@
       backendClient("/music/quick-picks", quickPicksResponseSchema, {
         searchParams: { regionCode: regionQuery.isSuccess ? regionQuery.data : DEFAULT_REGION },
       }),
+    // 20 minutes.
+    staleTime: 20 * 60 * 1000,
+    refetchOnWindowFocus: false,
   }));
 
   const followedArtistsQuery = createQuery(() => ({

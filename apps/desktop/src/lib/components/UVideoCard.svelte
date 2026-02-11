@@ -131,19 +131,21 @@
     </div>
   </button>
   {#if playlistsQuery.data?.playlists}
-    <DropdownMenu.Sub>
-      <DropdownMenu.SubTrigger>
-        <PlusIcon size={20} />
-        Add to playlist
-      </DropdownMenu.SubTrigger>
-      <DropdownMenu.SubContent>
-        {#each playlistsQuery.data.playlists as playlist}
-          <DropdownMenu.Item onclick={() => addToPlaylistMutation.mutate(playlist.playlistId)}>
-            {playlist.name}
-          </DropdownMenu.Item>
-        {/each}
-      </DropdownMenu.SubContent>
-    </DropdownMenu.Sub>
+    <DropdownMenu.Content>
+      <DropdownMenu.Sub>
+        <DropdownMenu.SubTrigger>
+          <PlusIcon size={20} />
+          Add to playlist
+        </DropdownMenu.SubTrigger>
+        <DropdownMenu.SubContent>
+          {#each playlistsQuery.data.playlists as playlist}
+            <DropdownMenu.Item onclick={() => addToPlaylistMutation.mutate(playlist.playlistId)}>
+              {playlist.name}
+            </DropdownMenu.Item>
+          {/each}
+        </DropdownMenu.SubContent>
+      </DropdownMenu.Sub>
+    </DropdownMenu.Content>
   {/if}
 </DropdownMenu.Root>
 

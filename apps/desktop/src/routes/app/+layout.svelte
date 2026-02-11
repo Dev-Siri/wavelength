@@ -4,6 +4,7 @@
   import { Toaster } from "svelte-french-toast";
   import { Pane, Splitpanes } from "svelte-splitpanes";
   import { fly } from "svelte/transition";
+  import { pwaInfo } from "virtual:pwa-info";
 
   import type { Snippet } from "svelte";
 
@@ -34,6 +35,8 @@
   }
 
   const { children }: { children?: Snippet } = $props();
+
+  const webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : "";
 
   let screenSize: number | null = $state(null);
   let sidebarWidth = $state(20);
@@ -104,6 +107,10 @@
   const queryClient = new QueryClient();
   const persister = createIDBPersister();
 </script>
+
+<svelte:head>
+  {@html webManifestLink}
+</svelte:head>
 
 <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
   <BackgroundDownloadManager>

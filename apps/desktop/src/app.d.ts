@@ -1,10 +1,9 @@
-// See https://kit.svelte.dev/docs/types#app
+/// <reference types="vite-plugin-pwa/client" />
+/// <reference types="vite-plugin-pwa/info" />
+
+// // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 declare global {
-  interface Window {
-    __TAURI__?: unknown;
-  }
-
   namespace App {
     interface Error {
       success: boolean;
