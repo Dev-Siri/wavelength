@@ -101,6 +101,8 @@ message GetLikedTracksResponse {
 
 message GetQuickPicksRequest {
   string gl = 1;
+  // The IP of the client is used to cache their recommendations in Redis.
+  string ip = 2;
 }
 
 message GetQuickPicksResponse {

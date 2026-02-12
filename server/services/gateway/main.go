@@ -2,8 +2,8 @@ package main
 
 import (
 	"log"
+	"time"
 
-	"github.com/Dev-Siri/wavelength/server/services/gateway/constants"
 	error_controllers "github.com/Dev-Siri/wavelength/server/services/gateway/controllers/errors"
 	"github.com/Dev-Siri/wavelength/server/services/gateway/db"
 	"github.com/Dev-Siri/wavelength/server/services/gateway/env"
@@ -20,6 +20,9 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 	"go.uber.org/zap"
 )
+
+const rateLimitMaxRequests = 1000
+const rateLimitExpiration = time.Second * 30
 
 func main() {
 	if err := logging.InitLogger(); err != nil {
@@ -67,8 +70,8 @@ func main() {
 
 	app.Use(requestid.New())
 	app.Use(limiter.New(limiter.Config{
-		Max:        constants.RateLimitMaxRequests,
-		Expiration: constants.RateLimitExpiration,
+		Max:        rateLimitMaxRequests,
+		Expiration: rateLimitExpiration,
 		Next: func(ctx *fiber.Ctx) bool {
 			return ctx.Path() == "/healthz" || ctx.Path() == "/search/search-recommendations"
 		},

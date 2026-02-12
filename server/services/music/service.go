@@ -41,6 +41,18 @@ func main() {
 		}()
 	}
 
+	if err := shared_db.InitRedis(); err != nil {
+		logging.Logger.Error("Failed to initialize Redis connection.", zap.Error(err))
+	}
+
+	if shared_db.Redis != nil {
+		defer func() {
+			if err := shared_db.Redis.Close(); err != nil {
+				logging.Logger.Fatal("Failed to close Redis connection.", zap.Error(err))
+			}
+		}()
+	}
+
 	if err := clients.InitArtistClient(); err != nil {
 		logging.Logger.Fatal("Artist-service client failed to connect.", zap.Error(err))
 	}

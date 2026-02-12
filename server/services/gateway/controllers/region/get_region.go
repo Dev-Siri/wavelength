@@ -4,7 +4,6 @@ import (
 	"net/netip"
 	"time"
 
-	"github.com/Dev-Siri/wavelength/server/services/gateway/constants"
 	"github.com/Dev-Siri/wavelength/server/services/gateway/db"
 	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
@@ -13,24 +12,11 @@ import (
 	"go.uber.org/zap"
 )
 
-func createDefaultResponse(ctx *fiber.Ctx, err error) error {
-	infiniteTime := time.Date(9999, 0, 1, 0, 0, 0, 0, time.UTC)
-
-	logging.Logger.Error("Failed to get region.", zap.Error(err))
-
-	ctx.Cookie(&fiber.Cookie{
-		Name:     constants.RegionCookieKey,
-		Value:    constants.DefaultRegion,
-		HTTPOnly: false,
-		Secure:   false,
-		Expires:  infiniteTime,
-	})
-
-	return models.Success(ctx, constants.DefaultRegion)
-}
+const regionCookieKey = "region"
+const defaultRegion = "US"
 
 func GetRegion(ctx *fiber.Ctx) error {
-	region := ctx.Cookies(constants.RegionCookieKey)
+	region := ctx.Cookies(regionCookieKey)
 
 	if region == "" {
 		clientAddress := ctx.IP()
@@ -51,7 +37,7 @@ func GetRegion(ctx *fiber.Ctx) error {
 		region = geoIpLookup.Country.ISOCode
 
 		ctx.Cookie(&fiber.Cookie{
-			Name:     constants.RegionCookieKey,
+			Name:     regionCookieKey,
 			Value:    region,
 			HTTPOnly: false,
 			Secure:   false,
@@ -60,4 +46,20 @@ func GetRegion(ctx *fiber.Ctx) error {
 	}
 
 	return models.Success(ctx, region)
+}
+
+func createDefaultResponse(ctx *fiber.Ctx, err error) error {
+	infiniteTime := time.Date(9999, 0, 1, 0, 0, 0, 0, time.UTC)
+
+	logging.Logger.Error("Failed to get region.", zap.Error(err))
+
+	ctx.Cookie(&fiber.Cookie{
+		Name:     regionCookieKey,
+		Value:    defaultRegion,
+		HTTPOnly: false,
+		Secure:   false,
+		Expires:  infiniteTime,
+	})
+
+	return models.Success(ctx, defaultRegion)
 }

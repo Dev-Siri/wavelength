@@ -680,8 +680,10 @@ func (x *GetLikedTracksResponse) GetLikedTracks() []*commonpb.LikedTrack {
 }
 
 type GetQuickPicksRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Gl            string                 `protobuf:"bytes,1,opt,name=gl,proto3" json:"gl,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	Gl    string                 `protobuf:"bytes,1,opt,name=gl,proto3" json:"gl,omitempty"`
+	// The IP of the client is used to cache their recommendations in Redis.
+	Ip            string `protobuf:"bytes,2,opt,name=ip,proto3" json:"ip,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -719,6 +721,13 @@ func (*GetQuickPicksRequest) Descriptor() ([]byte, []int) {
 func (x *GetQuickPicksRequest) GetGl() string {
 	if x != nil {
 		return x.Gl
+	}
+	return ""
+}
+
+func (x *GetQuickPicksRequest) GetIp() string {
+	if x != nil {
+		return x.Ip
 	}
 	return ""
 }
@@ -1520,9 +1529,10 @@ const file_proto_music_proto_rawDesc = "" +
 	"\vliker_email\x18\x01 \x01(\tR\n" +
 	"likerEmail\"O\n" +
 	"\x16GetLikedTracksResponse\x125\n" +
-	"\fliked_tracks\x18\x01 \x03(\v2\x12.common.LikedTrackR\vlikedTracks\"&\n" +
+	"\fliked_tracks\x18\x01 \x03(\v2\x12.common.LikedTrackR\vlikedTracks\"6\n" +
 	"\x14GetQuickPicksRequest\x12\x0e\n" +
-	"\x02gl\x18\x01 \x01(\tR\x02gl\"K\n" +
+	"\x02gl\x18\x01 \x01(\tR\x02gl\x12\x0e\n" +
+	"\x02ip\x18\x02 \x01(\tR\x02ip\"K\n" +
 	"\x15GetQuickPicksResponse\x122\n" +
 	"\vquick_picks\x18\x01 \x03(\v2\x11.common.QuickPickR\n" +
 	"quickPicks\"4\n" +
