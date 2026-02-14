@@ -17,9 +17,7 @@ func CreatePlaylist(ctx *fiber.Ctx) error {
 	}
 
 	_, err := clients.PlaylistClient.CreatePlaylist(ctx.Context(), &playlistpb.CreatePlaylistRequest{
-		AuthorEmail:       authUser.Email,
-		AuthorDisplayName: authUser.DisplayName,
-		AuthorPhotoUrl:    authUser.PictureURL,
+		AuthorEmail: authUser.Email,
 	})
 	if err != nil {
 		logging.Logger.Error("PlaylistService: 'CreatePlaylist' errored", zap.Error(err))

@@ -29,8 +29,6 @@ message EditPlaylistRequest {
 
 message CreatePlaylistRequest {
   string author_email = 1;
-  string author_display_name = 2;
-  string author_photo_url = 3;
 }
 
 message GetUserPlaylistsRequest {

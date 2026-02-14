@@ -134,12 +134,10 @@ func (x *EditPlaylistRequest) GetCoverImage() string {
 }
 
 type CreatePlaylistRequest struct {
-	state             protoimpl.MessageState `protogen:"open.v1"`
-	AuthorEmail       string                 `protobuf:"bytes,1,opt,name=author_email,json=authorEmail,proto3" json:"author_email,omitempty"`
-	AuthorDisplayName string                 `protobuf:"bytes,2,opt,name=author_display_name,json=authorDisplayName,proto3" json:"author_display_name,omitempty"`
-	AuthorPhotoUrl    string                 `protobuf:"bytes,3,opt,name=author_photo_url,json=authorPhotoUrl,proto3" json:"author_photo_url,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AuthorEmail   string                 `protobuf:"bytes,1,opt,name=author_email,json=authorEmail,proto3" json:"author_email,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CreatePlaylistRequest) Reset() {
@@ -175,20 +173,6 @@ func (*CreatePlaylistRequest) Descriptor() ([]byte, []int) {
 func (x *CreatePlaylistRequest) GetAuthorEmail() string {
 	if x != nil {
 		return x.AuthorEmail
-	}
-	return ""
-}
-
-func (x *CreatePlaylistRequest) GetAuthorDisplayName() string {
-	if x != nil {
-		return x.AuthorDisplayName
-	}
-	return ""
-}
-
-func (x *CreatePlaylistRequest) GetAuthorPhotoUrl() string {
-	if x != nil {
-		return x.AuthorPhotoUrl
 	}
 	return ""
 }
@@ -1003,11 +987,9 @@ const file_proto_playlist_proto_rawDesc = "" +
 	"playlistId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1f\n" +
 	"\vcover_image\x18\x03 \x01(\tR\n" +
-	"coverImage\"\x94\x01\n" +
+	"coverImage\":\n" +
 	"\x15CreatePlaylistRequest\x12!\n" +
-	"\fauthor_email\x18\x01 \x01(\tR\vauthorEmail\x12.\n" +
-	"\x13author_display_name\x18\x02 \x01(\tR\x11authorDisplayName\x12(\n" +
-	"\x10author_photo_url\x18\x03 \x01(\tR\x0eauthorPhotoUrl\"8\n" +
+	"\fauthor_email\x18\x01 \x01(\tR\vauthorEmail\"8\n" +
 	"\x17GetUserPlaylistsRequest\x12\x1d\n" +
 	"\n" +
 	"user_email\x18\x01 \x01(\tR\tuserEmail\"J\n" +

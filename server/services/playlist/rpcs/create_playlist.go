@@ -25,12 +25,10 @@ func (p *PlaylistService) CreatePlaylist(
 			playlist_id,
 			name,
 			author_google_email,
-			author_name,
-			author_image,
 			cover_image
 		)
 		VALUES ( $1, $2, $3, $4, $5, $6 );
-	`, playlistId, "New Playlist", request.AuthorEmail, request.AuthorDisplayName, request.AuthorPhotoUrl, nil)
+	`, playlistId, "New Playlist", request.AuthorEmail, nil)
 
 	if err != nil {
 		logging.Logger.Error("Playlist creation failed.", zap.Error(err), zap.String("author_email", request.AuthorEmail))
