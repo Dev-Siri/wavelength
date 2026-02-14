@@ -25,7 +25,11 @@
       localStorage.setItem(localStorageKeys.authToken, authToken);
       userStore.authToken = authToken;
 
-      const authUser = await backendClient("/auth/profile", authUserSchema);
+      const authUser = await backendClient("/auth/profile", authUserSchema, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
 
       localStorage.setItem(localStorageKeys.authUser, JSON.stringify(authUser));
       userStore.user = authUser;
