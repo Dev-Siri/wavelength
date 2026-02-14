@@ -2,7 +2,7 @@ name: wavelength
 description: "Call this a glorified YT Music Wrapper."
 publish_to: "none"
 
-version: 1.2.1
+version: 1.2.2
 
 environment:
   sdk: ^3.8.0-24.0.dev

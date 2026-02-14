@@ -1,6 +1,9 @@
+import "dart:io";
+
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
+import "package:wavelength/api/models/enums/album_type.dart";
 import "package:wavelength/widgets/ui/ampl_list_tile.dart";
 
 class AlbumTile extends StatelessWidget {
@@ -8,6 +11,7 @@ class AlbumTile extends StatelessWidget {
   final String title;
   final String thumbnail;
   final String releaseDate;
+  final AlbumType albumType;
 
   const AlbumTile({
     super.key,
@@ -15,6 +19,7 @@ class AlbumTile extends StatelessWidget {
     required this.title,
     required this.thumbnail,
     required this.releaseDate,
+    required this.albumType,
   });
 
   @override
@@ -24,10 +29,9 @@ class AlbumTile extends StatelessWidget {
         tag: "$browseId-album",
         child: ClipRRect(
           borderRadius: BorderRadiusGeometry.circular(12),
-          child: CachedNetworkImage(
-            imageUrl: thumbnail,
-            height: 100,
-            fit: BoxFit.cover,
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: CachedNetworkImage(imageUrl: thumbnail, fit: BoxFit.cover),
           ),
         ),
       ),
@@ -38,8 +42,13 @@ class AlbumTile extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
       ),
       leadingSize: 50,
-      padding: const EdgeInsets.all(6),
-      subtitle: Text(releaseDate),
+      padding: Platform.isAndroid
+          ? const EdgeInsets.symmetric(horizontal: 6)
+          : const EdgeInsets.all(6),
+      subtitle: Text(
+        "$releaseDate • ${albumType.toFormatted()}",
+        style: const TextStyle(color: Colors.grey),
+      ),
       onTap: () => context.push("/album/$browseId"),
     );
   }

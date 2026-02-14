@@ -11,6 +11,7 @@ import "package:wavelength/bloc/auth/auth_bloc.dart";
 import "package:wavelength/bloc/auth/auth_state.dart";
 import "package:wavelength/bloc/playlist/playlist_bloc.dart";
 import "package:wavelength/bloc/playlist/playlist_event.dart";
+import "package:wavelength/utils/toaster.dart";
 import "package:wavelength/widgets/confirmation_dialog.dart";
 import "package:wavelength/widgets/ui/amplitude.dart";
 
@@ -32,7 +33,8 @@ class PlaylistTrackExtendedOptions extends StatefulWidget {
 }
 
 class _PlaylistTrackExtendedOptionsState
-    extends State<PlaylistTrackExtendedOptions> {
+    extends State<PlaylistTrackExtendedOptions>
+    with Toaster {
   Future<void> _removeTrackFromPlaylist() async {
     final authState = context.read<AuthBloc>().state;
 
@@ -40,7 +42,6 @@ class _PlaylistTrackExtendedOptionsState
 
     final appBottomSheet = context.read<AppBottomSheetBloc>();
     final appBottomSheetCloseEvent = AppBottomSheetCloseEvent(context: context);
-    final messenger = ScaffoldMessenger.of(context);
     final playlistBloc = context.read<PlaylistBloc>();
 
     final trackToggleResponse = await TrackRepo.toggleTrackFromPlaylist(
@@ -54,17 +55,15 @@ class _PlaylistTrackExtendedOptionsState
 
     appBottomSheet.add(appBottomSheetCloseEvent);
 
-    messenger.showSnackBar(
-      SnackBar(
-        backgroundColor: isResponseSuccessful ? Colors.green : Colors.red,
-        content: Text(
-          isResponseSuccessful
-              ? trackToggleResponse.data
-              : "An error occured while removing track from the playlist.",
-          style: const TextStyle(color: Colors.white),
-        ),
-      ),
-    );
+    if (mounted) {
+      showToast(
+        context,
+        isResponseSuccessful
+            ? trackToggleResponse.data
+            : "An error occured while removing track from the playlist.",
+        isResponseSuccessful ? ToastType.success : ToastType.error,
+      );
+    }
 
     playlistBloc.add(PlaylistFetchEvent(playlistId: widget.playlistId));
   }
@@ -83,12 +82,12 @@ class _PlaylistTrackExtendedOptionsState
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: AmplListTile(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         onTap: _handleRemoveTileTap,
-        leading: const Icon(LucideIcons.trash, color: Colors.red),
-        padding: const EdgeInsets.all(20),
-        title: const Text(
+        leading: Icon(LucideIcons.circleMinus, color: Colors.red.shade400),
+        title: Text(
           "Remove from playlist.",
-          style: TextStyle(color: Colors.red),
+          style: TextStyle(color: Colors.red.shade400),
         ),
       ),
     );

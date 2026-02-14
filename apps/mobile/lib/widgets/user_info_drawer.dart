@@ -44,7 +44,7 @@ class UserInfoDrawer extends StatelessWidget {
                             style: const TextStyle(fontSize: 18),
                             children: [
                               TextSpan(
-                                text: state.user.displayName ?? "User",
+                                text: state.user.displayName,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),

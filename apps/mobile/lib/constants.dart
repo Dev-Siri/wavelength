@@ -21,6 +21,7 @@ const hiveIsFollowingKey = "followed_list";
 const hiveArtistsKey = "artists";
 const hiveAlbumsKey = "albums";
 const hivePlaylengthKey = "playlengths";
+const hiveAuthhKey = "auth";
 
 // This is the known signed URL availability period.
 const ytStreamUrlSignValidityHours = 6;

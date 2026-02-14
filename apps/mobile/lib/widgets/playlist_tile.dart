@@ -10,6 +10,7 @@ import "package:wavelength/bloc/auth/auth_bloc.dart";
 import "package:wavelength/bloc/auth/auth_state.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/library/library_event.dart";
+import "package:wavelength/utils/toaster.dart";
 import "package:wavelength/widgets/confirmation_dialog.dart";
 import "package:wavelength/widgets/ui/amplitude.dart";
 
@@ -22,9 +23,8 @@ class PlaylistTile extends StatefulWidget {
   State<PlaylistTile> createState() => _PlaylistTileState();
 }
 
-class _PlaylistTileState extends State<PlaylistTile> {
+class _PlaylistTileState extends State<PlaylistTile> with Toaster {
   Future<void> _deletePlaylist({required String userEmail}) async {
-    final messenger = ScaffoldMessenger.of(context);
     final libraryBloc = context.read<LibraryBloc>();
     final authBlocState = context.read<AuthBloc>().state;
 
@@ -36,31 +36,15 @@ class _PlaylistTileState extends State<PlaylistTile> {
     );
 
     if (response is ApiResponseSuccess) {
-      messenger.showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.green,
-          content: Text(
-            "Playlist deleted successfully!",
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-      );
-
       libraryBloc.add(
         LibraryFetchEvent(email: userEmail, authToken: authBlocState.authToken),
       );
       return;
     }
 
-    messenger.showSnackBar(
-      const SnackBar(
-        backgroundColor: Colors.red,
-        content: Text(
-          "Failed to delete playlist.",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-    );
+    if (mounted) {
+      showToast(context, "Failed to delete playlist.", ToastType.error);
+    }
   }
 
   @override

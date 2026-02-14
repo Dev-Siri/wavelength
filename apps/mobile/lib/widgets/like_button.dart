@@ -44,7 +44,7 @@ class _LikeButtonState extends State<LikeButton> {
     final isLikedCached = box.get(widget.track.videoId);
 
     if (isLikedCached != null) {
-      return setState(() => _isLiked = isLikedCached);
+      setState(() => _isLiked = isLikedCached);
     }
 
     final isLikedResponse = await TrackRepo.fetchIsAlreadyLiked(

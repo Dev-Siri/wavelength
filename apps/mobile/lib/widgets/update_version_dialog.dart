@@ -30,7 +30,7 @@ class UpdateVersionDialog extends StatelessWidget {
     return AlertDialog.adaptive(
       title: const Text("Update Available"),
       content: Text(
-        "You are on v$currentVersion, but the latest version is $latestVersion. Update to the latest version to ensure Wavelength continues to work without issues.",
+        "You are on v$currentVersion, but the latest version is v$latestVersion. Update to the latest version to ensure Wavelength continues to work without issues.",
       ),
       actions: [
         AmplButton(
@@ -38,7 +38,6 @@ class UpdateVersionDialog extends StatelessWidget {
             _updateApp();
             Navigator.of(context).pop();
           },
-          borderRadius: BorderRadius.zero,
           color: Colors.blue,
           child: updateButtonInnerUi,
         ),

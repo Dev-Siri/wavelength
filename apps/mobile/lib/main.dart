@@ -8,6 +8,7 @@ import "package:google_sign_in/google_sign_in.dart";
 import "package:hive_flutter/hive_flutter.dart";
 import "package:wavelength/api/models/album.dart";
 import "package:wavelength/api/models/artist.dart";
+import "package:wavelength/api/models/auth_user.dart";
 import "package:wavelength/api/models/embedded.dart";
 import "package:wavelength/api/models/enums/album_type.dart";
 import "package:wavelength/api/models/enums/video_type.dart";
@@ -60,6 +61,7 @@ Future<void> main() async {
   Hive.registerAdapter(AlbumTrackAdapter());
   Hive.registerAdapter(AlbumTypeAdapter());
   Hive.registerAdapter(VideoTypeAdapter());
+  Hive.registerAdapter(AuthUserAdapter());
 
   await JustAudioBackground.init(
     androidNotificationChannelId: "dev.siri.wavelength.channel.audio",
@@ -100,9 +102,7 @@ class App extends StatelessWidget {
         BlocProvider(
           create: (_) => AuthBloc(
             GoogleSignIn(
-              serverClientId: Platform.isAndroid
-                  ? dotenv.get("ANDROID_GOOGLE_CLIENT_ID")
-                  : null,
+              serverClientId: dotenv.get("WEB_GOOGLE_CLIENT_ID"),
               clientId: Platform.isIOS
                   ? dotenv.get("IOS_GOOGLE_CLIENT_ID")
                   : null,

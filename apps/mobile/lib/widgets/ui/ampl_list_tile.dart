@@ -26,6 +26,7 @@ class AmplListTile extends StatelessWidget {
   final Color? backgroundColor;
   final EdgeInsetsGeometry? padding;
   final double? leadingSize;
+  final VisualDensity? visualDensity;
 
   const AmplListTile({
     super.key,
@@ -38,6 +39,7 @@ class AmplListTile extends StatelessWidget {
     this.backgroundColor,
     this.padding,
     this.leadingSize,
+    this.visualDensity,
   });
 
   @override
@@ -63,9 +65,9 @@ class AmplListTile extends StatelessWidget {
       trailing: trailing,
       onTap: onTap,
       tileColor: backgroundColor,
-      contentPadding: padding ?? const EdgeInsets.symmetric(horizontal: 12),
+      contentPadding: padding ?? const EdgeInsets.all(12),
       dense: true,
-      visualDensity: VisualDensity.comfortable,
+      visualDensity: visualDensity ?? VisualDensity.comfortable,
       minLeadingWidth: 0,
       minVerticalPadding: 0,
     );

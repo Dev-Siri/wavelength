@@ -23,7 +23,7 @@ class UserLeadingIcon extends StatelessWidget {
             child: state is AuthStateAuthorized
                 ? CircleAvatar(
                     backgroundImage: CachedNetworkImageProvider(
-                      state.user.photoUrl ?? "",
+                      state.user.pictureUrl ?? "",
                     ),
                   )
                 : const Icon(LucideIcons.user, color: Colors.white, size: 28),

@@ -5,6 +5,7 @@ import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/repositories/playlists_repo.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
 import "package:wavelength/bloc/auth/auth_state.dart";
+import "package:wavelength/utils/toaster.dart";
 import "package:wavelength/widgets/ui/amplitude.dart";
 
 class PlaylistVisibilityToggle extends StatefulWidget {
@@ -22,7 +23,8 @@ class PlaylistVisibilityToggle extends StatefulWidget {
       _PlaylistVisibilityToggleState();
 }
 
-class _PlaylistVisibilityToggleState extends State<PlaylistVisibilityToggle> {
+class _PlaylistVisibilityToggleState extends State<PlaylistVisibilityToggle>
+    with Toaster {
   bool _isLoading = false;
   bool _isPrivate = true;
 
@@ -34,8 +36,6 @@ class _PlaylistVisibilityToggleState extends State<PlaylistVisibilityToggle> {
 
   Future<void> _toggleVisibilityPlaylist(String authToken) async {
     setState(() => _isLoading = true);
-
-    final messenger = ScaffoldMessenger.of(context);
 
     final response = await PlaylistsRepo.togglePlaylistVisibility(
       playlistId: widget.playlistId,
@@ -50,15 +50,9 @@ class _PlaylistVisibilityToggleState extends State<PlaylistVisibilityToggle> {
       return;
     }
 
-    messenger.showSnackBar(
-      const SnackBar(
-        backgroundColor: Colors.red,
-        content: Text(
-          "An error occured while changing visibility.",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-    );
+    if (mounted) {
+      showToast(context, "Something went wrong.", ToastType.error);
+    }
     setState(() => _isLoading = false);
   }
 

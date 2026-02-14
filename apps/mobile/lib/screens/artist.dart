@@ -142,8 +142,8 @@ class _ArtistScreenState extends State<ArtistScreen> {
                               Text(
                                 state.artist.title,
                                 style: const TextStyle(
-                                  fontSize: 34,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 48,
+                                  fontWeight: FontWeight.w600,
                                   color: Colors.white,
                                 ),
                               ),
@@ -176,8 +176,10 @@ class _ArtistScreenState extends State<ArtistScreen> {
                       ],
                     ),
                   ),
-                  bottom: const TabBar(
-                    tabs: [
+                  bottom: TabBar(
+                    dividerColor: Colors.grey.shade900,
+                    unselectedLabelColor: Colors.grey,
+                    tabs: const [
                       Tab(text: "Top Songs"),
                       Tab(text: "Albums"),
                       Tab(text: "Singles & EPs"),
@@ -228,6 +230,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
                       ),
                     ],
                   ),
+                  // Albums tab
                   ListView.builder(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     itemCount: state.artist.albums.length,
@@ -238,9 +241,11 @@ class _ArtistScreenState extends State<ArtistScreen> {
                         title: album.title,
                         thumbnail: album.thumbnail,
                         releaseDate: album.releaseDate,
+                        albumType: album.albumType,
                       );
                     },
                   ),
+                  // Singles & EPs tab
                   ListView.builder(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     itemCount: state.artist.singlesAndEps.length,
@@ -251,6 +256,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
                         title: album.title,
                         thumbnail: album.thumbnail,
                         releaseDate: album.releaseDate,
+                        albumType: album.albumType,
                       );
                     },
                   ),

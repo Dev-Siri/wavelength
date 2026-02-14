@@ -1,22 +1,40 @@
-class AuthUser {
-  final String id;
-  final String email;
-  final String displayName;
-  final String photoUrl;
+import "package:hive/hive.dart";
 
-  AuthUser({
-    required this.id,
+part "auth_user.g.dart";
+
+@HiveType(typeId: 16)
+class AuthUser {
+  @HiveField(0)
+  final String userId;
+  @HiveField(1)
+  final String email;
+  @HiveField(2)
+  final String displayName;
+  @HiveField(3)
+  final String? pictureUrl;
+
+  const AuthUser({
+    required this.userId,
     required this.email,
     required this.displayName,
-    required this.photoUrl,
+    required this.pictureUrl,
   });
 
-  Map<String, String> toJson() {
+  factory AuthUser.fromJson(Map<String, dynamic> json) {
+    return AuthUser(
+      userId: json["userId"] as String,
+      email: json["email"] as String,
+      displayName: json["displayName"] as String,
+      pictureUrl: json["pictureUrl"] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
     return {
-      "id": id,
+      "userId": userId,
       "email": email,
       "displayName": displayName,
-      "photoUrl": photoUrl,
+      "pictureUrl": pictureUrl,
     };
   }
 }

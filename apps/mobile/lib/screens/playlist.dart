@@ -28,6 +28,7 @@ import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_event.
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_state.dart";
 import "package:wavelength/cache.dart";
 import "package:wavelength/screens/edit_playlist.dart";
+import "package:wavelength/utils/toaster.dart";
 import "package:wavelength/widgets/brand_cover_image.dart";
 import "package:wavelength/widgets/common_app_bar.dart";
 import "package:wavelength/widgets/loading_indicator.dart";
@@ -47,7 +48,7 @@ class PlaylistScreen extends StatefulWidget {
   State<PlaylistScreen> createState() => _PlaylistScreenState();
 }
 
-class _PlaylistScreenState extends State<PlaylistScreen> {
+class _PlaylistScreenState extends State<PlaylistScreen> with Toaster {
   final _playlistThemeColorBloc = PlaylistThemeColorBloc();
   int _playlistTrackDownloadedCount = 0;
 
@@ -65,15 +66,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
   Future<void> _downloadAllTracks(List<PlaylistTrack> playlistTracks) async {
     final downloadBloc = context.read<DownloadBloc>();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        backgroundColor: Colors.blue,
-        content: Text(
-          "Downloading playlist...",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-    );
+    showToast(context, "Downloading playlist...", ToastType.info);
 
     for (final track in playlistTracks) {
       if (await AudioCache.isTrackDownloaded(track.videoId)) {

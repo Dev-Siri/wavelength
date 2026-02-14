@@ -20,6 +20,7 @@ import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/library/library_event.dart";
 import "package:wavelength/bloc/playlist/playlist_bloc.dart";
 import "package:wavelength/bloc/playlist/playlist_event.dart";
+import "package:wavelength/utils/toaster.dart";
 import "package:wavelength/widgets/brand_cover_image.dart";
 
 @immutable
@@ -47,7 +48,7 @@ class EditPlaylistScreen extends StatefulWidget {
   State<EditPlaylistScreen> createState() => _EditPlaylistScreenState();
 }
 
-class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
+class _EditPlaylistScreenState extends State<EditPlaylistScreen> with Toaster {
   final _nameInputControl = TextEditingController();
 
   bool _isLoading = false;
@@ -79,7 +80,6 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
   Future<void> _confirmEdit() async {
     setState(() => _isLoading = true);
 
-    final messenger = ScaffoldMessenger.of(context);
     final appBottomSheet = context.read<AppBottomSheetBloc>();
     final appBottomSheetCloseEvent = AppBottomSheetCloseEvent(context: context);
     final libraryBloc = context.read<LibraryBloc>();
@@ -89,15 +89,13 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
     final coverImageUrl = await _handleFileUpload();
 
     if (_hasFileUploadErrored) {
-      messenger.showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.red,
-          content: Text(
-            "An error occured while uploading cover image.",
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-      );
+      if (mounted) {
+        showToast(
+          context,
+          "An error occured while uploading cover image.",
+          ToastType.error,
+        );
+      }
       return;
     }
 
@@ -122,15 +120,14 @@ class _EditPlaylistScreenState extends State<EditPlaylistScreen> {
     }
 
     setState(() => _isLoading = false);
-    messenger.showSnackBar(
-      const SnackBar(
-        backgroundColor: Colors.red,
-        content: Text(
-          "An error occured while updating playlist.",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-    );
+
+    if (mounted) {
+      showToast(
+        context,
+        "An error occured while updating playlist.",
+        ToastType.error,
+      );
+    }
   }
 
   Future<void> _handleImagePicker() async {

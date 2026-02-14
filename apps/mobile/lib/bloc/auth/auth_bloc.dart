@@ -1,18 +1,19 @@
 import "dart:async";
-import "dart:convert";
+
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:google_sign_in/google_sign_in.dart";
+import "package:hive_flutter/hive_flutter.dart";
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/auth_user.dart";
 import "package:wavelength/api/repositories/auth_repo.dart";
 import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/bloc/auth/auth_event.dart";
 import "package:wavelength/bloc/auth/auth_state.dart";
-import "package:wavelength/utils/map_to_google_sign_in_account.dart";
+import "package:wavelength/constants.dart";
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  static const userKey = "user";
+  static const userKey = "user_data";
   static const authTokenKey = "user_auth_token";
 
   final FlutterSecureStorage securedStorage;
@@ -28,12 +29,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthLocalUserFetchEvent event,
     Emitter<AuthState> emit,
   ) async {
-    final userString = await securedStorage.read(key: userKey);
     final authToken = await securedStorage.read(key: authTokenKey);
+    final authBox = await Hive.openBox(hiveAuthhKey);
+    final userProfile = authBox.get(userKey);
 
-    if (userString != null && authToken != null) {
-      final user = await stringMapToGoogleSignInAccount(userString);
-      return emit(AuthStateAuthorized(user: user, authToken: authToken));
+    if (authToken != null && userProfile != null) {
+      return emit(AuthStateAuthorized(user: userProfile, authToken: authToken));
     }
 
     emit(AuthStateUnauthorized());
@@ -43,34 +44,48 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       final user = await googleSignin.signIn();
 
-      if (user == null) {
+      if (user == null || user.serverAuthCode == null) {
         return emit(AuthStateUnauthorized());
       }
 
-      final localUser = googleSignInAccountToLocalAccount(user);
-
-      final authTokenResponse = await AuthRepo.createAuthToken(
-        AuthUser(
-          id: localUser.id,
-          email: localUser.email,
-          displayName: localUser.displayName ?? "",
-          photoUrl: localUser.photoUrl ?? "",
-        ),
+      final authCodeResponse = await AuthRepo.mobileOAuth(
+        serverAuthCode: user.serverAuthCode ?? "",
       );
 
-      if (authTokenResponse is ApiResponseError) {
+      if (authCodeResponse is! ApiResponseSuccess<String>) {
         return emit(AuthStateUnauthorized());
       }
 
-      final authToken = (authTokenResponse as ApiResponseSuccess<String>).data;
+      final authTokenResponse = await AuthRepo.consumeAuthToken(
+        authCode: authCodeResponse.data,
+      );
 
-      final userMap = googleSignInAccountToMap(user);
-      final stringifiedUserMap = jsonEncode(userMap);
+      if (authTokenResponse is! ApiResponseSuccess<String>) {
+        return emit(AuthStateUnauthorized());
+      }
 
-      await securedStorage.write(key: userKey, value: stringifiedUserMap);
-      await securedStorage.write(key: authTokenKey, value: authToken);
+      final userProfileResponse = await AuthRepo.fetchUserProfile(
+        authToken: authTokenResponse.data,
+      );
 
-      emit(AuthStateAuthorized(user: localUser, authToken: authToken));
+      if (userProfileResponse is! ApiResponseSuccess<AuthUser>) {
+        return emit(AuthStateUnauthorized());
+      }
+
+      final authBox = await Hive.openBox(hiveAuthhKey);
+
+      await securedStorage.write(
+        key: authTokenKey,
+        value: authTokenResponse.data,
+      );
+      await authBox.put(userKey, userProfileResponse.data);
+
+      emit(
+        AuthStateAuthorized(
+          user: userProfileResponse.data,
+          authToken: authTokenResponse.data,
+        ),
+      );
     } catch (err) {
       DiagnosticsRepo.reportError(
         error: err.toString(),

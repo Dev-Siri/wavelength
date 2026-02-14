@@ -19,6 +19,7 @@ import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/library/library_state.dart";
 import "package:wavelength/cache.dart";
 import "package:wavelength/constants.dart";
+import "package:wavelength/utils/toaster.dart";
 import "package:wavelength/widgets/ui/amplitude.dart";
 
 class TrackOptionsBottomSheet extends StatefulWidget {
@@ -42,7 +43,8 @@ class TrackOptionsBottomSheet extends StatefulWidget {
       _TrackOptionsBottomSheetState();
 }
 
-class _TrackOptionsBottomSheetState extends State<TrackOptionsBottomSheet> {
+class _TrackOptionsBottomSheetState extends State<TrackOptionsBottomSheet>
+    with Toaster {
   bool _isTrackDownloaded = false;
 
   @override
@@ -58,7 +60,6 @@ class _TrackOptionsBottomSheetState extends State<TrackOptionsBottomSheet> {
     final authState = context.read<AuthBloc>().state;
     if (authState is! AuthStateAuthorized) return;
 
-    final messenger = ScaffoldMessenger.of(context);
     final appBottomSheet = context.read<AppBottomSheetBloc>();
     final appBottomSheetCloseEvent = AppBottomSheetCloseEvent(context: context);
 
@@ -93,17 +94,15 @@ class _TrackOptionsBottomSheetState extends State<TrackOptionsBottomSheet> {
 
     appBottomSheet.add(appBottomSheetCloseEvent);
 
-    messenger.showSnackBar(
-      SnackBar(
-        backgroundColor: isResponseSuccessful ? Colors.green : Colors.red,
-        content: Text(
-          isResponseSuccessful
-              ? trackToggleResponse.data
-              : "An error occured while adding track to the playlist.",
-          style: const TextStyle(color: Colors.white),
-        ),
-      ),
-    );
+    if (context.mounted) {
+      showToast(
+        context,
+        isResponseSuccessful
+            ? trackToggleResponse.data
+            : "An error occured while adding track to the playlist.",
+        isResponseSuccessful ? ToastType.success : ToastType.error,
+      );
+    }
   }
 
   Future<void> _fetchTrackAlreadyDownloaded() async {
@@ -121,13 +120,7 @@ class _TrackOptionsBottomSheetState extends State<TrackOptionsBottomSheet> {
       return;
     }
 
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    scaffoldMessenger.showSnackBar(
-      const SnackBar(
-        backgroundColor: Colors.blue,
-        content: Text("Saving track...", style: TextStyle(color: Colors.white)),
-      ),
-    );
+    showToast(context, "Saving track...", ToastType.info);
 
     context.read<DownloadBloc>().add(
       DownloadAddToQueueEvent(
@@ -176,7 +169,10 @@ class _TrackOptionsBottomSheetState extends State<TrackOptionsBottomSheet> {
                   child: AmplListTile(
                     onTap: _downloadTrack,
                     leading: const Icon(LucideIcons.album),
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
                     title: Text(
                       _isTrackDownloaded ? "Remove save." : "Save offline",
                       style: const TextStyle(color: Colors.white),
@@ -202,6 +198,10 @@ class _TrackOptionsBottomSheetState extends State<TrackOptionsBottomSheet> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: AmplListTile(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
                       onTap: () {
                         context.read<AppBottomSheetBloc>().add(
                           AppBottomSheetCloseEvent(context: context),
@@ -209,7 +209,6 @@ class _TrackOptionsBottomSheetState extends State<TrackOptionsBottomSheet> {
                         context.push("/album/${album.browseId}");
                       },
                       leading: const Icon(LucideIcons.album),
-                      padding: const EdgeInsets.all(20),
                       title: Text(
                         album.title,
                         style: const TextStyle(color: Colors.white),
@@ -237,7 +236,10 @@ class _TrackOptionsBottomSheetState extends State<TrackOptionsBottomSheet> {
                         context.push("/artist/${artist.browseId}");
                       },
                       leading: const Icon(LucideIcons.circleUser),
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
                       title: Text(
                         artist.title,
                         style: const TextStyle(color: Colors.white),
@@ -263,12 +265,15 @@ class _TrackOptionsBottomSheetState extends State<TrackOptionsBottomSheet> {
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: AmplListTile(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
                       onTap: () => _toggleTrackFromPlaylist(
                         context,
                         playlist.playlistId,
                       ),
                       leading: const Icon(LucideIcons.listMusic),
-                      padding: const EdgeInsets.all(20),
                       title: Text(
                         playlist.name,
                         style: const TextStyle(color: Colors.white),

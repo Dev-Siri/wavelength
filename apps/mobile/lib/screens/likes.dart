@@ -21,12 +21,12 @@ import "package:wavelength/bloc/likes/liked_tracks/liked_tracks_state.dart";
 import "package:wavelength/bloc/likes/liked_tracks_playlength/liked_tracks_playlength_bloc.dart";
 import "package:wavelength/bloc/likes/liked_tracks_playlength/liked_tracks_playlength_event.dart";
 import "package:wavelength/bloc/likes/liked_tracks_playlength/liked_tracks_playlength_state.dart";
-import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
-import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:wavelength/cache.dart";
+import "package:wavelength/utils/toaster.dart";
 import "package:wavelength/widgets/loading_indicator.dart";
 import "package:wavelength/widgets/music_player_preview.dart";
+import "package:wavelength/widgets/play_options.dart";
 import "package:wavelength/widgets/playlist_length_text.dart";
 import "package:wavelength/widgets/playlist_track_tile.dart";
 
@@ -37,7 +37,7 @@ class LikesScreen extends StatefulWidget {
   State<LikesScreen> createState() => _LikesScreenState();
 }
 
-class _LikesScreenState extends State<LikesScreen> {
+class _LikesScreenState extends State<LikesScreen> with Toaster {
   int _playlistTrackDownloadedCount = 0;
 
   @override
@@ -58,42 +58,10 @@ class _LikesScreenState extends State<LikesScreen> {
     }
   }
 
-  void _playPlaylistTracks(List<PlaylistTrack> playlistTrack) {
-    final queueableSongs = playlistTrack
-        .map(
-          (track) => QueueableMusic(
-            videoId: track.videoId,
-            title: track.title,
-            thumbnail: track.thumbnail,
-            isExplicit: track.isExplicit,
-            artists: track.artists,
-            videoType: track.videoType,
-            album: track.album,
-          ),
-        )
-        .toList();
-
-    context.read<MusicPlayerTrackBloc>().add(
-      MusicPlayerTrackLoadEvent(
-        contextId: "likes",
-        queueableMusic: queueableSongs.first,
-        queueContext: queueableSongs,
-      ),
-    );
-  }
-
   Future<void> _downloadAllTracks(List<PlaylistTrack> playlistTracks) async {
     final downloadBloc = context.read<DownloadBloc>();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        backgroundColor: Colors.blue,
-        content: Text(
-          "Downloading playlist...",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-    );
+    showToast(context, "Downloading playlist...", ToastType.info);
 
     for (final track in playlistTracks) {
       if (await AudioCache.isTrackDownloaded(track.videoId)) {
@@ -262,19 +230,21 @@ class _LikesScreenState extends State<LikesScreen> {
                 children: [
                   Row(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: IconButton.filled(
-                          style: IconButton.styleFrom(
-                            backgroundColor: Colors.white,
-                          ),
-                          onPressed: () =>
-                              _playPlaylistTracks(compatibleTracks),
-                          icon: const Padding(
-                            padding: EdgeInsets.all(8),
-                            child: Icon(LucideIcons.play),
-                          ),
-                        ),
+                      PlayOptions(
+                        contextId: "likes",
+                        songs: compatibleTracks
+                            .map(
+                              (track) => QueueableMusic(
+                                videoId: track.videoId,
+                                title: track.title,
+                                thumbnail: track.thumbnail,
+                                artists: track.artists,
+                                album: track.album,
+                                videoType: track.videoType,
+                                isExplicit: track.isExplicit,
+                              ),
+                            )
+                            .toList(),
                       ),
                       const Spacer(),
                       if (_playlistTrackDownloadedCount !=
