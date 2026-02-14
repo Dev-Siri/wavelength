@@ -22,9 +22,6 @@
         { searchParams: { code: authCode } },
       );
 
-      localStorage.setItem(localStorageKeys.authToken, authToken);
-      userStore.authToken = authToken;
-
       const authUser = await backendClient("/auth/profile", authUserSchema, {
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -32,7 +29,10 @@
       });
 
       localStorage.setItem(localStorageKeys.authUser, JSON.stringify(authUser));
+      localStorage.setItem(localStorageKeys.authToken, authToken);
+
       userStore.user = authUser;
+      userStore.authToken = authToken;
 
       const url = new URL(window.location.href);
       url.searchParams.delete("code");

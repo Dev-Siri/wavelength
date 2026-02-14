@@ -39,8 +39,8 @@ async function queryClient<T extends z.ZodTypeAny>(
     : {};
   const requestHeaders: Record<string, string> = {
     "Content-Type": "application/json",
-    ...headers,
     ...authHeaders,
+    ...headers,
   };
 
   if (searchParams)
