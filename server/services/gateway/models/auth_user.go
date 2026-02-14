@@ -3,22 +3,22 @@ package models
 import "github.com/golang-jwt/jwt/v5"
 
 type AuthUser struct {
-	Id          string `json:"id"`
+	UserID      string `json:"userId"`
 	DisplayName string `json:"displayName"`
 	Email       string `json:"email"`
-	PhotoUrl    string `json:"photoUrl"`
+	PictureURL  string `json:"pictureUrl"`
 }
 
 func ClaimsToAuthUser(claims jwt.MapClaims) AuthUser {
-	id := claims["id"].(string)
+	userID := claims["userId"].(string)
 	email := claims["email"].(string)
 	displayName := claims["displayName"].(string)
-	photoUrl := claims["photoUrl"].(string)
+	pictureURL := claims["pictureUrl"].(string)
 
 	return AuthUser{
-		Id:          id,
+		UserID:      userID,
 		Email:       email,
 		DisplayName: displayName,
-		PhotoUrl:    photoUrl,
+		PictureURL:  pictureURL,
 	}
 }

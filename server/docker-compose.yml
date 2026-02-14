@@ -1,5 +1,7 @@
 services:
   gateway:
+    mem_limit: 512m
+    cpus: 1
     build:
       platforms:
         - linux/amd64
@@ -17,6 +19,7 @@ services:
       - ARTIST_CLIENT_URL=artist:8084
       - ALBUM_CLIENT_URL=album:8085
       - IMAGE_CLIENT_URL=image:8086
+      - AUTH_CLIENT_URL=auth:8087
       - GO_ENV=dev
     depends_on:
       - playlist
@@ -24,11 +27,14 @@ services:
       - artist
       - album
       - image
+      - auth
     develop:
       watch:
         - action: rebuild
           path: services/gateway
   playlist:
+    mem_limit: 512m
+    cpus: 1
     build:
       platforms:
         - linux/amd64
@@ -50,6 +56,8 @@ services:
         - action: rebuild
           path: services
   music:
+    mem_limit: 512m
+    cpus: 1
     build:
       platforms:
         - linux/amd64
@@ -73,6 +81,8 @@ services:
         - action: rebuild
           path: services
   yt-scraper:
+    mem_limit: 512m
+    cpus: 1
     build:
       platforms:
         - linux/amd64
@@ -92,6 +102,8 @@ services:
         - action: rebuild
           path: services/yt-scraper/package.json
   artist:
+    mem_limit: 512m
+    cpus: 1
     build:
       platforms:
         - linux/amd64
@@ -111,6 +123,8 @@ services:
         - action: rebuild
           path: services
   album:
+    mem_limit: 512m
+    cpus: 1
     build:
       platforms:
         - linux/amd64
@@ -129,7 +143,27 @@ services:
       watch:
         - action: rebuild
           path: services
+  auth:
+    mem_limit: 512m
+    cpus: 1
+    build:
+      platforms:
+        - linux/amd64
+      context: .
+      dockerfile: services/auth/Dockerfile
+    image: wavelength/services/auth
+    container_name: auth
+    env_file: services/auth/.env
+    environment:
+      - PORT=8087
+      - GO_ENV=dev
+    develop:
+      watch:
+        - action: rebuild
+          path: services
   image:
+    mem_limit: 1g
+    cpus: 1
     build:
       platforms:
         - linux/amd64

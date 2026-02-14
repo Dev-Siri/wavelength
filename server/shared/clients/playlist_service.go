@@ -2,7 +2,7 @@ package clients
 
 import (
 	"github.com/Dev-Siri/wavelength/server/proto/playlistpb"
-	"github.com/Dev-Siri/wavelength/server/services/gateway/env"
+	shared_env "github.com/Dev-Siri/wavelength/server/shared/env"
 	"github.com/Dev-Siri/wavelength/server/shared/security"
 
 	"google.golang.org/grpc"
@@ -11,7 +11,7 @@ import (
 var PlaylistClient playlistpb.PlaylistServiceClient
 
 func InitPlaylistClient() error {
-	addr, err := env.GetPlaylistClientURL()
+	addr, err := shared_env.GetPlaylistClientURL()
 	if err != nil {
 		return err
 	}

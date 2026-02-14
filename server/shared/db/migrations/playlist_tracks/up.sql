@@ -1,6 +1,6 @@
 CREATE TYPE video_type AS ENUM (
-  "track",
-  "uvideo"
+  'track',
+  'uvideo'
 );
 
 CREATE TABLE IF NOT EXISTS "playlist_tracks" (

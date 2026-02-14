@@ -2,7 +2,7 @@ package clients
 
 import (
 	"github.com/Dev-Siri/wavelength/server/proto/imagepb"
-	"github.com/Dev-Siri/wavelength/server/services/gateway/env"
+	shared_env "github.com/Dev-Siri/wavelength/server/shared/env"
 	"github.com/Dev-Siri/wavelength/server/shared/security"
 
 	"google.golang.org/grpc"
@@ -11,7 +11,7 @@ import (
 var ImageClient imagepb.ImageServiceClient
 
 func InitImageClient() error {
-	addr, err := env.GetImageClientURL()
+	addr, err := shared_env.GetImageClientURL()
 	if err != nil {
 		return err
 	}

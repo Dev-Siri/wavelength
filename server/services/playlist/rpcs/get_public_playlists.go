@@ -19,16 +19,19 @@ func (p *PlaylistService) GetPublicPlaylists(
 ) (*playlistpb.GetPublicPlaylistsResponse, error) {
 	rows, err := shared_db.Database.Query(`
 		SELECT
-			playlist_id,
-			name,
-			author_google_email,
-			author_name,
-			author_image,
-			cover_image,
-			is_public
-		FROM playlists
-		WHERE name ILIKE $1
-		AND is_public = true 
+			p.playlist_id,
+			p.name,
+			p.author_google_email,
+			p.cover_image,
+			p.is_public,
+
+			u.display_name AS author_name,
+			u.picture_url AS author_image
+		FROM "playlists" p
+		WHERE p.name ILIKE $1
+		AND p.is_public = true 
+		INNER JOIN "users" u
+		ON u.email = p.author_google_email
 		LIMIT 10;
 	`, "%"+request.Query+"%")
 

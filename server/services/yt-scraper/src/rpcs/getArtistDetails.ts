@@ -22,7 +22,7 @@ import { getHighestQualityThumbnail } from "@/utils/thumbnail.js";
 
 export default async function getArtistDetails(
   call: grpc.ServerUnaryCall<GetArtistDetailsRequest, GetArtistDetailsResponse>,
-  callback: grpc.sendUnaryData<GetArtistDetailsResponse>
+  callback: grpc.sendUnaryData<GetArtistDetailsResponse>,
 ) {
   try {
     const music = await getYtMusicClient();
@@ -32,15 +32,15 @@ export default async function getArtistDetails(
       artistDetailsResponseHeaderSchema.safeParse(header);
 
     const parsedTopSongs = artistDetailsResponseTopSongsSchema.safeParse(
-      sections[0]?.contents
+      sections[0]?.contents,
     );
 
     const parsedAlbums = artistDetailsResponseAlbumsSchema.safeParse(
-      sections[1]?.contents
+      sections[1]?.contents,
     );
 
     const parsedSinglesAndEps = artistDetailsResponseAlbumsSchema.safeParse(
-      sections[2]?.contents
+      sections[2]?.contents,
     );
 
     if (
@@ -57,7 +57,7 @@ export default async function getArtistDetails(
     }
 
     const thumbnail = getHighestQualityThumbnail(
-      parsedArtistDetails.data.thumbnail
+      parsedArtistDetails.data.thumbnail,
     );
     if (!thumbnail) {
       const status = new grpc.StatusBuilder()
@@ -89,7 +89,7 @@ export default async function getArtistDetails(
         },
         thumbnail: thumbnail.url,
         isExplicit: !!parsedTopSong.badges?.some(
-          (badge) => badge.icon_type === "MUSIC_EXPLICIT_BADGE"
+          (badge) => badge.icon_type === "MUSIC_EXPLICIT_BADGE",
         ),
       } satisfies Artist_TopSongTrack;
 

@@ -1,0 +1,47 @@
+syntax = "proto3";
+package auth;
+
+option go_package = "github.com/Dev-Siri/wavelength/server/proto/auth;authpb";
+
+import "proto/common.proto";
+import "google/protobuf/empty.proto";
+
+service AuthService {
+  rpc GetOAuthRedirectUrl(GetOAuthRedirectUrlRequest) returns (GetOAuthRedirectUrlResponse);
+  rpc OAuthCallback(OAuthCallbackRequest) returns (OAuthCallbackResponse);
+  rpc MobileOAuth(MobileOAuthRequest) returns (MobileOAuthResponse);
+  rpc ConsumeAuthToken(ConsumeAuthTokenRequest) returns (ConsumeAuthTokenResponse);
+}
+
+message GetOAuthRedirectUrlRequest {
+  string redirect_uri = 1;
+}
+
+message GetOAuthRedirectUrlResponse {
+  string oauth_uri = 1;
+}
+
+message OAuthCallbackRequest {
+  string code = 1;
+  string state = 2;
+}
+
+message OAuthCallbackResponse {
+  string signed_uri = 1;
+}
+
+message ConsumeAuthTokenRequest {
+  string auth_code = 1;
+}
+
+message ConsumeAuthTokenResponse {
+  string auth_token = 1;
+}
+
+message MobileOAuthRequest {
+  string server_auth_code = 1;
+}
+
+message MobileOAuthResponse {
+  string auth_code = 1;
+}

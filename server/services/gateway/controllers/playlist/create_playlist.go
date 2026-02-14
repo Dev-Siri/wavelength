@@ -12,7 +12,6 @@ import (
 
 func CreatePlaylist(ctx *fiber.Ctx) error {
 	authUser, ok := ctx.Locals("authUser").(models.AuthUser)
-
 	if !ok {
 		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
 	}
@@ -20,7 +19,7 @@ func CreatePlaylist(ctx *fiber.Ctx) error {
 	_, err := clients.PlaylistClient.CreatePlaylist(ctx.Context(), &playlistpb.CreatePlaylistRequest{
 		AuthorEmail:       authUser.Email,
 		AuthorDisplayName: authUser.DisplayName,
-		AuthorPhotoUrl:    authUser.PhotoUrl,
+		AuthorPhotoUrl:    authUser.PictureURL,
 	})
 	if err != nil {
 		logging.Logger.Error("PlaylistService: 'CreatePlaylist' errored", zap.Error(err))

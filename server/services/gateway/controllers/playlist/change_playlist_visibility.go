@@ -28,7 +28,7 @@ func ChangePlaylistVisibility(ctx *fiber.Ctx) error {
 		AuthUserEmail: authUser.Email,
 	})
 	if err != nil {
-		logging.Logger.Error("Playlist visibility change failed.", zap.Error(err))
+		logging.Logger.Error("PlaylistService: 'ChangePlaylistVisibility' errored.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Playlist visibility change failed.")
 	}
 

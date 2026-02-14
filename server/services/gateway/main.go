@@ -30,27 +30,31 @@ func main() {
 	}
 
 	if err := shared_env.InitEnv(); err != nil {
-		logging.Logger.Fatal("Failed to initialize dotenv for environment variables.", zap.Error(err))
+		logging.Logger.Error("Failed to initialize dotenv for environment variables.", zap.Error(err))
 	}
 
 	if err := clients.InitPlaylistClient(); err != nil {
-		logging.Logger.Fatal("Playlist-service client failed to connect.", zap.Error(err))
+		logging.Logger.Error("Playlist-service client failed to connect.", zap.Error(err))
 	}
 
 	if err := clients.InitMusicClient(); err != nil {
-		logging.Logger.Fatal("Music-service client failed to connect.", zap.Error(err))
+		logging.Logger.Error("Music-service client failed to connect.", zap.Error(err))
 	}
 
 	if err := clients.InitArtistClient(); err != nil {
-		logging.Logger.Fatal("Artist-service client failed to connect.", zap.Error(err))
+		logging.Logger.Error("Artist-service client failed to connect.", zap.Error(err))
 	}
 
 	if err := clients.InitAlbumClient(); err != nil {
-		logging.Logger.Fatal("Album-service client failed to connect.", zap.Error(err))
+		logging.Logger.Error("Album-service client failed to connect.", zap.Error(err))
 	}
 
 	if err := clients.InitImageClient(); err != nil {
-		logging.Logger.Fatal("Image-service client failed to connect.", zap.Error(err))
+		logging.Logger.Error("Image-service client failed to connect.", zap.Error(err))
+	}
+
+	if err := clients.InitAuthClient(); err != nil {
+		logging.Logger.Error("Auth-service client failed to connect.", zap.Error(err))
 	}
 
 	if err := db.InitGeoIP(); err != nil {

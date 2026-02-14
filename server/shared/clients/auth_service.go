@@ -1,17 +1,17 @@
 package clients
 
 import (
-	"github.com/Dev-Siri/wavelength/server/proto/musicpb"
+	"github.com/Dev-Siri/wavelength/server/proto/authpb"
 	shared_env "github.com/Dev-Siri/wavelength/server/shared/env"
 	"github.com/Dev-Siri/wavelength/server/shared/security"
 
 	"google.golang.org/grpc"
 )
 
-var MusicClient musicpb.MusicServiceClient
+var AuthClient authpb.AuthServiceClient
 
-func InitMusicClient() error {
-	addr, err := shared_env.GetMusicClientURL()
+func InitAuthClient() error {
+	addr, err := shared_env.GetAuthClientURL()
 	if err != nil {
 		return err
 	}
@@ -29,6 +29,6 @@ func InitMusicClient() error {
 		return err
 	}
 
-	MusicClient = musicpb.NewMusicServiceClient(conn)
+	AuthClient = authpb.NewAuthServiceClient(conn)
 	return nil
 }

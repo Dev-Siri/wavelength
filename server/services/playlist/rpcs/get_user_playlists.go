@@ -19,15 +19,18 @@ func (p *PlaylistService) GetUserPlaylists(
 ) (*playlistpb.GetUserPlaylistsResponse, error) {
 	rows, err := shared_db.Database.Query(`
 		SELECT
-			playlist_id,
-			name,
-			author_google_email,
-			author_name,
-			author_image,
-			cover_image,
-			is_public
-		FROM playlists
-		WHERE author_google_email = $1
+			p.playlist_id,
+			p.name,
+			p.author_google_email,
+			p.cover_image,
+			p.is_public,
+
+			u.display_name AS author_name,
+			u.picture_url AS author_image
+		FROM "playlists" p
+		INNER JOIN "users" u
+		ON u.email = p.author_google_email
+		WHERE p.author_google_email = $1
 	`, request.UserEmail)
 	if err != nil {
 		logging.Logger.Error("Playlists fetched failed.", zap.Error(err))
@@ -43,10 +46,10 @@ func (p *PlaylistService) GetUserPlaylists(
 			&playlist.PlaylistId,
 			&playlist.Name,
 			&playlist.AuthorGoogleEmail,
-			&playlist.AuthorName,
-			&playlist.AuthorImage,
 			&playlist.CoverImage,
 			&playlist.IsPublic,
+			&playlist.AuthorName,
+			&playlist.AuthorImage,
 		); err != nil {
 			logging.Logger.Error("Parsing of one playlist failed", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Parsing of one playlist failed")
