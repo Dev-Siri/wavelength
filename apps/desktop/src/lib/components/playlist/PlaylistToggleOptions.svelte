@@ -19,13 +19,16 @@
   import { playlistsSchema, type Playlist } from "$lib/utils/validation/playlists";
   import { musicTrackDurationSchema } from "$lib/utils/validation/track-length";
 
+  import * as ContextMenu from "../ui/context-menu";
   import * as DropdownMenu from "../ui/dropdown-menu";
 
   const {
     music,
     toggle,
+    ui = "dropdown",
   }: {
     music: MusicTrack;
+    ui?: "dropdown" | "contextmenu";
     toggle:
       | {
           type: "add";
@@ -97,10 +100,12 @@
 
     setTimeout(() => toast.dismiss(loadingToast), 3000);
   }
+
+  const Menu = $derived(ui === "dropdown" ? DropdownMenu : ContextMenu);
 </script>
 
 {#if isTauri()}
-  <DropdownMenu.Item onclick={downloadTrack}>
+  <Menu.Item onclick={downloadTrack}>
     {#await isAlreadyDownloaded(music.videoId) then isDownloaded}
       {#if isDownloaded}
         <CheckIcon />
@@ -110,35 +115,32 @@
         Save
       {/if}
     {/await}
-  </DropdownMenu.Item>
+  </Menu.Item>
 {/if}
 {#if music.album}
-  <DropdownMenu.Item>
+  <Menu.Item>
     <AlbumIcon />
     <a href="/app/album/{music.album.browseId}">Go to album</a>
-  </DropdownMenu.Item>
+  </Menu.Item>
 {/if}
 {#if toggle.type === "add"}
   {#if playlistsQuery.data?.playlists}
-    <DropdownMenu.Sub>
-      <DropdownMenu.SubTrigger>
+    <Menu.Sub>
+      <Menu.SubTrigger>
         <PlusIcon size={20} />
         Add to playlist
-      </DropdownMenu.SubTrigger>
-      <DropdownMenu.SubContent>
+      </Menu.SubTrigger>
+      <Menu.SubContent>
         {#each playlistsQuery.data.playlists as playlist}
-          <DropdownMenu.Item onclick={() => playlistsAddMutation.mutate(playlist.playlistId)}>
+          <Menu.Item onclick={() => playlistsAddMutation.mutate(playlist.playlistId)}>
             {playlist.name}
-          </DropdownMenu.Item>
+          </Menu.Item>
         {/each}
-      </DropdownMenu.SubContent>
-    </DropdownMenu.Sub>
+      </Menu.SubContent>
+    </Menu.Sub>
   {/if}
 {:else}
-  <DropdownMenu.Item
-    onclick={() => playlistsAddMutation.mutate(toggle.from.playlistId)}
-    class="text-red-400"
-  >
+  <Menu.Item onclick={() => playlistsAddMutation.mutate(toggle.from.playlistId)}>
     <MinusIcon size={20} /> Remove from playlist.
-  </DropdownMenu.Item>
+  </Menu.Item>
 {/if}

@@ -32,14 +32,10 @@ export function getThumbnailUrl(videoId: string) {
   return new URL(`/music/track/${videoId}/thumbnail`, PUBLIC_BACKEND_URL).toString();
 }
 
-export function getStreamUrl(videoId: string, streamType: "audio" | "video") {
-  return new URL(`/stream/playback/${videoId}/${streamType}`, PUBLIC_BACKEND_URL).toString();
-}
-
 export async function openUrl(url: string) {
   if (isTauri()) {
-    const { openUrl } = await import("@tauri-apps/plugin-opener");
-    return await openUrl(url);
+    const { openUrl: openUrlNative } = await import("@tauri-apps/plugin-opener");
+    return await openUrlNative(url);
   }
 
   window.open(url);

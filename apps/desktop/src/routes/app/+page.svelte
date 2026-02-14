@@ -42,7 +42,7 @@
 
 <div class="p-6 bg-black h-screen w-full pb-[20%] overflow-auto">
   {#if followedArtistsQuery.data?.artists?.length}
-    <h2 class="text-xl font-semibold select-none mb-4">Your Follows</h2>
+    <h2 class="text-xl font-semibold select-none mb-4">Your favorite artists</h2>
     <div
       class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 gap-2 overflow-hidden {isFollowingListCollapsed
         ? 'h-32'

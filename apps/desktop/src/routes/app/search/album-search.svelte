@@ -6,7 +6,7 @@
   import { albumSearchResponseSchema } from "$lib/utils/validation/search-response";
 
   import AlbumCard from "$lib/components/album/AlbumCard.svelte";
-  import AlbumSkeleton from "$lib/components/skeletons/AlbumSkeleton.svelte";
+  import AlbumCardSkeleton from "$lib/components/skeletons/AlbumCardSkeleton.svelte";
 
   const { q }: { q: string } = $props();
 
@@ -22,7 +22,7 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full gap-8 px-2.5">
   {#if albumSearchQuery.isLoading}
     {#each new Array(15) as _}
-      <AlbumSkeleton />
+      <AlbumCardSkeleton />
     {/each}
   {:else if albumSearchQuery.isSuccess}
     {#if albumSearchQuery.data.albums}

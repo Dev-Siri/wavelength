@@ -40,8 +40,8 @@
         return lyrics;
       }
 
-      const parsedLyricsString = z.string().parse(cachedLyrics);
-      const lyrics = z.array(lyricSchema).parse(parsedLyricsString);
+      const parsedLyrics = JSON.parse(cachedLyrics);
+      const lyrics = z.array(lyricSchema).parse(parsedLyrics);
 
       return lyrics;
     },
@@ -82,7 +82,7 @@
         <button
           type="button"
           onclick={() => musicPlayerStore.musicPlayer?.seek(lyric.startMs / 1000)}
-          class="font-bold text-start text-3xl cursor-pointer duration-200 hover:text-white {playerProgressMs >
+          class="font-bold text-start text-4xl leading-relaxed cursor-pointer duration-200 hover:text-white {playerProgressMs >
             lyric.startMs && playerProgressMs < lyric.startMs + lyric.durMs
             ? 'text-white'
             : playerProgressMs > lyric.startMs

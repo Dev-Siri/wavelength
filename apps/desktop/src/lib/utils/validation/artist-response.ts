@@ -27,17 +27,19 @@ export const artistAlbumSchema = z.object({
   albumType: albumTypeSchema,
 });
 
+export const fullArtistSchema = z.object({
+  browseId: z.string(),
+  title: z.string(),
+  description: z.string().optional(),
+  thumbnail: z.string(),
+  audience: z.string(),
+  topSongs: z.array(topSongTrackSchema),
+  albums: z.array(artistAlbumSchema),
+  singlesAndEps: z.array(artistAlbumSchema),
+});
+
 export const artistResponseSchema = z.object({
-  artist: z.object({
-    browseId: z.string(),
-    title: z.string(),
-    description: z.string().optional(),
-    thumbnail: z.string(),
-    audience: z.string(),
-    topSongs: z.array(topSongTrackSchema),
-    albums: z.array(artistAlbumSchema),
-    singlesAndEps: z.array(artistAlbumSchema),
-  }),
+  artist: fullArtistSchema,
 });
 
 export const followedArtistResponseSchema = z.object({
@@ -45,3 +47,6 @@ export const followedArtistResponseSchema = z.object({
 });
 
 export type FollowedArtist = z.infer<typeof followedArtistSchema>;
+export type FullArtist = z.infer<typeof fullArtistSchema>;
+export type ArtistTopSong = z.infer<typeof topSongTrackSchema>;
+export type ArtistAlbum = z.infer<typeof artistAlbumSchema>;

@@ -12,7 +12,7 @@
 </script>
 
 <header
-  class="flex items-center z-50 justify-between py-2 bg-black/35 backdrop-blur-xl backdrop-saturate-150 px-4 {isTauri() &&
+  class="flex items-center z-50 justify-between h-full py-2 bg-black/35 backdrop-blur-xl backdrop-saturate-150 px-4 {isTauri() &&
     'pt-8'}"
 >
   <a

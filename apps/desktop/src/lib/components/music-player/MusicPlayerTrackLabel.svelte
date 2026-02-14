@@ -8,10 +8,11 @@
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
   import userStore from "$lib/stores/user.svelte";
-  import { durationify, punctuatify } from "$lib/utils/format.js";
+  import { durationify } from "$lib/utils/format.js";
   import { backendClient } from "$lib/utils/query-client";
   import { getThumbnailUrl } from "$lib/utils/url";
 
+  import ArtistLink from "../artist/ArtistLink.svelte";
   import Image from "../Image.svelte";
   import PlaylistToggleOptions from "../playlist/PlaylistToggleOptions.svelte";
   import * as DropdownMenu from "../ui/dropdown-menu";
@@ -29,9 +30,9 @@
 {#if musicQueueStore.musicPlayingNow}
   <DropdownMenu.Root>
     <DropdownMenu.Trigger>
-      <div class="relative group h-20 w-20 cursor-pointer">
+      <div class="relative group h-full w-full cursor-pointer">
         <EllipsisIcon
-          class="absolute bg-black bg-opacity-80 z-99999 rounded-full p-0.5 duration-200 top-2 right-2"
+          class="absolute bg-black bg-opacity-80 z-10 rounded-full p-0.5 duration-200 top-2 right-2"
           color="white"
           size={20}
         />
@@ -57,13 +58,17 @@
       />
     </DropdownMenu.Content>
   </DropdownMenu.Root>
-  <div class="hidden sm:block">
-    <p class="text-md ml-2 text-primary">
+  <div class="ml-2 hidden sm:block">
+    <p class="text-md text-primary">
       {musicQueueStore.musicPlayingNow.title}
     </p>
-    <p class="text-xs ml-2 text-muted-foreground">
-      {punctuatify(musicQueueStore.musicPlayingNow.artists.map(artist => artist.title))}
-    </p>
+    {#each musicQueueStore.musicPlayingNow.artists as artist, i}
+      <ArtistLink
+        {...artist}
+        class="text-xs"
+        trailingComma={i + 1 !== musicQueueStore.musicPlayingNow.artists.length}
+      />
+    {/each}
   </div>
 {:else}
   <div class="h-20 w-20 bg-primary-foreground rounded-md"></div>

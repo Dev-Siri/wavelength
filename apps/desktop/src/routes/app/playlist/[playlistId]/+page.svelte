@@ -1,36 +1,29 @@
 <script lang="ts">
   import { page } from "$app/state";
-  import { ClockIcon, HashIcon, ListPlusIcon } from "@lucide/svelte";
   import { createQuery } from "@tanstack/svelte-query";
-  import { isTauri } from "@tauri-apps/api/core";
   import { fly } from "svelte/transition";
   import { z } from "zod";
 
   import { svelteQueryKeys } from "$lib/constants/keys.js";
   import userStore from "$lib/stores/user.svelte.js";
   import { backendClient } from "$lib/utils/query-client.js";
-  import { playlistTracksSchema } from "$lib/utils/validation/playlist-track";
   import { playlistSchema } from "$lib/utils/validation/playlists.js";
-  import { themeColorSchema } from "$lib/utils/validation/theme-color";
   import { playlistTracksLengthSchema } from "$lib/utils/validation/track-length";
 
-  import ChangePlaylistVisibilityButton from "$lib/components/action-buttons/ChangePlaylistVisibilityButton.svelte";
-  import DownloadButton from "$lib/components/action-buttons/DownloadButton.svelte";
   import EditPlaylistDetailsDialog from "$lib/components/EditPlaylistDetailsDialog.svelte";
   import Image from "$lib/components/Image.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
   import PlaylistLength from "$lib/components/playlist/PlaylistLength.svelte";
-  import PlaylistPlayOptions from "$lib/components/playlist/PlaylistPlayOptions.svelte";
-  import PlaylistTracksList from "$lib/components/playlist/PlaylistTracksList.svelte";
-  import { Button } from "$lib/components/ui/button";
   import * as Dialog from "$lib/components/ui/dialog";
-  import * as Tooltip from "$lib/components/ui/tooltip";
+  import { MusicIcon } from "@lucide/svelte";
+  import PlaylistInteractableTracksList from "./playlist-interactable-tracks-list.svelte";
+  import PlaylistThemeGradient from "./playlist-theme-gradient.svelte";
 
-  let isRearrangingList = $state(false);
   let pageTitle = $state("Playlist");
 
   const playlistQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.playlist(page.params.playlistId ?? ""),
+    networkMode: "offlineFirst",
     queryFn: () =>
       backendClient(
         `/playlists/playlist/${page.params.playlistId}`,
@@ -38,14 +31,9 @@
       ),
   }));
 
-  const playlistTracksQuery = createQuery(() => ({
-    queryKey: svelteQueryKeys.playlistTrack(page.params.playlistId ?? ""),
-    queryFn: () =>
-      backendClient(`/playlists/playlist/${page.params.playlistId}/tracks`, playlistTracksSchema),
-  }));
-
   const playlistPlaylengthQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.playlistTrackLength(page.params.playlistId ?? ""),
+    networkMode: "offlineFirst",
     queryFn: () =>
       backendClient(
         `/playlists/playlist/${page.params.playlistId}/length`,
@@ -53,18 +41,7 @@
       ),
   }));
 
-  let playlistThumbnailUrl = $derived(playlistQuery.data?.playlist.coverImage ?? "");
-
-  const playlistThemeColorQuery = createQuery(() => ({
-    queryKey: svelteQueryKeys.themeColor(playlistThumbnailUrl),
-    queryFn() {
-      if (!playlistThumbnailUrl) return { r: 0, g: 0, b: 0 };
-
-      return backendClient(`/image/theme-color`, themeColorSchema, {
-        searchParams: { imageUrl: playlistThumbnailUrl },
-      });
-    },
-  }));
+  const playlistCover = $derived(playlistQuery.data?.playlist.coverImage ?? "");
 
   $effect(() => {
     if (playlistQuery.isSuccess) pageTitle = `${playlistQuery.data.playlist.name}`;
@@ -87,55 +64,45 @@
       </div>
     {:else if playlistQuery.isSuccess}
       {@const { playlist } = playlistQuery.data}
-      <Dialog.Content>
-        <EditPlaylistDetailsDialog initialPlaylist={playlist} />
-      </Dialog.Content>
+      <EditPlaylistDetailsDialog initialPlaylist={playlist} />
       <div class="relative w-full p-4 pb-2 bg-black h-full mt-4 sm:mt-6 lg:mt-1 rounded-2xl">
-        {#if playlistThemeColorQuery.isSuccess}
-          <div
-            class="absolute duration-200 h-1/2 z-0 inset-0 pointer-events-none"
-            style="
-        background: linear-gradient(to bottom, rgb({playlistThemeColorQuery.data
-              .r}, {playlistThemeColorQuery.data.g}, {playlistThemeColorQuery.data
-              .b}), transparent);
-        opacity: 0.5;
-      "
-          ></div>
-        {/if}
-        <div class="relative flex gap-4 mt-4">
+        <PlaylistThemeGradient {playlistCover} />
+        <div class="relative flex gap-4">
           {#if playlist.coverImage}
             {#key playlist}
               <Image
                 src={playlist.coverImage}
                 alt="Playlist Cover"
-                class="h-52 w-52 rounded-2xl aspect-square"
-                height={208}
-                width={208}
+                class="h-56 w-56  rounded-2xl  aspect-square"
+                height={224}
+                width={224}
               />
             {/key}
           {:else}
-            <div class="h-48 w-48 rounded-2xl aspect-square bg-muted"></div>
+            <div class="h-56 w-56 grid place-items-center rounded-2xl aspect-square bg-muted">
+              <MusicIcon class="text-gray-300" size={60} />
+            </div>
           {/if}
-          <div class="flex flex-col w-3/5 h-full gap-2">
-            <span class="text-md ml-0.5 select-none">Playlist</span>
+          <div class="flex flex-col justify-center w-3/5 h-52 gap-2">
+            <span class="text-sm ml-0.5 select-none">Playlist</span>
             {#if userStore.user?.email === playlist.authorGoogleEmail}
               <Dialog.Trigger class="text-start cursor-pointer">
-                <h1 class="text-6xl font-extrabold">{playlist.name}</h1>
+                <h1 class="text-6xl lg:text-7xl font-black text-balance">{playlist.name}</h1>
               </Dialog.Trigger>
             {:else}
-              <h1 class="text-6xl font-extrabold">{playlist.name}</h1>
+              <h1 class="text-6xl lg:text-7xl font-black text-balance">{playlist.name}</h1>
             {/if}
-            <div class="flex gap-2 items-center mt-8">
+            <div class="flex gap-2 items-center">
               {#key playlist.authorImage}
                 <Image
                   src={playlist.authorImage}
                   alt="Playlist Author"
-                  height={40}
-                  width={40}
+                  height={32}
+                  width={32}
                   class="rounded-full"
                 />
               {/key}
-              <p class="font-semibold">
+              <p class="text-sm">
                 {playlist.authorName}
                 {#key playlistPlaylengthQuery.dataUpdatedAt}
                   {#if playlistPlaylengthQuery.isSuccess}
@@ -148,72 +115,7 @@
             </div>
           </div>
         </div>
-        <!-- for the music list -->
-        <div class="h-full bg-black">
-          {#if playlistTracksQuery.isLoading}
-            <div class="w-full flex items-center justify-center py-20">
-              <LoadingSpinner />
-            </div>
-          {:else if playlistTracksQuery.isSuccess}
-            {@const { playlistTracks } = playlistTracksQuery.data}
-            {#if playlistTracks.length}
-              <div class="flex items-center gap-2 my-4">
-                <PlaylistPlayOptions tracks={playlistTracks} />
-                <ChangePlaylistVisibilityButton
-                  playlistId={playlist.playlistId}
-                  isPublic={playlist.isPublic}
-                />
-                {#if isTauri()}
-                  <DownloadButton source="playlist" tracks={playlistTracks} />
-                {/if}
-              </div>
-              <header class="flex items-center select-none text-muted-foreground">
-                <section class="flex items-center gap-10 w-1/3">
-                  <Tooltip.Root>
-                    <Tooltip.Trigger>
-                      <button
-                        type="button"
-                        class="cursor-pointer p-1.5 rounded-full duration-200"
-                        onclick={() => (isRearrangingList = !isRearrangingList)}
-                      >
-                        <HashIcon size={14} />
-                      </button>
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>
-                      <p>
-                        {isRearrangingList ? "Stop" : "Enable"} Rearranging Tracks
-                      </p>
-                    </Tooltip.Content>
-                  </Tooltip.Root>
-                  <p class="text-sm">Title</p>
-                </section>
-                <section class="flex justify-center w-1/3">
-                  <p class="text-sm">Album</p>
-                </section>
-                <section class="flex justify-end w-1/3">
-                  <ClockIcon size={14} class="mr-18" />
-                </section>
-              </header>
-              <div class="bg-secondary h-[1px] w-full my-2.5 rounded-full"></div>
-              <div class="mt-2 overflow-x-hidden pb-[20%]">
-                {#key playlistTracks}
-                  <PlaylistTracksList {playlistTracks} {playlist} {isRearrangingList} />
-                {/key}
-              </div>
-            {:else}
-              <div class="mt-10 flex gap-2 flex-col items-center justify-center">
-                <ListPlusIcon size={40} />
-                <h4 class="text-center text-2xl">Your playlist is empty</h4>
-                <Button
-                  variant="secondary"
-                  onclick={() => document.getElementById("search-input")?.focus()}
-                >
-                  Discover new music
-                </Button>
-              </div>
-            {/if}
-          {/if}
-        </div>
+        <PlaylistInteractableTracksList {playlist} />
       </div>
     {:else if playlistQuery.isError}
       <div class="h-3/4 w-full flex items-center justify-center">

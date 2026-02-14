@@ -40,7 +40,7 @@
       />
     </Button>
   </Tooltip.Trigger>
-  <Tooltip.Content>
+  <Tooltip.Content class="z-9999">
     <p>Now playing view</p>
   </Tooltip.Content>
 </Tooltip.Root>
@@ -60,7 +60,7 @@
       />
     </Button>
   </Tooltip.Trigger>
-  <Tooltip.Content>
+  <Tooltip.Content class="z-9999">
     <p>Queue</p>
   </Tooltip.Content>
 </Tooltip.Root>
@@ -85,7 +85,7 @@
       />
     </Button>
   </Tooltip.Trigger>
-  <Tooltip.Content>
+  <Tooltip.Content class="z-9999">
     <p>Lyrics</p>
   </Tooltip.Content>
 </Tooltip.Root>

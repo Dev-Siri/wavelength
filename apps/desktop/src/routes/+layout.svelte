@@ -1,23 +1,40 @@
 <script lang="ts">
   import { dev } from "$app/environment";
+  import { goto } from "$app/navigation";
   import { injectAnalytics } from "@vercel/analytics/sveltekit";
   import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit";
   import "../app.css";
 
-  import userStore from "$lib/stores/user.svelte.js";
-
-  import type { User } from "@auth/sveltekit";
   import type { Snippet } from "svelte";
-  import type { LayoutData } from "./$types.js";
+
+  import { localStorageKeys } from "$lib/constants/keys";
+  import userStore from "$lib/stores/user.svelte.js";
+  import { authUserSchema } from "$lib/utils/validation/auth";
 
   injectAnalytics({ mode: dev ? "development" : "production" });
   injectSpeedInsights();
 
-  const { children, data }: { children: Snippet; data: LayoutData } = $props();
+  const { children }: { children: Snippet } = $props();
 
   $effect(() => {
-    userStore.user = data.session?.user as User | null;
-    userStore.authToken = data.authToken as string | null;
+    function initializeAuth() {
+      const storedUser = localStorage.getItem(localStorageKeys.authUser);
+      const storedAuthToken = localStorage.getItem(localStorageKeys.authToken);
+
+      userStore.authToken = storedAuthToken;
+      if (!storedUser) return;
+
+      const parsedUser = JSON.parse(storedUser);
+      const validatedUser = authUserSchema.safeParse(parsedUser);
+
+      if (validatedUser.success) userStore.user = validatedUser.data;
+    }
+
+    initializeAuth();
+  });
+
+  $effect(() => {
+    if (userStore.user) goto("/app");
   });
 </script>
 

@@ -1,21 +1,26 @@
 <script lang="ts">
-  import { signOut } from "@auth/sveltekit/client";
-  import { LogOutIcon } from "@lucide/svelte";
-
+  import { localStorageKeys } from "$lib/constants/keys";
   import userStore from "$lib/stores/user.svelte.js";
 
   import Image from "./Image.svelte";
   import * as DropdownMenu from "./ui/dropdown-menu";
+
+  function handleSignout() {
+    localStorage.removeItem(localStorageKeys.authToken);
+    localStorage.removeItem(localStorageKeys.authUser);
+    userStore.user = null;
+    userStore.authToken = null;
+  }
 </script>
 
 {#if userStore.user}
   <DropdownMenu.Root>
     <DropdownMenu.Trigger class="cursor-pointer hover:opacity-80 duration-200">
       <div class="flex items-center gap-2">
-        {#if userStore.user.image}
+        {#if userStore.user.pictureUrl}
           <Image
-            src={userStore.user.image}
-            alt="{userStore.user.name}'s Avatar'"
+            src={userStore.user.pictureUrl}
+            alt="{userStore.user.displayName}'s Avatar'"
             height={40}
             width={40}
             class="rounded-full"
@@ -24,17 +29,7 @@
       </div>
     </DropdownMenu.Trigger>
     <DropdownMenu.Content>
-      <DropdownMenu.Label class="text-end text-lg leading-none">
-        {userStore.user.name}
-      </DropdownMenu.Label>
-      <DropdownMenu.Label class="text-end text-xs text-muted-foreground font-normal -mt-2">
-        {userStore.user.email ?? ""}
-      </DropdownMenu.Label>
-      <DropdownMenu.Separator />
-      <DropdownMenu.Item onclick={() => signOut()} class="pr-40 gap-1 items-center text-red-500">
-        <LogOutIcon size={16} />
-        Logout
-      </DropdownMenu.Item>
+      <DropdownMenu.Item onclick={handleSignout} class="pr-40">Log out</DropdownMenu.Item>
     </DropdownMenu.Content>
   </DropdownMenu.Root>
 {/if}

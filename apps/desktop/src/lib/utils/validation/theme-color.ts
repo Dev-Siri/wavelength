@@ -5,3 +5,5 @@ export const themeColorSchema = z.object({
   g: z.number(),
   b: z.number(),
 });
+
+export type ThemeColor = z.infer<typeof themeColorSchema>;

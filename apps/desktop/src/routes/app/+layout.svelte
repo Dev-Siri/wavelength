@@ -116,9 +116,11 @@
   <BackgroundDownloadManager>
     <Tooltip.Provider>
       <div class="h-screen flex flex-col bg-extra-dark">
-        <TopBar />
+        <div class="h-[10vh]">
+          <TopBar />
+        </div>
         <Splitpanes
-          class="flex-1 overflow-hidden"
+          class="h-[90vh] flex-1 overflow-hidden"
           on:resize={e => (sidebarWidth = e.detail[0].size)}
         >
           <Pane
@@ -168,7 +170,7 @@
             </Pane>
           {/if}
         </Splitpanes>
-        <div class="h-[11%] self-end w-full">
+        <div class="h-[10vh] self-end w-full">
           <MusicPlayer />
         </div>
       </div>

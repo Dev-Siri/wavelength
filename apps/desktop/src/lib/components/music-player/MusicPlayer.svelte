@@ -1,13 +1,19 @@
 <script lang="ts">
+  import { createQuery } from "@tanstack/svelte-query";
   import { isTauri } from "@tauri-apps/api/core";
+  import { get, set } from "idb-keyval";
 
   import type { PlayerEvent, StreamPlayer } from "$lib/stream-player/player";
 
+  import { svelteQueryKeys } from "$lib/constants/keys";
   import musicPlayerStore from "$lib/stores/music-player.svelte";
   import musicQueueStore from "$lib/stores/music-queue.svelte";
   import { NativePlayer } from "$lib/stream-player/native-player";
   import { WebEmbedPlayer } from "$lib/stream-player/web-embed";
+  import { getLuminance, mapOpacity } from "$lib/utils/color";
   import { punctuatify } from "$lib/utils/format";
+  import { backendClient } from "$lib/utils/query-client";
+  import { themeColorSchema } from "$lib/utils/validation/theme-color";
 
   import MusicPlayerControls from "./MusicPlayerControls.svelte";
   import MusicPlayerPlaybackOptions from "./MusicPlayerPlaybackOptions.svelte";
@@ -139,9 +145,50 @@
 
     handleMusicPlayingNowChange();
   });
+
+  const themeColorQuery = createQuery(() => ({
+    queryKey: svelteQueryKeys.themeColor(musicQueueStore.musicPlayingNow?.thumbnail ?? ""),
+    enabled: () => !!musicQueueStore.musicPlayingNow,
+    async queryFn() {
+      const themeColorKey = `theme-color-${musicQueueStore.musicPlayingNow?.videoId}`;
+      const cachedThemeColor = await get(themeColorKey);
+      if (!cachedThemeColor) {
+        const themeColor = await backendClient("/image/theme-color", themeColorSchema, {
+          searchParams: { imageUrl: musicQueueStore.musicPlayingNow?.thumbnail ?? "" },
+        });
+
+        await set(themeColorKey, themeColor);
+        return themeColor;
+      }
+
+      const parsedThemeColor = JSON.parse(themeColorKey);
+      const themeColor = themeColorSchema.parse(parsedThemeColor);
+      return themeColor;
+    },
+  }));
+
+  $effect(() => {
+    if (themeColorQuery.isSuccess) musicQueueStore.currentMusicTheme = themeColorQuery.data;
+  });
+
+  const themeColor = $derived.by(() => {
+    if (!musicQueueStore.currentMusicTheme) return "#111";
+
+    const { r, g, b } = musicQueueStore.currentMusicTheme;
+    const luminance = getLuminance(r, g, b);
+    const opacity = mapOpacity(luminance);
+
+    return `rgb(${r}, ${g}, ${b}, ${opacity})`;
+  });
 </script>
 
-<div class="flex bg-black/35 backdrop-blur-xl backdrop-saturate-150 h-full w-full pl-4 pb-2">
+<div
+  class="relative flex items-center bg-[#111] bg-blend-luminosity duration-200 h-full w-full px-1"
+>
+  <div
+    class="absolute inset-0 h-[120%] z-9999 blur-3xl pointer-events-none duration-200"
+    style="background-color: {themeColor}"
+  ></div>
   {#if isTauri()}
     <audio class="hidden" bind:this={nativePlayer}></audio>
   {:else}

@@ -18,18 +18,20 @@
 
   const likedTracksQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.likes,
+    networkMode: "offlineFirst",
     queryFn: () => backendClient("/music/track/likes", likedTracksSchema),
   }));
 
   const likesPlaylengthQuery = createQuery(() => ({
     queryKey: svelteQueryKeys.likesLength,
+    networkMode: "offlineFirst",
     queryFn: () => backendClient("/music/track/likes/length", likedTracksLengthSchema),
   }));
 </script>
 
 <svelte:head>
   <title>
-    {userStore.user?.name ? `${userStore.user.name}'s Liked Songs` : "Liked Songs"}
+    {userStore.user?.displayName ? `${userStore.user.displayName}'s Liked Songs` : "Liked Songs"}
   </title>
 </svelte:head>
 
@@ -40,32 +42,32 @@
     out:fly={{ y: 20, duration: 100 }}
   >
     <div class="w-full p-4 pb-2 bg-black h-full mt-4 sm:mt-6 lg:mt-1 rounded-2xl">
-      <div class="relative flex gap-4 mt-4">
-        {#if userStore.user.image}
-          {#key userStore.user.image}
-            <div class="grid place-items-center h-48 w-48 rounded-2xl like-gradient">
+      <div class="flex gap-4">
+        {#if userStore.user.pictureUrl}
+          {#key userStore.user.pictureUrl}
+            <div class="grid place-items-center h-56 w-56 rounded-2xl like-gradient">
               <HeartIcon fill="white" size={50} />
             </div>
           {/key}
         {:else}
           <div class="h-48 w-48 rounded-2xl aspect-square bg-muted"></div>
         {/if}
-        <div class="flex flex-col w-3/5 h-full gap-2">
-          <h1 class="text-6xl font-extrabold">Likes</h1>
+        <div class="flex flex-col justify-center w-3/5 h-56 gap-2">
+          <h1 class="text-6xl lg:text-7xl font-black">Liked Songs</h1>
           <div class="flex gap-2 items-center">
-            {#if userStore.user.image}
-              {#key userStore.user.image}
+            {#if userStore.user.pictureUrl}
+              {#key userStore.user.pictureUrl}
                 <Image
-                  src={userStore.user.image}
-                  alt="{userStore.user.name}'s Picture"
-                  height={40}
-                  width={40}
+                  src={userStore.user.pictureUrl}
+                  alt="{userStore.user.displayName}'s Picture"
+                  height={32}
+                  width={32}
                   class="rounded-full"
                 />
               {/key}
             {/if}
-            <p class="font-semibold">
-              {userStore.user.name}
+            <p class="text-sm">
+              {userStore.user.displayName}
               {#key likesPlaylengthQuery.dataUpdatedAt}
                 {#if likesPlaylengthQuery.isSuccess}
                   <PlaylistLength

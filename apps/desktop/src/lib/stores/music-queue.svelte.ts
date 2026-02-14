@@ -1,5 +1,6 @@
 import type { MusicTrack } from "$lib/utils/validation/music-track";
 import type { VideoType } from "$lib/utils/validation/playlist-track";
+import type { ThemeColor } from "$lib/utils/validation/theme-color";
 
 export interface QueueableMusic extends Omit<MusicTrack, "duration" | "isExplicit"> {
   videoType: VideoType;
@@ -7,6 +8,7 @@ export interface QueueableMusic extends Omit<MusicTrack, "duration" | "isExplici
 
 class MusicQueueStore {
   musicPlayingNow = $state<QueueableMusic | null>(null);
+  currentMusicTheme = $state<ThemeColor | null>(null);
   // Main playlist context used by all.
   musicPlaylistContext = $state<QueueableMusic[]>([]);
   // Stores a copy of the original playlist context when shuffle mode is enabled.

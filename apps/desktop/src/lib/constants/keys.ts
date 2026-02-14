@@ -2,10 +2,8 @@ export const WAVELENGTH_PLATFORM_KEY = "wavelength-web";
 
 export const localStorageKeys = {
   volume: "volume",
-} as const;
-
-export const cookieKeys = {
   authToken: "auth-token",
+  authUser: "auth-user",
 } as const;
 
 export const svelteQueryKeys = {

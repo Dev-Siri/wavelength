@@ -4,8 +4,8 @@
   import { svelteQueryKeys } from "$lib/constants/keys";
   import { backendClient } from "$lib/utils/query-client";
 
-  import ArtistLabel from "$lib/components/artist/ArtistLabel.svelte";
-  import ArtistLabelSkeleton from "$lib/components/skeletons/ArtistLabelSkeleton.svelte";
+  import ArtistCard from "$lib/components/artist/ArtistCard.svelte";
+  import ArtistCardSkeleton from "$lib/components/skeletons/ArtistCardSkeleton.svelte";
   import { artistSearchResponseSchema } from "$lib/utils/validation/search-response";
 
   const { q }: { q: string } = $props();
@@ -17,17 +17,16 @@
   }));
 </script>
 
-{#if artistSearchQuery.isLoading}
-  <div class="flex flex-wrap w-full gap-4">
-    <ArtistLabelSkeleton />
-    <ArtistLabelSkeleton />
-    <ArtistLabelSkeleton />
-    <ArtistLabelSkeleton />
-  </div>
-{:else if artistSearchQuery.isSuccess}
-  <div class="flex flex-wrap w-full gap-4">
-    {#each artistSearchQuery.data.artists as artist}
-      <ArtistLabel {artist} />
+<div
+  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 w-full px-2.5"
+>
+  {#if artistSearchQuery.isLoading}
+    {#each new Array(10) as _}
+      <ArtistCardSkeleton />
     {/each}
-  </div>
-{/if}
+  {:else if artistSearchQuery.isSuccess}
+    {#each artistSearchQuery.data.artists as artist}
+      <ArtistCard {...artist} name={artist.title} height={150} width={150} showName />
+    {/each}
+  {/if}
+</div>

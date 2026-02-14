@@ -1,7 +1,7 @@
-import type { User } from "@auth/sveltekit";
+import type { AuthUser } from "$lib/utils/validation/auth";
 
 class UserStore {
-  user = $state<User | null>(null);
+  user = $state<AuthUser | null>(null);
   authToken = $state<string | null>(null);
 }
 

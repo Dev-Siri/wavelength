@@ -9,9 +9,11 @@
     name,
     height = 128,
     width = 128,
+    showName,
   }: Pick<FollowedArtist, "thumbnail" | "browseId" | "name"> & {
     height?: number;
     width?: number;
+    showName?: boolean;
   } = $props();
 </script>
 
@@ -20,7 +22,7 @@
   role="button"
   tabindex={0}
   title={name}
-  class="cursor-pointer duration-200 my-0.5 aspect-square rounded-xl gap-2 hover:opacity-50"
+  class="flex flex-col items-center cursor-pointer duration-200 my-0.5 aspect-square rounded-xl gap-2 hover:opacity-50"
 >
   <Image
     src={thumbnail}
@@ -29,4 +31,7 @@
     {width}
     class="rounded-full aspect-square object-cover duration-200"
   />
+  {#if showName}
+    <p>{name}</p>
+  {/if}
 </a>

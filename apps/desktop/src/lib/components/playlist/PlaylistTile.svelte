@@ -60,13 +60,7 @@
   }
 
   const coverBtnProps = $derived(
-    mode === "full"
-      ? {
-          onclick: playPlaylist,
-        }
-      : {
-          href: `/app/playlist/${playlistId}`,
-        },
+    mode === "full" ? { onclick: playPlaylist } : { href: `/app/playlist/${playlistId}` },
   );
 </script>
 
