@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ArrowLeft, DownloadIcon, HouseIcon } from "@lucide/svelte";
+  import { ChevronLeftIcon, DownloadIcon, HouseIcon } from "@lucide/svelte";
   import { isTauri } from "@tauri-apps/api/core";
 
   import userStore from "$lib/stores/user.svelte.js";
@@ -28,9 +28,9 @@
       size="icon"
       class="rounded-full px-4"
     >
-      <ArrowLeft />
+      <ChevronLeftIcon />
     </Button>
-    <Button href="/" variant="secondary" size="icon" class="rounded-full px-4">
+    <Button href="/app" variant="secondary" size="icon" class="rounded-full px-4">
       <HouseIcon />
     </Button>
     <SearchBar />

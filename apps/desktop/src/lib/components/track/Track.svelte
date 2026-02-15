@@ -65,13 +65,13 @@
         onkeydown={e => (e.key === "Enter" || e.key === "Space") && playSong()}
         class="flex rounded-2xl justify-between items-center duration-200 p-1.5 gap-2 hover:bg-muted/70 w-full pr-4 group cursor-pointer"
       >
-        <div class="flex gap-2 {showAlbum && music.album ? 'w-1/3' : 'w-2/3'}">
-          <TrackCover thumbnail={music.thumbnail} />
-          <div class="flex flex-col gap-2 w-fit mt-2">
-            <p class="leading-none text-md">
+        <div class="flex items-center gap-2 {showAlbum && music.album ? 'w-1/3' : 'w-2/3'}">
+          <TrackCover {...music} />
+          <div class="flex flex-col gap-2 w-fit justify-center mt-2">
+            <p class="leading-none text-base">
               {music.title.length > 45 ? `${music.title.slice(0, 44).trim()}...` : music.title}
             </p>
-            <p class="text-sm text-muted-foreground leading-none -mt-1">
+            <p class="text-sm text-muted-foreground leading-none">
               {#if music.isExplicit}
                 <ExplicitIndicator />
               {/if}
@@ -93,7 +93,7 @@
             <AlbumLink {...music.album} />
           </div>
         {/if}
-        <div class="flex items-center justify-end gap-2 w-1/3">
+        <div class="grid grid-cols-3 place-items-center w-1/3">
           {#if userStore.user}
             <TrackLikeButton {music} />
           {/if}

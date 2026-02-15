@@ -54,7 +54,7 @@
     variant="link"
     target="_blank"
     referrerpolicy="no-referrer"
-    class={cn("p-0 m-0 -mt-2 mr-1 text-sm text-muted-foreground", className)}
+    class={cn("p-0 m-0 -mt-2 mr-1 text-xs text-muted-foreground", className)}
     href={artistPagePath}
     onclick={handleNavigation}
   >
@@ -66,7 +66,7 @@
       <div class="relative inline">
         <Button
           variant="link"
-          class={cn("p-0 m-0 h-4 -mt-2 mr-1 text-sm text-muted-foreground", className)}
+          class={cn("p-0 m-0 h-4 -mt-2 mr-1 text-xs text-muted-foreground", className)}
           href={artistPagePath}
           onclick={handleNavigation}
         >

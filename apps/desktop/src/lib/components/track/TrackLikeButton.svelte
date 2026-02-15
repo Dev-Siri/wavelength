@@ -71,13 +71,13 @@
     likeMutation.mutate();
   }
 
-  const likedClasses = $derived(isLiked ? "text-red-500" : "");
+  const likedClasses = $derived(isLiked ? "text-red-500" : "scale-0 group-hover:scale-100");
 </script>
 
 <Button
   variant="ghost"
   size="icon"
-  class="flex items-center justify-center text-muted-foreground hover:bg-transparent {likedClasses}"
+  class="flex items-center justify-center text-muted-foreground transition-all hover:bg-transparent {likedClasses}"
   onclick={handleLike}
 >
   {#if isLiked}

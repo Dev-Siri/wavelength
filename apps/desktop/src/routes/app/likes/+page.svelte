@@ -97,8 +97,8 @@
               <section class="flex justify-center w-1/3">
                 <p class="text-sm">Album</p>
               </section>
-              <section class="flex justify-end w-1/3">
-                <ClockIcon size={14} class="mr-18" />
+              <section class="flex justify-center w-1/3">
+                <ClockIcon size={14} class="mr-6" />
               </section>
             </header>
             <div class="bg-secondary h-[1px] w-full my-2.5 rounded-full"></div>
