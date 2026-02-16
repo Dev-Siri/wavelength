@@ -1,7 +1,7 @@
 <script lang="ts">
   import { CheckIcon, UserIcon } from "@lucide/svelte";
   import { createMutation, createQuery, useQueryClient } from "@tanstack/svelte-query";
-  import { toast } from "svelte-french-toast";
+  import { toast } from "svelte-sonner";
   import { scale } from "svelte/transition";
   import { z } from "zod";
 

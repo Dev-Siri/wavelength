@@ -2,11 +2,12 @@
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "WavLen",
   "mainBinaryName": "WavLen",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "identifier": "siri.dev.wavelength",
   "build": {
     "beforeDevCommand": "bun run dev",
-    "frontendDist": "https://mavelength.vercel.app",
+    "frontendDist": "../build",
+    "beforeBuildCommand": "TAURI_BUILD=true bun run build",
     "devUrl": "http://localhost:5173"
   },
   "app": {

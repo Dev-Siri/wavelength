@@ -1,7 +1,7 @@
 <script lang="ts">
   import { GlobeIcon, LockIcon } from "@lucide/svelte";
   import { createMutation, useQueryClient } from "@tanstack/svelte-query";
-  import toast from "svelte-french-toast";
+  import { toast } from "svelte-sonner";
   import { z } from "zod";
 
   import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";

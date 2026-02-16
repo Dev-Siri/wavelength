@@ -6,7 +6,7 @@
   import downloadStore from "$lib/stores/download.svelte";
   import { isAlreadyDownloaded } from "$lib/utils/download";
 
-  import toast from "svelte-french-toast";
+  import { toast } from "svelte-sonner";
   import Button from "../ui/button/button.svelte";
 
   const {

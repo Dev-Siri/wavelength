@@ -1,3 +1,4 @@
+import staticAdapter from "@sveltejs/adapter-static";
 import vercelAdapter from "@sveltejs/adapter-vercel";
 import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 
@@ -5,7 +6,7 @@ import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 const config = {
   preprocess: vitePreprocess(),
   kit: {
-    adapter: vercelAdapter(),
+    adapter: process.env.TAURI_BUILD ? staticAdapter({ fallback: "index.html" }) : vercelAdapter(),
     prerender: {
       crawl: false,
     },

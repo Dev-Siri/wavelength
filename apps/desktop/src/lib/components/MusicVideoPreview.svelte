@@ -12,6 +12,8 @@
   let musicVideoPreviewWebEmbed: HTMLDivElement | null = $state(null);
   let musicVideoPreviewNative: HTMLVideoElement | null = $state(null);
 
+  let interval: number | null = null;
+
   async function viewRandomChunks() {
     if (
       musicQueueStore.musicPlayingNow?.videoType === "VIDEO_TYPE_UVIDEO" ||
@@ -26,6 +28,18 @@
 
     await musicPlayerStore.musicPreviewPlayer.seek(currentTime + 10);
     await musicPlayerStore.musicPreviewPlayer.play();
+  }
+
+  async function loadVideo() {
+    const playerDuration = (await musicPlayerStore.musicPlayer?.getCurrentTime()) ?? 0;
+
+    await musicPlayerStore.musicPreviewPlayer?.load(
+      musicVideoId,
+      musicQueueStore.musicPlayingNow?.videoType === "VIDEO_TYPE_UVIDEO" ? playerDuration : 10,
+    );
+
+    interval = setInterval(viewRandomChunks, 5000);
+    await musicPlayerStore.musicPreviewPlayer?.mute();
   }
 
   $effect(() => {
@@ -53,25 +67,13 @@
 
       musicPlayerStore.musicPreviewPlayer = ytPlayer;
     }
-    let interval: number;
-
-    async function loadVideo() {
-      const playerDuration = (await musicPlayerStore.musicPlayer?.getCurrentTime()) ?? 0;
-
-      await ytPlayer?.load(
-        musicVideoId,
-        musicQueueStore.musicPlayingNow?.videoType === "VIDEO_TYPE_UVIDEO" ? playerDuration : 10,
-      );
-
-      interval = setInterval(viewRandomChunks, 5000);
-      await ytPlayer?.mute();
-    }
 
     initializePlayer();
     loadVideo();
     return () => {
-      clearInterval(interval);
+      if (interval) clearInterval(interval);
       ytPlayer?.dispose();
+      musicPlayerStore.musicPreviewPlayer = null;
     };
   });
 
@@ -102,7 +104,7 @@
 </script>
 
 {#if isTauri()}
-  <video id="preview-player" loop class={playerClasses} bind:this={musicVideoPreviewNative}>
+  <video id="preview-player" muted loop class={playerClasses} bind:this={musicVideoPreviewNative}>
     <track kind="captions" />
   </video>
 {:else}

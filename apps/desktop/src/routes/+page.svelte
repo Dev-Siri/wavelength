@@ -4,18 +4,6 @@
   import LandingHeader from "$lib/components/LandingHeader.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import AndroidLogo from "$lib/components/vectors/AndroidLogo.svelte";
-
-  let screenWidth = $state(0);
-
-  $effect(() => {
-    screenWidth = window.innerWidth;
-
-    const handleResize = () => (screenWidth = window.innerWidth);
-
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  });
 </script>
 
 <LandingHeader />

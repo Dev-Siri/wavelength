@@ -2,7 +2,7 @@
   import { AlbumIcon, CheckIcon, DownloadIcon, MinusIcon, PlusIcon } from "@lucide/svelte";
   import { createMutation, createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { isTauri } from "@tauri-apps/api/core";
-  import toast from "svelte-french-toast";
+  import { toast } from "svelte-sonner";
   import { z } from "zod";
 
   import type { MusicTrack } from "$lib/utils/validation/music-track";

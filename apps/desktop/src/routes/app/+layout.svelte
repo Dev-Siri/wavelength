@@ -1,7 +1,6 @@
 <script lang="ts">
   import { QueryClient } from "@tanstack/svelte-query";
   import { PersistQueryClientProvider } from "@tanstack/svelte-query-persist-client";
-  import { Toaster } from "svelte-french-toast";
   import { Pane, Splitpanes } from "svelte-splitpanes";
   import { fly } from "svelte/transition";
   import { pwaInfo } from "virtual:pwa-info";
@@ -20,6 +19,7 @@
   import NowPlayingOverlay from "$lib/components/overlays/NowPlayingOverlay.svelte";
   import Sidebar from "$lib/components/Sidebar.svelte";
   import TopBar from "$lib/components/TopBar.svelte";
+  import { Toaster } from "$lib/components/ui/sonner";
   import * as Tooltip from "$lib/components/ui/tooltip";
 
   interface PaneLimit {
@@ -114,6 +114,7 @@
 
 <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
   <BackgroundDownloadManager>
+    <Toaster position="top-center" />
     <Tooltip.Provider>
       <div class="h-screen flex flex-col bg-extra-dark">
         <div class="h-[10vh]">
@@ -175,9 +176,5 @@
         </div>
       </div>
     </Tooltip.Provider>
-    <Toaster
-      position="bottom-right"
-      toastOptions={{ style: `background-color: #111; color: white;` }}
-    />
   </BackgroundDownloadManager>
 </PersistQueryClientProvider>

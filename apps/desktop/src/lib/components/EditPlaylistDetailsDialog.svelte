@@ -2,7 +2,7 @@
   import { LoaderCircleIcon, PencilIcon } from "@lucide/svelte";
   import { createMutation, useQueryClient } from "@tanstack/svelte-query";
   import { UploadButton } from "@uploadthing/svelte";
-  import toast from "svelte-french-toast";
+  import { toast } from "svelte-sonner";
   import { z } from "zod";
 
   import type { Playlist } from "$lib/utils/validation/playlists";
