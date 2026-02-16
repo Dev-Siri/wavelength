@@ -25,6 +25,7 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_cors_fetch::init())
         .setup(|app| {
             let tydle = youtube::init_extractor(app.path().cache_dir()?)?;
 

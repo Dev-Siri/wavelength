@@ -10,6 +10,7 @@
     "fs:read-all",
     "fs:write-all",
     "fs:allow-exists",
+    "cors-fetch:default",
     {
       "identifier": "fs:allow-mkdir",
       "allow": [{ "path": "$APPDATA" }, { "path": "$APPDATA/**" }]
