@@ -1,4 +1,5 @@
 import * as grpc from "@grpc/grpc-js";
+import { YTNodes } from "youtubei.js";
 
 import {
   GetQuickPicksResponse,
@@ -12,39 +13,44 @@ import {
   QuickPick,
 } from "@/gen/proto/common.js";
 import { getYtMusicClient } from "@/innertube.js";
-import { quickPicksSchema } from "@/schemas/quick-picks.js";
+import { createErrorResponse } from "@/response.js";
 import { getHighestQualityThumbnail } from "@/utils/thumbnail.js";
 
 export default async function getQuickPicks(
   call: grpc.ServerUnaryCall<GetQuickPicksRequest, GetQuickPicksResponse>,
-  callback: grpc.sendUnaryData<GetQuickPicksResponse>
+  callback: grpc.sendUnaryData<GetQuickPicksResponse>,
 ) {
   try {
     const music = await getYtMusicClient(call.request.gl || DEFAULT_CLIENT);
     const { sections } = await music.getHomeFeed();
 
-    if (!sections) {
-      const status = new grpc.StatusBuilder()
-        .withCode(grpc.status.INTERNAL)
-        .withDetails("YouTube Music sent an empty response.")
-        .build();
-      return callback(status);
-    }
+    if (!sections)
+      return callback(
+        createErrorResponse("YouTube Music sent an empty response."),
+      );
 
-    const [quickPicks] = sections;
-    const parsedQuickPicks = quickPicksSchema.safeParse(quickPicks);
-
-    if (!parsedQuickPicks.success) {
-      const status = new grpc.StatusBuilder()
-        .withCode(grpc.status.INTERNAL)
-        .withDetails("Quick Picks response is invalid.")
-        .build();
-      return callback(status);
-    }
+    const quickPicks = sections[0]?.as(YTNodes.MusicCarouselShelf);
+    if (!quickPicks)
+      return callback(
+        createErrorResponse("YouTube Music sent an invalid response."),
+      );
 
     const responseQuickPicks: QuickPick[] = [];
 
-    for (const parsedQuickPick of parsedQuickPicks.data.contents) {
+    for (const quickPick of quickPicks.contents) {
+      if (!quickPick.is(YTNodes.MusicResponsiveListItem)) continue;
+
+      const parsedQuickPick = quickPick.as(YTNodes.MusicResponsiveListItem);
+
+      if (
+        !parsedQuickPick.thumbnail ||
+        !parsedQuickPick.artists ||
+        !parsedQuickPick.id ||
+        !parsedQuickPick.title ||
+        !parsedQuickPick.album?.id
+      )
+        continue;
+
       const thumbnail = getHighestQualityThumbnail(parsedQuickPick.thumbnail);
       if (!thumbnail) continue;
 
@@ -52,7 +58,7 @@ export default async function getQuickPicks(
       for (const artist of parsedQuickPick.artists) {
         const quickPicksArtists = {
           title: artist.name,
-          browseId: artist.channel_id,
+          browseId: artist.channel_id ?? "VARIOUS_ARTISTS",
         } satisfies EmbeddedArtist;
 
         artists.push(quickPicksArtists);
@@ -82,10 +88,6 @@ export default async function getQuickPicks(
     return callback(null, { quickPicks: responseQuickPicks });
   } catch (error) {
     console.error("Quick picks fetch failed: ", error);
-    const status = new grpc.StatusBuilder()
-      .withCode(grpc.status.INTERNAL)
-      .withDetails("Quick picks fetch failed: " + String(error))
-      .build();
-    callback(status);
+    callback(createErrorResponse(`Quick picks fetch failed: ${error}`));
   }
 }

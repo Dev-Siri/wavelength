@@ -1,4 +1,5 @@
 import * as grpc from "@grpc/grpc-js";
+import { YTNodes } from "youtubei.js";
 
 import type {
   GetArtistDetailsRequest,
@@ -12,11 +13,7 @@ import {
   type Artist_TopSongTrack,
 } from "@/gen/proto/common.js";
 import { getYtMusicClient } from "@/innertube.js";
-import {
-  artistDetailsResponseAlbumsSchema,
-  artistDetailsResponseHeaderSchema,
-  artistDetailsResponseTopSongsSchema,
-} from "@/schemas/artist.js";
+import { createErrorResponse } from "@/response.js";
 import { parseStringToAlbumType } from "@/utils/parse.js";
 import { getHighestQualityThumbnail } from "@/utils/thumbnail.js";
 
@@ -28,56 +25,54 @@ export default async function getArtistDetails(
     const music = await getYtMusicClient();
     const { header, sections } = await music.getArtist(call.request.browseId);
 
-    const parsedArtistDetails =
-      artistDetailsResponseHeaderSchema.safeParse(header);
-
-    const parsedTopSongs = artistDetailsResponseTopSongsSchema.safeParse(
-      sections[0]?.contents,
+    const parsedArtistDetails = header?.as(YTNodes.MusicImmersiveHeader);
+    const topSongsList = sections[0]?.contents.as(
+      YTNodes.MusicResponsiveListItem,
     );
-
-    const parsedAlbums = artistDetailsResponseAlbumsSchema.safeParse(
-      sections[1]?.contents,
-    );
-
-    const parsedSinglesAndEps = artistDetailsResponseAlbumsSchema.safeParse(
-      sections[2]?.contents,
-    );
+    const albumsList = sections[1]?.contents.as(YTNodes.MusicTwoRowItem);
+    const singlesAndEpsList = sections[2]?.contents.as(YTNodes.MusicTwoRowItem);
 
     if (
-      !parsedArtistDetails.success ||
-      !parsedTopSongs.success ||
-      !parsedAlbums.success ||
-      !parsedSinglesAndEps.success
-    ) {
-      const status = new grpc.StatusBuilder()
-        .withCode(grpc.status.INTERNAL)
-        .withDetails("YouTube music sent an invalid response.")
-        .build();
-      return callback(status, null);
-    }
+      !parsedArtistDetails ||
+      !parsedArtistDetails.title.text ||
+      !parsedArtistDetails.subscription_button?.channel_id ||
+      !parsedArtistDetails.thumbnail ||
+      !topSongsList ||
+      !albumsList ||
+      !singlesAndEpsList
+    )
+      return callback(
+        createErrorResponse("YouTube music sent an invalid response"),
+      );
 
-    const thumbnail = getHighestQualityThumbnail(
-      parsedArtistDetails.data.thumbnail,
-    );
-    if (!thumbnail) {
-      const status = new grpc.StatusBuilder()
-        .withCode(grpc.status.INTERNAL)
-        .withDetails("YouTube music sent an invalid response.")
-        .build();
-      return callback(status, null);
-    }
+    const thumbnail = getHighestQualityThumbnail(parsedArtistDetails.thumbnail);
+    if (!thumbnail)
+      return callback(
+        createErrorResponse(
+          "YouTube music sent an invalid response: Missing thumbnail.",
+        ),
+      );
 
     const topSongs: Artist_TopSongTrack[] = [];
     const albums: Artist_ArtistAlbum[] = [];
     const singlesAndEps: Artist_ArtistAlbum[] = [];
 
-    for (const parsedTopSong of parsedTopSongs.data) {
+    for (const parsedTopSong of topSongsList) {
+      if (!parsedTopSong.thumbnail || !parsedTopSong.id || !parsedTopSong.title)
+        continue;
+
       const [, , playCount, albumInfo] = parsedTopSong.flex_columns;
-      const albumBrowseId =
-        albumInfo?.title.runs[0]?.endpoint?.payload?.browseId;
+
+      const albumId = albumInfo?.title.endpoint?.payload.browseId;
 
       const thumbnail = getHighestQualityThumbnail(parsedTopSong.thumbnail);
-      if (!playCount || !albumInfo || !albumBrowseId || !thumbnail) continue;
+      if (
+        !playCount?.title.text ||
+        !albumInfo?.title.text ||
+        !albumId ||
+        !thumbnail
+      )
+        continue;
 
       const topSongTrack = {
         videoId: parsedTopSong.id,
@@ -85,42 +80,46 @@ export default async function getArtistDetails(
         playCount: playCount.title.text,
         album: {
           title: albumInfo.title.text,
-          browseId: albumBrowseId,
+          browseId: albumId,
         },
         thumbnail: thumbnail.url,
-        isExplicit: !!parsedTopSong.badges?.some(
-          (badge) => badge.icon_type === "MUSIC_EXPLICIT_BADGE",
-        ),
+        isExplicit: !!parsedTopSong.badges
+          ?.as(YTNodes.MusicInlineBadge)
+          ?.some((badge) => badge.icon_type === "MUSIC_EXPLICIT_BADGE"),
       } satisfies Artist_TopSongTrack;
 
       topSongs.push(topSongTrack);
     }
 
-    for (const parsedAlbum of parsedAlbums.data) {
-      const thumbnail = getHighestQualityThumbnail({
-        type: "MusicThumbnail",
-        contents: parsedAlbum.thumbnail,
-      });
+    for (const parsedAlbum of albumsList) {
+      if (!parsedAlbum.thumbnail || !parsedAlbum.id || !parsedAlbum.title.text)
+        continue;
 
-      if (!thumbnail) continue;
+      const thumbnail = getHighestQualityThumbnail(parsedAlbum.thumbnail);
+      const releaseDate = parsedAlbum.year ?? parsedAlbum.subtitle.text;
+      if (!thumbnail || !releaseDate) continue;
 
       const album = {
         albumId: parsedAlbum.id,
         title: parsedAlbum.title.text,
         albumType: AlbumType.ALBUM_TYPE_ALBUM,
-        releaseDate: parsedAlbum.year ?? parsedAlbum.subtitle.text,
+        releaseDate,
         thumbnail: thumbnail.url,
       } satisfies Artist_ArtistAlbum;
 
       albums.push(album);
     }
 
-    for (const parsedSingleOrEp of parsedSinglesAndEps.data) {
+    for (const parsedSingleOrEp of singlesAndEpsList) {
+      if (
+        !parsedSingleOrEp.subtitle.text ||
+        !parsedSingleOrEp.title.text ||
+        !parsedSingleOrEp.id
+      )
+        continue;
+
       const [albumTypeStr] = parsedSingleOrEp.subtitle.text.split("•");
-      const thumbnail = getHighestQualityThumbnail({
-        type: "MusicThumbnail",
-        contents: parsedSingleOrEp.thumbnail,
-      });
+      const thumbnail = getHighestQualityThumbnail(parsedSingleOrEp.thumbnail);
 
       if (!albumTypeStr || !thumbnail) continue;
 
@@ -139,13 +138,13 @@ export default async function getArtistDetails(
     }
 
     const artist = {
-      title: parsedArtistDetails.data.title.text,
-      description: parsedArtistDetails.data?.description?.text ?? "",
-      browseId: parsedArtistDetails.data.subscription_button.channel_id,
+      title: parsedArtistDetails.title.text,
+      description: parsedArtistDetails.description?.text ?? "",
+      browseId: parsedArtistDetails.subscription_button?.channel_id,
       audience:
-        parsedArtistDetails.data.subscription_button.subscribe_accessibility_label
-          .replace("Subscribe to this channel.", "")
-          .trim(),
+        parsedArtistDetails.subscription_button?.subscribe_accessibility_label
+          ?.replace("Subscribe to this channel.", "")
+          .trim() ?? "low monthly listeners",
       thumbnail: thumbnail.url,
       topSongs,
       albums,
@@ -155,10 +154,6 @@ export default async function getArtistDetails(
     return callback(null, { artist });
   } catch (error) {
     console.error("Artist details fetch failed: ", error);
-    const status = new grpc.StatusBuilder()
-      .withCode(grpc.status.INTERNAL)
-      .withDetails("Artist details fetch failed: " + String(error))
-      .build();
-    callback(status);
+    callback(createErrorResponse(`Artist details fetch failed: ${error}`));
   }
 }

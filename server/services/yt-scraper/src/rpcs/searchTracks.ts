@@ -1,4 +1,5 @@
 import * as grpc from "@grpc/grpc-js";
+import { YTNodes } from "youtubei.js";
 
 import type {
   EmbeddedAlbum,
@@ -11,8 +12,7 @@ import type {
 } from "@/gen/proto/yt_scraper.js";
 
 import { getYtMusicClient } from "@/innertube.js";
-import { correctedSearchSuggestions } from "@/schemas/search-suggestion.js";
-import { searchedTracksSchema } from "@/schemas/searched-tracks.js";
+import { createErrorResponse } from "@/response.js";
 import { getHighestQualityThumbnail } from "@/utils/thumbnail.js";
 
 export default async function searchTracks(
@@ -25,54 +25,43 @@ export default async function searchTracks(
       type: "song",
     });
 
-    if (!contents) {
-      const status = new grpc.StatusBuilder()
-        .withCode(grpc.status.INTERNAL)
-        .withDetails("YouTube Music sent an empty response.")
-        .build();
-      return callback(status);
-    }
+    if (!contents)
+      callback(createErrorResponse("YouTube Music sent an empty response."));
 
-    let parsedContents = searchedTracksSchema.safeParse(contents[0]);
+    let parsedContents = contents?.[0]?.as(YTNodes.MusicShelf);
 
-    if (!parsedContents.success) {
-      const attemptQueryCorrectionContents =
-        correctedSearchSuggestions.safeParse(contents[0]?.contents?.[0]);
-      if (!attemptQueryCorrectionContents.success) {
-        const status = new grpc.StatusBuilder()
-          .withCode(grpc.status.INTERNAL)
-          .withDetails("YouTube Music sent an invalid response.")
-          .build();
-        return callback(status);
-      }
+    if (!parsedContents) {
+      const maybeCorrection = contents?.[0]?.contents?.[0];
+      if (
+        !maybeCorrection ||
+        !maybeCorrection.is(YTNodes.DidYouMean) ||
+        !maybeCorrection.is(YTNodes.ShowingResultsFor) ||
+        !maybeCorrection.corrected_query.text
+      )
+        return callback(
+          createErrorResponse("YouTube Music sent an invalid response."),
+        );
 
       const { contents: correctedContents } = await music.search(
-        attemptQueryCorrectionContents.data.corrected_query.text,
-        {
-          type: "song",
-        },
+        maybeCorrection.corrected_query.text,
+        { type: "song" },
       );
 
-      if (!correctedContents) {
-        const status = new grpc.StatusBuilder()
-          .withCode(grpc.status.INTERNAL)
-          .withDetails("YouTube Music sent an empty response.")
-          .build();
-        return callback(status);
-      }
-      parsedContents = searchedTracksSchema.safeParse(correctedContents[0]);
+      if (!correctedContents)
+        return callback(
+          createErrorResponse("YouTube Music sent an empty response."),
+        );
+
+      parsedContents = correctedContents[0]?.as(YTNodes.MusicShelf);
     }
 
-    if (!parsedContents.success) {
-      const status = new grpc.StatusBuilder()
-        .withCode(grpc.status.INTERNAL)
-        .withDetails("YouTube Music sent an invalid response.")
-        .build();
-      return callback(status);
-    }
+    if (!parsedContents)
+      return callback(
+        createErrorResponse("YouTube Music sent an invalid response."),
+      );
 
     const tracks: Track[] = [];
-    for (const parsedTrack of parsedContents.data.contents) {
+    for (const parsedTrack of parsedContents.contents) {
       const title = parsedTrack.flex_columns[0]?.title?.text;
       if (!title) continue;
 
@@ -80,7 +69,14 @@ export default async function searchTracks(
       if (!subtitle) continue;
 
       const [, , duration] = subtitle.split("•");
-      if (!duration) continue;
+      if (
+        !duration ||
+        !parsedTrack.thumbnail ||
+        !parsedTrack.artists ||
+        !parsedTrack.duration ||
+        !parsedTrack.id
+      )
+        continue;
 
       const thumbnail = getHighestQualityThumbnail(parsedTrack.thumbnail);
       if (!thumbnail) continue;
@@ -89,7 +85,7 @@ export default async function searchTracks(
       for (const artist of parsedTrack.artists) {
         const quickPicksArtists = {
           title: artist.name,
-          browseId: artist.channel_id,
+          browseId: artist.channel_id ?? "VARIOUS_ARTISTS",
         } satisfies EmbeddedArtist;
 
         artists.push(quickPicksArtists);
@@ -103,12 +99,12 @@ export default async function searchTracks(
         duration: parsedTrack.duration.seconds,
         thumbnail: thumbnail.url,
         artists,
-        isExplicit: !!parsedTrack?.badges?.some(
-          (badge) => badge.icon_type === "MUSIC_EXPLICIT_BADGE",
-        ),
+        isExplicit: !!parsedTrack?.badges
+          ?.as(YTNodes.MusicInlineBadge)
+          .some((badge) => badge.icon_type === "MUSIC_EXPLICIT_BADGE"),
       };
 
-      if (parsedTrack.album) {
+      if (parsedTrack.album && parsedTrack.album.id) {
         const quickPickAlbum = {
           browseId: parsedTrack.album.id,
           title: parsedTrack.album.name,
@@ -123,10 +119,6 @@ export default async function searchTracks(
     return callback(null, { tracks });
   } catch (error) {
     console.error("Tracks search failed: ", error);
-    const status = new grpc.StatusBuilder()
-      .withCode(grpc.status.INTERNAL)
-      .withDetails("Tracks search failed: " + String(error))
-      .build();
-    callback(status);
+    callback(createErrorResponse(`Tracks search failed: ${error}`));
   }
 }

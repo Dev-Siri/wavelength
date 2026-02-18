@@ -104,6 +104,7 @@ message AlbumTrack {
   uint32 position_in_album = 4;
 
   optional bool is_explicit = 5;
+  repeated EmbeddedArtist artists = 6;
 }
 
 enum AlbumType {
@@ -115,14 +116,15 @@ enum AlbumType {
 
 message Album {
   string title = 1;
-  AlbumType album_type = 2;
-  string release = 3;
-  string cover = 4;
-  uint32 total_song_count = 5;
-  string total_duration = 6;
-  EmbeddedArtist artist = 7;
+  string description = 2;
+  AlbumType album_type = 3;
+  string release = 4;
+  string cover = 5;
+  uint32 total_song_count = 6;
+  string total_duration = 7;
+  EmbeddedArtist artist = 8;
 
-  repeated AlbumTrack album_tracks = 8;
+  repeated AlbumTrack album_tracks = 9;
 }
 
 message Track {

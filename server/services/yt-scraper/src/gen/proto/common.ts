@@ -186,10 +186,12 @@ export interface AlbumTrack {
   duration: number;
   positionInAlbum: number;
   isExplicit?: boolean | undefined;
+  artists: EmbeddedArtist[];
 }
 
 export interface Album {
   title: string;
+  description: string;
   albumType: AlbumType;
   release: string;
   cover: string;
@@ -1591,7 +1593,7 @@ export const YouTubeVideo: MessageFns<YouTubeVideo> = {
 };
 
 function createBaseAlbumTrack(): AlbumTrack {
-  return { videoId: "", title: "", duration: 0, positionInAlbum: 0, isExplicit: undefined };
+  return { videoId: "", title: "", duration: 0, positionInAlbum: 0, isExplicit: undefined, artists: [] };
 }
 
 export const AlbumTrack: MessageFns<AlbumTrack> = {
@@ -1610,6 +1612,9 @@ export const AlbumTrack: MessageFns<AlbumTrack> = {
     }
     if (message.isExplicit !== undefined) {
       writer.uint32(40).bool(message.isExplicit);
+    }
+    for (const v of message.artists) {
+      EmbeddedArtist.encode(v!, writer.uint32(50).fork()).join();
     }
     return writer;
   },
@@ -1661,6 +1666,14 @@ export const AlbumTrack: MessageFns<AlbumTrack> = {
           message.isExplicit = reader.bool();
           continue;
         }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.artists.push(EmbeddedArtist.decode(reader, reader.uint32()));
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1677,6 +1690,9 @@ export const AlbumTrack: MessageFns<AlbumTrack> = {
       duration: isSet(object.duration) ? globalThis.Number(object.duration) : 0,
       positionInAlbum: isSet(object.positionInAlbum) ? globalThis.Number(object.positionInAlbum) : 0,
       isExplicit: isSet(object.isExplicit) ? globalThis.Boolean(object.isExplicit) : undefined,
+      artists: globalThis.Array.isArray(object?.artists)
+        ? object.artists.map((e: any) => EmbeddedArtist.fromJSON(e))
+        : [],
     };
   },
 
@@ -1697,6 +1713,9 @@ export const AlbumTrack: MessageFns<AlbumTrack> = {
     if (message.isExplicit !== undefined) {
       obj.isExplicit = message.isExplicit;
     }
+    if (message.artists?.length) {
+      obj.artists = message.artists.map((e) => EmbeddedArtist.toJSON(e));
+    }
     return obj;
   },
 
@@ -1710,6 +1729,7 @@ export const AlbumTrack: MessageFns<AlbumTrack> = {
     message.duration = object.duration ?? 0;
     message.positionInAlbum = object.positionInAlbum ?? 0;
     message.isExplicit = object.isExplicit ?? undefined;
+    message.artists = object.artists?.map((e) => EmbeddedArtist.fromPartial(e)) || [];
     return message;
   },
 };
@@ -1717,6 +1737,7 @@ export const AlbumTrack: MessageFns<AlbumTrack> = {
 function createBaseAlbum(): Album {
   return {
     title: "",
+    description: "",
     albumType: 0,
     release: "",
     cover: "",
@@ -1732,26 +1753,29 @@ export const Album: MessageFns<Album> = {
     if (message.title !== "") {
       writer.uint32(10).string(message.title);
     }
+    if (message.description !== "") {
+      writer.uint32(18).string(message.description);
+    }
     if (message.albumType !== 0) {
-      writer.uint32(16).int32(message.albumType);
+      writer.uint32(24).int32(message.albumType);
     }
     if (message.release !== "") {
-      writer.uint32(26).string(message.release);
+      writer.uint32(34).string(message.release);
     }
     if (message.cover !== "") {
-      writer.uint32(34).string(message.cover);
+      writer.uint32(42).string(message.cover);
     }
     if (message.totalSongCount !== 0) {
-      writer.uint32(40).uint32(message.totalSongCount);
+      writer.uint32(48).uint32(message.totalSongCount);
     }
     if (message.totalDuration !== "") {
-      writer.uint32(50).string(message.totalDuration);
+      writer.uint32(58).string(message.totalDuration);
     }
     if (message.artist !== undefined) {
-      EmbeddedArtist.encode(message.artist, writer.uint32(58).fork()).join();
+      EmbeddedArtist.encode(message.artist, writer.uint32(66).fork()).join();
     }
     for (const v of message.albumTracks) {
-      AlbumTrack.encode(v!, writer.uint32(66).fork()).join();
+      AlbumTrack.encode(v!, writer.uint32(74).fork()).join();
     }
     return writer;
   },
@@ -1772,19 +1796,19 @@ export const Album: MessageFns<Album> = {
           continue;
         }
         case 2: {
-          if (tag !== 16) {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
             break;
           }
 
           message.albumType = reader.int32() as any;
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
-            break;
-          }
-
-          message.release = reader.string();
           continue;
         }
         case 4: {
@@ -1792,23 +1816,23 @@ export const Album: MessageFns<Album> = {
             break;
           }
 
-          message.cover = reader.string();
+          message.release = reader.string();
           continue;
         }
         case 5: {
-          if (tag !== 40) {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.cover = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
             break;
           }
 
           message.totalSongCount = reader.uint32();
-          continue;
-        }
-        case 6: {
-          if (tag !== 50) {
-            break;
-          }
-
-          message.totalDuration = reader.string();
           continue;
         }
         case 7: {
@@ -1816,11 +1840,19 @@ export const Album: MessageFns<Album> = {
             break;
           }
 
-          message.artist = EmbeddedArtist.decode(reader, reader.uint32());
+          message.totalDuration = reader.string();
           continue;
         }
         case 8: {
           if (tag !== 66) {
+            break;
+          }
+
+          message.artist = EmbeddedArtist.decode(reader, reader.uint32());
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
             break;
           }
 
@@ -1839,6 +1871,7 @@ export const Album: MessageFns<Album> = {
   fromJSON(object: any): Album {
     return {
       title: isSet(object.title) ? globalThis.String(object.title) : "",
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
       albumType: isSet(object.albumType) ? albumTypeFromJSON(object.albumType) : 0,
       release: isSet(object.release) ? globalThis.String(object.release) : "",
       cover: isSet(object.cover) ? globalThis.String(object.cover) : "",
@@ -1855,6 +1888,9 @@ export const Album: MessageFns<Album> = {
     const obj: any = {};
     if (message.title !== "") {
       obj.title = message.title;
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
     }
     if (message.albumType !== 0) {
       obj.albumType = albumTypeToJSON(message.albumType);
@@ -1886,6 +1922,7 @@ export const Album: MessageFns<Album> = {
   fromPartial<I extends Exact<DeepPartial<Album>, I>>(object: I): Album {
     const message = createBaseAlbum();
     message.title = object.title ?? "";
+    message.description = object.description ?? "";
     message.albumType = object.albumType ?? 0;
     message.release = object.release ?? "";
     message.cover = object.cover ?? "";

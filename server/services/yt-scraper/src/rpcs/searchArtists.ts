@@ -1,4 +1,5 @@
 import * as grpc from "@grpc/grpc-js";
+import { YTNodes } from "youtubei.js";
 
 import { SearchArtist } from "@/gen/proto/common.js";
 import {
@@ -6,12 +7,12 @@ import {
   type SearchArtistsRequest,
 } from "@/gen/proto/yt_scraper.js";
 import { getYtMusicClient } from "@/innertube.js";
-import { searchArtistSchema } from "@/schemas/artist.js";
+import { createErrorResponse } from "@/response.js";
 import { getHighestQualityThumbnail } from "@/utils/thumbnail.js";
 
 export default async function searchArtists(
   call: grpc.ServerUnaryCall<SearchArtistsRequest, SearchArtistsResponse>,
-  callback: grpc.sendUnaryData<SearchArtistsResponse>
+  callback: grpc.sendUnaryData<SearchArtistsResponse>,
 ) {
   try {
     const music = await getYtMusicClient();
@@ -19,26 +20,30 @@ export default async function searchArtists(
       type: "artist",
     });
 
-    if (!contents) {
-      const status = new grpc.StatusBuilder()
-        .withCode(grpc.status.INTERNAL)
-        .withDetails("YouTube Music sent an empty response.")
-        .build();
-      return callback(status);
-    }
+    if (!contents)
+      return callback(
+        createErrorResponse("YouTube Music sent an empty response."),
+      );
 
-    const parsedArtists = searchArtistSchema.safeParse(contents[0]?.contents);
+    const parsedArtists = contents[0]?.contents?.as(
+      YTNodes.MusicResponsiveListItem,
+    );
 
-    if (!parsedArtists.success) {
-      const status = new grpc.StatusBuilder()
-        .withCode(grpc.status.INTERNAL)
-        .withDetails("YouTube Music sent an invalid response.")
-        .build();
-      return callback(status);
-    }
+    if (!parsedArtists)
+      return callback(
+        createErrorResponse("YouTube Music sent an invalid response."),
+      );
 
     const artists: SearchArtist[] = [];
-    for (const parsedArtist of parsedArtists.data) {
+    for (const parsedArtist of parsedArtists) {
+      if (
+        !parsedArtist.subtitle?.text ||
+        !parsedArtist.thumbnail ||
+        !parsedArtist.name ||
+        !parsedArtist.id
+      )
+        continue;
+
       const [, audience] = parsedArtist.subtitle.text.split("•");
       if (!audience) continue;
 
@@ -58,10 +63,6 @@ export default async function searchArtists(
     return callback(null, { artists });
   } catch (error) {
     console.error("Artists search failed: ", error);
-    const status = new grpc.StatusBuilder()
-      .withCode(grpc.status.INTERNAL)
-      .withDetails("Artists search failed: " + String(error))
-      .build();
-    callback(status);
+    callback(createErrorResponse(`Artists search failed: ${error}`));
   }
 }

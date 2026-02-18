@@ -1,4 +1,5 @@
 import * as grpc from "@grpc/grpc-js";
+import { YTNodes } from "youtubei.js";
 
 import type { SearchAlbum } from "@/gen/proto/common.js";
 import type {
@@ -7,13 +8,13 @@ import type {
 } from "@/gen/proto/yt_scraper.js";
 
 import { getYtMusicClient } from "@/innertube.js";
-import { searchAlbumSchema } from "@/schemas/album.js";
+import { createErrorResponse } from "@/response.js";
 import { parseStringToAlbumType } from "@/utils/parse.js";
 import { getHighestQualityThumbnail } from "@/utils/thumbnail.js";
 
 export default async function searchAlbums(
   call: grpc.ServerUnaryCall<SearchAlbumsRequest, SearchAlbumsResponse>,
-  callback: grpc.sendUnaryData<SearchAlbumsResponse>
+  callback: grpc.sendUnaryData<SearchAlbumsResponse>,
 ) {
   try {
     const music = await getYtMusicClient();
@@ -21,57 +22,60 @@ export default async function searchAlbums(
       type: "album",
     });
 
-    if (!contents) {
-      const status = new grpc.StatusBuilder()
-        .withCode(grpc.status.INTERNAL)
-        .withDetails("YouTube Music sent an empty response.")
-        .build();
-      return callback(status);
-    }
+    if (!contents)
+      return callback(
+        createErrorResponse("YouTube Music sent an empty response."),
+      );
 
-    const parsedAlbums = searchAlbumSchema.safeParse(contents[0]?.contents);
+    const parsedContents = contents[0]?.contents?.as(
+      YTNodes.MusicResponsiveListItem,
+    );
 
-    if (!parsedAlbums.success) {
-      const status = new grpc.StatusBuilder()
-        .withCode(grpc.status.INTERNAL)
-        .withDetails("YouTube Music sent an invalid response.")
-        .build();
-      return callback(status);
-    }
+    if (!parsedContents)
+      return callback(
+        createErrorResponse("YouTube Music sent an empty response."),
+      );
 
     const albums: SearchAlbum[] = [];
-    for (const parsedAlbum of parsedAlbums.data) {
-      const [, subtitle] = parsedAlbum.flex_columns;
 
-      if (!parsedAlbum.author || !subtitle) continue;
+    for (const album of parsedContents) {
+      if (
+        !album.title ||
+        !album.year ||
+        !album.author ||
+        !album.thumbnail ||
+        !album.id
+      )
+        continue;
 
-      const albumType = (subtitle.title.text.split("•")[0] ?? "").trim();
-      const thumbnail = getHighestQualityThumbnail(parsedAlbum.thumbnail);
+      const subtitle =
+        album.flex_columns[1]?.title.text || album.subtitle?.text;
+
+      if (!subtitle) continue;
+
+      const albumType = (subtitle.split("•")[0] ?? "").trim();
+      const thumbnail = getHighestQualityThumbnail(album.thumbnail);
 
       if (!thumbnail) continue;
 
-      const album = {
-        title: parsedAlbum.title,
-        releaseDate: parsedAlbum.year,
-        albumId: parsedAlbum.id,
+      const searchAlbum = {
+        title: album.title,
+        releaseDate: album.year,
+        albumId: album.id,
         artist: {
-          title: parsedAlbum.author.name,
-          browseId: parsedAlbum.author.channel_id,
+          title: album.author.name ?? "Various Artists",
+          browseId: album.author.channel_id ?? "VARIOUS_ARTISTS",
         },
         albumType: parseStringToAlbumType(albumType),
         thumbnail: thumbnail.url,
       } satisfies SearchAlbum;
 
-      albums.push(album);
+      albums.push(searchAlbum);
     }
 
     return callback(null, { albums });
   } catch (error) {
     console.error("Albums search failed: ", error);
-    const status = new grpc.StatusBuilder()
-      .withCode(grpc.status.INTERNAL)
-      .withDetails("Albums search failed: " + String(error))
-      .build();
-    callback(status);
+    callback(createErrorResponse(`Albums search failed: ${error}`));
   }
 }

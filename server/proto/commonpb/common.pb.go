@@ -908,6 +908,7 @@ type AlbumTrack struct {
 	Duration        uint64                 `protobuf:"varint,3,opt,name=duration,proto3" json:"duration,omitempty"`
 	PositionInAlbum uint32                 `protobuf:"varint,4,opt,name=position_in_album,json=positionInAlbum,proto3" json:"position_in_album,omitempty"`
 	IsExplicit      *bool                  `protobuf:"varint,5,opt,name=is_explicit,json=isExplicit,proto3,oneof" json:"is_explicit,omitempty"`
+	Artists         []*EmbeddedArtist      `protobuf:"bytes,6,rep,name=artists,proto3" json:"artists,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -977,16 +978,24 @@ func (x *AlbumTrack) GetIsExplicit() bool {
 	return false
 }
 
+func (x *AlbumTrack) GetArtists() []*EmbeddedArtist {
+	if x != nil {
+		return x.Artists
+	}
+	return nil
+}
+
 type Album struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Title          string                 `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
-	AlbumType      AlbumType              `protobuf:"varint,2,opt,name=album_type,json=albumType,proto3,enum=common.AlbumType" json:"album_type,omitempty"`
-	Release        string                 `protobuf:"bytes,3,opt,name=release,proto3" json:"release,omitempty"`
-	Cover          string                 `protobuf:"bytes,4,opt,name=cover,proto3" json:"cover,omitempty"`
-	TotalSongCount uint32                 `protobuf:"varint,5,opt,name=total_song_count,json=totalSongCount,proto3" json:"total_song_count,omitempty"`
-	TotalDuration  string                 `protobuf:"bytes,6,opt,name=total_duration,json=totalDuration,proto3" json:"total_duration,omitempty"`
-	Artist         *EmbeddedArtist        `protobuf:"bytes,7,opt,name=artist,proto3" json:"artist,omitempty"`
-	AlbumTracks    []*AlbumTrack          `protobuf:"bytes,8,rep,name=album_tracks,json=albumTracks,proto3" json:"album_tracks,omitempty"`
+	Description    string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	AlbumType      AlbumType              `protobuf:"varint,3,opt,name=album_type,json=albumType,proto3,enum=common.AlbumType" json:"album_type,omitempty"`
+	Release        string                 `protobuf:"bytes,4,opt,name=release,proto3" json:"release,omitempty"`
+	Cover          string                 `protobuf:"bytes,5,opt,name=cover,proto3" json:"cover,omitempty"`
+	TotalSongCount uint32                 `protobuf:"varint,6,opt,name=total_song_count,json=totalSongCount,proto3" json:"total_song_count,omitempty"`
+	TotalDuration  string                 `protobuf:"bytes,7,opt,name=total_duration,json=totalDuration,proto3" json:"total_duration,omitempty"`
+	Artist         *EmbeddedArtist        `protobuf:"bytes,8,opt,name=artist,proto3" json:"artist,omitempty"`
+	AlbumTracks    []*AlbumTrack          `protobuf:"bytes,9,rep,name=album_tracks,json=albumTracks,proto3" json:"album_tracks,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -1024,6 +1033,13 @@ func (*Album) Descriptor() ([]byte, []int) {
 func (x *Album) GetTitle() string {
 	if x != nil {
 		return x.Title
+	}
+	return ""
+}
+
+func (x *Album) GetDescription() string {
+	if x != nil {
+		return x.Description
 	}
 	return ""
 }
@@ -1867,7 +1883,7 @@ const file_proto_common_proto_rawDesc = "" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1c\n" +
 	"\tthumbnail\x18\x03 \x01(\tR\tthumbnail\x12\x16\n" +
 	"\x06author\x18\x04 \x01(\tR\x06author\x12*\n" +
-	"\x11author_channel_id\x18\x05 \x01(\tR\x0fauthorChannelId\"\xbb\x01\n" +
+	"\x11author_channel_id\x18\x05 \x01(\tR\x0fauthorChannelId\"\xed\x01\n" +
 	"\n" +
 	"AlbumTrack\x12\x19\n" +
 	"\bvideo_id\x18\x01 \x01(\tR\avideoId\x12\x14\n" +
@@ -1875,18 +1891,20 @@ const file_proto_common_proto_rawDesc = "" +
 	"\bduration\x18\x03 \x01(\x04R\bduration\x12*\n" +
 	"\x11position_in_album\x18\x04 \x01(\rR\x0fpositionInAlbum\x12$\n" +
 	"\vis_explicit\x18\x05 \x01(\bH\x00R\n" +
-	"isExplicit\x88\x01\x01B\x0e\n" +
-	"\f_is_explicit\"\xb7\x02\n" +
+	"isExplicit\x88\x01\x01\x120\n" +
+	"\aartists\x18\x06 \x03(\v2\x16.common.EmbeddedArtistR\aartistsB\x0e\n" +
+	"\f_is_explicit\"\xd9\x02\n" +
 	"\x05Album\x12\x14\n" +
-	"\x05title\x18\x01 \x01(\tR\x05title\x120\n" +
+	"\x05title\x18\x01 \x01(\tR\x05title\x12 \n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\x120\n" +
 	"\n" +
-	"album_type\x18\x02 \x01(\x0e2\x11.common.AlbumTypeR\talbumType\x12\x18\n" +
-	"\arelease\x18\x03 \x01(\tR\arelease\x12\x14\n" +
-	"\x05cover\x18\x04 \x01(\tR\x05cover\x12(\n" +
-	"\x10total_song_count\x18\x05 \x01(\rR\x0etotalSongCount\x12%\n" +
-	"\x0etotal_duration\x18\x06 \x01(\tR\rtotalDuration\x12.\n" +
-	"\x06artist\x18\a \x01(\v2\x16.common.EmbeddedArtistR\x06artist\x125\n" +
-	"\falbum_tracks\x18\b \x03(\v2\x12.common.AlbumTrackR\valbumTracks\"\x96\x02\n" +
+	"album_type\x18\x03 \x01(\x0e2\x11.common.AlbumTypeR\talbumType\x12\x18\n" +
+	"\arelease\x18\x04 \x01(\tR\arelease\x12\x14\n" +
+	"\x05cover\x18\x05 \x01(\tR\x05cover\x12(\n" +
+	"\x10total_song_count\x18\x06 \x01(\rR\x0etotalSongCount\x12%\n" +
+	"\x0etotal_duration\x18\a \x01(\tR\rtotalDuration\x12.\n" +
+	"\x06artist\x18\b \x01(\v2\x16.common.EmbeddedArtistR\x06artist\x125\n" +
+	"\falbum_tracks\x18\t \x03(\v2\x12.common.AlbumTrackR\valbumTracks\"\x96\x02\n" +
 	"\x05Track\x12\x19\n" +
 	"\bvideo_id\x18\x01 \x01(\tR\avideoId\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1c\n" +
@@ -2011,23 +2029,24 @@ var file_proto_common_proto_depIdxs = []int32{
 	7,  // 5: common.LikedTrack.album:type_name -> common.EmbeddedAlbum
 	8,  // 6: common.QuickPick.artists:type_name -> common.EmbeddedArtist
 	7,  // 7: common.QuickPick.album:type_name -> common.EmbeddedAlbum
-	1,  // 8: common.Album.album_type:type_name -> common.AlbumType
-	8,  // 9: common.Album.artist:type_name -> common.EmbeddedArtist
-	12, // 10: common.Album.album_tracks:type_name -> common.AlbumTrack
-	8,  // 11: common.Track.artists:type_name -> common.EmbeddedArtist
-	7,  // 12: common.Track.album:type_name -> common.EmbeddedAlbum
-	21, // 13: common.Artist.top_songs:type_name -> common.Artist.TopSongTrack
-	22, // 14: common.Artist.albums:type_name -> common.Artist.ArtistAlbum
-	22, // 15: common.Artist.singles_and_eps:type_name -> common.Artist.ArtistAlbum
-	1,  // 16: common.SearchAlbum.album_type:type_name -> common.AlbumType
-	8,  // 17: common.SearchAlbum.artist:type_name -> common.EmbeddedArtist
-	7,  // 18: common.Artist.TopSongTrack.album:type_name -> common.EmbeddedAlbum
-	1,  // 19: common.Artist.ArtistAlbum.album_type:type_name -> common.AlbumType
-	20, // [20:20] is the sub-list for method output_type
-	20, // [20:20] is the sub-list for method input_type
-	20, // [20:20] is the sub-list for extension type_name
-	20, // [20:20] is the sub-list for extension extendee
-	0,  // [0:20] is the sub-list for field type_name
+	8,  // 8: common.AlbumTrack.artists:type_name -> common.EmbeddedArtist
+	1,  // 9: common.Album.album_type:type_name -> common.AlbumType
+	8,  // 10: common.Album.artist:type_name -> common.EmbeddedArtist
+	12, // 11: common.Album.album_tracks:type_name -> common.AlbumTrack
+	8,  // 12: common.Track.artists:type_name -> common.EmbeddedArtist
+	7,  // 13: common.Track.album:type_name -> common.EmbeddedAlbum
+	21, // 14: common.Artist.top_songs:type_name -> common.Artist.TopSongTrack
+	22, // 15: common.Artist.albums:type_name -> common.Artist.ArtistAlbum
+	22, // 16: common.Artist.singles_and_eps:type_name -> common.Artist.ArtistAlbum
+	1,  // 17: common.SearchAlbum.album_type:type_name -> common.AlbumType
+	8,  // 18: common.SearchAlbum.artist:type_name -> common.EmbeddedArtist
+	7,  // 19: common.Artist.TopSongTrack.album:type_name -> common.EmbeddedAlbum
+	1,  // 20: common.Artist.ArtistAlbum.album_type:type_name -> common.AlbumType
+	21, // [21:21] is the sub-list for method output_type
+	21, // [21:21] is the sub-list for method input_type
+	21, // [21:21] is the sub-list for extension type_name
+	21, // [21:21] is the sub-list for extension extendee
+	0,  // [0:21] is the sub-list for field type_name
 }
 
 func init() { file_proto_common_proto_init() }

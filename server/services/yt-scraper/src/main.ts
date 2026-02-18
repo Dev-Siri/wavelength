@@ -26,8 +26,10 @@ server.bindAsync(
   },
 );
 
-const postShutdown = () =>
+function postShutdown() {
   console.log("YtScraperService has been disconnected.");
+  process.exit(0);
+}
 
 process.on("SIGTERM", () => server.tryShutdown(postShutdown));
 process.on("SIGINT", () => server.tryShutdown(postShutdown));

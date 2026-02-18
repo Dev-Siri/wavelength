@@ -1,5 +1,5 @@
 import * as grpc from "@grpc/grpc-js";
-import { z } from "zod";
+import { YTNodes } from "youtubei.js";
 
 import type { SuggestedLink } from "@/gen/proto/common.js";
 import type {
@@ -8,10 +8,7 @@ import type {
 } from "@/gen/proto/yt_scraper.js";
 
 import { getYtMusicClient } from "@/innertube.js";
-import {
-  searchSuggestionLinkSchema,
-  searchSuggestionSchema,
-} from "@/schemas/search-suggestion.js";
+import { createErrorResponse } from "@/response.js";
 import { getHighestQualityThumbnail } from "@/utils/thumbnail.js";
 
 export default async function getSearchSuggestions(
@@ -19,12 +16,12 @@ export default async function getSearchSuggestions(
     GetSearchSuggestionsRequest,
     GetSearchSuggestionsResponse
   >,
-  callback: grpc.sendUnaryData<GetSearchSuggestionsResponse>
+  callback: grpc.sendUnaryData<GetSearchSuggestionsResponse>,
 ) {
   try {
     const music = await getYtMusicClient();
     const [suggestions, links] = await music.getSearchSuggestions(
-      call.request.query
+      call.request.query,
     );
 
     if (!suggestions) {
@@ -43,23 +40,11 @@ export default async function getSearchSuggestions(
       return callback(status);
     }
 
-    const parsedSuggestions = z
-      .array(searchSuggestionSchema)
-      .safeParse(suggestions.contents);
-
-    if (!parsedSuggestions.success) {
-      const status = new grpc.StatusBuilder()
-        .withCode(grpc.status.INTERNAL)
-        .withDetails("YouTube Music sent an invalid response.")
-        .build();
-      return callback(status);
-    }
-
     const suggestedQueries: string[] = [];
     const suggestedLinks: SuggestedLink[] = [];
 
-    for (const query of parsedSuggestions.data) {
-      suggestedQueries.push(query.suggestion.text);
+    for (const query of suggestions.contents.as(YTNodes.SearchSuggestion)) {
+      if (query.suggestion.text) suggestedQueries.push(query.suggestion.text);
     }
 
     const response = {
@@ -69,17 +54,20 @@ export default async function getSearchSuggestions(
 
     if (!links) return callback(null, response);
 
-    const parsedLinks = z
-      .array(searchSuggestionLinkSchema)
-      .safeParse(links.contents);
-
-    if (!parsedLinks.success) return callback(null, response);
-
-    for (const link of parsedLinks.data) {
+    for (const link of links.contents.as(YTNodes.MusicResponsiveListItem)) {
       const [titleCol, subtitleCol] = link.flex_columns;
+      if (!link.thumbnail) continue;
+
       const thumbnail = getHighestQualityThumbnail(link.thumbnail);
 
-      if (!titleCol || !subtitleCol || !thumbnail) continue;
+      if (
+        !titleCol?.title.text ||
+        !subtitleCol?.title.text ||
+        !thumbnail ||
+        !link.item_type ||
+        !link.id
+      )
+        continue;
 
       const suggestedLink = {
         type: link.item_type,
@@ -96,10 +84,6 @@ export default async function getSearchSuggestions(
     return callback(null, response);
   } catch (error) {
     console.error("Search Suggestions fetch failed: ", error);
-    const status = new grpc.StatusBuilder()
-      .withCode(grpc.status.INTERNAL)
-      .withDetails("Search Suggestions fetch failed: " + String(error))
-      .build();
-    callback(status);
+    callback(createErrorResponse(`Search Suggestions fetch failed: ${error}`));
   }
 }

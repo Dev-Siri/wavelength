@@ -1,4 +1,5 @@
 import * as grpc from "@grpc/grpc-js";
+import { YTNodes } from "youtubei.js";
 
 import { getYtClient } from "@/innertube.js";
 
@@ -7,7 +8,7 @@ import type {
   SearchYouTubeVideosRequest,
   SearchYouTubeVideosResponse,
 } from "@/gen/proto/yt_scraper.js";
-import { YTNodes } from "youtubei.js";
+import { createErrorResponse } from "@/response.js";
 
 export default async function searchYouTubeVideos(
   call: grpc.ServerUnaryCall<
@@ -49,10 +50,6 @@ export default async function searchYouTubeVideos(
     return callback(null, { videos: parsedVideos });
   } catch (error) {
     console.error("YouTube videos search failed: ", error);
-    const status = new grpc.StatusBuilder()
-      .withCode(grpc.status.INTERNAL)
-      .withDetails("YouTube videos search failed: " + String(error))
-      .build();
-    callback(status);
+    callback(createErrorResponse(`YouTube videos search failed: ${error}`));
   }
 }

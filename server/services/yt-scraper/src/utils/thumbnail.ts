@@ -1,12 +1,21 @@
-import { z } from "zod";
+import { YTNodes } from "youtubei.js";
 
-import type { thumbnailSchema } from "@/schemas/thumbnail.js";
+interface Thumbnail {
+  height: number;
+  width: number;
+  url: string;
+}
 
 export function getHighestQualityThumbnail(
-  thumbnailField: z.infer<typeof thumbnailSchema>
+  thumbnail: YTNodes.MusicThumbnail | Thumbnail[],
 ) {
-  const [thumbnail] = thumbnailField.contents.toSorted(
-    (a, b) => b.height - a.height
+  const thumbnails =
+    thumbnail instanceof YTNodes.MusicThumbnail
+      ? thumbnail.contents
+      : thumbnail;
+
+  const [highestQualityThumbnail] = thumbnails.toSorted(
+    (a, b) => b.height - a.height,
   );
-  return thumbnail;
+  return highestQualityThumbnail;
 }
