@@ -27,7 +27,7 @@ func (p *PlaylistService) CreatePlaylist(
 			author_google_email,
 			cover_image
 		)
-		VALUES ( $1, $2, $3, $4, $5, $6 );
+		VALUES ( $1, $2, $3, $4 );
 	`, playlistId, "New Playlist", request.AuthorEmail, nil)
 
 	if err != nil {
