@@ -44,6 +44,10 @@ func main() {
 		logging.Logger.Fatal("Album-service client failed to connect.", zap.Error(err))
 	}
 
+	if err := clients.InitYtScraperClient(); err != nil {
+		logging.Logger.Fatal("YtScraper-service client failed to connect.", zap.Error(err))
+	}
+
 	port := shared_env.GetPORT()
 	addr := ":" + port
 

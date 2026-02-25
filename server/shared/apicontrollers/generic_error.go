@@ -1,4 +1,4 @@
-package error_controllers
+package apicontrollers
 
 import (
 	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func ErrorHandler(ctx *fiber.Ctx, err error) error {
+func GenericErrorHandler(ctx *fiber.Ctx, err error) error {
 	code := fiber.StatusInternalServerError
 	message := err.Error()
 

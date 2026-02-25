@@ -88,6 +88,15 @@ export interface SearchYouTubeVideosResponse {
   videos: YouTubeVideo[];
 }
 
+export interface GetUpNextRequest {
+  videoId: string;
+}
+
+export interface GetUpNextResponse {
+  continuationToken: string;
+  tracks: Track[];
+}
+
 function createBaseGetSearchSuggestionsRequest(): GetSearchSuggestionsRequest {
   return { query: "" };
 }
@@ -1052,6 +1061,140 @@ export const SearchYouTubeVideosResponse: MessageFns<SearchYouTubeVideosResponse
   },
 };
 
+function createBaseGetUpNextRequest(): GetUpNextRequest {
+  return { videoId: "" };
+}
+
+export const GetUpNextRequest: MessageFns<GetUpNextRequest> = {
+  encode(message: GetUpNextRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.videoId !== "") {
+      writer.uint32(10).string(message.videoId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetUpNextRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetUpNextRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.videoId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetUpNextRequest {
+    return { videoId: isSet(object.videoId) ? globalThis.String(object.videoId) : "" };
+  },
+
+  toJSON(message: GetUpNextRequest): unknown {
+    const obj: any = {};
+    if (message.videoId !== "") {
+      obj.videoId = message.videoId;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GetUpNextRequest>, I>>(base?: I): GetUpNextRequest {
+    return GetUpNextRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<GetUpNextRequest>, I>>(object: I): GetUpNextRequest {
+    const message = createBaseGetUpNextRequest();
+    message.videoId = object.videoId ?? "";
+    return message;
+  },
+};
+
+function createBaseGetUpNextResponse(): GetUpNextResponse {
+  return { continuationToken: "", tracks: [] };
+}
+
+export const GetUpNextResponse: MessageFns<GetUpNextResponse> = {
+  encode(message: GetUpNextResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.continuationToken !== "") {
+      writer.uint32(10).string(message.continuationToken);
+    }
+    for (const v of message.tracks) {
+      Track.encode(v!, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetUpNextResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetUpNextResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.continuationToken = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.tracks.push(Track.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetUpNextResponse {
+    return {
+      continuationToken: isSet(object.continuationToken) ? globalThis.String(object.continuationToken) : "",
+      tracks: globalThis.Array.isArray(object?.tracks) ? object.tracks.map((e: any) => Track.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: GetUpNextResponse): unknown {
+    const obj: any = {};
+    if (message.continuationToken !== "") {
+      obj.continuationToken = message.continuationToken;
+    }
+    if (message.tracks?.length) {
+      obj.tracks = message.tracks.map((e) => Track.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GetUpNextResponse>, I>>(base?: I): GetUpNextResponse {
+    return GetUpNextResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<GetUpNextResponse>, I>>(object: I): GetUpNextResponse {
+    const message = createBaseGetUpNextResponse();
+    message.continuationToken = object.continuationToken ?? "";
+    message.tracks = object.tracks?.map((e) => Track.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 export type YTScraperService = typeof YTScraperService;
 export const YTScraperService = {
   getSearchSuggestions: {
@@ -1096,6 +1239,15 @@ export const YTScraperService = {
     responseSerialize: (value: GetArtistDetailsResponse): Buffer =>
       Buffer.from(GetArtistDetailsResponse.encode(value).finish()),
     responseDeserialize: (value: Buffer): GetArtistDetailsResponse => GetArtistDetailsResponse.decode(value),
+  },
+  getUpNext: {
+    path: "/yt_scraper.YTScraper/GetUpNext",
+    requestStream: false,
+    responseStream: false,
+    requestSerialize: (value: GetUpNextRequest): Buffer => Buffer.from(GetUpNextRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetUpNextRequest => GetUpNextRequest.decode(value),
+    responseSerialize: (value: GetUpNextResponse): Buffer => Buffer.from(GetUpNextResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer): GetUpNextResponse => GetUpNextResponse.decode(value),
   },
   searchTracks: {
     path: "/yt_scraper.YTScraper/SearchTracks",
@@ -1145,6 +1297,7 @@ export interface YTScraperServer extends UntypedServiceImplementation {
   getQuickPicks: handleUnaryCall<GetQuickPicksRequest, GetQuickPicksResponse>;
   getAlbumDetails: handleUnaryCall<GetAlbumDetailsRequest, GetAlbumDetailsResponse>;
   getArtistDetails: handleUnaryCall<GetArtistDetailsRequest, GetArtistDetailsResponse>;
+  getUpNext: handleUnaryCall<GetUpNextRequest, GetUpNextResponse>;
   searchTracks: handleUnaryCall<SearchTracksRequest, SearchTracksResponse>;
   searchArtists: handleUnaryCall<SearchArtistsRequest, SearchArtistsResponse>;
   searchAlbums: handleUnaryCall<SearchAlbumsRequest, SearchAlbumsResponse>;
@@ -1211,6 +1364,21 @@ export interface YTScraperClient extends Client {
     metadata: Metadata,
     options: Partial<CallOptions>,
     callback: (error: ServiceError | null, response: GetArtistDetailsResponse) => void,
+  ): ClientUnaryCall;
+  getUpNext(
+    request: GetUpNextRequest,
+    callback: (error: ServiceError | null, response: GetUpNextResponse) => void,
+  ): ClientUnaryCall;
+  getUpNext(
+    request: GetUpNextRequest,
+    metadata: Metadata,
+    callback: (error: ServiceError | null, response: GetUpNextResponse) => void,
+  ): ClientUnaryCall;
+  getUpNext(
+    request: GetUpNextRequest,
+    metadata: Metadata,
+    options: Partial<CallOptions>,
+    callback: (error: ServiceError | null, response: GetUpNextResponse) => void,
   ): ClientUnaryCall;
   searchTracks(
     request: SearchTracksRequest,

@@ -23,14 +23,18 @@ export default async function getArtistDetails(
 ) {
   try {
     const music = await getYtMusicClient();
-    const { header, sections } = await music.getArtist(call.request.browseId);
+    const artistDetails = await music.getArtist(call.request.browseId);
+    const topSongsList = await artistDetails.getAllSongs();
 
-    const parsedArtistDetails = header?.as(YTNodes.MusicImmersiveHeader);
-    const topSongsList = sections[0]?.contents.as(
-      YTNodes.MusicResponsiveListItem,
+    const parsedArtistDetails = artistDetails.header?.as(
+      YTNodes.MusicImmersiveHeader,
     );
-    const albumsList = sections[1]?.contents.as(YTNodes.MusicTwoRowItem);
-    const singlesAndEpsList = sections[2]?.contents.as(YTNodes.MusicTwoRowItem);
+    const albumsList = artistDetails.sections[1]?.contents.as(
+      YTNodes.MusicTwoRowItem,
+    );
+    const singlesAndEpsList = artistDetails.sections[2]?.contents.as(
+      YTNodes.MusicTwoRowItem,
+    );
 
     if (
       !parsedArtistDetails ||
@@ -57,7 +61,12 @@ export default async function getArtistDetails(
     const albums: Artist_ArtistAlbum[] = [];
     const singlesAndEps: Artist_ArtistAlbum[] = [];
 
-    for (const parsedTopSong of topSongsList) {
+    for (const musicResponseListItem of topSongsList.contents) {
+      if (!musicResponseListItem.is(YTNodes.MusicResponsiveListItem)) continue;
+
+      const parsedTopSong = musicResponseListItem.as(
+        YTNodes.MusicResponsiveListItem,
+      );
       if (!parsedTopSong.thumbnail || !parsedTopSong.id || !parsedTopSong.title)
         continue;
 
@@ -70,18 +79,28 @@ export default async function getArtistDetails(
         !playCount?.title.text ||
         !albumInfo?.title.text ||
         !albumId ||
+        !parsedTopSong.duration?.seconds ||
         !thumbnail
       )
         continue;
 
+      const artists = parsedTopSong.artists?.map((artist) => ({
+        title: artist.name,
+        browseId: artist.channel_id ?? "VARIOUS_ARTISTS",
+      }));
+
       const topSongTrack = {
         videoId: parsedTopSong.id,
         title: parsedTopSong.title,
+        duration: parsedTopSong.duration.seconds,
         playCount: playCount.title.text,
         album: {
           title: albumInfo.title.text,
           browseId: albumId,
         },
+        artists: artists?.length
+          ? artists
+          : [{ title: "Various Artists", browseId: "VARIOUS_ARTISTS" }],
         thumbnail: thumbnail.url,
         isExplicit: !!parsedTopSong.badges
           ?.as(YTNodes.MusicInlineBadge)

@@ -40,6 +40,7 @@ export default async function searchYouTubeVideos(
         videoId: youtubeVideo.video_id,
         title: youtubeVideo.title.text,
         author: youtubeVideo.author.name,
+        duration: youtubeVideo.duration.seconds,
         authorChannelId: youtubeVideo.author.endpoint.payload.browseId,
         thumbnail: thumbnail.url,
       } satisfies YouTubeVideo;

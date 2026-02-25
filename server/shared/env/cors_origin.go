@@ -1,4 +1,4 @@
-package env
+package shared_env
 
 import (
 	"os"

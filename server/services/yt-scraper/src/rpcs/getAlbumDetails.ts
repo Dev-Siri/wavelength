@@ -8,6 +8,7 @@ import type {
 } from "@/gen/proto/yt_scraper.js";
 
 import { getYtMusicClient } from "@/innertube.js";
+import { createErrorResponse } from "@/response.js";
 import { parseStringToAlbumType } from "@/utils/parse.js";
 import { getHighestQualityThumbnail } from "@/utils/thumbnail.js";
 
@@ -19,13 +20,10 @@ export default async function getAlbumDetails(
     const music = await getYtMusicClient();
     const { header, contents } = await music.getAlbum(call.request.albumId);
 
-    if (!header || !contents) {
-      const status = new grpc.StatusBuilder()
-        .withCode(grpc.status.INTERNAL)
-        .withDetails("YouTube Music sent an empty response.")
-        .build();
-      return callback(status);
-    }
+    if (!header || !contents)
+      return callback(
+        createErrorResponse("YouTube Music sent an empty response."),
+      );
 
     const musicResponseHeader = header.as(YTNodes.MusicResponsiveHeader);
 
@@ -35,13 +33,10 @@ export default async function getAlbumDetails(
       !musicResponseHeader.title.text ||
       !musicResponseHeader.subtitle.text ||
       !musicResponseHeader.strapline_text_one.text
-    ) {
-      const status = new grpc.StatusBuilder()
-        .withCode(grpc.status.INTERNAL)
-        .withDetails("YouTube Music sent an empty response.")
-        .build();
-      return callback(status);
-    }
+    )
+      return callback(
+        createErrorResponse("YouTube Music sent an empty response."),
+      );
 
     const musicList = contents.as(YTNodes.MusicResponsiveListItem);
 
@@ -137,10 +132,6 @@ export default async function getAlbumDetails(
     return callback(null, { album });
   } catch (error) {
     console.error("Album details fetch failed.", error);
-    const status = new grpc.StatusBuilder()
-      .withCode(grpc.status.INTERNAL)
-      .withDetails("Album details fetch failed: " + String(error))
-      .build();
-    callback(status);
+    callback(createErrorResponse(`Album details fetch failed: ${error}`));
   }
 }

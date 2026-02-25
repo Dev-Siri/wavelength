@@ -6,11 +6,11 @@ import (
 )
 
 func GetAlbumClientURL() (string, error) {
-	musicClientURL := os.Getenv("ALBUM_CLIENT_URL")
+	albumClientURL := os.Getenv("ALBUM_CLIENT_URL")
 
-	if musicClientURL == "" {
+	if albumClientURL == "" {
 		return "", errors.New("No ALBUM_CLIENT_URL set.")
 	}
 
-	return musicClientURL, nil
+	return albumClientURL, nil
 }

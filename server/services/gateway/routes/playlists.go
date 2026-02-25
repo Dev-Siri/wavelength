@@ -19,6 +19,7 @@ func registerPlaylistRoutes(app *fiber.App) {
 	playlists.Get("/playlist/:playlistId/length", playlist_controllers.GetPlaylistTracksLength)
 	playlists.Get("/playlist/:playlistId/tracks", playlist_controllers.GetPlaylistTracks)
 	playlists.Post("/playlist/:playlistId/tracks", playlist_controllers.AddRemovePlaylistTrack)
+	playlists.Get("/playlist/:playlistId/recommendations", playlist_controllers.GetSongRecommendations)
 	playlists.Put("/playlist/:playlistId/tracks", playlist_controllers.RearrangePlaylistTracks)
 	playlists.Patch("/playlist/:playlistId/visibility", middleware.JwtAuthMiddleware, playlist_controllers.ChangePlaylistVisibility)
 }

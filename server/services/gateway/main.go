@@ -1,15 +1,17 @@
+// Gateway is the entrypoint of all services relating to handling application metadata.
+//
+// The music streaming part of the application is handled by the player server, hosted separately from the gateway.
 package main
 
 import (
 	"log"
 	"time"
 
-	error_controllers "github.com/Dev-Siri/wavelength/server/services/gateway/controllers/errors"
-	"github.com/Dev-Siri/wavelength/server/services/gateway/db"
-	"github.com/Dev-Siri/wavelength/server/services/gateway/env"
 	"github.com/Dev-Siri/wavelength/server/services/gateway/middleware"
 	"github.com/Dev-Siri/wavelength/server/services/gateway/routes"
+	"github.com/Dev-Siri/wavelength/server/shared/apicontrollers"
 	"github.com/Dev-Siri/wavelength/server/shared/clients"
+	shared_type_constants "github.com/Dev-Siri/wavelength/server/shared/constants/types"
 	shared_env "github.com/Dev-Siri/wavelength/server/shared/env"
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
@@ -21,8 +23,11 @@ import (
 	"go.uber.org/zap"
 )
 
-const rateLimitMaxRequests = 1000
-const rateLimitExpiration = time.Second * 30
+const (
+	rateLimitMaxRequests = 1000
+	rateLimitExpiration  = time.Second * 30
+	gatewayName          = "wavelength/musicmeta-api"
+)
 
 func main() {
 	if err := logging.InitLogger(); err != nil {
@@ -57,33 +62,29 @@ func main() {
 		logging.Logger.Error("Auth-service client failed to connect.", zap.Error(err))
 	}
 
-	if err := db.InitGeoIP(); err != nil {
-		// Intentional to not use .Fatal to continue the application bootstrapping even after failure.
-		logging.Logger.Error("Failed to initialize GeoIP Lookup Database.")
-	}
-
 	app := fiber.New(fiber.Config{
-		ErrorHandler:            error_controllers.ErrorHandler,
+		ErrorHandler:            apicontrollers.GenericErrorHandler,
 		EnableTrustedProxyCheck: true,
 		TrustedProxies:          []string{"0.0.0.0/0"},
-		ProxyHeader:             "CF-Connecting-IP",
+		AppName:                 gatewayName,
 	})
 
 	addr := ":" + shared_env.GetPORT()
-	staticDir := env.GetStaticDir()
+	staticDir := shared_env.GetStaticDir()
 
 	app.Use(requestid.New())
 	app.Use(limiter.New(limiter.Config{
 		Max:        rateLimitMaxRequests,
 		Expiration: rateLimitExpiration,
 		Next: func(ctx *fiber.Ctx) bool {
-			return ctx.Path() == "/healthz" || ctx.Path() == "/search/search-recommendations"
+			goEnv := shared_type_constants.GetGoEnv()
+			return goEnv == shared_type_constants.GoEnvDevelopment || ctx.Path() == "/healthz" || ctx.Path() == "/search/search-recommendations"
 		},
-		LimitReached:      error_controllers.RateLimitExceededHandler,
+		LimitReached:      apicontrollers.RateLimitExceededHandler,
 		LimiterMiddleware: limiter.SlidingWindow{},
 	}))
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: env.GetCorsOrigin(),
+		AllowOrigins: shared_env.GetCorsOrigin(),
 	}))
 
 	app.Static("/", staticDir)

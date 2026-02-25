@@ -1,4 +1,4 @@
-package error_controllers
+package apicontrollers
 
 import (
 	"github.com/Dev-Siri/wavelength/server/services/gateway/models"

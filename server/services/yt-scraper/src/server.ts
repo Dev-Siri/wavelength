@@ -7,6 +7,7 @@ import getSearchSuggestions from "@/rpcs/getSearchSuggestions.js";
 import searchAlbums from "@/rpcs/searchAlbums.js";
 import searchArtists from "@/rpcs/searchArtists.js";
 import searchTracks from "@/rpcs/searchTracks.js";
+import getUpNext from "./rpcs/getUpNext.js";
 import searchYouTubeVideos from "./rpcs/searchYouTubeVideos.js";
 
 export const ytScraperServer: YTScraperServer = {
@@ -18,4 +19,5 @@ export const ytScraperServer: YTScraperServer = {
   searchAlbums,
   getArtistDetails,
   searchYouTubeVideos,
+  getUpNext,
 };

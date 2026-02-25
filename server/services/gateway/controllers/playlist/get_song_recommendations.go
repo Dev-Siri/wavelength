@@ -5,24 +5,23 @@ import (
 	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
 	"github.com/Dev-Siri/wavelength/server/shared/clients"
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
-
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 )
 
-func GetPlaylistTracks(ctx *fiber.Ctx) error {
+func GetSongRecommendations(ctx *fiber.Ctx) error {
 	playlistId := ctx.Params("playlistId")
 	if playlistId == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "Playlist ID is required.")
 	}
 
-	playlistTracksResponse, err := clients.PlaylistClient.GetPlaylistTracks(ctx.Context(), &playlistpb.GetPlaylistTracksRequest{
+	playlistSongRecommendations, err := clients.PlaylistClient.GetSongRecommendations(ctx.Context(), &playlistpb.GetSongRecommendationsRequest{
 		PlaylistId: playlistId,
 	})
 	if err != nil {
-		logging.Logger.Error("PlaylistService: 'GetPlaylistTracks' errored.", zap.Error(err))
-		return fiber.NewError(fiber.StatusInternalServerError, "Playlist tracks fetched failed.")
+		logging.Logger.Error("PlaylistService: 'GetSongRecommendations' errored.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Playlist song recommendations fetched failed.")
 	}
 
-	return models.Success(ctx, playlistTracksResponse)
+	return models.Success(ctx, playlistSongRecommendations)
 }

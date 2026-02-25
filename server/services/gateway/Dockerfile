@@ -21,7 +21,6 @@ COPY --from=builder /usr/src/app/services/gateway/static /app/static
 
 RUN chmod +x /usr/local/bin/gateway
 
-ENV GEOIP_MMDB_PATH=/app/lib/GeoLite2-Country.mmdb
 ENV STATIC_DIR=/app/static
 ENV GO_ENV=prod
 

@@ -176,6 +176,7 @@ export interface YouTubeVideo {
   videoId: string;
   title: string;
   thumbnail: string;
+  duration: number;
   author: string;
   authorChannelId: string;
 }
@@ -236,6 +237,8 @@ export interface Artist_TopSongTrack {
   title: string;
   thumbnail: string;
   playCount: string;
+  duration: number;
+  artists: EmbeddedArtist[];
   isExplicit?: boolean | undefined;
   album?: EmbeddedAlbum | undefined;
 }
@@ -1469,7 +1472,7 @@ export const MusicTrackStats: MessageFns<MusicTrackStats> = {
 };
 
 function createBaseYouTubeVideo(): YouTubeVideo {
-  return { videoId: "", title: "", thumbnail: "", author: "", authorChannelId: "" };
+  return { videoId: "", title: "", thumbnail: "", duration: 0, author: "", authorChannelId: "" };
 }
 
 export const YouTubeVideo: MessageFns<YouTubeVideo> = {
@@ -1483,11 +1486,14 @@ export const YouTubeVideo: MessageFns<YouTubeVideo> = {
     if (message.thumbnail !== "") {
       writer.uint32(26).string(message.thumbnail);
     }
+    if (message.duration !== 0) {
+      writer.uint32(32).uint64(message.duration);
+    }
     if (message.author !== "") {
-      writer.uint32(34).string(message.author);
+      writer.uint32(42).string(message.author);
     }
     if (message.authorChannelId !== "") {
-      writer.uint32(42).string(message.authorChannelId);
+      writer.uint32(50).string(message.authorChannelId);
     }
     return writer;
   },
@@ -1524,15 +1530,23 @@ export const YouTubeVideo: MessageFns<YouTubeVideo> = {
           continue;
         }
         case 4: {
-          if (tag !== 34) {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.duration = longToNumber(reader.uint64());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
             break;
           }
 
           message.author = reader.string();
           continue;
         }
-        case 5: {
-          if (tag !== 42) {
+        case 6: {
+          if (tag !== 50) {
             break;
           }
 
@@ -1553,6 +1567,7 @@ export const YouTubeVideo: MessageFns<YouTubeVideo> = {
       videoId: isSet(object.videoId) ? globalThis.String(object.videoId) : "",
       title: isSet(object.title) ? globalThis.String(object.title) : "",
       thumbnail: isSet(object.thumbnail) ? globalThis.String(object.thumbnail) : "",
+      duration: isSet(object.duration) ? globalThis.Number(object.duration) : 0,
       author: isSet(object.author) ? globalThis.String(object.author) : "",
       authorChannelId: isSet(object.authorChannelId) ? globalThis.String(object.authorChannelId) : "",
     };
@@ -1568,6 +1583,9 @@ export const YouTubeVideo: MessageFns<YouTubeVideo> = {
     }
     if (message.thumbnail !== "") {
       obj.thumbnail = message.thumbnail;
+    }
+    if (message.duration !== 0) {
+      obj.duration = Math.round(message.duration);
     }
     if (message.author !== "") {
       obj.author = message.author;
@@ -1586,6 +1604,7 @@ export const YouTubeVideo: MessageFns<YouTubeVideo> = {
     message.videoId = object.videoId ?? "";
     message.title = object.title ?? "";
     message.thumbnail = object.thumbnail ?? "";
+    message.duration = object.duration ?? 0;
     message.author = object.author ?? "";
     message.authorChannelId = object.authorChannelId ?? "";
     return message;
@@ -2392,7 +2411,16 @@ export const Artist: MessageFns<Artist> = {
 };
 
 function createBaseArtist_TopSongTrack(): Artist_TopSongTrack {
-  return { videoId: "", title: "", thumbnail: "", playCount: "", isExplicit: undefined, album: undefined };
+  return {
+    videoId: "",
+    title: "",
+    thumbnail: "",
+    playCount: "",
+    duration: 0,
+    artists: [],
+    isExplicit: undefined,
+    album: undefined,
+  };
 }
 
 export const Artist_TopSongTrack: MessageFns<Artist_TopSongTrack> = {
@@ -2409,11 +2437,17 @@ export const Artist_TopSongTrack: MessageFns<Artist_TopSongTrack> = {
     if (message.playCount !== "") {
       writer.uint32(34).string(message.playCount);
     }
+    if (message.duration !== 0) {
+      writer.uint32(40).uint64(message.duration);
+    }
+    for (const v of message.artists) {
+      EmbeddedArtist.encode(v!, writer.uint32(50).fork()).join();
+    }
     if (message.isExplicit !== undefined) {
-      writer.uint32(40).bool(message.isExplicit);
+      writer.uint32(56).bool(message.isExplicit);
     }
     if (message.album !== undefined) {
-      EmbeddedAlbum.encode(message.album, writer.uint32(50).fork()).join();
+      EmbeddedAlbum.encode(message.album, writer.uint32(66).fork()).join();
     }
     return writer;
   },
@@ -2462,11 +2496,27 @@ export const Artist_TopSongTrack: MessageFns<Artist_TopSongTrack> = {
             break;
           }
 
-          message.isExplicit = reader.bool();
+          message.duration = longToNumber(reader.uint64());
           continue;
         }
         case 6: {
           if (tag !== 50) {
+            break;
+          }
+
+          message.artists.push(EmbeddedArtist.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.isExplicit = reader.bool();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
             break;
           }
 
@@ -2488,6 +2538,10 @@ export const Artist_TopSongTrack: MessageFns<Artist_TopSongTrack> = {
       title: isSet(object.title) ? globalThis.String(object.title) : "",
       thumbnail: isSet(object.thumbnail) ? globalThis.String(object.thumbnail) : "",
       playCount: isSet(object.playCount) ? globalThis.String(object.playCount) : "",
+      duration: isSet(object.duration) ? globalThis.Number(object.duration) : 0,
+      artists: globalThis.Array.isArray(object?.artists)
+        ? object.artists.map((e: any) => EmbeddedArtist.fromJSON(e))
+        : [],
       isExplicit: isSet(object.isExplicit) ? globalThis.Boolean(object.isExplicit) : undefined,
       album: isSet(object.album) ? EmbeddedAlbum.fromJSON(object.album) : undefined,
     };
@@ -2507,6 +2561,12 @@ export const Artist_TopSongTrack: MessageFns<Artist_TopSongTrack> = {
     if (message.playCount !== "") {
       obj.playCount = message.playCount;
     }
+    if (message.duration !== 0) {
+      obj.duration = Math.round(message.duration);
+    }
+    if (message.artists?.length) {
+      obj.artists = message.artists.map((e) => EmbeddedArtist.toJSON(e));
+    }
     if (message.isExplicit !== undefined) {
       obj.isExplicit = message.isExplicit;
     }
@@ -2525,6 +2585,8 @@ export const Artist_TopSongTrack: MessageFns<Artist_TopSongTrack> = {
     message.title = object.title ?? "";
     message.thumbnail = object.thumbnail ?? "";
     message.playCount = object.playCount ?? "";
+    message.duration = object.duration ?? 0;
+    message.artists = object.artists?.map((e) => EmbeddedArtist.fromPartial(e)) || [];
     message.isExplicit = object.isExplicit ?? undefined;
     message.album = (object.album !== undefined && object.album !== null)
       ? EmbeddedAlbum.fromPartial(object.album)

@@ -1,10 +1,11 @@
 package region_controllers
 
 import (
-	"net/netip"
+	"encoding/json"
+	"net/http"
 	"time"
 
-	"github.com/Dev-Siri/wavelength/server/services/gateway/db"
+	"github.com/Dev-Siri/wavelength/server/services/gateway/constants"
 	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
 
@@ -15,6 +16,10 @@ import (
 const regionCookieKey = "region"
 const defaultRegion = "US"
 
+type lookupResponse struct {
+	CountryCode string `json:"countryCode"`
+}
+
 func GetRegion(ctx *fiber.Ctx) error {
 	region := ctx.Cookies(regionCookieKey)
 
@@ -22,19 +27,13 @@ func GetRegion(ctx *fiber.Ctx) error {
 		clientAddress := ctx.IP()
 		infiniteTime := time.Date(9999, 0, 1, 0, 0, 0, 0, time.UTC)
 
-		netAddress, err := netip.ParseAddr(clientAddress)
+		countryCode, err := lookupCountryCode(clientAddress)
 
 		if err != nil {
 			return createDefaultResponse(ctx, err)
 		}
 
-		geoIpLookup, err := db.GeoIpDb.Country(netAddress)
-
-		if err != nil {
-			return createDefaultResponse(ctx, err)
-		}
-
-		region = geoIpLookup.Country.ISOCode
+		region = countryCode
 
 		ctx.Cookie(&fiber.Cookie{
 			Name:     regionCookieKey,
@@ -46,6 +45,23 @@ func GetRegion(ctx *fiber.Ctx) error {
 	}
 
 	return models.Success(ctx, region)
+}
+
+func lookupCountryCode(clientAddress string) (string, error) {
+	lookupURL := constants.IpApiUrl + "/json/" + clientAddress
+	response, err := http.DefaultClient.Get(lookupURL)
+	if err != nil {
+		return "", err
+	}
+
+	defer response.Body.Close()
+
+	var lookup lookupResponse
+	if err := json.NewDecoder(response.Body).Decode(&lookup); err != nil {
+		return "", err
+	}
+
+	return lookup.CountryCode, nil
 }
 
 func createDefaultResponse(ctx *fiber.Ctx, err error) error {

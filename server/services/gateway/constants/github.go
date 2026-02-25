@@ -1,4 +1,6 @@
 package constants
 
-const GithubRepoOwner string = "Dev-Siri"
-const GithubRepoName string = "wavelength"
+const (
+	GithubRepoOwner = "Dev-Siri"
+	GithubRepoName  = "wavelength"
+)

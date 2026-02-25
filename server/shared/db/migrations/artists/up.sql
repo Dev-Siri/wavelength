@@ -5,4 +5,6 @@ CREATE TABLE IF NOT EXISTS "artists" (
   browse_id VARCHAR(100) NOT NULL,
   authored_track_id VARCHAR(11) NOT NULL,
   title VARCHAR(255) NOT NULL
+
+  UNIQUE (authored_track_id, browse_id, title)
 );
