@@ -8,6 +8,7 @@
     "jsx": "react-jsx",
     "allowJs": true,
     "outDir": "./dist",
+    "rootDir": "./src",
 
     // Bundler mode
     "moduleResolution": "nodenext",

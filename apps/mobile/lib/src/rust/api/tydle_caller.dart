@@ -6,12 +6,62 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-Future<String> fetchHighestAudioStreamUrl({required String videoId}) => RustLib
-    .instance
-    .api
-    .crateApiTydleCallerFetchHighestAudioStreamUrl(videoId: videoId);
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`
 
-Future<String> fetchHighestVideoStreamUrl({required String videoId}) => RustLib
+Future<Stream> fetchHighestAudioStream({required String videoId}) => RustLib
     .instance
     .api
-    .crateApiTydleCallerFetchHighestVideoStreamUrl(videoId: videoId);
+    .crateApiTydleCallerFetchHighestAudioStream(videoId: videoId);
+
+class Stream {
+  final StreamMetadata metadata;
+  final String url;
+
+  const Stream({required this.metadata, required this.url});
+
+  @override
+  int get hashCode => metadata.hashCode ^ url.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Stream &&
+          runtimeType == other.runtimeType &&
+          metadata == other.metadata &&
+          url == other.url;
+}
+
+class StreamMetadata {
+  final double bitrate;
+  final String ext;
+  final String codec;
+  final String videoId;
+  final String source;
+
+  const StreamMetadata({
+    required this.bitrate,
+    required this.ext,
+    required this.codec,
+    required this.videoId,
+    required this.source,
+  });
+
+  @override
+  int get hashCode =>
+      bitrate.hashCode ^
+      ext.hashCode ^
+      codec.hashCode ^
+      videoId.hashCode ^
+      source.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is StreamMetadata &&
+          runtimeType == other.runtimeType &&
+          bitrate == other.bitrate &&
+          ext == other.ext &&
+          codec == other.codec &&
+          videoId == other.videoId &&
+          source == other.source;
+}

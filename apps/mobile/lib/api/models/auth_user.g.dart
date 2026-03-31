@@ -20,7 +20,7 @@ class AuthUserAdapter extends TypeAdapter<AuthUser> {
       userId: fields[0] as String,
       email: fields[1] as String,
       displayName: fields[2] as String,
-      pictureUrl: fields[3] as String,
+      pictureUrl: fields[3] as String?,
     );
   }
 

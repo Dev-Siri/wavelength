@@ -1,4 +1,4 @@
-FROM golang:1.24.1-bullseye AS builder
+FROM golang:1.25-alpine AS builder
 
 WORKDIR /usr/src/app
 
@@ -19,10 +19,7 @@ RUN apt update && apt install -y --no-install-recommends ca-certificates && rm -
 COPY --from=builder /usr/local/bin/gateway /usr/local/bin/gateway
 COPY --from=builder /usr/src/app/services/gateway/static /app/static
 
-RUN chmod +x /usr/local/bin/gateway
-
 ENV STATIC_DIR=/app/static
-ENV GO_ENV=prod
 
 EXPOSE 8080
 

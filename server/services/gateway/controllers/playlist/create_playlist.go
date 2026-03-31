@@ -2,16 +2,16 @@ package playlist_controllers
 
 import (
 	"github.com/Dev-Siri/wavelength/server/proto/playlistpb"
-	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
 	"github.com/Dev-Siri/wavelength/server/shared/clients"
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
+	shared_models "github.com/Dev-Siri/wavelength/server/shared/models"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 )
 
 func CreatePlaylist(ctx *fiber.Ctx) error {
-	authUser, ok := ctx.Locals("authUser").(models.AuthUser)
+	authUser, ok := ctx.Locals("authUser").(shared_models.AuthUser)
 	if !ok {
 		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
 	}
@@ -24,5 +24,5 @@ func CreatePlaylist(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to create playlist.")
 	}
 
-	return models.Success(ctx, "Created new playlist for "+authUser.Email)
+	return shared_models.Success(ctx, "Created new playlist for "+authUser.Email)
 }

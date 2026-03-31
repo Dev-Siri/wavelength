@@ -222,6 +222,94 @@ func (x *ResizeImageResponse) GetMimeType() string {
 	return ""
 }
 
+type GetCoverEffectColorsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ImageUrl      string                 `protobuf:"bytes,1,opt,name=image_url,json=imageUrl,proto3" json:"image_url,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetCoverEffectColorsRequest) Reset() {
+	*x = GetCoverEffectColorsRequest{}
+	mi := &file_proto_image_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCoverEffectColorsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCoverEffectColorsRequest) ProtoMessage() {}
+
+func (x *GetCoverEffectColorsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_image_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCoverEffectColorsRequest.ProtoReflect.Descriptor instead.
+func (*GetCoverEffectColorsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_image_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetCoverEffectColorsRequest) GetImageUrl() string {
+	if x != nil {
+		return x.ImageUrl
+	}
+	return ""
+}
+
+type GetCoverEffectColorsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Colors        []*commonpb.ThemeColor `protobuf:"bytes,1,rep,name=colors,proto3" json:"colors,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetCoverEffectColorsResponse) Reset() {
+	*x = GetCoverEffectColorsResponse{}
+	mi := &file_proto_image_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCoverEffectColorsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCoverEffectColorsResponse) ProtoMessage() {}
+
+func (x *GetCoverEffectColorsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_image_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCoverEffectColorsResponse.ProtoReflect.Descriptor instead.
+func (*GetCoverEffectColorsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_image_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetCoverEffectColorsResponse) GetColors() []*commonpb.ThemeColor {
+	if x != nil {
+		return x.Colors
+	}
+	return nil
+}
+
 var File_proto_image_proto protoreflect.FileDescriptor
 
 const file_proto_image_proto_rawDesc = "" +
@@ -239,10 +327,15 @@ const file_proto_image_proto_rawDesc = "" +
 	"\x13ResizeImageResponse\x12\x1d\n" +
 	"\n" +
 	"image_data\x18\x01 \x01(\fR\timageData\x12\x1b\n" +
-	"\tmime_type\x18\x02 \x01(\tR\bmimeType2\xa0\x01\n" +
+	"\tmime_type\x18\x02 \x01(\tR\bmimeType\":\n" +
+	"\x1bGetCoverEffectColorsRequest\x12\x1b\n" +
+	"\timage_url\x18\x01 \x01(\tR\bimageUrl\"J\n" +
+	"\x1cGetCoverEffectColorsResponse\x12*\n" +
+	"\x06colors\x18\x01 \x03(\v2\x12.common.ThemeColorR\x06colors2\x81\x02\n" +
 	"\fImageService\x12J\n" +
 	"\rGetThemeColor\x12\x1b.image.GetThemeColorRequest\x1a\x1c.image.GetThemeColorResponse\x12D\n" +
-	"\vResizeImage\x12\x19.image.ResizeImageRequest\x1a\x1a.image.ResizeImageResponseB;Z9github.com/Dev-Siri/wavelength/server/proto/image;imagepbb\x06proto3"
+	"\vResizeImage\x12\x19.image.ResizeImageRequest\x1a\x1a.image.ResizeImageResponse\x12_\n" +
+	"\x14GetCoverEffectColors\x12\".image.GetCoverEffectColorsRequest\x1a#.image.GetCoverEffectColorsResponseB;Z9github.com/Dev-Siri/wavelength/server/proto/image;imagepbb\x06proto3"
 
 var (
 	file_proto_image_proto_rawDescOnce sync.Once
@@ -256,25 +349,30 @@ func file_proto_image_proto_rawDescGZIP() []byte {
 	return file_proto_image_proto_rawDescData
 }
 
-var file_proto_image_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_proto_image_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_proto_image_proto_goTypes = []any{
-	(*GetThemeColorRequest)(nil),  // 0: image.GetThemeColorRequest
-	(*GetThemeColorResponse)(nil), // 1: image.GetThemeColorResponse
-	(*ResizeImageRequest)(nil),    // 2: image.ResizeImageRequest
-	(*ResizeImageResponse)(nil),   // 3: image.ResizeImageResponse
-	(*commonpb.ThemeColor)(nil),   // 4: common.ThemeColor
+	(*GetThemeColorRequest)(nil),         // 0: image.GetThemeColorRequest
+	(*GetThemeColorResponse)(nil),        // 1: image.GetThemeColorResponse
+	(*ResizeImageRequest)(nil),           // 2: image.ResizeImageRequest
+	(*ResizeImageResponse)(nil),          // 3: image.ResizeImageResponse
+	(*GetCoverEffectColorsRequest)(nil),  // 4: image.GetCoverEffectColorsRequest
+	(*GetCoverEffectColorsResponse)(nil), // 5: image.GetCoverEffectColorsResponse
+	(*commonpb.ThemeColor)(nil),          // 6: common.ThemeColor
 }
 var file_proto_image_proto_depIdxs = []int32{
-	4, // 0: image.GetThemeColorResponse.theme_color:type_name -> common.ThemeColor
-	0, // 1: image.ImageService.GetThemeColor:input_type -> image.GetThemeColorRequest
-	2, // 2: image.ImageService.ResizeImage:input_type -> image.ResizeImageRequest
-	1, // 3: image.ImageService.GetThemeColor:output_type -> image.GetThemeColorResponse
-	3, // 4: image.ImageService.ResizeImage:output_type -> image.ResizeImageResponse
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	6, // 0: image.GetThemeColorResponse.theme_color:type_name -> common.ThemeColor
+	6, // 1: image.GetCoverEffectColorsResponse.colors:type_name -> common.ThemeColor
+	0, // 2: image.ImageService.GetThemeColor:input_type -> image.GetThemeColorRequest
+	2, // 3: image.ImageService.ResizeImage:input_type -> image.ResizeImageRequest
+	4, // 4: image.ImageService.GetCoverEffectColors:input_type -> image.GetCoverEffectColorsRequest
+	1, // 5: image.ImageService.GetThemeColor:output_type -> image.GetThemeColorResponse
+	3, // 6: image.ImageService.ResizeImage:output_type -> image.ResizeImageResponse
+	5, // 7: image.ImageService.GetCoverEffectColors:output_type -> image.GetCoverEffectColorsResponse
+	5, // [5:8] is the sub-list for method output_type
+	2, // [2:5] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_proto_image_proto_init() }
@@ -288,7 +386,7 @@ func file_proto_image_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_image_proto_rawDesc), len(file_proto_image_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

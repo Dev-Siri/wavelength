@@ -8,6 +8,7 @@ import "proto/common.proto";
 service ImageService {
   rpc GetThemeColor(GetThemeColorRequest) returns (GetThemeColorResponse);
   rpc ResizeImage(ResizeImageRequest) returns (ResizeImageResponse);
+  rpc GetCoverEffectColors(GetCoverEffectColorsRequest) returns (GetCoverEffectColorsResponse);
 }
 
 message GetThemeColorRequest {
@@ -27,4 +28,12 @@ message ResizeImageRequest {
 message ResizeImageResponse {
   bytes image_data = 1;
   string mime_type = 2;
+}
+
+message GetCoverEffectColorsRequest {
+  string image_url = 1;
+}
+
+message GetCoverEffectColorsResponse {
+  repeated common.ThemeColor colors = 1;
 }

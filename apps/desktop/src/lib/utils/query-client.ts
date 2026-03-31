@@ -1,10 +1,18 @@
-import { PUBLIC_BACKEND_URL } from "$env/static/public";
+import { dev } from "$app/environment";
+import {
+  PUBLIC_BACKEND_URL,
+  PUBLIC_DEV_BACKEND_URL,
+  PUBLIC_DEV_PLAYER_URL,
+  PUBLIC_PLAYER_URL,
+} from "$env/static/public";
 
+import type { QueueableMusic } from "$lib/stream-player/MusicQueue.svelte";
 import type { z } from "zod";
 
 import { WAVELENGTH_PLATFORM_KEY } from "$lib/constants/keys";
+import { PROD_URL } from "$lib/constants/utils";
 import userStore from "$lib/stores/user.svelte";
-import { apiResponseSchema, type ApiResponse } from "./validation/api-response";
+import { apiResponseSchema, type ApiResponse } from "../schemas/api-response";
 
 type Method =
   | "GET"
@@ -69,27 +77,76 @@ async function queryClient<T extends z.ZodTypeAny>(
 
     return validatedResponse.data;
   } catch (error: unknown) {
-    await fetch(`${PUBLIC_BACKEND_URL}/diagnostics/report-error`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        error: JSON.stringify(error),
-        source: "queryClient",
-        platform: WAVELENGTH_PLATFORM_KEY,
-      }),
+    await reportErrorToBackend({
+      error,
+      source: "queryClient",
     });
     throw error;
   }
 }
 
-function createQueryClient(baseUrl: string) {
+export async function reportErrorToBackend({ error, source }: { error: unknown; source: string }) {
+  await fetch(`${dev ? PUBLIC_DEV_BACKEND_URL : PUBLIC_BACKEND_URL}/diagnostics/report-error`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      error: JSON.stringify(error),
+      source,
+      platform: WAVELENGTH_PLATFORM_KEY,
+    }),
+  });
+}
+
+export async function reportStream({
+  track,
+  type,
+}: {
+  track: QueueableMusic;
+  type: "skipFast" | "play30s" | "playStart";
+}) {
+  try {
+    await fetch(`${dev ? PUBLIC_DEV_BACKEND_URL : PUBLIC_BACKEND_URL}/streams/record`, {
+      method: "POST",
+      keepalive: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        type,
+        timestamp: new Date().toISOString(),
+        track,
+      }),
+    });
+  } catch {
+    // We do not care if this fails, as it's just for analytics and does not affect user experience in any way.
+  }
+}
+
+function createQueryClient(
+  baseUrl: string,
+  { defaultHeaders }: { defaultHeaders?: Record<string, unknown> } = {},
+) {
   return async <T extends z.ZodTypeAny>(
     endpoint: string,
     dataSchema: T,
     options: Partial<Options> = {},
-  ) => queryClient<T>(baseUrl, endpoint, dataSchema, options);
+  ) =>
+    queryClient<T>(baseUrl, endpoint, dataSchema, {
+      ...options,
+      headers: {
+        ...options.headers,
+        ...defaultHeaders,
+      },
+    });
 }
 
-export const backendClient = createQueryClient(PUBLIC_BACKEND_URL);
+export const backendClient = createQueryClient(dev ? PUBLIC_DEV_BACKEND_URL : PUBLIC_BACKEND_URL);
+export const streamClient = createQueryClient(dev ? PUBLIC_DEV_PLAYER_URL : PUBLIC_PLAYER_URL, {
+  defaultHeaders: {
+    "X-Wavelength-Client": "WEB",
+    "X-Sec-Fetch-Site": "cross-site",
+    "X-Referer": PROD_URL,
+  },
+});

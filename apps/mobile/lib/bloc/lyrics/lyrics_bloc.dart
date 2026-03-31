@@ -3,7 +3,7 @@ import "dart:async";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:hive/hive.dart";
 import "package:wavelength/api/models/api_response.dart";
-import "package:wavelength/api/models/lyric.dart";
+import "package:wavelength/api/models/lyrics_line.dart";
 import "package:wavelength/api/repositories/track_repo.dart";
 import "package:wavelength/bloc/lyrics/lyrics_event.dart";
 import "package:wavelength/bloc/lyrics/lyrics_state.dart";
@@ -19,25 +19,20 @@ class LyricsBloc extends Bloc<LyricsEvent, LyricsState> {
     Emitter<LyricsState> emit,
   ) async {
     final box = await Hive.openBox(hiveLyricsKey);
-    final cachedLyrics = (box.get(event.trackId) as List?)?.cast<Lyric>();
+    final cachedLyrics = box.get(event.trackId);
 
     if (cachedLyrics != null) {
-      emit(LyricsFetchSuccessState(lyrics: cachedLyrics));
-      return;
+      return emit(LyricsFetchSuccessState(lyrics: cachedLyrics));
     }
 
     emit(LyricsFetchLoadingState());
 
-    final response = await TrackRepo.fetchTrackLyrics(
-      title: event.title,
-      artist: event.artist,
-      trackId: event.trackId,
-    );
+    final response = await TrackRepo.fetchTrackLyrics(trackId: event.trackId);
 
-    if (response is ApiResponseSuccess<List<Lyric>>) {
+    if (response is ApiResponseSuccess<Lyrics>) {
       await box.put(event.trackId, response.data);
 
-      return emit(LyricsFetchSuccessState(lyrics: response.data.cast<Lyric>()));
+      return emit(LyricsFetchSuccessState(lyrics: response.data));
     }
 
     emit(LyricsFetchErrorState());

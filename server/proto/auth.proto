@@ -3,9 +3,6 @@ package auth;
 
 option go_package = "github.com/Dev-Siri/wavelength/server/proto/auth;authpb";
 
-import "proto/common.proto";
-import "google/protobuf/empty.proto";
-
 service AuthService {
   rpc GetOAuthRedirectUrl(GetOAuthRedirectUrlRequest) returns (GetOAuthRedirectUrlResponse);
   rpc OAuthCallback(OAuthCallbackRequest) returns (OAuthCallbackResponse);

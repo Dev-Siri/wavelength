@@ -28,11 +28,11 @@ func (p *PlaylistService) GetPublicPlaylists(
 			u.display_name AS author_name,
 			u.picture_url AS author_image
 		FROM "playlists" p
-		WHERE p.name ILIKE $1
-		AND p.is_public = true 
 		INNER JOIN "users" u
 		ON u.email = p.author_google_email
-		LIMIT 10;
+		WHERE p.name ILIKE $1
+		AND p.is_public = true
+		LIMIT 10; 
 	`, "%"+request.Query+"%")
 
 	if err != nil {
@@ -49,10 +49,10 @@ func (p *PlaylistService) GetPublicPlaylists(
 			&playlist.PlaylistId,
 			&playlist.Name,
 			&playlist.AuthorGoogleEmail,
-			&playlist.AuthorName,
-			&playlist.AuthorImage,
 			&playlist.CoverImage,
 			&playlist.IsPublic,
+			&playlist.AuthorName,
+			&playlist.AuthorImage,
 		); err != nil {
 			logging.Logger.Error("Parsing one of public playlists failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Parsing one of public playlists failed.")

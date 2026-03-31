@@ -65,7 +65,8 @@ class AmplListTile extends StatelessWidget {
       trailing: trailing,
       onTap: onTap,
       tileColor: backgroundColor,
-      contentPadding: padding ?? const EdgeInsets.all(12),
+      contentPadding:
+          padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       dense: true,
       visualDensity: visualDensity ?? VisualDensity.comfortable,
       minLeadingWidth: 0,

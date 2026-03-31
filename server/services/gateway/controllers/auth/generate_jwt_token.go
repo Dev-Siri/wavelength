@@ -1,9 +1,9 @@
 package auth
 
 import (
-	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
 	shared_env "github.com/Dev-Siri/wavelength/server/shared/env"
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
+	shared_models "github.com/Dev-Siri/wavelength/server/shared/models"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -12,7 +12,7 @@ import (
 
 // Deprecated: Present until next release of Wavelength. Auth has moved to be handled by oauth2 on Go instead of GenerateJwtToken simply acting as a token-generator.
 func GenerateJwtToken(ctx *fiber.Ctx) error {
-	var authUser models.AuthUser
+	var authUser shared_models.AuthUser
 
 	if err := ctx.BodyParser(&authUser); err != nil {
 		logging.Logger.Error("Could not parse request body as an auth user object.", zap.Error(err))
@@ -38,5 +38,5 @@ func GenerateJwtToken(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "JWT token generation failed.")
 	}
 
-	return models.Success(ctx, authToken)
+	return shared_models.Success(ctx, authToken)
 }

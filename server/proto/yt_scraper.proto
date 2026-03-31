@@ -10,10 +10,12 @@ service YTScraper {
   rpc GetQuickPicks(GetQuickPicksRequest) returns (GetQuickPicksResponse);
   rpc GetAlbumDetails(GetAlbumDetailsRequest) returns (GetAlbumDetailsResponse);
   rpc GetArtistDetails(GetArtistDetailsRequest) returns (GetArtistDetailsResponse);
+  rpc GetUpNext(GetUpNextRequest) returns (GetUpNextResponse);
   rpc SearchTracks(SearchTracksRequest) returns (SearchTracksResponse);
   rpc SearchArtists(SearchArtistsRequest) returns (SearchArtistsResponse);
   rpc SearchAlbums(SearchAlbumsRequest) returns (SearchAlbumsResponse);
   rpc SearchYouTubeVideos(SearchYouTubeVideosRequest) returns (SearchYouTubeVideosResponse);
+  rpc GetTrackInfo(GetTrackInfoRequest) returns (GetTrackInfoResponse);
 }
 
 message GetSearchSuggestionsRequest {
@@ -80,4 +82,22 @@ message SearchYouTubeVideosRequest {
 
 message SearchYouTubeVideosResponse {
   repeated common.YouTubeVideo videos = 1;
+}
+
+message GetUpNextRequest {
+  bool automix = 1;
+  string video_id = 2;
+}
+
+message GetUpNextResponse {
+  string continuation_token = 1;
+  repeated common.Track tracks = 2;
+}
+
+message GetTrackInfoRequest {
+  string video_id = 1;
+}
+
+message GetTrackInfoResponse {
+  common.Track track = 1;
 }

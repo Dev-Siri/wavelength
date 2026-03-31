@@ -1,13 +1,14 @@
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:wavelength/bloc/music_player/music_player_singleton.dart";
+import "package:wavelength/audio/wavelength_audio_handler.dart";
 import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_event.dart";
 import "package:wavelength/bloc/music_player/music_player_volume/music_player_volume_state.dart";
 
 class MusicPlayerVolumeBloc
     extends Bloc<MusicPlayerVolumeEvent, MusicPlayerVolumeState> {
-  final _musicPlayer = MusicPlayerSingleton();
+  final WavelengthAudioHandler _audioHandler;
 
-  MusicPlayerVolumeBloc() : super(MusicPlayerVolumeUnmutedState()) {
+  MusicPlayerVolumeBloc(this._audioHandler)
+    : super(MusicPlayerVolumeUnmutedState()) {
     on<MusicPlayerVolumeMuteEvent>(_muteTrack);
     on<MusicPlayerVolumeUnmuteEvent>(_unmuteTrack);
   }
@@ -16,8 +17,7 @@ class MusicPlayerVolumeBloc
     MusicPlayerVolumeMuteEvent event,
     Emitter<MusicPlayerVolumeState> emit,
   ) {
-    _musicPlayer.player.setVolume(0);
-
+    _audioHandler.mute();
     emit(MusicPlayerVolumeMutedState());
   }
 
@@ -25,8 +25,7 @@ class MusicPlayerVolumeBloc
     MusicPlayerVolumeUnmuteEvent event,
     Emitter<MusicPlayerVolumeState> emit,
   ) {
-    _musicPlayer.player.setVolume(1);
-
+    _audioHandler.unMute();
     emit(MusicPlayerVolumeUnmutedState());
   }
 }

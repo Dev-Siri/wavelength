@@ -1,0 +1,19 @@
+syntax = "proto3";
+package lyrics;
+
+option go_package = "github.com/Dev-Siri/wavelength/server/proto/lyrics;lyricspb";
+
+import "proto/common.proto";
+
+service LyricService {
+  rpc GetTrackLyrics(GetTrackLyricsRequest) returns (GetTrackLyricsResponse);  
+}
+
+message GetTrackLyricsRequest {
+  string video_id = 1;
+}
+
+message GetTrackLyricsResponse {
+  string source = 1;
+  repeated common.LyricsLine lines = 2;
+}

@@ -35,15 +35,14 @@
 </script>
 
 <Button
-  variant="secondary"
-  class="flex items-center gap-1 mt-0"
+  title={isPublic ? "Public" : "Private"}
+  variant="ghost"
+  size="sm"
   onclick={() => visibilityChangeMutation.mutate()}
 >
   {#if isPublic}
     <GlobeIcon size={17} />
-    <span>Public</span>
   {:else}
     <LockIcon size={17} />
-    <span>Private</span>
   {/if}
 </Button>

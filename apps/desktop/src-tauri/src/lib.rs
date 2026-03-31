@@ -6,7 +6,9 @@ use tauri::{tray::TrayIconBuilder, Manager};
 mod audio_server;
 mod cache;
 mod download;
-mod stream_downloader;
+mod paths;
+mod schema;
+mod settings_manager;
 mod youtube;
 
 use tokio::sync::Mutex;
@@ -23,6 +25,7 @@ pub struct AppState {
 pub fn run() {
     audio_server::start_stream_server();
     tauri::Builder::default()
+        .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_cors_fetch::init())
@@ -61,7 +64,14 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             youtube::fetch_highest_bitrate_audio_stream_url,
             youtube::fetch_highest_bitrate_video_stream_url,
-            download::download_track
+            youtube::prefetch_track,
+            download::download_track,
+            download::get_downloads,
+            download::delete_download,
+            download::is_downloaded,
+            download::get_download_source,
+            settings_manager::set_settings,
+            settings_manager::get_settings
         ])
         .build(tauri::generate_context!())
         .expect("Wavelength desktop launch failed.")

@@ -1,31 +1,38 @@
 <script lang="ts">
   import { HeartIcon } from "@lucide/svelte";
-  import { createMutation, createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { createMutation, useQueryClient } from "@tanstack/svelte-query";
   import { toast } from "svelte-sonner";
   import { z } from "zod";
 
-  import type { MusicTrack } from "$lib/utils/validation/music-track";
+  import type { MusicTrack } from "$lib/schemas/music-track";
 
   import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";
+  import useIsTrackLiked from "$lib/queries/isTrackLiked";
+  import { musicTrackDurationSchema } from "$lib/schemas/track-length";
   import { backendClient } from "$lib/utils/query-client";
-  import { musicTrackDurationSchema } from "$lib/utils/validation/track-length";
 
   import { Button } from "../ui/button";
 
-  const { music }: { music: MusicTrack } = $props();
+  const {
+    music,
+    isPreLiked,
+  }: {
+    music: MusicTrack;
+    /**
+     * isPreLiked is a boolean provided to the component to let it know if the track is already liked
+     * Providing this avoids the component itself from fetchign it's liked status, which reduces the
+     * demand on the server in-case there are 100s or 1000s of tracks on the screen.
+     */
+    isPreLiked?: boolean;
+  } = $props();
 
   const queryClient = useQueryClient();
 
-  const isTrackLikedQuery = createQuery(() => ({
-    queryKey: svelteQueryKeys.isTrackLiked(music.videoId),
-    queryFn: () =>
-      backendClient(
-        `/music/track/likes/${music.videoId}/is-liked`,
-        z.object({ isLiked: z.boolean() }),
-      ),
-  }));
+  const isTrackLikedQuery = $derived(
+    useIsTrackLiked(music.videoId, { enabled: isPreLiked == null }),
+  );
 
-  let isLiked = $derived(isTrackLikedQuery.data?.isLiked);
+  let isLiked = $derived(isPreLiked != null ? isPreLiked : !!isTrackLikedQuery.data?.isLiked);
 
   const likeMutation = createMutation(() => ({
     mutationKey: svelteMutationKeys.likeTrack(music.videoId),
@@ -56,9 +63,8 @@
     },
     onSuccess() {
       isTrackLikedQuery.refetch();
-      queryClient.invalidateQueries({
-        queryKey: [...svelteQueryKeys.likeCount, ...svelteQueryKeys.likes],
-      });
+      queryClient.invalidateQueries({ queryKey: svelteQueryKeys.likeCount });
+      queryClient.invalidateQueries({ queryKey: svelteQueryKeys.likes });
     },
   }));
 

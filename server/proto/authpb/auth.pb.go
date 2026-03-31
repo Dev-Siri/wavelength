@@ -7,10 +7,8 @@
 package authpb
 
 import (
-	_ "github.com/Dev-Siri/wavelength/server/proto/commonpb"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	_ "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -387,7 +385,7 @@ var File_proto_auth_proto protoreflect.FileDescriptor
 
 const file_proto_auth_proto_rawDesc = "" +
 	"\n" +
-	"\x10proto/auth.proto\x12\x04auth\x1a\x12proto/common.proto\x1a\x1bgoogle/protobuf/empty.proto\"?\n" +
+	"\x10proto/auth.proto\x12\x04auth\"?\n" +
 	"\x1aGetOAuthRedirectUrlRequest\x12!\n" +
 	"\fredirect_uri\x18\x01 \x01(\tR\vredirectUri\":\n" +
 	"\x1bGetOAuthRedirectUrlResponse\x12\x1b\n" +

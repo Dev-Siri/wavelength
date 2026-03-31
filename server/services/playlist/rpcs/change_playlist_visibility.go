@@ -34,7 +34,7 @@ func (p *PlaylistService) ChangePlaylistVisibility(
 		logging.Logger.Error("Visibility change cannot be performed because the authorized user is not the author of the playlist.",
 			zap.String("playlistId", request.PlaylistId),
 			zap.String("authUserEmail", request.AuthUserEmail))
-		return nil, status.Error(codes.Unauthenticated, "Visibility change cannot be performed because the authorized user is not the author of the playlist.")
+		return nil, status.Error(codes.PermissionDenied, "Visibility change cannot be performed because the authorized user is not the author of the playlist.")
 	}
 
 	rows, err := shared_db.Database.Query(`

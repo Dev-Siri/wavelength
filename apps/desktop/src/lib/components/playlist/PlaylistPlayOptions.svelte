@@ -1,36 +1,51 @@
 <script lang="ts">
   import { PlayIcon, ShuffleIcon } from "@lucide/svelte";
+  import { toast } from "svelte-sonner";
 
-  import type { QueueableMusic } from "$lib/stores/music-queue.svelte";
+  import type {
+    MusicPlaylistContextSource,
+    QueueableMusic,
+  } from "$lib/stream-player/MusicQueue.svelte";
 
-  import musicPlayerStore from "$lib/stores/music-player.svelte";
-  import musicQueueStore from "$lib/stores/music-queue.svelte";
-  import { shuffle } from "$lib/utils/shuffle";
+  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { reportErrorToBackend } from "$lib/utils/query-client";
+  import { shuffleStartIndex } from "$lib/utils/shuffle";
 
   import { Button } from "../ui/button";
 
-  const { tracks }: { tracks: QueueableMusic[] } = $props();
+  const {
+    tracks,
+    context,
+  }: { tracks: QueueableMusic[] | (() => QueueableMusic[]); context?: MusicPlaylistContextSource } =
+    $props();
 
-  function playAll() {
-    musicQueueStore.musicPlaylistContext = tracks;
-    musicQueueStore.musicPlayingNow = tracks[0];
-    musicPlayerStore.playMusic();
+  async function playAll() {
+    try {
+      const starterTrack = (typeof tracks === "function" ? tracks() : tracks)[
+        musicPlayer.queue.shuffleEnabled ? shuffleStartIndex(tracks.length) : 0
+      ];
+      await musicPlayer.load(starterTrack, context);
+    } catch (error) {
+      toast.error(`Playback ${error}`);
+      await reportErrorToBackend({
+        error,
+        source: "PlaylistPlayOptions: playAll()",
+      });
+    }
   }
 
-  function shuffleAndPlayAll() {
-    musicPlayerStore.isShuffleModeOn = true;
-    musicQueueStore.musicPlaylistContextPreshuffle = musicQueueStore.musicPlaylistContext;
-    musicQueueStore.musicPlaylistContext = shuffle(musicQueueStore.musicPlaylistContext);
-    playAll();
+  async function shuffleAndPlayAll() {
+    musicPlayer.queue.enableShuffle();
+    await playAll();
   }
 </script>
 
 <div class="flex gap-2">
-  <Button onclick={playAll}>
+  <Button onclick={playAll} size="sm" class="px-6">
     <PlayIcon fill="1" />
-    Play All
+    Play
   </Button>
-  <Button variant="secondary" onclick={shuffleAndPlayAll}>
+  <Button variant="secondary" class="px-4.5" size="sm" onclick={shuffleAndPlayAll}>
     <ShuffleIcon fill="1" />
     Shuffle
   </Button>

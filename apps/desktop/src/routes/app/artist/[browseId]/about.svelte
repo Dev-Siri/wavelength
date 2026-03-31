@@ -1,11 +1,12 @@
 <script lang="ts">
-  import type { FullArtist } from "$lib/utils/validation/artist-response";
+  import type { Artist } from "$lib/schemas/artist";
+
+  import { openUrl } from "$lib/utils/url";
 
   import { buttonVariants } from "$lib/components/ui/button";
   import * as Card from "$lib/components/ui/card";
-  import { openUrl } from "$lib/utils/url";
 
-  const { artist }: { artist: FullArtist } = $props();
+  const { artist }: { artist: Artist } = $props();
 
   const normalizedDescription = $derived.by(() => {
     const wikipediaLine = artist.description?.indexOf("From Wikipedia");
@@ -17,7 +18,7 @@
   const artistLink = $derived(`https://music.youtube.com/channel/${artist.browseId}`);
 </script>
 
-<Card.Root class="bg-border">
+<Card.Root class="bg-border mb-[20%]">
   <Card.Header>
     <Card.Title>{artist.title}</Card.Title>
   </Card.Header>

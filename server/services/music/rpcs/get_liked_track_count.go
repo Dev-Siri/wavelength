@@ -28,7 +28,8 @@ func (m *MusicService) GetLikedTrackCount(
 		return nil, status.Error(codes.Internal, "Like count read failed.")
 	}
 
+	likeCountValue := uint32(likeCount)
 	return &musicpb.GetLikedTrackCountResponse{
-		LikeCount: uint32(likeCount),
+		LikeCount: &likeCountValue,
 	}, nil
 }

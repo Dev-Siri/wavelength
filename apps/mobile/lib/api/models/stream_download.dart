@@ -1,10 +1,10 @@
 import "package:flutter/foundation.dart";
-import "package:wavelength/api/models/track.dart";
+import "package:wavelength/audio/queueable_music.dart";
 
 @immutable
 class StreamDownload {
   final String downloadId;
-  final Track metadata;
+  final QueueableMusic metadata;
 
   /// Percentage of how much of the stream has been downloaded.
   final double progress;
@@ -18,7 +18,7 @@ class StreamDownload {
   StreamDownload copyWith({
     String? downloadId,
     double? progress,
-    Track? metadata,
+    QueueableMusic? metadata,
   }) {
     return StreamDownload(
       downloadId: downloadId ?? this.downloadId,

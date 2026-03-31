@@ -1,5 +1,7 @@
 <script lang="ts">
-  import type { Album } from "$lib/utils/validation/albums";
+  import { resolve } from "$app/paths";
+
+  import type { Album } from "$lib/schemas/album";
 
   import { getReadableAlbumType } from "$lib/utils/format";
 
@@ -10,8 +12,8 @@
 </script>
 
 <a
-  href="/app/album/{album.albumId}"
-  class="flex flex-col gap-2 h-64 items-center cursor-pointer group"
+  href={resolve(`/app/album/${album.albumId}`)}
+  class="flex flex-col gap-2 mb-4 h-64 items-center cursor-pointer group"
   aria-label={`Album card for ${album.title} by ${album.artist.title}`}
 >
   <div class="flex flex-col relative">
@@ -29,13 +31,14 @@
         alt="Album {album.title}'s Thumbnail"
         height={192}
         width={192}
+        loading="eager"
         class="object-cover aspect-square group-hover:opacity-60 duration-200 shadow-black h-full w-full rounded-xl"
       />
     </div>
   </div>
   <Tooltip.Root>
     <Tooltip.Trigger>
-      <p class="text-ellipsis w-full text-secondary-foreground text-sm text-center">
+      <p class="text-ellipsis w-full text-secondary-foreground text-base font-semibold text-center">
         {album.title.length > 28 ? `${album.title.slice(0, 28)}...` : album.title}
       </p>
     </Tooltip.Trigger>

@@ -2,9 +2,9 @@ package playlist_controllers
 
 import (
 	"github.com/Dev-Siri/wavelength/server/proto/playlistpb"
-	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
 	"github.com/Dev-Siri/wavelength/server/shared/clients"
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
+	shared_models "github.com/Dev-Siri/wavelength/server/shared/models"
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 )
@@ -23,5 +23,5 @@ func GetSongRecommendations(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Playlist song recommendations fetched failed.")
 	}
 
-	return models.Success(ctx, playlistSongRecommendations)
+	return shared_models.Success(ctx, playlistSongRecommendations)
 }

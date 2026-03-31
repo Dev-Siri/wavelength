@@ -56,17 +56,26 @@ class AmplButton extends StatelessWidget {
       );
     }
 
-    return MaterialButton(
-      shape: RoundedRectangleBorder(
-        borderRadius: borderRadius ?? BorderRadius.circular(12),
+    return Material(
+      color: Colors.transparent,
+      child: MaterialButton(
+        elevation: 0,
+        highlightElevation: 0,
+        hoverElevation: 0,
+        focusElevation: 0,
+        disabledElevation: 0,
+        highlightColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: borderRadius ?? BorderRadius.circular(12),
+        ),
+        padding: padding,
+        onPressed: disabled ? null : onPressed,
+        onLongPress: disabled ? null : onLongPress,
+        height: height,
+        minWidth: minWidth,
+        color: color,
+        child: child,
       ),
-      padding: padding,
-      onPressed: disabled ? null : onPressed,
-      onLongPress: disabled ? null : onLongPress,
-      height: height,
-      minWidth: minWidth,
-      color: color,
-      child: child,
     );
   }
 }

@@ -3,7 +3,6 @@ package music_rpcs
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
 	"github.com/Dev-Siri/wavelength/server/proto/musicpb"
 	"github.com/Dev-Siri/wavelength/server/proto/yt_scraperpb"
@@ -38,22 +37,7 @@ func (m *MusicService) GetMusicSearchSuggestions(
 	matchingLinks := []*musicpb.GetMusicSearchSuggestionsResponse_SearchSuggestedLink{}
 
 	for _, item := range searchSuggestionsResponse.SuggestedLinks {
-		subtitleParts := strings.Split(item.Subtitle, " • ")
-
-		if len(subtitleParts) < 3 {
-			logging.Logger.Error("Subtitle does not contain all parts (3)", zap.String("subtitle", item.Subtitle))
-			// It's invalid, so we skip it here.
-			continue
-		}
-
-		meta := musicpb.GetMusicSearchSuggestionsResponse_SearchSuggestedLink_SearchSuggestedLinkMeta{
-			Type:                subtitleParts[0],
-			AuthorOrAlbum:       subtitleParts[1],
-			PlaysOrAlbumRelease: subtitleParts[2],
-		}
-
 		suggestedLink := musicpb.GetMusicSearchSuggestionsResponse_SearchSuggestedLink{
-			Meta:      &meta,
 			Title:     item.Title,
 			Subtitle:  item.Subtitle,
 			Thumbnail: item.Thumbnail,

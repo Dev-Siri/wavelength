@@ -12,4 +12,5 @@ func RegisterRoutes(app *fiber.App) {
 	registerDiagnosticsRoutes(app)
 	registerMetaRoutes(app)
 	registerAlbumRoutes(app)
+	registerLyricsRoutes(app)
 }

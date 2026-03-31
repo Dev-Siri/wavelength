@@ -5,7 +5,7 @@
   import { toast } from "svelte-sonner";
   import { z } from "zod";
 
-  import type { Playlist } from "$lib/utils/validation/playlists";
+  import type { Playlist } from "$lib/schemas/playlist";
 
   import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";
   import { backendClient } from "$lib/utils/query-client.js";
@@ -40,11 +40,9 @@
       }),
     onError: () => toast.error("Failed to update playlist details."),
     onSuccess() {
-      queryClient.refetchQueries({
-        queryKey: [
-          ...svelteQueryKeys.userPlaylists,
-          svelteQueryKeys.playlist(initialPlaylist.playlistId),
-        ],
+      queryClient.invalidateQueries({ queryKey: svelteQueryKeys.userPlaylists });
+      queryClient.invalidateQueries({
+        queryKey: svelteQueryKeys.playlist(initialPlaylist.playlistId),
       });
       document.querySelector<HTMLButtonElement>("#close-dialog > [data-dialog-close]")?.click();
     },

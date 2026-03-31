@@ -1,92 +1,76 @@
 <script lang="ts">
-  import { Columns3Icon, MicVocalIcon, SquarePlayIcon } from "@lucide/svelte";
+  import { Columns3Icon, MaximizeIcon, MicVocalIcon } from "@lucide/svelte";
 
-  import musicPlayerStore from "$lib/stores/music-player.svelte";
-  import musicQueueStore from "$lib/stores/music-queue.svelte";
+  import musicInterfaceStore from "$lib/stores/musicInterface.svelte";
+  import { musicPlayer } from "$lib/stream-player/musicPlayer";
 
-  import { Button } from "../ui/button";
+  import { buttonVariants } from "../ui/button";
   import * as Tooltip from "../ui/tooltip";
+  import MusicPlayerTrackPlaybackOptionInfo from "./MusicPlayerTrackPlaybackOptionInfo.svelte";
   import VolumeSlider from "./MusicPlayerVolumeSlider.svelte";
 
-  function syncUVideoToMusic(fn: () => void) {
-    if (musicQueueStore.musicPlayingNow?.videoType !== "VIDEO_TYPE_UVIDEO") return fn();
+  const disabledStyles = "opacity-50 cursor-default hover:bg-transparent";
 
-    fn();
-
-    setTimeout(async () => {
-      const currentTime = (await musicPlayerStore.musicPlayer?.getCurrentTime()) ?? 0;
-      musicPlayerStore.musicPreviewPlayer?.seek(currentTime);
-    }, 1500);
-  }
+  const isLyricsAvailable = $derived(
+    musicPlayer.queue.playingNow &&
+      musicPlayer?.queue.playingNow?.videoType !== "VIDEO_TYPE_UVIDEO",
+  );
 </script>
 
 <Tooltip.Root>
-  <Tooltip.Trigger>
-    <Button
-      variant="ghost"
-      class="w-fit px-3 rounded-full hidden sm:flex"
-      onclick={() =>
-        syncUVideoToMusic(
-          () =>
-            (musicPlayerStore.visiblePanel =
-              musicPlayerStore.visiblePanel === "playingNow" ? null : "playingNow"),
-        )}
-    >
-      <SquarePlayIcon
-        size={20}
-        class={musicPlayerStore.visiblePanel === "playingNow"
-          ? "text-primary"
-          : "text-muted-foreground"}
-      />
-    </Button>
-  </Tooltip.Trigger>
-  <Tooltip.Content class="z-9999">
-    <p>Now playing view</p>
-  </Tooltip.Content>
-</Tooltip.Root>
-<Tooltip.Root>
-  <Tooltip.Trigger>
-    <Button
-      variant="ghost"
-      class="w-fit px-3 rounded-full"
-      onclick={() =>
-        syncUVideoToMusic(
-          () => (musicQueueStore.isMusicQueueVisible = !musicQueueStore.isMusicQueueVisible),
-        )}
-    >
-      <Columns3Icon
-        size={20}
-        class={musicQueueStore.isMusicQueueVisible ? "text-primary" : "text-muted-foreground"}
-      />
-    </Button>
+  <Tooltip.Trigger
+    class={buttonVariants({ variant: "ghost", class: "w-fit px-3 rounded-full" })}
+    onclick={() =>
+      (musicInterfaceStore.isMusicQueueVisible = !musicInterfaceStore.isMusicQueueVisible)}
+  >
+    <Columns3Icon
+      size={20}
+      class="text-primary {musicInterfaceStore.isMusicQueueVisible ? '' : 'opacity-50'}"
+    />
   </Tooltip.Trigger>
   <Tooltip.Content class="z-9999">
     <p>Queue</p>
   </Tooltip.Content>
 </Tooltip.Root>
 <Tooltip.Root>
-  <Tooltip.Trigger>
-    <Button
-      variant="ghost"
-      class="w-fit px-3 rounded-full"
-      disabled={musicQueueStore.musicPlayingNow?.videoType === "VIDEO_TYPE_UVIDEO"}
-      onclick={() =>
-        syncUVideoToMusic(
-          () =>
-            (musicPlayerStore.visiblePanel =
-              musicPlayerStore.visiblePanel === "lyrics" ? null : "lyrics"),
-        )}
-    >
-      <MicVocalIcon
-        size={20}
-        class={musicPlayerStore.visiblePanel === "lyrics"
-          ? "text-primary"
-          : "text-muted-foreground"}
-      />
-    </Button>
+  <Tooltip.Trigger
+    class={buttonVariants({
+      variant: "ghost",
+      class: `w-fit px-3 rounded-full ${!isLyricsAvailable ? disabledStyles : ""}`,
+    })}
+    onclick={() =>
+      isLyricsAvailable &&
+      (musicInterfaceStore.visiblePanel =
+        musicInterfaceStore.visiblePanel === "lyrics" ? null : "lyrics")}
+  >
+    <MicVocalIcon
+      size={20}
+      class="text-primary {musicInterfaceStore.visiblePanel === 'lyrics' ? '' : 'opacity-50'}"
+    />
   </Tooltip.Trigger>
   <Tooltip.Content class="z-9999">
     <p>Lyrics</p>
   </Tooltip.Content>
 </Tooltip.Root>
 <VolumeSlider />
+<MusicPlayerTrackPlaybackOptionInfo />
+<Tooltip.Root>
+  <Tooltip.Trigger
+    class={buttonVariants({
+      variant: "ghost",
+      class: `w-fit px-3 rounded-full ${musicPlayer.queue.playingNow ? "" : disabledStyles}`,
+    })}
+    onclick={() => musicPlayer.queue.playingNow && musicInterfaceStore.goFullscreenMode()}
+  >
+    <MaximizeIcon
+      size={20}
+      class="text-primary {musicInterfaceStore.isPlayerFullscreen &&
+      musicInterfaceStore.visiblePanel === 'lyrics'
+        ? ''
+        : 'opacity-50'}"
+    />
+  </Tooltip.Trigger>
+  <Tooltip.Content class="z-9999">
+    <p>Fullscreen Mode</p>
+  </Tooltip.Content>
+</Tooltip.Root>

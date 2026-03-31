@@ -5,51 +5,13 @@ import "package:flutter/foundation.dart";
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/enums/video_type.dart";
 import "package:wavelength/api/models/liked_track.dart";
-import "package:wavelength/api/models/lyric.dart";
-import "package:wavelength/api/models/music_video_preview.dart";
+import "package:wavelength/api/models/lyrics_line.dart";
 import "package:wavelength/api/models/playlist_tracks_length.dart";
 import "package:wavelength/api/models/track.dart";
 import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/constants.dart";
 
 class TrackRepo {
-  static Future<ApiResponse<MusicVideoPreview>> fetchTrackMusicVideo({
-    required String title,
-    required String artist,
-  }) async {
-    try {
-      final response = await http.get(
-        Uri.parse(
-          "$apiGatewayUrl/music/music-video-preview?title=$title&artist=$artist",
-        ),
-      );
-      final decodedResponse =
-          await compute<String, ApiResponse<MusicVideoPreview>>((
-            stringResponse,
-          ) {
-            final decodedJson = jsonDecode(stringResponse);
-            final isSuccessful = decodedJson["success"] as bool;
-
-            if (isSuccessful) {
-              return ApiResponseSuccess(
-                data: MusicVideoPreview.fromJson(decodedJson["data"]),
-              );
-            }
-
-            return ApiResponseError(message: decodedJson["message"] as String);
-          }, response.body);
-
-      return decodedResponse;
-    } catch (e) {
-      final errorString = e.toString();
-      DiagnosticsRepo.reportError(
-        error: errorString,
-        source: "TrackRepo.fetchTrackMusicVideo",
-      );
-      return ApiResponseError(message: errorString);
-    }
-  }
-
   static Future<ApiResponse<String>> toggleTrackFromPlaylist({
     required String playlistId,
     required String authToken,
@@ -99,29 +61,21 @@ class TrackRepo {
     }
   }
 
-  static Future<ApiResponse<List<Lyric>>> fetchTrackLyrics({
+  static Future<ApiResponse<Lyrics>> fetchTrackLyrics({
     required String trackId,
-    required String title,
-    required String artist,
   }) async {
     try {
       final response = await http.get(
-        Uri.parse(
-          "$apiGatewayUrl/music/track/$trackId/lyrics?title=$title&artist=$artist",
-        ),
+        Uri.parse("$apiGatewayUrl/lyrics/$trackId"),
       );
-      final decodedResponse = await compute<String, ApiResponse<List<Lyric>>>((
+      final decodedResponse = await compute<String, ApiResponse<Lyrics>>((
         lyricsResponse,
       ) {
         final decodedJson = jsonDecode(lyricsResponse);
         final isSuccessful = decodedJson["success"] as bool;
 
         if (isSuccessful) {
-          final lyrics = decodedJson["data"]["lyrics"] as List;
-
-          return ApiResponseSuccess(
-            data: lyrics.map((lyric) => Lyric.fromJson(lyric)).toList(),
-          );
+          return ApiResponseSuccess(data: Lyrics.fromJson(decodedJson["data"]));
         }
 
         return ApiResponseError(message: decodedJson["message"] as String);
@@ -358,6 +312,40 @@ class TrackRepo {
       DiagnosticsRepo.reportError(
         error: errorString,
         source: "TrackRepo.fetchIsAlreadyLiked",
+      );
+      return ApiResponseError(message: errorString);
+    }
+  }
+
+  static Future<ApiResponse<List<Track>>> fetchUpNextTracks({
+    required String videoId,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$apiGatewayUrl/music/track/$videoId/automix"),
+      );
+      final decodedResponse = await compute<String, ApiResponse<List<Track>>>((
+        stringResponse,
+      ) {
+        final decodedJson = jsonDecode(stringResponse);
+        final isSuccessful = decodedJson["success"] as bool;
+
+        if (isSuccessful) {
+          final tracks = decodedJson["data"]["tracks"] as List? ?? [];
+          return ApiResponseSuccess(
+            data: tracks.map((track) => Track.fromJson(track)).toList(),
+          );
+        }
+
+        return ApiResponseError(message: decodedJson["message"] as String);
+      }, response.body);
+
+      return decodedResponse;
+    } catch (e) {
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "TrackRepo.fetchUpNextTracks",
       );
       return ApiResponseError(message: errorString);
     }

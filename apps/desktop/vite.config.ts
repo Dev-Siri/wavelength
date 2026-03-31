@@ -1,12 +1,14 @@
 import { sveltekit } from "@sveltejs/kit/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { SvelteKitPWA } from "@vite-pwa/sveltekit";
+import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [
     sveltekit(),
     tailwindcss(),
+    visualizer({ emitFile: true }),
     SvelteKitPWA({
       includeAssets: ["pwa/vector.svg", "pwa/192x192.png", "pwa/512x512.png"],
       manifest: {

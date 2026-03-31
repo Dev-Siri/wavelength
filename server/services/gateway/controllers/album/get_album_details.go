@@ -2,9 +2,9 @@ package album_controllers
 
 import (
 	"github.com/Dev-Siri/wavelength/server/proto/albumpb"
-	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
 	"github.com/Dev-Siri/wavelength/server/shared/clients"
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
+	shared_models "github.com/Dev-Siri/wavelength/server/shared/models"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -25,5 +25,5 @@ func GetAlbumDetails(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Album details fetch failed.")
 	}
 
-	return models.Success(ctx, albumDetailsResponse)
+	return shared_models.Success(ctx, albumDetailsResponse)
 }

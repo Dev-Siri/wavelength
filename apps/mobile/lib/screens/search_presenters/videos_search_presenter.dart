@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:wavelength/bloc/search/videos/videos_bloc.dart";
 import "package:wavelength/bloc/search/videos/videos_state.dart";
-import "package:wavelength/widgets/error_message_dialog.dart";
+import "package:wavelength/widgets/dialogs/error_message_dialog.dart";
 import "package:wavelength/widgets/skeletons/playlist_tile_skeleton.dart";
 import "package:wavelength/widgets/video_card.dart";
 

@@ -2,8 +2,8 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:wavelength/bloc/search/artists/artists_bloc.dart";
 import "package:wavelength/bloc/search/artists/artists_state.dart";
-import "package:wavelength/widgets/artist_tile.dart";
-import "package:wavelength/widgets/error_message_dialog.dart";
+import "package:wavelength/widgets/artist/artist_tile.dart";
+import "package:wavelength/widgets/dialogs/error_message_dialog.dart";
 import "package:wavelength/widgets/skeletons/artist_tile_skeleton.dart";
 
 class ArtistsSearchPresenter extends StatelessWidget {

@@ -20,9 +20,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AlbumService_GetAlbumDetails_FullMethodName  = "/album.AlbumService/GetAlbumDetails"
-	AlbumService_SearchAlbums_FullMethodName     = "/album.AlbumService/SearchAlbums"
-	AlbumService_CreateTrackAlbum_FullMethodName = "/album.AlbumService/CreateTrackAlbum"
+	AlbumService_GetAlbumDetails_FullMethodName   = "/album.AlbumService/GetAlbumDetails"
+	AlbumService_SearchAlbums_FullMethodName      = "/album.AlbumService/SearchAlbums"
+	AlbumService_CreateTrackAlbum_FullMethodName  = "/album.AlbumService/CreateTrackAlbum"
+	AlbumService_GetAlbumLiveCover_FullMethodName = "/album.AlbumService/GetAlbumLiveCover"
+	AlbumService_IsAlbumLossless_FullMethodName   = "/album.AlbumService/IsAlbumLossless"
+	AlbumService_IsAlbumSaved_FullMethodName      = "/album.AlbumService/IsAlbumSaved"
+	AlbumService_SaveAlbum_FullMethodName         = "/album.AlbumService/SaveAlbum"
+	AlbumService_GetSavedAlbums_FullMethodName    = "/album.AlbumService/GetSavedAlbums"
 )
 
 // AlbumServiceClient is the client API for AlbumService service.
@@ -32,6 +37,11 @@ type AlbumServiceClient interface {
 	GetAlbumDetails(ctx context.Context, in *GetAlbumDetailsRequest, opts ...grpc.CallOption) (*GetAlbumDetailsResponse, error)
 	SearchAlbums(ctx context.Context, in *SearchAlbumsRequest, opts ...grpc.CallOption) (*SearchAlbumsResponse, error)
 	CreateTrackAlbum(ctx context.Context, in *CreateTrackAlbumRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetAlbumLiveCover(ctx context.Context, in *GetAlbumLiveCoverRequest, opts ...grpc.CallOption) (*GetAlbumLiveCoverResponse, error)
+	IsAlbumLossless(ctx context.Context, in *IsAlbumLosslessRequest, opts ...grpc.CallOption) (*IsAlbumLosslessResponse, error)
+	IsAlbumSaved(ctx context.Context, in *IsAlbumSavedRequest, opts ...grpc.CallOption) (*IsAlbumSavedResponse, error)
+	SaveAlbum(ctx context.Context, in *SaveAlbumRequest, opts ...grpc.CallOption) (*SaveAlbumResponse, error)
+	GetSavedAlbums(ctx context.Context, in *GetSavedAlbumsRequest, opts ...grpc.CallOption) (*GetSavedAlbumsResponse, error)
 }
 
 type albumServiceClient struct {
@@ -72,6 +82,56 @@ func (c *albumServiceClient) CreateTrackAlbum(ctx context.Context, in *CreateTra
 	return out, nil
 }
 
+func (c *albumServiceClient) GetAlbumLiveCover(ctx context.Context, in *GetAlbumLiveCoverRequest, opts ...grpc.CallOption) (*GetAlbumLiveCoverResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAlbumLiveCoverResponse)
+	err := c.cc.Invoke(ctx, AlbumService_GetAlbumLiveCover_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *albumServiceClient) IsAlbumLossless(ctx context.Context, in *IsAlbumLosslessRequest, opts ...grpc.CallOption) (*IsAlbumLosslessResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(IsAlbumLosslessResponse)
+	err := c.cc.Invoke(ctx, AlbumService_IsAlbumLossless_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *albumServiceClient) IsAlbumSaved(ctx context.Context, in *IsAlbumSavedRequest, opts ...grpc.CallOption) (*IsAlbumSavedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(IsAlbumSavedResponse)
+	err := c.cc.Invoke(ctx, AlbumService_IsAlbumSaved_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *albumServiceClient) SaveAlbum(ctx context.Context, in *SaveAlbumRequest, opts ...grpc.CallOption) (*SaveAlbumResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SaveAlbumResponse)
+	err := c.cc.Invoke(ctx, AlbumService_SaveAlbum_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *albumServiceClient) GetSavedAlbums(ctx context.Context, in *GetSavedAlbumsRequest, opts ...grpc.CallOption) (*GetSavedAlbumsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetSavedAlbumsResponse)
+	err := c.cc.Invoke(ctx, AlbumService_GetSavedAlbums_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AlbumServiceServer is the server API for AlbumService service.
 // All implementations must embed UnimplementedAlbumServiceServer
 // for forward compatibility.
@@ -79,6 +139,11 @@ type AlbumServiceServer interface {
 	GetAlbumDetails(context.Context, *GetAlbumDetailsRequest) (*GetAlbumDetailsResponse, error)
 	SearchAlbums(context.Context, *SearchAlbumsRequest) (*SearchAlbumsResponse, error)
 	CreateTrackAlbum(context.Context, *CreateTrackAlbumRequest) (*emptypb.Empty, error)
+	GetAlbumLiveCover(context.Context, *GetAlbumLiveCoverRequest) (*GetAlbumLiveCoverResponse, error)
+	IsAlbumLossless(context.Context, *IsAlbumLosslessRequest) (*IsAlbumLosslessResponse, error)
+	IsAlbumSaved(context.Context, *IsAlbumSavedRequest) (*IsAlbumSavedResponse, error)
+	SaveAlbum(context.Context, *SaveAlbumRequest) (*SaveAlbumResponse, error)
+	GetSavedAlbums(context.Context, *GetSavedAlbumsRequest) (*GetSavedAlbumsResponse, error)
 	mustEmbedUnimplementedAlbumServiceServer()
 }
 
@@ -97,6 +162,21 @@ func (UnimplementedAlbumServiceServer) SearchAlbums(context.Context, *SearchAlbu
 }
 func (UnimplementedAlbumServiceServer) CreateTrackAlbum(context.Context, *CreateTrackAlbumRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateTrackAlbum not implemented")
+}
+func (UnimplementedAlbumServiceServer) GetAlbumLiveCover(context.Context, *GetAlbumLiveCoverRequest) (*GetAlbumLiveCoverResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetAlbumLiveCover not implemented")
+}
+func (UnimplementedAlbumServiceServer) IsAlbumLossless(context.Context, *IsAlbumLosslessRequest) (*IsAlbumLosslessResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method IsAlbumLossless not implemented")
+}
+func (UnimplementedAlbumServiceServer) IsAlbumSaved(context.Context, *IsAlbumSavedRequest) (*IsAlbumSavedResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method IsAlbumSaved not implemented")
+}
+func (UnimplementedAlbumServiceServer) SaveAlbum(context.Context, *SaveAlbumRequest) (*SaveAlbumResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SaveAlbum not implemented")
+}
+func (UnimplementedAlbumServiceServer) GetSavedAlbums(context.Context, *GetSavedAlbumsRequest) (*GetSavedAlbumsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetSavedAlbums not implemented")
 }
 func (UnimplementedAlbumServiceServer) mustEmbedUnimplementedAlbumServiceServer() {}
 func (UnimplementedAlbumServiceServer) testEmbeddedByValue()                      {}
@@ -173,6 +253,96 @@ func _AlbumService_CreateTrackAlbum_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AlbumService_GetAlbumLiveCover_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAlbumLiveCoverRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlbumServiceServer).GetAlbumLiveCover(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AlbumService_GetAlbumLiveCover_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlbumServiceServer).GetAlbumLiveCover(ctx, req.(*GetAlbumLiveCoverRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AlbumService_IsAlbumLossless_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IsAlbumLosslessRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlbumServiceServer).IsAlbumLossless(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AlbumService_IsAlbumLossless_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlbumServiceServer).IsAlbumLossless(ctx, req.(*IsAlbumLosslessRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AlbumService_IsAlbumSaved_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IsAlbumSavedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlbumServiceServer).IsAlbumSaved(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AlbumService_IsAlbumSaved_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlbumServiceServer).IsAlbumSaved(ctx, req.(*IsAlbumSavedRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AlbumService_SaveAlbum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SaveAlbumRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlbumServiceServer).SaveAlbum(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AlbumService_SaveAlbum_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlbumServiceServer).SaveAlbum(ctx, req.(*SaveAlbumRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AlbumService_GetSavedAlbums_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSavedAlbumsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlbumServiceServer).GetSavedAlbums(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AlbumService_GetSavedAlbums_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlbumServiceServer).GetSavedAlbums(ctx, req.(*GetSavedAlbumsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AlbumService_ServiceDesc is the grpc.ServiceDesc for AlbumService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -191,6 +361,26 @@ var AlbumService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateTrackAlbum",
 			Handler:    _AlbumService_CreateTrackAlbum_Handler,
+		},
+		{
+			MethodName: "GetAlbumLiveCover",
+			Handler:    _AlbumService_GetAlbumLiveCover_Handler,
+		},
+		{
+			MethodName: "IsAlbumLossless",
+			Handler:    _AlbumService_IsAlbumLossless_Handler,
+		},
+		{
+			MethodName: "IsAlbumSaved",
+			Handler:    _AlbumService_IsAlbumSaved_Handler,
+		},
+		{
+			MethodName: "SaveAlbum",
+			Handler:    _AlbumService_SaveAlbum_Handler,
+		},
+		{
+			MethodName: "GetSavedAlbums",
+			Handler:    _AlbumService_GetSavedAlbums_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

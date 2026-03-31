@@ -18,7 +18,7 @@ export default async function getUpNext(
   try {
     const music = await getYtMusicClient();
     const track = await music.getInfo(call.request.videoId);
-    const upNext = await track.getUpNext();
+    const upNext = await track.getUpNext(call.request.automix);
 
     const tracks: Track[] = [];
 

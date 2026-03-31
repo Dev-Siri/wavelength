@@ -3,12 +3,12 @@ package playlist_controllers
 import (
 	"github.com/Dev-Siri/wavelength/server/proto/commonpb"
 	"github.com/Dev-Siri/wavelength/server/proto/playlistpb"
-	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
 	"github.com/Dev-Siri/wavelength/server/services/gateway/models/schemas"
 	"github.com/Dev-Siri/wavelength/server/services/gateway/validation"
 	"github.com/Dev-Siri/wavelength/server/shared/clients"
 	shared_type_constants "github.com/Dev-Siri/wavelength/server/shared/constants/types"
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
+	shared_models "github.com/Dev-Siri/wavelength/server/shared/models"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -68,8 +68,8 @@ func AddRemovePlaylistTrack(ctx *fiber.Ctx) error {
 	}
 
 	if toggleResponse.ToggleType == playlistpb.AddRemovePlaylistTrackResponse_PLAYLIST_TRACK_TOGGLE_TYPE_REMOVE {
-		return models.Success(ctx, "Removed song from playlist successfully.")
+		return shared_models.Success(ctx, "Removed song from playlist successfully.")
 	}
 
-	return models.Success(ctx, "Added song to playlist successfully.")
+	return shared_models.Success(ctx, "Added song to playlist successfully.")
 }

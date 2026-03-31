@@ -40,6 +40,18 @@ func main() {
 		}()
 	}
 
+	if err := shared_db.ConnectStreamDatabase(); err != nil {
+		logging.Logger.Error("Failed to initialize stream Postgres connection.", zap.Error(err))
+	}
+
+	if shared_db.StreamDatabase != nil {
+		defer func() {
+			if err := shared_db.StreamDatabase.Close(); err != nil {
+				logging.Logger.Fatal("Failed to close stream database connection.", zap.Error(err))
+			}
+		}()
+	}
+
 	port := shared_env.GetPORT()
 	addr := ":" + port
 

@@ -52,6 +52,8 @@ class AlbumTrack {
   final int positionInAlbum;
   @HiveField(4)
   final bool isExplicit;
+  @HiveField(5)
+  final List<EmbeddedArtist> artists;
 
   const AlbumTrack({
     required this.videoId,
@@ -59,21 +61,27 @@ class AlbumTrack {
     required this.duration,
     required this.positionInAlbum,
     required this.isExplicit,
+    required this.artists,
   });
 
   factory AlbumTrack.fromJson(Map<String, dynamic> json) {
+    final artistsJson = json["artists"] as List?;
+
     return AlbumTrack(
       videoId: json["videoId"] as String,
       title: json["title"] as String,
       duration: int.parse(json["duration"]),
       positionInAlbum: json["positionInAlbum"] as int,
       isExplicit: json["isExplicit"] as bool,
+      artists: (artistsJson ?? [])
+          .map((artist) => EmbeddedArtist.fromJson(artist))
+          .toList(),
     );
   }
 
   @override
   String toString() =>
-      "AlbumTrack(videoId: $videoId, title: $title, duration: $duration, positionInAlbum: $positionInAlbum, isExplicit: $isExplicit)";
+      "AlbumTrack(videoId: $videoId, title: $title, duration: $duration, positionInAlbum: $positionInAlbum, isExplicit: $isExplicit, artists: $artists)";
 }
 
 @immutable

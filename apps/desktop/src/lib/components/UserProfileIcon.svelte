@@ -16,7 +16,7 @@
 {#if userStore.user}
   <DropdownMenu.Root>
     <DropdownMenu.Trigger class="cursor-pointer hover:opacity-80 duration-200">
-      <div class="flex items-center gap-2">
+      <div class="flex justify-center items-center gap-2">
         {#if userStore.user.pictureUrl}
           <Image
             src={userStore.user.pictureUrl}

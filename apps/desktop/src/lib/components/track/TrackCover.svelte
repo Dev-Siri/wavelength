@@ -1,14 +1,14 @@
 <script lang="ts">
   import { PlayIcon } from "@lucide/svelte";
 
-  import musicQueueStore from "$lib/stores/music-queue.svelte";
+  import { musicPlayer } from "$lib/stream-player/musicPlayer";
 
   import Image from "../Image.svelte";
   import NowPlayingAnimation from "../NowPlayingAnimation.svelte";
 
   const { videoId, thumbnail }: { videoId: string; thumbnail: string } = $props();
 
-  const isTrackPlaying = $derived(musicQueueStore.musicPlayingNow?.videoId === videoId);
+  const isTrackPlaying = $derived(musicPlayer.queue.playingNow?.videoId === videoId);
   const coverVisibility = $derived(isTrackPlaying ? "opacity-40" : "group-hover:opacity-40");
 </script>
 
@@ -26,7 +26,7 @@
     <Image
       src={thumbnail}
       alt="Thumbnail"
-      class="rounded-xl aspect-square object-cover h-full w-full {coverVisibility}"
+      class="rounded-sm aspect-square object-cover h-full w-full {coverVisibility}"
       height={64}
       width={70}
     />

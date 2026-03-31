@@ -1,0 +1,43 @@
+import { z } from "zod";
+
+export const codecSchema = z.object({
+  acodec: z.string().optional(),
+  vcodec: z.string().optional(),
+});
+
+export const streamMetadataSchema = z.object({
+  bitrate: z.number(),
+  ext: z.string(),
+  codec: codecSchema,
+  source: z.string(),
+});
+
+export const streamSchema = z.object({
+  metadata: streamMetadataSchema,
+  url: z.string(),
+});
+
+export const playabilityStatusSchema = z.enum(["PLAYABLE", "UNPLAYABLE", "UNAVAILABLE"]);
+export const playabilityStatusResponseSchema = z.object({
+  playabilityStatus: playabilityStatusSchema,
+});
+
+export const hlsStreamMetadataSchema = z.object({
+  streamId: z.string(),
+  bitrate: z.number(),
+  codec: z.string(),
+  container: z.string(),
+  durationSeconds: z.number(),
+});
+
+export const hlsStreamSourceSchema = z.object({
+  metadata: hlsStreamMetadataSchema,
+  source: z.string(),
+});
+
+export type Codec = z.infer<typeof codecSchema>;
+export type StreamMetadata = z.infer<typeof streamMetadataSchema>;
+export type Stream = z.infer<typeof streamSchema>;
+export type PlayabilityStatus = z.infer<typeof playabilityStatusSchema>;
+export type HlsStreamSource = z.infer<typeof hlsStreamSourceSchema>;
+export type HlsStreamMetadata = z.infer<typeof hlsStreamMetadataSchema>;

@@ -2,13 +2,19 @@ import "dart:io";
 
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:go_router/go_router.dart";
+import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:shared_preferences/shared_preferences.dart";
+import "package:wavelength/audio/stream_resolver.dart";
 import "package:wavelength/bloc/location/location_bloc.dart";
 import "package:wavelength/bloc/location/location_state.dart";
 import "package:wavelength/cache.dart";
 import "package:wavelength/constants.dart";
+import "package:wavelength/settings_manager.dart";
 import "package:wavelength/utils/format.dart";
-import "package:wavelength/widgets/common_app_bar.dart";
+import "package:wavelength/widgets/app_bars/common_app_bar.dart";
+import "package:wavelength/widgets/settings/setting_group.dart";
+import "package:wavelength/widgets/settings/setting_option.dart";
 import "package:wavelength/widgets/ui/amplitude.dart";
 
 class SettingsScreen extends StatefulWidget {
@@ -19,6 +25,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  StreamingPreference _streamingPreference = StreamingPreference.always;
   bool _isPreferWifiForDownloadsEnabled = true;
   int _streamCacheFilesOccupiedSize = 0;
 
@@ -27,6 +34,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     _fetchExistingPreferWifiDownloadsState();
     _fetchStreamCacheOccupiedSize();
+    _fetchExistingPreferStreamingState();
   }
 
   Future<void> _fetchStreamCacheOccupiedSize() async {
@@ -36,21 +44,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _fetchExistingPreferWifiDownloadsState() async {
-    final sharedPrefs = await SharedPreferences.getInstance();
-    final existingState = sharedPrefs.getBool(
-      settingsOptionPreferWifiForDownloads,
-    );
-
-    if (existingState == null) {
-      sharedPrefs.setBool(
-        settingsOptionPreferWifiForDownloads,
-        settingsOptionPreferWifiForDownloadsDefaultValue,
-      );
-    }
-
+    final preferWifiDownloads =
+        await SettingsManager.fetchPreferWifiDownloads();
     setState(() {
-      _isPreferWifiForDownloadsEnabled = existingState ?? true;
+      _isPreferWifiForDownloadsEnabled = preferWifiDownloads;
     });
+  }
+
+  Future<void> _fetchExistingPreferStreamingState() async {
+    final streamingPreference =
+        await SettingsManager.fetchPreferStreamingConnection();
+    setState(() => _streamingPreference = streamingPreference);
   }
 
   Future<void> _updatePreferWifiDownloadsState(bool enabled) async {
@@ -80,108 +84,88 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    "Storage",
+                    "Audio",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
-                  Container(
-                    padding: const EdgeInsets.only(
-                      left: 15,
-                      right: 5,
-                      top: 10,
-                      bottom: 10,
-                    ),
-                    margin: const EdgeInsets.only(top: 10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.grey.shade900,
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const SizedBox(
-                              width: 270,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Prefer Wi-Fi Downloads",
-                                    style: TextStyle(fontSize: 16),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Text(
-                                    "Downloads paused on mobile data.",
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Switch.adaptive(
-                              value: _isPreferWifiForDownloadsEnabled,
-                              activeTrackColor: Colors.blue,
-                              onChanged: _updatePreferWifiDownloadsState,
-                            ),
-                          ],
-                        ),
-                        Container(
-                          height: 1,
-                          color: Colors.grey.shade800,
-                          margin: const EdgeInsets.only(
-                            right: 10,
-                            top: 10,
-                            bottom: 10,
+                  SettingGroup(
+                    options: [
+                      SettingOption(
+                        title: "Audio quality.",
+                        description:
+                            "Change Cellular, Wi-Fi, and Download quality.",
+                        onPressed: () =>
+                            context.push("/settings/audio-quality"),
+                        modifier: const Padding(
+                          padding: EdgeInsets.only(right: 15),
+                          child: Icon(
+                            LucideIcons.chevronRight,
+                            color: Colors.grey,
                           ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 270,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Downloaded Size",
-                                    style: TextStyle(fontSize: 16),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Text(
-                                    bytesToHumanReadableSize(
-                                      _streamCacheFilesOccupiedSize,
-                                    ),
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                right: Platform.isIOS ? 5 : 0,
-                              ),
-                              child: AmplButton(
-                                onPressed: _clearDownloadedTracks,
-                                padding: const EdgeInsets.all(10),
-                                child: const Icon(
-                                  Icons.delete,
-                                  color: Colors.redAccent,
+                      ),
+                      SettingOption(
+                        title: "Prefer streaming.",
+                        description: "Prioritize streaming over downloads.",
+                        onPressed: () =>
+                            context.push("/settings/streaming-preference"),
+                        modifier: Padding(
+                          padding: const EdgeInsets.only(right: 15),
+                          child: Row(
+                            children: [
+                              Text(
+                                streamingPreferenceMap[_streamingPreference] ??
+                                    "",
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 16,
                                 ),
                               ),
-                            ),
-                          ],
+                              const Icon(
+                                LucideIcons.chevronRight,
+                                color: Colors.grey,
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
+                  const Padding(padding: EdgeInsets.only(bottom: 20)),
+                  const Text(
+                    "Downloads",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  SettingGroup(
+                    options: [
+                      SettingOption(
+                        title: "Prefer Wi-Fi Downloads",
+                        description: "Downloads paused on mobile data.",
+                        modifier: Switch.adaptive(
+                          value: _isPreferWifiForDownloadsEnabled,
+                          activeTrackColor: Colors.blue,
+                          onChanged: _updatePreferWifiDownloadsState,
+                        ),
+                      ),
+                      SettingOption(
+                        title: "Downloaded Size",
+                        description: bytesToHumanReadableSize(
+                          _streamCacheFilesOccupiedSize,
+                        ),
+                        modifier: Padding(
+                          padding: EdgeInsets.only(
+                            right: Platform.isIOS ? 5 : 0,
+                          ),
+                          child: AmplButton(
+                            onPressed: _clearDownloadedTracks,
+                            padding: const EdgeInsets.all(10),
+                            child: const Icon(
+                              LucideIcons.trash,
+                              color: Colors.redAccent,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

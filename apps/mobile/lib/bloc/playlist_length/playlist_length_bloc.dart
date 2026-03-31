@@ -18,6 +18,7 @@ class PlaylistLengthBloc
     PlaylistLengthFetchEvent event,
     Emitter<PlaylistLengthState> emit,
   ) async {
+    emit(PlaylistLengthLoadingState());
     final playlengthsStore = await Hive.openBox(hivePlaylengthKey);
     final cachedTracksLength = playlengthsStore.get(event.playlistId);
 
@@ -34,7 +35,6 @@ class PlaylistLengthBloc
       return;
     }
 
-    emit(PlaylistLengthLoadingState());
     final response = await PlaylistsRepo.fetchPlaylistTracksLength(
       playlistId: event.playlistId,
     );

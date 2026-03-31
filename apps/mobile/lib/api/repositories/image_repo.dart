@@ -2,7 +2,7 @@ import "dart:convert";
 
 import "package:flutter/foundation.dart";
 import "package:http/http.dart" as http;
-import "package:wavelength/api/models/playlist_theme_color.dart";
+import "package:wavelength/api/models/theme_color.dart";
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/constants.dart";
@@ -31,6 +31,43 @@ class ImageRepo {
 
         return ApiResponseError(message: decodedJson["message"] as String);
       }, response.body);
+
+      return decodedResponse;
+    } catch (e) {
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "ImageRepo.fetchImageThemeColor",
+      );
+      return ApiResponseError(message: errorString);
+    }
+  }
+
+  static Future<ApiResponse<List<ThemeColor>>> fetchImageCoverEffectColors({
+    required String url,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$apiGatewayUrl/image/cover-effect?imageUrl=$url"),
+      );
+      final decodedResponse =
+          await compute<String, ApiResponse<List<ThemeColor>>>((
+            stringResponse,
+          ) {
+            final decodedJson = jsonDecode(stringResponse);
+            final isSuccessful = decodedJson["success"] as bool;
+
+            if (isSuccessful) {
+              final colors = decodedJson["data"]["colors"] as List;
+              return ApiResponseSuccess(
+                data: colors
+                    .map((color) => ThemeColor.fromJson(color))
+                    .toList(),
+              );
+            }
+
+            return ApiResponseError(message: decodedJson["message"] as String);
+          }, response.body);
 
       return decodedResponse;
     } catch (e) {

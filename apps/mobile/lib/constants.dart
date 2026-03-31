@@ -1,33 +1,51 @@
+import "package:flutter/foundation.dart";
 import "package:flutter_dotenv/flutter_dotenv.dart";
 
-final apiGatewayUrl = dotenv.get("API_GATEWAY_URL");
+final apiGatewayUrl = kDebugMode
+    ? dotenv.get("DEV_API_GATEWAY_URL")
+    : dotenv.get("API_GATEWAY_URL");
+final playerGatewayUrl = kDebugMode
+    ? dotenv.get("DEV_PLAYER_GATEWAY_URL")
+    : dotenv.get("PLAYER_GATEWAY_URL");
 
-const ytImgApiUrl = "https://img.youtube.com";
 const ytMusicChannelSubpathUrl = "https://music.youtube.com/channel";
 const appUpdateUrl = "https://mavelength.vercel.app/downloads";
 const defaultLocale = "US";
 const envFile = ".env";
 
 const hivePlaylistsTracksKey = "playlists_tracks";
-const hivePlaylistsKey = "playlists";
+const hivePlaylistsKey = "playlists_";
 const hiveFollowedArtistsKey = "followed_artists";
-const hiveLyricsKey = "lyrics";
+const hiveSavedAlbumsKey = "saved_albums_";
+const hiveLyricsKey = "lyrics_lines";
 const hiveTempUrlKey = "yt_streams_url_temp";
-const hiveStreamsKey = "yt_streams";
+const hiveNativeCachedStreamsKey = "native_cached_streams";
+const hiveStreamsKey = "streams_";
+const hiveStreamsMetadataKey = "streams_metadata";
 const hiveLikesKey = "likes";
 const hiveLikeCountKey = "like_count";
 const hiveIsLikedKey = "is_liked";
+const hiveIsAlbumLosslessKey = "is_album_lossless";
 const hiveIsFollowingKey = "followed_list";
-const hiveArtistsKey = "artists";
-const hiveAlbumsKey = "albums";
+const hiveIsAlbumSavedKey = "is_album_saved";
+const hiveArtistsKey = "_artists";
+const hiveAlbumsKey = "_albums";
 const hivePlaylengthKey = "playlengths";
-const hiveAuthhKey = "auth";
+const hiveAuthKey = "auth";
+const hiveCoverEffectColorsKey = "cover_effect_colors";
+const hivePlayabilityStatusKey = "playability_status";
 
-// This is the known signed URL availability period.
-const ytStreamUrlSignValidityHours = 6;
+const streamUrlSignValidityHours = 6;
+const instrumentalThreshold = 7000;
 
 const settingsOptionPreferWifiForDownloads = "settings:prefer_wifi_for_streams";
 const settingsOptionPreferWifiForDownloadsDefaultValue = true;
+const settingsOptionPreferStreamingOnConnection =
+    "settings:prefer_streaming_on_connection";
+const settingsOptionPreferStreamingOnConnectionDefaultValue = 0;
+const settingsOptionPreferredStreamingQuality =
+    "settings:preferred_streaming_quality";
+const settingsOptionPreferredStreamingQualityDefaultValue = 0;
 
 const wavelengthDiagnosticPlatformName = "wavelength-flutter_app";
 

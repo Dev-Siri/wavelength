@@ -23,13 +23,14 @@ class ArtistTopSongTrackAdapter extends TypeAdapter<ArtistTopSongTrack> {
       playCount: fields[3] as String,
       isExplicit: fields[4] as bool,
       album: fields[5] as EmbeddedAlbum?,
+      duration: fields[8] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, ArtistTopSongTrack obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.videoId)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class ArtistTopSongTrackAdapter extends TypeAdapter<ArtistTopSongTrack> {
       ..writeByte(4)
       ..write(obj.isExplicit)
       ..writeByte(5)
-      ..write(obj.album);
+      ..write(obj.album)
+      ..writeByte(8)
+      ..write(obj.duration);
   }
 
   @override

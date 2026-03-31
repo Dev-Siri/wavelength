@@ -1,27 +1,19 @@
 <script lang="ts">
-  import { createQuery } from "@tanstack/svelte-query";
+  import useVideosSearchQuery from "$lib/queries/videosSearch";
 
-  import { svelteQueryKeys } from "$lib/constants/keys";
-  import { backendClient } from "$lib/utils/query-client";
-  import { youtubeVideosSchema } from "$lib/utils/validation/youtube-video";
-
-  import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
   import NoSearchResults from "$lib/components/search/NoSearchResults.svelte";
+  import Spinner from "$lib/components/ui/spinner/spinner.svelte";
   import UVideoCard from "$lib/components/UVideoCard.svelte";
 
   const { q }: { q: string } = $props();
 
-  const videoSearchQuery = createQuery(() => ({
-    queryKey: svelteQueryKeys.search(q, "videos"),
-    queryFn: () =>
-      backendClient("/music/search/uvideos", youtubeVideosSchema, { searchParams: { q } }),
-  }));
+  const videosSearchQuery = $derived(useVideosSearchQuery(q));
 </script>
 
-{#if videoSearchQuery.isSuccess}
-  {#if videoSearchQuery.data.youtubeVideos.length}
+{#if videosSearchQuery.isSuccess}
+  {#if videosSearchQuery.data.youtubeVideos.length}
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 w-full gap-4">
-      {#each videoSearchQuery.data.youtubeVideos as uvideo}
+      {#each videosSearchQuery.data.youtubeVideos as uvideo (uvideo.videoId)}
         <UVideoCard {uvideo} />
       {/each}
     </div>
@@ -30,6 +22,6 @@
   {/if}
 {:else}
   <div class="flex flex-col h-full pt-[20%] w-full items-center justify-center">
-    <LoadingSpinner />
+    <Spinner class="size-28" />
   </div>
 {/if}

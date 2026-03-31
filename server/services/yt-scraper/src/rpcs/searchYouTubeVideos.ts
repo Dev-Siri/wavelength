@@ -9,6 +9,7 @@ import type {
   SearchYouTubeVideosResponse,
 } from "@/gen/proto/yt_scraper.js";
 import { createErrorResponse } from "@/response.js";
+import { parseDuration } from "@/utils/parse.js";
 
 export default async function searchYouTubeVideos(
   call: grpc.ServerUnaryCall<
@@ -26,7 +27,7 @@ export default async function searchYouTubeVideos(
     const parsedVideos: YouTubeVideo[] = [];
 
     for (const video of videos) {
-      const youtubeVideo = video.as(YTNodes.Video);
+      const youtubeVideo = video.as(YTNodes.Video, YTNodes.GridVideo);
 
       const thumbnail = youtubeVideo.thumbnails[0];
       if (
@@ -36,11 +37,14 @@ export default async function searchYouTubeVideos(
       )
         continue;
 
+      const ytDuration = youtubeVideo.duration?.text ?? "0:01";
+      const duration = parseDuration(ytDuration);
+
       const parsedVideo = {
         videoId: youtubeVideo.video_id,
         title: youtubeVideo.title.text,
         author: youtubeVideo.author.name,
-        duration: youtubeVideo.duration.seconds,
+        duration,
         authorChannelId: youtubeVideo.author.endpoint.payload.browseId,
         thumbnail: thumbnail.url,
       } satisfies YouTubeVideo;

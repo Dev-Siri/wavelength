@@ -1,19 +1,12 @@
 <script lang="ts">
-  import { createQuery } from "@tanstack/svelte-query";
-
-  import { svelteQueryKeys } from "$lib/constants/keys";
-  import { backendClient } from "$lib/utils/query-client";
-  import { artistResponseSchema } from "$lib/utils/validation/artist-response";
+  import useArtistQuery from "$lib/queries/artist";
 
   import Image from "../Image.svelte";
   import { Skeleton } from "../ui/skeleton";
 
   const { browseId }: { browseId: string } = $props();
 
-  const artistQuery = createQuery(() => ({
-    queryKey: svelteQueryKeys.artist(browseId),
-    queryFn: () => backendClient(`/artists/artist/${browseId}`, artistResponseSchema),
-  }));
+  const artistQuery = $derived(useArtistQuery(browseId));
 </script>
 
 {#if artistQuery.isLoading}
@@ -30,10 +23,9 @@
       width={200}
       class="absolute inset-0 h-full w-full object-cover"
     />
-
     <div class="absolute inset-0 bg-black/70 z-10 flex flex-col justify-end p-4">
-      <span class="text-3xl text-white">{artist.title}</span>
-      <span class="text-md text-muted-foreground">{artist.audience} subscribers</span>
+      <span class="text-xl font-semibold text-white">{artist.title}</span>
+      <span class="text-sm text-muted-foreground">{artist.audience} subscribers</span>
     </div>
   </div>
 {/if}

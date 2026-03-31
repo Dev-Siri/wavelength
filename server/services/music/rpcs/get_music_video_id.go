@@ -38,11 +38,20 @@ func (m *MusicService) GetMusicVideoId(
 	}
 
 	keyword := fmt.Sprintf("%s %s official music video", request.Artist, request.Title)
-	titles := make([]string, len(videos))
+	filtered := make([]*commonpb.YouTubeVideo, 0)
+	titles := make([]string, 0)
 
-	for i, v := range videos {
-		titles[i] = strings.ToLower(
-			html.UnescapeString(v.Title) + " " + v.Author,
+	for _, v := range videos {
+		if v.Duration <= 60 {
+			continue
+		}
+
+		filtered = append(filtered, v)
+
+		titles = append(titles,
+			strings.ToLower(
+				html.UnescapeString(v.Title)+" "+v.Author,
+			),
 		)
 	}
 
@@ -51,7 +60,7 @@ func (m *MusicService) GetMusicVideoId(
 	var selectedVideo *commonpb.YouTubeVideo
 
 	if len(matches) > 0 {
-		selectedVideo = videos[matches[0].Index]
+		selectedVideo = filtered[matches[0].Index]
 	} else {
 		// Fallback.
 		selectedVideo = videos[0]

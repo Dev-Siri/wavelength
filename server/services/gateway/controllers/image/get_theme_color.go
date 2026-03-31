@@ -2,10 +2,10 @@ package image_controllers
 
 import (
 	"github.com/Dev-Siri/wavelength/server/proto/imagepb"
-	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
 	"github.com/Dev-Siri/wavelength/server/services/gateway/utils"
 	"github.com/Dev-Siri/wavelength/server/shared/clients"
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
+	shared_models "github.com/Dev-Siri/wavelength/server/shared/models"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -29,5 +29,5 @@ func GetThemeColor(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Image theme color pick failed.")
 	}
 
-	return models.Success(ctx, themeColorResponse.ThemeColor)
+	return shared_models.Success(ctx, themeColorResponse.ThemeColor)
 }

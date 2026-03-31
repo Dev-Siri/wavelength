@@ -66,7 +66,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -516059;
+  int get rustContentHash => 871102524;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -77,11 +77,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
-  Future<String> crateApiTydleCallerFetchHighestAudioStreamUrl({
-    required String videoId,
-  });
-
-  Future<String> crateApiTydleCallerFetchHighestVideoStreamUrl({
+  Future<Stream> crateApiTydleCallerFetchHighestAudioStream({
     required String videoId,
   });
 
@@ -97,7 +93,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  Future<String> crateApiTydleCallerFetchHighestAudioStreamUrl({
+  Future<Stream> crateApiTydleCallerFetchHighestAudioStream({
     required String videoId,
   }) {
     return handler.executeNormal(
@@ -113,52 +109,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_String,
+          decodeSuccessData: sse_decode_stream,
           decodeErrorData: sse_decode_AnyhowException,
         ),
-        constMeta: kCrateApiTydleCallerFetchHighestAudioStreamUrlConstMeta,
+        constMeta: kCrateApiTydleCallerFetchHighestAudioStreamConstMeta,
         argValues: [videoId],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiTydleCallerFetchHighestAudioStreamUrlConstMeta =>
+  TaskConstMeta get kCrateApiTydleCallerFetchHighestAudioStreamConstMeta =>
       const TaskConstMeta(
-        debugName: "fetch_highest_audio_stream_url",
-        argNames: ["videoId"],
-      );
-
-  @override
-  Future<String> crateApiTydleCallerFetchHighestVideoStreamUrl({
-    required String videoId,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_String(videoId, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 2,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_String,
-          decodeErrorData: sse_decode_AnyhowException,
-        ),
-        constMeta: kCrateApiTydleCallerFetchHighestVideoStreamUrlConstMeta,
-        argValues: [videoId],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiTydleCallerFetchHighestVideoStreamUrlConstMeta =>
-      const TaskConstMeta(
-        debugName: "fetch_highest_video_stream_url",
+        debugName: "fetch_highest_audio_stream",
         argNames: ["videoId"],
       );
 
@@ -171,7 +134,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 3,
+            funcId: 2,
             port: port_,
           );
         },
@@ -202,9 +165,42 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  double dco_decode_f_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as double;
+  }
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Uint8List;
+  }
+
+  @protected
+  Stream dco_decode_stream(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return Stream(
+      metadata: dco_decode_stream_metadata(arr[0]),
+      url: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  StreamMetadata dco_decode_stream_metadata(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return StreamMetadata(
+      bitrate: dco_decode_f_64(arr[0]),
+      ext: dco_decode_String(arr[1]),
+      codec: dco_decode_String(arr[2]),
+      videoId: dco_decode_String(arr[3]),
+      source: dco_decode_String(arr[4]),
+    );
   }
 
   @protected
@@ -234,10 +230,41 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  double sse_decode_f_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getFloat64();
+  }
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
     return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  Stream sse_decode_stream(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_metadata = sse_decode_stream_metadata(deserializer);
+    var var_url = sse_decode_String(deserializer);
+    return Stream(metadata: var_metadata, url: var_url);
+  }
+
+  @protected
+  StreamMetadata sse_decode_stream_metadata(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_bitrate = sse_decode_f_64(deserializer);
+    var var_ext = sse_decode_String(deserializer);
+    var var_codec = sse_decode_String(deserializer);
+    var var_videoId = sse_decode_String(deserializer);
+    var var_source = sse_decode_String(deserializer);
+    return StreamMetadata(
+      bitrate: var_bitrate,
+      ext: var_ext,
+      codec: var_codec,
+      videoId: var_videoId,
+      source: var_source,
+    );
   }
 
   @protected
@@ -279,6 +306,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_f_64(double self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putFloat64(self);
+  }
+
+  @protected
   void sse_encode_list_prim_u_8_strict(
     Uint8List self,
     SseSerializer serializer,
@@ -286,6 +319,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     serializer.buffer.putUint8List(self);
+  }
+
+  @protected
+  void sse_encode_stream(Stream self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_stream_metadata(self.metadata, serializer);
+    sse_encode_String(self.url, serializer);
+  }
+
+  @protected
+  void sse_encode_stream_metadata(
+    StreamMetadata self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_64(self.bitrate, serializer);
+    sse_encode_String(self.ext, serializer);
+    sse_encode_String(self.codec, serializer);
+    sse_encode_String(self.videoId, serializer);
+    sse_encode_String(self.source, serializer);
   }
 
   @protected

@@ -1,22 +1,26 @@
 <script lang="ts">
   import { EllipsisIcon } from "@lucide/svelte";
+  import { toast } from "svelte-sonner";
 
-  import type { MusicTrack } from "$lib/utils/validation/music-track";
-  import type { VideoType } from "$lib/utils/validation/playlist-track";
-  import type { Playlist } from "$lib/utils/validation/playlists";
+  import type { MusicTrack } from "$lib/schemas/music-track";
+  import type { Playlist, PlaylistVideoType } from "$lib/schemas/playlist";
+  import type { MusicPlaylistContextSource } from "$lib/stream-player/MusicQueue.svelte";
 
-  import musicPlayerStore from "$lib/stores/music-player.svelte.js";
-  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
   import userStore from "$lib/stores/user.svelte";
+  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { reportErrorToBackend } from "$lib/utils/query-client";
 
   import AlbumLink from "../album/AlbumLink.svelte";
   import ArtistLink from "../artist/ArtistLink.svelte";
   import ExplicitIndicator from "../ExplicitIndicator.svelte";
-  import PlaylistToggleOptions from "../playlist/PlaylistToggleOptions.svelte";
-  import { Button } from "../ui/button";
+  import PlaylistToggleOptions, {
+    type PlaylistToggle,
+  } from "../playlist/PlaylistToggleOptions.svelte";
+  import { buttonVariants } from "../ui/button";
   import * as ContextMenu from "../ui/context-menu";
   import * as DropdownMenu from "../ui/dropdown-menu";
   import TrackCover from "./TrackCover.svelte";
+  import TrackDirectAdd from "./TrackDirectAdd.svelte";
   import TrackDuration from "./TrackDuration.svelte";
   import TrackLikeButton from "./TrackLikeButton.svelte";
 
@@ -24,67 +28,99 @@
     music,
     toggle,
     playCount,
+    context,
     showAlbum = true,
+    isPreLiked,
   }: {
-    music: MusicTrack & { videoType?: VideoType };
+    music: MusicTrack & { videoType?: PlaylistVideoType };
+    context?: MusicPlaylistContextSource;
     playCount?: string;
     showAlbum?: boolean;
+    isPreLiked?: boolean;
     toggle:
-      | { type: "add" }
+      | PlaylistToggle
       | {
-          type: "remove";
-          from: Playlist;
+          type: "add-direct";
+          to: Playlist;
         };
   } = $props();
 
-  function playSong() {
-    const queueableTrack = {
-      ...music,
-      videoType: music.videoType ?? "VIDEO_TYPE_TRACK",
-    } satisfies QueueableMusic;
-
-    musicQueueStore.musicPlayingNow = queueableTrack;
-    musicQueueStore.musicPlaylistContext = [];
-    musicPlayerStore.visiblePanel = "playingNow";
+  async function playSong() {
+    try {
+      await musicPlayer.load(
+        {
+          ...music,
+          videoType: music.videoType ?? "VIDEO_TYPE_TRACK",
+        },
+        context ?? { type: "none" },
+      );
+    } catch (error) {
+      toast.error(`Playback ${error}`);
+      await reportErrorToBackend({
+        error,
+        source: "Track: playSong()",
+      });
+    }
   }
+
+  const displayArtists = $derived(
+    music.artists.length > 3 ? music.artists.slice(0, 2) : music.artists,
+  );
+  const isArtistsShortened = $derived(displayArtists.length !== music.artists.length);
+  const normalAdd = $derived<PlaylistToggle>(
+    toggle.type === "add-direct" ? { type: "add" } : toggle,
+  );
 </script>
 
 <ContextMenu.Root>
   <ContextMenu.Content>
-    <PlaylistToggleOptions ui="contextmenu" {music} {toggle} />
+    <PlaylistToggleOptions
+      ui="contextmenu"
+      videoType={music.videoType}
+      {music}
+      toggle={normalAdd}
+    />
   </ContextMenu.Content>
   <ContextMenu.Trigger>
     <DropdownMenu.Root>
       <DropdownMenu.Content>
-        <PlaylistToggleOptions ui="dropdown" {music} {toggle} />
+        <PlaylistToggleOptions
+          ui="dropdown"
+          videoType={music.videoType}
+          {music}
+          toggle={normalAdd}
+        />
       </DropdownMenu.Content>
       <div
         tabindex={0}
         role="button"
         onclick={playSong}
         onkeydown={e => (e.key === "Enter" || e.key === "Space") && playSong()}
-        class="flex rounded-2xl justify-between items-center duration-200 p-1.5 gap-2 hover:bg-muted/70 w-full pr-4 group cursor-pointer"
+        class="flex rounded-md justify-between items-center duration-200 p-1.5 gap-2 hover:bg-muted/70 w-full pr-4 group cursor-pointer"
       >
         <div class="flex items-center gap-2 {showAlbum && music.album ? 'w-1/3' : 'w-2/3'}">
           <TrackCover {...music} />
           <div class="flex flex-col gap-2 w-fit justify-center mt-2">
-            <p class="leading-none text-base">
-              {music.title.length > 45 ? `${music.title.slice(0, 44).trim()}...` : music.title}
-            </p>
+            <p class="leading-none text-base line-clamp-1 w-full font-semibold">{music.title}</p>
             <p class="text-sm text-muted-foreground leading-none">
               {#if music.isExplicit}
                 <ExplicitIndicator />
               {/if}
-              {#each music.artists as artist, i}
+              {#each displayArtists as artist, i (`track-${artist.browseId}-${i}`)}
                 <ArtistLink
                   {...artist}
                   isUVideo={music.videoType === "VIDEO_TYPE_UVIDEO"}
-                  trailingComma={i < music.artists.length - 1}
+                  trailingComma={i < displayArtists.length - 1}
                 />
-                {#if playCount}
-                  • {playCount}
-                {/if}
               {/each}
+              {#if isArtistsShortened}
+                <span class="-ml-2">...</span>
+              {/if}
+              {#if playCount}
+                <span class="text-xs">
+                  • {playCount}
+                </span>
+              {/if}
             </p>
           </div>
         </div>
@@ -95,16 +131,25 @@
         {/if}
         <div class="grid grid-cols-3 place-items-center w-1/3">
           {#if userStore.user}
-            <TrackLikeButton {music} />
+            <TrackLikeButton {isPreLiked} {music} />
           {/if}
           {#if music.duration}
             <TrackDuration duration={music.duration} />
           {/if}
-          <DropdownMenu.Trigger class="h-full" onclick={e => e.stopPropagation()}>
-            <Button variant="ghost" size="icon" class="text-muted-foreground">
+          {#if toggle.type === "add-direct"}
+            <TrackDirectAdd {music} playlistId={toggle.to.playlistId} />
+          {:else}
+            <DropdownMenu.Trigger
+              class={buttonVariants({
+                variant: "ghost",
+                size: "icon",
+                class: "text-muted-foreground",
+              })}
+              onclick={e => e.stopPropagation()}
+            >
               <EllipsisIcon />
-            </Button>
-          </DropdownMenu.Trigger>
+            </DropdownMenu.Trigger>
+          {/if}
         </div>
       </div>
     </DropdownMenu.Root>

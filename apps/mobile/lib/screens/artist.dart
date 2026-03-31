@@ -1,5 +1,3 @@
-import "dart:math" as math;
-
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -7,7 +5,8 @@ import "package:go_router/go_router.dart";
 import "package:url_launcher/url_launcher.dart";
 import "package:wavelength/api/models/embedded.dart";
 import "package:wavelength/api/models/enums/video_type.dart";
-import "package:wavelength/api/models/representations/queueable_music.dart";
+import "package:wavelength/audio/music_context_queue.dart";
+import "package:wavelength/audio/queueable_music.dart";
 import "package:wavelength/api/models/track.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_state.dart";
@@ -15,13 +14,13 @@ import "package:wavelength/bloc/artist/artist_bloc.dart";
 import "package:wavelength/bloc/artist/artist_event.dart";
 import "package:wavelength/bloc/artist/artist_state.dart";
 import "package:wavelength/constants.dart";
-import "package:wavelength/widgets/album_tile.dart";
-import "package:wavelength/widgets/artist_follow_button.dart";
-import "package:wavelength/widgets/error_message_dialog.dart";
+import "package:wavelength/widgets/album/album_tile.dart";
+import "package:wavelength/widgets/artist/artist_follow_button.dart";
+import "package:wavelength/widgets/dialogs/error_message_dialog.dart";
 import "package:wavelength/widgets/loading_indicator.dart";
-import "package:wavelength/widgets/music_player_preview.dart";
+import "package:wavelength/widgets/music_player_preview/music_player_preview.dart";
 import "package:wavelength/widgets/play_options.dart";
-import "package:wavelength/widgets/track_tile.dart";
+import "package:wavelength/widgets/track/track_tile.dart";
 import "package:wavelength/widgets/ui/amplitude.dart";
 
 class ArtistScreen extends StatefulWidget {
@@ -85,6 +84,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
               .map(
                 (song) => QueueableMusic(
                   videoId: song.videoId,
+                  duration: song.duration,
                   title: song.title,
                   isExplicit: song.isExplicit,
                   thumbnail: song.thumbnail,
@@ -108,10 +108,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
                   expandedHeight: 350,
                   pinned: true,
                   backgroundColor: Colors.black,
-                  leading: Transform.rotate(
-                    angle: math.pi / -2,
-                    child: BackButton(onPressed: () => context.pop()),
-                  ),
+                  leading: BackButton(onPressed: () => context.pop()),
                   flexibleSpace: FlexibleSpaceBar(
                     background: Stack(
                       fit: StackFit.expand,
@@ -195,7 +192,10 @@ class _ArtistScreenState extends State<ArtistScreen> {
                       Padding(
                         padding: const EdgeInsets.only(top: 16, left: 8),
                         child: PlayOptions(
-                          contextId: "${state.artist.browseId}-top-songs",
+                          sourceLabel: state.artist.title,
+                          musicContext: MusicContextTypeArtistTopSongs(
+                            artistId: state.artist.browseId,
+                          ),
                           songs: queueableSongs,
                         ),
                       ),
@@ -207,8 +207,11 @@ class _ArtistScreenState extends State<ArtistScreen> {
                           itemBuilder: (context, index) {
                             final song = state.artist.topSongs[index];
                             return TrackTile(
-                              contextId: "${state.artist.browseId}-top-songs",
-                              queueContext: queueableSongs,
+                              musicContext: MusicContextTypeArtistTopSongs(
+                                artistId: state.artist.browseId,
+                              ),
+                              sourceLabel: state.artist.title,
+                              tracks: queueableSongs,
                               playCount: song.playCount,
                               track: Track(
                                 videoId: song.videoId,
@@ -220,7 +223,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
                                     browseId: state.artist.browseId,
                                   ),
                                 ],
-                                duration: 0,
+                                duration: song.duration,
                                 isExplicit: song.isExplicit,
                                 album: song.album,
                               ),

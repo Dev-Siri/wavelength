@@ -36,6 +36,8 @@ tauri-plugin-fs = "2"
 num_cpus = "1.17.0"
 tokio-util = "0.7.18"
 tauri-plugin-cors-fetch = "5.0.0"
+futures-util = "0.3.32"
+tauri-plugin-os = "2"
 
 [profile.release]
 # Copied from the docs: https://v2.tauri.app/concept/size

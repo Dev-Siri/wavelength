@@ -1,22 +1,24 @@
 <script lang="ts">
+  /* eslint-disable svelte/no-at-html-tags */
   import { QueryClient } from "@tanstack/svelte-query";
   import { PersistQueryClientProvider } from "@tanstack/svelte-query-persist-client";
+  import { isTauri } from "@tauri-apps/api/core";
   import { Pane, Splitpanes } from "svelte-splitpanes";
-  import { fly } from "svelte/transition";
   import { pwaInfo } from "virtual:pwa-info";
 
   import type { Snippet } from "svelte";
 
-  import musicPlayerStore from "$lib/stores/music-player.svelte.js";
-  import musicQueueStore from "$lib/stores/music-queue.svelte.js";
+  import { getSettings } from "$lib/ipc/settingsManager";
+  import connectivityStore from "$lib/stores/connectivity.svelte";
+  import musicInterfaceStore from "$lib/stores/musicInterface.svelte.js";
+  import settingsStore from "$lib/stores/settings.svelte";
   import { createIDBPersister } from "$lib/utils/cache";
 
   import BackgroundDownloadManager from "$lib/components/BackgroundDownloadManager.svelte";
-  import LyricsOverlay from "$lib/components/LyricsOverlay.svelte";
   import MusicPlayer from "$lib/components/music-player/MusicPlayer.svelte";
+  import MusicPlayerBinder from "$lib/components/music-player/MusicPlayerBinder.svelte";
   import MusicQueueDisplay from "$lib/components/music-queue/MusicQueueDisplay.svelte";
-  import InfoOverlay from "$lib/components/overlays/InfoOverlay.svelte";
-  import NowPlayingOverlay from "$lib/components/overlays/NowPlayingOverlay.svelte";
+  import SettingsManager from "$lib/components/SettingsManager.svelte";
   import Sidebar from "$lib/components/Sidebar.svelte";
   import TopBar from "$lib/components/TopBar.svelte";
   import { Toaster } from "$lib/components/ui/sonner";
@@ -39,23 +41,23 @@
   const webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : "";
 
   let screenSize: number | null = $state(null);
-  let sidebarWidth = $state(20);
+  let sidebarWidth = $derived(20);
 
   const COLLAPSED_WIDTH = 8;
 
-  const defaultSizes: PaneSizes = {
+  const defaultSizes: PaneSizes = $derived({
     sidebar: {
       minSize: 20,
-      size: 25,
-      maxSize: 30,
+      size: musicInterfaceStore.isMusicQueueVisible ? 20 : 25,
+      maxSize: musicInterfaceStore.isMusicQueueVisible ? 20 : 30,
     },
     queue: {
-      maxSize: 25,
-      size: 25,
+      maxSize: 30,
+      size: musicInterfaceStore.isMusicQueueVisible ? 30 : 0,
       minSize: 20,
     },
     content: 80,
-  };
+  });
 
   function calculateSidebarSize(availableScreenSize: number): PaneSizes {
     if (availableScreenSize <= 968)
@@ -69,40 +71,43 @@
   }
 
   let sizes = $derived(screenSize ? calculateSidebarSize(screenSize) : defaultSizes);
-  let isSidebarCollapsed = $derived(false);
+  let isSidebarCollapsed = $derived(musicInterfaceStore.isMusicQueueVisible);
 
   $effect(() => {
     const preventRightClick = (e: MouseEvent) => e.preventDefault();
     const recalculateScreenSize = () => (screenSize = window.innerWidth);
 
-    function handleMusicPlayerSwitchState(e: KeyboardEvent) {
-      if (
-        e.key === "space" &&
-        document.activeElement instanceof HTMLElement &&
-        !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName) &&
-        !document.activeElement.isContentEditable
-      ) {
-        e.preventDefault();
-        musicPlayerStore.playMusic();
-      }
+    const handleOnOnline = () => (connectivityStore.isOnline = true);
+    const handleOnOffline = () => (connectivityStore.isOnline = false);
+
+    if (isTauri()) {
+      const fetchSettings = async () => (settingsStore.settings = await getSettings());
+      fetchSettings();
     }
 
-    document.addEventListener("keydown", handleMusicPlayerSwitchState);
     document.addEventListener("contextmenu", preventRightClick);
     document.addEventListener("resize", recalculateScreenSize);
+    window.addEventListener("online", handleOnOnline);
+    window.addEventListener("offline", handleOnOffline);
 
     return () => {
       document.removeEventListener("contextmenu", preventRightClick);
       document.removeEventListener("resize", recalculateScreenSize);
-      document.removeEventListener("keydown", handleMusicPlayerSwitchState);
+      window.removeEventListener("online", handleOnOnline);
+      window.removeEventListener("offline", handleOnOffline);
     };
   });
 
   $effect(() => {
-    sidebarWidth = musicQueueStore.isMusicQueueVisible
+    sidebarWidth = musicInterfaceStore.isMusicQueueVisible
       ? sizes.sidebar.minSize
       : sizes.sidebar.maxSize;
   });
+
+  function toggleSidebar() {
+    if (musicInterfaceStore.isMusicQueueVisible) return;
+    isSidebarCollapsed = !isSidebarCollapsed;
+  }
 
   const queryClient = new QueryClient();
   const persister = createIDBPersister();
@@ -113,68 +118,54 @@
 </svelte:head>
 
 <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
-  <BackgroundDownloadManager>
-    <Toaster position="top-center" />
-    <Tooltip.Provider>
-      <div class="h-screen flex flex-col bg-extra-dark">
-        <div class="h-[10vh]">
-          <TopBar />
-        </div>
-        <Splitpanes
-          class="h-[90vh] flex-1 overflow-hidden"
-          on:resize={e => (sidebarWidth = e.detail[0].size)}
-        >
-          <Pane
-            class="bg-extra-dark rounded-tr-md"
-            {...sizes.sidebar}
-            minSize={isSidebarCollapsed ? COLLAPSED_WIDTH : sizes.sidebar.minSize}
-            maxSize={isSidebarCollapsed ? COLLAPSED_WIDTH : sizes.sidebar.maxSize}
-            size={isSidebarCollapsed ? COLLAPSED_WIDTH : sidebarWidth}
+  <SettingsManager>
+    <BackgroundDownloadManager>
+      <Toaster position="top-center" />
+      <MusicPlayerBinder />
+      <Tooltip.Provider>
+        <div class="h-screen flex flex-col bg-extra-dark">
+          <div class={isTauri() ? "h-[8vh]" : "h-[10vh] overflow-visible z-9999"}>
+            <TopBar />
+          </div>
+          <Splitpanes
+            class="flex-1 overflow-hidden {isTauri() ? 'h-[95vh]' : 'h-[90vh]'}"
+            on:resize={e => (sidebarWidth = e.detail[0].size)}
           >
-            <Sidebar
-              isCollapsed={isSidebarCollapsed || window.innerWidth <= 640}
-              toggleSidebar={() => (isSidebarCollapsed = !isSidebarCollapsed)}
-            />
-          </Pane>
-          <Pane
-            class="h-full w-full bg-extra-dark relative"
-            size={isSidebarCollapsed ? 92 : sizes.content}
-          >
-            <main class="bg-extra-dark h-screen">
-              {#if musicQueueStore.musicPlayingNow && musicPlayerStore.visiblePanel}
-                <div
-                  class="absolute inset-x-0 top-[10.5%] bottom-0 z-80 rounded-2xl flex flex-col overflow-hidden"
-                  in:fly={{ y: 20, duration: 250 }}
-                  out:fly={{ y: 20, duration: 100 }}
-                >
-                  <InfoOverlay>
-                    {#if musicPlayerStore.visiblePanel === "playingNow"}
-                      <div in:fly={{ x: -200, y: 0 }} out:fly={{ x: -200, y: 0 }}>
-                        <NowPlayingOverlay />
-                      </div>
-                    {:else if musicPlayerStore.visiblePanel === "lyrics"}
-                      <div in:fly={{ x: -200, y: 0 }} out:fly={{ x: 400, y: 0 }}>
-                        <LyricsOverlay />
-                      </div>
-                    {/if}
-                  </InfoOverlay>
-                </div>
-              {/if}
-              {@render children?.()}
-            </main>
-          </Pane>
-          {#if musicQueueStore.isMusicQueueVisible}
-            <Pane {...sizes.queue} class="z-9999">
-              <div class="h-full w-full">
+            <Pane
+              class="bg-extra-dark rounded-tr-md"
+              {...sizes.sidebar}
+              minSize={isSidebarCollapsed ? COLLAPSED_WIDTH : sizes.sidebar.minSize}
+              maxSize={isSidebarCollapsed ? COLLAPSED_WIDTH : sizes.sidebar.maxSize}
+              size={isSidebarCollapsed ? COLLAPSED_WIDTH : sidebarWidth}
+            >
+              <Sidebar
+                isCollapsed={isSidebarCollapsed || window.innerWidth <= 640}
+                {toggleSidebar}
+              />
+            </Pane>
+            <Pane
+              class="h-full w-full bg-extra-dark relative"
+              size={isSidebarCollapsed ? 92 : sizes.content}
+            >
+              <main class="bg-extra-dark h-screen">
+                {@render children?.()}
+              </main>
+            </Pane>
+            <Pane {...sizes.queue}>
+              <div class="relative h-full w-full">
                 <MusicQueueDisplay />
               </div>
             </Pane>
-          {/if}
-        </Splitpanes>
-        <div class="h-[10vh] self-end w-full">
-          <MusicPlayer />
+          </Splitpanes>
+          <div
+            class="flex flex-col justify-end items-center w-full absolute bottom-0 {musicInterfaceStore.isPlayerFullscreen
+              ? ''
+              : 'py-2 px-3'} {musicInterfaceStore.visiblePanel ? 'h-full' : ''}"
+          >
+            <MusicPlayer />
+          </div>
         </div>
-      </div>
-    </Tooltip.Provider>
-  </BackgroundDownloadManager>
+      </Tooltip.Provider>
+    </BackgroundDownloadManager>
+  </SettingsManager>
 </PersistQueryClientProvider>

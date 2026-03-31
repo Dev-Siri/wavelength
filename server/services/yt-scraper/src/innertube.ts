@@ -11,6 +11,8 @@ export async function getYtClient(gl?: string) {
       fetch,
       location: gl,
       device_category: "desktop",
+      retrieve_player: false,
+      retrieve_innertube_config: false,
     });
     lastInit = Date.now();
   }

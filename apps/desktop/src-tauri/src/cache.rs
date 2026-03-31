@@ -1,18 +1,20 @@
 use tokio::time::{Duration, Instant};
 
+use crate::youtube::Stream;
+
 // 6 hours.
 pub const STREAM_TTL: Duration = Duration::from_secs(6 * 60 * 60);
 
 #[derive(Clone)]
 pub struct CachedStream {
-    pub url: String,
+    pub stream: Stream,
     pub expires_at: Instant,
 }
 
 impl CachedStream {
-    pub fn new(url: String) -> Self {
+    pub fn new(stream: Stream) -> Self {
         Self {
-            url,
+            stream,
             expires_at: Instant::now() + STREAM_TTL,
         }
     }

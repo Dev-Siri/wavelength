@@ -2,8 +2,8 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:wavelength/bloc/search/albums/albums_bloc.dart";
 import "package:wavelength/bloc/search/albums/albums_state.dart";
-import "package:wavelength/widgets/album_card.dart";
-import "package:wavelength/widgets/error_message_dialog.dart";
+import "package:wavelength/widgets/album/album_card.dart";
+import "package:wavelength/widgets/dialogs/error_message_dialog.dart";
 import "package:wavelength/widgets/skeletons/playlist_tile_skeleton.dart";
 
 class AlbumsSearchPresenter extends StatelessWidget {

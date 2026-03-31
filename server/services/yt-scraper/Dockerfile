@@ -28,7 +28,7 @@ WORKDIR /usr/src/app/services/yt-scraper
 
 RUN bun run build
 
-FROM node:latest
+FROM node:alpine
 
 WORKDIR /usr/src/app
 
@@ -40,4 +40,6 @@ USER node
 
 EXPOSE 8080
 
-ENTRYPOINT [ "npm", "start" ]
+ENV NODE_ENV=production
+
+ENTRYPOINT [ "node", "dist/main.js" ]

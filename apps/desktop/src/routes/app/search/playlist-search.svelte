@@ -1,33 +1,23 @@
 <script lang="ts">
-  import { createQuery } from "@tanstack/svelte-query";
-
-  import { svelteQueryKeys } from "$lib/constants/keys";
-  import { backendClient } from "$lib/utils/query-client";
-  import { playlistsSchema } from "$lib/utils/validation/playlists";
+  import usePlaylistSearchQuery from "$lib/queries/playlistSearch";
 
   import PlaylistTile from "$lib/components/playlist/PlaylistTile.svelte";
   import NoSearchResults from "$lib/components/search/NoSearchResults.svelte";
-  import TrackItemSkeleton from "$lib/components/skeletons/TrackItemSkeleton.svelte";
+  import TrackSkeleton from "$lib/components/skeletons/TrackSkeleton.svelte";
 
   const { q }: { q: string } = $props();
 
-  const playlistSearchQuery = createQuery(() => ({
-    queryKey: svelteQueryKeys.search(q, "playlists"),
-    queryFn: () =>
-      backendClient("/playlists", playlistsSchema, {
-        searchParams: { q },
-      }),
-  }));
+  const playlistSearchQuery = $derived(usePlaylistSearchQuery(q));
 </script>
 
 <div class="flex flex-col w-full h-full items-center pb-32 rounded-2xl">
   {#if playlistSearchQuery.isLoading}
-    <TrackItemSkeleton />
-    <TrackItemSkeleton />
-    <TrackItemSkeleton />
+    {#each new Array(10)}
+      <TrackSkeleton />
+    {/each}
   {:else if playlistSearchQuery.isSuccess}
     {#if playlistSearchQuery.data.playlists}
-      {#each playlistSearchQuery.data.playlists as playlist}
+      {#each playlistSearchQuery.data.playlists as playlist (playlist.playlistId)}
         <PlaylistTile {playlist} />
       {/each}
     {:else}

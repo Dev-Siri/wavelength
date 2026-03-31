@@ -1,13 +1,14 @@
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:wavelength/audio/wavelength_audio_handler.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_event.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_state.dart";
-import "package:wavelength/bloc/music_player/music_player_singleton.dart";
 
 class MusicPlayerPlaystateBloc
     extends Bloc<MusicPlayerPlaystateEvent, MusicPlayerPlaystateState> {
-  final _musicPlayer = MusicPlayerSingleton();
+  final WavelengthAudioHandler _audioHandler;
 
-  MusicPlayerPlaystateBloc() : super(MusicPlayerPlaystatePausedState()) {
+  MusicPlayerPlaystateBloc(this._audioHandler)
+    : super(MusicPlayerPlaystatePausedState()) {
     on<MusicPlayerPlaystateToggleEvent>(_toggleMusicPlayerPlaystate);
     on<MusicPlayerPlaystatePlayEvent>(_playMusicPlayerPlaystate);
     on<MusicPlayerPlaystatePauseEvent>(_pauseMusicPlayerPlaystate);
@@ -28,10 +29,10 @@ class MusicPlayerPlaystateBloc
     Emitter<MusicPlayerPlaystateState> emit,
   ) async {
     if (state is MusicPlayerPlaystatePausedState) {
-      await _musicPlayer.player.play();
+      await _audioHandler.play();
       emit(MusicPlayerPlaystatePlayingState());
     } else if (state is MusicPlayerPlaystatePlayingState) {
-      await _musicPlayer.player.pause();
+      await _audioHandler.pause();
       emit(MusicPlayerPlaystatePausedState());
     }
   }

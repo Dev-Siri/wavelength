@@ -30,7 +30,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     final authToken = await securedStorage.read(key: authTokenKey);
-    final authBox = await Hive.openBox(hiveAuthhKey);
+    final authBox = await Hive.openBox(hiveAuthKey);
     final userProfile = authBox.get(userKey);
 
     if (authToken != null && userProfile != null) {
@@ -72,7 +72,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         return emit(AuthStateUnauthorized());
       }
 
-      final authBox = await Hive.openBox(hiveAuthhKey);
+      final authBox = await Hive.openBox(hiveAuthKey);
 
       await securedStorage.write(
         key: authTokenKey,

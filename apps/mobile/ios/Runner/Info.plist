@@ -41,6 +41,8 @@
 	<string>This app needs access to location when open.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app needs access to your photo library to let you select images.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>This app needs access to bluetooth to detect bluetooth audio devices.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

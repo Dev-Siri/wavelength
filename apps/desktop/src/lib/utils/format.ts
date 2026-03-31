@@ -1,14 +1,17 @@
-import type { AlbumType } from "./validation/albums";
+import type { AlbumType } from "../schemas/album";
 
-export function compactify(statCount: number) {
+export function compactify(
+  statCount: string | number,
+  type: "suffixed" | "shortened" = "suffixed",
+) {
   const formatter = Intl.NumberFormat("en", {
     compactDisplay: "short",
-    notation: "compact",
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 1,
+    notation: type === "suffixed" ? "compact" : "standard",
+    minimumFractionDigits: type === "suffixed" ? 2 : 0,
+    maximumFractionDigits: type === "suffixed" ? 2 : 0,
   });
 
-  return formatter.format(statCount);
+  return formatter.format(Number(statCount));
 }
 
 export function durationify(seconds: number) {

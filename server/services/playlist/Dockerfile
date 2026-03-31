@@ -1,4 +1,4 @@
-FROM golang:1.24.1-bullseye AS builder
+FROM golang:1.25-alpine AS builder
 
 WORKDIR /usr/src/app
 
@@ -15,10 +15,6 @@ FROM debian:bookworm-slim
 WORKDIR /app
 
 COPY --from=builder /usr/local/bin/playlist /usr/local/bin/playlist
-
-RUN chmod +x /usr/local/bin/playlist
-
-ENV GO_ENV=prod
 
 EXPOSE 8080
 

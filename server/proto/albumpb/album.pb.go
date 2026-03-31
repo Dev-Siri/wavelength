@@ -23,6 +23,55 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type SaveAlbumResponse_AlbumSaveType int32
+
+const (
+	SaveAlbumResponse_ALBUM_SAVE_TYPE_UNSPECIFIED SaveAlbumResponse_AlbumSaveType = 0
+	SaveAlbumResponse_ALBUM_SAVE_TYPE_ADD_SAVE    SaveAlbumResponse_AlbumSaveType = 1
+	SaveAlbumResponse_ALBUM_SAVE_TYPE_REMOVE_SAVE SaveAlbumResponse_AlbumSaveType = 2
+)
+
+// Enum value maps for SaveAlbumResponse_AlbumSaveType.
+var (
+	SaveAlbumResponse_AlbumSaveType_name = map[int32]string{
+		0: "ALBUM_SAVE_TYPE_UNSPECIFIED",
+		1: "ALBUM_SAVE_TYPE_ADD_SAVE",
+		2: "ALBUM_SAVE_TYPE_REMOVE_SAVE",
+	}
+	SaveAlbumResponse_AlbumSaveType_value = map[string]int32{
+		"ALBUM_SAVE_TYPE_UNSPECIFIED": 0,
+		"ALBUM_SAVE_TYPE_ADD_SAVE":    1,
+		"ALBUM_SAVE_TYPE_REMOVE_SAVE": 2,
+	}
+)
+
+func (x SaveAlbumResponse_AlbumSaveType) Enum() *SaveAlbumResponse_AlbumSaveType {
+	p := new(SaveAlbumResponse_AlbumSaveType)
+	*p = x
+	return p
+}
+
+func (x SaveAlbumResponse_AlbumSaveType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (SaveAlbumResponse_AlbumSaveType) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_album_proto_enumTypes[0].Descriptor()
+}
+
+func (SaveAlbumResponse_AlbumSaveType) Type() protoreflect.EnumType {
+	return &file_proto_album_proto_enumTypes[0]
+}
+
+func (x SaveAlbumResponse_AlbumSaveType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use SaveAlbumResponse_AlbumSaveType.Descriptor instead.
+func (SaveAlbumResponse_AlbumSaveType) EnumDescriptor() ([]byte, []int) {
+	return file_proto_album_proto_rawDescGZIP(), []int{10, 0}
+}
+
 type GetAlbumDetailsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	AlbumId       string                 `protobuf:"bytes,1,opt,name=album_id,json=albumId,proto3" json:"album_id,omitempty"`
@@ -259,6 +308,470 @@ func (x *CreateTrackAlbumRequest) GetTitle() string {
 	return ""
 }
 
+type GetAlbumLiveCoverRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VideoId       string                 `protobuf:"bytes,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	AlbumId       string                 `protobuf:"bytes,2,opt,name=album_id,json=albumId,proto3" json:"album_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAlbumLiveCoverRequest) Reset() {
+	*x = GetAlbumLiveCoverRequest{}
+	mi := &file_proto_album_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAlbumLiveCoverRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAlbumLiveCoverRequest) ProtoMessage() {}
+
+func (x *GetAlbumLiveCoverRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_album_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAlbumLiveCoverRequest.ProtoReflect.Descriptor instead.
+func (*GetAlbumLiveCoverRequest) Descriptor() ([]byte, []int) {
+	return file_proto_album_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetAlbumLiveCoverRequest) GetVideoId() string {
+	if x != nil {
+		return x.VideoId
+	}
+	return ""
+}
+
+func (x *GetAlbumLiveCoverRequest) GetAlbumId() string {
+	if x != nil {
+		return x.AlbumId
+	}
+	return ""
+}
+
+type GetAlbumLiveCoverResponse struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	LiveAlbumCoverUri *string                `protobuf:"bytes,1,opt,name=live_album_cover_uri,json=liveAlbumCoverUri,proto3,oneof" json:"live_album_cover_uri,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *GetAlbumLiveCoverResponse) Reset() {
+	*x = GetAlbumLiveCoverResponse{}
+	mi := &file_proto_album_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAlbumLiveCoverResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAlbumLiveCoverResponse) ProtoMessage() {}
+
+func (x *GetAlbumLiveCoverResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_album_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAlbumLiveCoverResponse.ProtoReflect.Descriptor instead.
+func (*GetAlbumLiveCoverResponse) Descriptor() ([]byte, []int) {
+	return file_proto_album_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GetAlbumLiveCoverResponse) GetLiveAlbumCoverUri() string {
+	if x != nil && x.LiveAlbumCoverUri != nil {
+		return *x.LiveAlbumCoverUri
+	}
+	return ""
+}
+
+type IsAlbumLosslessRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AlbumId       string                 `protobuf:"bytes,1,opt,name=album_id,json=albumId,proto3" json:"album_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *IsAlbumLosslessRequest) Reset() {
+	*x = IsAlbumLosslessRequest{}
+	mi := &file_proto_album_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IsAlbumLosslessRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IsAlbumLosslessRequest) ProtoMessage() {}
+
+func (x *IsAlbumLosslessRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_album_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IsAlbumLosslessRequest.ProtoReflect.Descriptor instead.
+func (*IsAlbumLosslessRequest) Descriptor() ([]byte, []int) {
+	return file_proto_album_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *IsAlbumLosslessRequest) GetAlbumId() string {
+	if x != nil {
+		return x.AlbumId
+	}
+	return ""
+}
+
+type IsAlbumLosslessResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	IsLossless    *bool                  `protobuf:"varint,1,opt,name=is_lossless,json=isLossless,proto3,oneof" json:"is_lossless,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *IsAlbumLosslessResponse) Reset() {
+	*x = IsAlbumLosslessResponse{}
+	mi := &file_proto_album_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IsAlbumLosslessResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IsAlbumLosslessResponse) ProtoMessage() {}
+
+func (x *IsAlbumLosslessResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_album_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IsAlbumLosslessResponse.ProtoReflect.Descriptor instead.
+func (*IsAlbumLosslessResponse) Descriptor() ([]byte, []int) {
+	return file_proto_album_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *IsAlbumLosslessResponse) GetIsLossless() bool {
+	if x != nil && x.IsLossless != nil {
+		return *x.IsLossless
+	}
+	return false
+}
+
+type SaveAlbumRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AlbumId       string                 `protobuf:"bytes,1,opt,name=album_id,json=albumId,proto3" json:"album_id,omitempty"`
+	SaverEmail    string                 `protobuf:"bytes,2,opt,name=saver_email,json=saverEmail,proto3" json:"saver_email,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SaveAlbumRequest) Reset() {
+	*x = SaveAlbumRequest{}
+	mi := &file_proto_album_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SaveAlbumRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SaveAlbumRequest) ProtoMessage() {}
+
+func (x *SaveAlbumRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_album_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SaveAlbumRequest.ProtoReflect.Descriptor instead.
+func (*SaveAlbumRequest) Descriptor() ([]byte, []int) {
+	return file_proto_album_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *SaveAlbumRequest) GetAlbumId() string {
+	if x != nil {
+		return x.AlbumId
+	}
+	return ""
+}
+
+func (x *SaveAlbumRequest) GetSaverEmail() string {
+	if x != nil {
+		return x.SaverEmail
+	}
+	return ""
+}
+
+type SaveAlbumResponse struct {
+	state         protoimpl.MessageState          `protogen:"open.v1"`
+	SaveType      SaveAlbumResponse_AlbumSaveType `protobuf:"varint,1,opt,name=save_type,json=saveType,proto3,enum=album.SaveAlbumResponse_AlbumSaveType" json:"save_type,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SaveAlbumResponse) Reset() {
+	*x = SaveAlbumResponse{}
+	mi := &file_proto_album_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SaveAlbumResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SaveAlbumResponse) ProtoMessage() {}
+
+func (x *SaveAlbumResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_album_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SaveAlbumResponse.ProtoReflect.Descriptor instead.
+func (*SaveAlbumResponse) Descriptor() ([]byte, []int) {
+	return file_proto_album_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *SaveAlbumResponse) GetSaveType() SaveAlbumResponse_AlbumSaveType {
+	if x != nil {
+		return x.SaveType
+	}
+	return SaveAlbumResponse_ALBUM_SAVE_TYPE_UNSPECIFIED
+}
+
+type IsAlbumSavedRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AlbumId       string                 `protobuf:"bytes,1,opt,name=album_id,json=albumId,proto3" json:"album_id,omitempty"`
+	SaverEmail    string                 `protobuf:"bytes,2,opt,name=saver_email,json=saverEmail,proto3" json:"saver_email,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *IsAlbumSavedRequest) Reset() {
+	*x = IsAlbumSavedRequest{}
+	mi := &file_proto_album_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IsAlbumSavedRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IsAlbumSavedRequest) ProtoMessage() {}
+
+func (x *IsAlbumSavedRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_album_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IsAlbumSavedRequest.ProtoReflect.Descriptor instead.
+func (*IsAlbumSavedRequest) Descriptor() ([]byte, []int) {
+	return file_proto_album_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *IsAlbumSavedRequest) GetAlbumId() string {
+	if x != nil {
+		return x.AlbumId
+	}
+	return ""
+}
+
+func (x *IsAlbumSavedRequest) GetSaverEmail() string {
+	if x != nil {
+		return x.SaverEmail
+	}
+	return ""
+}
+
+type IsAlbumSavedResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	IsSaved       *bool                  `protobuf:"varint,1,opt,name=is_saved,json=isSaved,proto3,oneof" json:"is_saved,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *IsAlbumSavedResponse) Reset() {
+	*x = IsAlbumSavedResponse{}
+	mi := &file_proto_album_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IsAlbumSavedResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IsAlbumSavedResponse) ProtoMessage() {}
+
+func (x *IsAlbumSavedResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_album_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IsAlbumSavedResponse.ProtoReflect.Descriptor instead.
+func (*IsAlbumSavedResponse) Descriptor() ([]byte, []int) {
+	return file_proto_album_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *IsAlbumSavedResponse) GetIsSaved() bool {
+	if x != nil && x.IsSaved != nil {
+		return *x.IsSaved
+	}
+	return false
+}
+
+type GetSavedAlbumsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SaverEmail    string                 `protobuf:"bytes,1,opt,name=saver_email,json=saverEmail,proto3" json:"saver_email,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetSavedAlbumsRequest) Reset() {
+	*x = GetSavedAlbumsRequest{}
+	mi := &file_proto_album_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetSavedAlbumsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetSavedAlbumsRequest) ProtoMessage() {}
+
+func (x *GetSavedAlbumsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_album_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetSavedAlbumsRequest.ProtoReflect.Descriptor instead.
+func (*GetSavedAlbumsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_album_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *GetSavedAlbumsRequest) GetSaverEmail() string {
+	if x != nil {
+		return x.SaverEmail
+	}
+	return ""
+}
+
+type GetSavedAlbumsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Albums        []*commonpb.SavedAlbum `protobuf:"bytes,1,rep,name=albums,proto3" json:"albums,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetSavedAlbumsResponse) Reset() {
+	*x = GetSavedAlbumsResponse{}
+	mi := &file_proto_album_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetSavedAlbumsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetSavedAlbumsResponse) ProtoMessage() {}
+
+func (x *GetSavedAlbumsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_album_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetSavedAlbumsResponse.ProtoReflect.Descriptor instead.
+func (*GetSavedAlbumsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_album_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *GetSavedAlbumsResponse) GetAlbums() []*commonpb.SavedAlbum {
+	if x != nil {
+		return x.Albums
+	}
+	return nil
+}
+
 var File_proto_album_proto protoreflect.FileDescriptor
 
 const file_proto_album_proto_rawDesc = "" +
@@ -275,11 +788,50 @@ const file_proto_album_proto_rawDesc = "" +
 	"\x17CreateTrackAlbumRequest\x12\x1b\n" +
 	"\tbrowse_id\x18\x01 \x01(\tR\bbrowseId\x12\x19\n" +
 	"\btrack_id\x18\x02 \x01(\tR\atrackId\x12\x14\n" +
-	"\x05title\x18\x03 \x01(\tR\x05title2\xf5\x01\n" +
+	"\x05title\x18\x03 \x01(\tR\x05title\"P\n" +
+	"\x18GetAlbumLiveCoverRequest\x12\x19\n" +
+	"\bvideo_id\x18\x01 \x01(\tR\avideoId\x12\x19\n" +
+	"\balbum_id\x18\x02 \x01(\tR\aalbumId\"j\n" +
+	"\x19GetAlbumLiveCoverResponse\x124\n" +
+	"\x14live_album_cover_uri\x18\x01 \x01(\tH\x00R\x11liveAlbumCoverUri\x88\x01\x01B\x17\n" +
+	"\x15_live_album_cover_uri\"3\n" +
+	"\x16IsAlbumLosslessRequest\x12\x19\n" +
+	"\balbum_id\x18\x01 \x01(\tR\aalbumId\"O\n" +
+	"\x17IsAlbumLosslessResponse\x12$\n" +
+	"\vis_lossless\x18\x01 \x01(\bH\x00R\n" +
+	"isLossless\x88\x01\x01B\x0e\n" +
+	"\f_is_lossless\"N\n" +
+	"\x10SaveAlbumRequest\x12\x19\n" +
+	"\balbum_id\x18\x01 \x01(\tR\aalbumId\x12\x1f\n" +
+	"\vsaver_email\x18\x02 \x01(\tR\n" +
+	"saverEmail\"\xc9\x01\n" +
+	"\x11SaveAlbumResponse\x12C\n" +
+	"\tsave_type\x18\x01 \x01(\x0e2&.album.SaveAlbumResponse.AlbumSaveTypeR\bsaveType\"o\n" +
+	"\rAlbumSaveType\x12\x1f\n" +
+	"\x1bALBUM_SAVE_TYPE_UNSPECIFIED\x10\x00\x12\x1c\n" +
+	"\x18ALBUM_SAVE_TYPE_ADD_SAVE\x10\x01\x12\x1f\n" +
+	"\x1bALBUM_SAVE_TYPE_REMOVE_SAVE\x10\x02\"Q\n" +
+	"\x13IsAlbumSavedRequest\x12\x19\n" +
+	"\balbum_id\x18\x01 \x01(\tR\aalbumId\x12\x1f\n" +
+	"\vsaver_email\x18\x02 \x01(\tR\n" +
+	"saverEmail\"C\n" +
+	"\x14IsAlbumSavedResponse\x12\x1e\n" +
+	"\bis_saved\x18\x01 \x01(\bH\x00R\aisSaved\x88\x01\x01B\v\n" +
+	"\t_is_saved\"8\n" +
+	"\x15GetSavedAlbumsRequest\x12\x1f\n" +
+	"\vsaver_email\x18\x01 \x01(\tR\n" +
+	"saverEmail\"D\n" +
+	"\x16GetSavedAlbumsResponse\x12*\n" +
+	"\x06albums\x18\x01 \x03(\v2\x12.common.SavedAlbumR\x06albums2\xf7\x04\n" +
 	"\fAlbumService\x12P\n" +
 	"\x0fGetAlbumDetails\x12\x1d.album.GetAlbumDetailsRequest\x1a\x1e.album.GetAlbumDetailsResponse\x12G\n" +
 	"\fSearchAlbums\x12\x1a.album.SearchAlbumsRequest\x1a\x1b.album.SearchAlbumsResponse\x12J\n" +
-	"\x10CreateTrackAlbum\x12\x1e.album.CreateTrackAlbumRequest\x1a\x16.google.protobuf.EmptyB;Z9github.com/Dev-Siri/wavelength/server/proto/album;albumpbb\x06proto3"
+	"\x10CreateTrackAlbum\x12\x1e.album.CreateTrackAlbumRequest\x1a\x16.google.protobuf.Empty\x12V\n" +
+	"\x11GetAlbumLiveCover\x12\x1f.album.GetAlbumLiveCoverRequest\x1a .album.GetAlbumLiveCoverResponse\x12P\n" +
+	"\x0fIsAlbumLossless\x12\x1d.album.IsAlbumLosslessRequest\x1a\x1e.album.IsAlbumLosslessResponse\x12G\n" +
+	"\fIsAlbumSaved\x12\x1a.album.IsAlbumSavedRequest\x1a\x1b.album.IsAlbumSavedResponse\x12>\n" +
+	"\tSaveAlbum\x12\x17.album.SaveAlbumRequest\x1a\x18.album.SaveAlbumResponse\x12M\n" +
+	"\x0eGetSavedAlbums\x12\x1c.album.GetSavedAlbumsRequest\x1a\x1d.album.GetSavedAlbumsResponseB;Z9github.com/Dev-Siri/wavelength/server/proto/album;albumpbb\x06proto3"
 
 var (
 	file_proto_album_proto_rawDescOnce sync.Once
@@ -293,31 +845,56 @@ func file_proto_album_proto_rawDescGZIP() []byte {
 	return file_proto_album_proto_rawDescData
 }
 
-var file_proto_album_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_proto_album_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_proto_album_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_proto_album_proto_goTypes = []any{
-	(*GetAlbumDetailsRequest)(nil),  // 0: album.GetAlbumDetailsRequest
-	(*GetAlbumDetailsResponse)(nil), // 1: album.GetAlbumDetailsResponse
-	(*SearchAlbumsRequest)(nil),     // 2: album.SearchAlbumsRequest
-	(*SearchAlbumsResponse)(nil),    // 3: album.SearchAlbumsResponse
-	(*CreateTrackAlbumRequest)(nil), // 4: album.CreateTrackAlbumRequest
-	(*commonpb.Album)(nil),          // 5: common.Album
-	(*commonpb.SearchAlbum)(nil),    // 6: common.SearchAlbum
-	(*emptypb.Empty)(nil),           // 7: google.protobuf.Empty
+	(SaveAlbumResponse_AlbumSaveType)(0), // 0: album.SaveAlbumResponse.AlbumSaveType
+	(*GetAlbumDetailsRequest)(nil),       // 1: album.GetAlbumDetailsRequest
+	(*GetAlbumDetailsResponse)(nil),      // 2: album.GetAlbumDetailsResponse
+	(*SearchAlbumsRequest)(nil),          // 3: album.SearchAlbumsRequest
+	(*SearchAlbumsResponse)(nil),         // 4: album.SearchAlbumsResponse
+	(*CreateTrackAlbumRequest)(nil),      // 5: album.CreateTrackAlbumRequest
+	(*GetAlbumLiveCoverRequest)(nil),     // 6: album.GetAlbumLiveCoverRequest
+	(*GetAlbumLiveCoverResponse)(nil),    // 7: album.GetAlbumLiveCoverResponse
+	(*IsAlbumLosslessRequest)(nil),       // 8: album.IsAlbumLosslessRequest
+	(*IsAlbumLosslessResponse)(nil),      // 9: album.IsAlbumLosslessResponse
+	(*SaveAlbumRequest)(nil),             // 10: album.SaveAlbumRequest
+	(*SaveAlbumResponse)(nil),            // 11: album.SaveAlbumResponse
+	(*IsAlbumSavedRequest)(nil),          // 12: album.IsAlbumSavedRequest
+	(*IsAlbumSavedResponse)(nil),         // 13: album.IsAlbumSavedResponse
+	(*GetSavedAlbumsRequest)(nil),        // 14: album.GetSavedAlbumsRequest
+	(*GetSavedAlbumsResponse)(nil),       // 15: album.GetSavedAlbumsResponse
+	(*commonpb.Album)(nil),               // 16: common.Album
+	(*commonpb.SearchAlbum)(nil),         // 17: common.SearchAlbum
+	(*commonpb.SavedAlbum)(nil),          // 18: common.SavedAlbum
+	(*emptypb.Empty)(nil),                // 19: google.protobuf.Empty
 }
 var file_proto_album_proto_depIdxs = []int32{
-	5, // 0: album.GetAlbumDetailsResponse.album:type_name -> common.Album
-	6, // 1: album.SearchAlbumsResponse.albums:type_name -> common.SearchAlbum
-	0, // 2: album.AlbumService.GetAlbumDetails:input_type -> album.GetAlbumDetailsRequest
-	2, // 3: album.AlbumService.SearchAlbums:input_type -> album.SearchAlbumsRequest
-	4, // 4: album.AlbumService.CreateTrackAlbum:input_type -> album.CreateTrackAlbumRequest
-	1, // 5: album.AlbumService.GetAlbumDetails:output_type -> album.GetAlbumDetailsResponse
-	3, // 6: album.AlbumService.SearchAlbums:output_type -> album.SearchAlbumsResponse
-	7, // 7: album.AlbumService.CreateTrackAlbum:output_type -> google.protobuf.Empty
-	5, // [5:8] is the sub-list for method output_type
-	2, // [2:5] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	16, // 0: album.GetAlbumDetailsResponse.album:type_name -> common.Album
+	17, // 1: album.SearchAlbumsResponse.albums:type_name -> common.SearchAlbum
+	0,  // 2: album.SaveAlbumResponse.save_type:type_name -> album.SaveAlbumResponse.AlbumSaveType
+	18, // 3: album.GetSavedAlbumsResponse.albums:type_name -> common.SavedAlbum
+	1,  // 4: album.AlbumService.GetAlbumDetails:input_type -> album.GetAlbumDetailsRequest
+	3,  // 5: album.AlbumService.SearchAlbums:input_type -> album.SearchAlbumsRequest
+	5,  // 6: album.AlbumService.CreateTrackAlbum:input_type -> album.CreateTrackAlbumRequest
+	6,  // 7: album.AlbumService.GetAlbumLiveCover:input_type -> album.GetAlbumLiveCoverRequest
+	8,  // 8: album.AlbumService.IsAlbumLossless:input_type -> album.IsAlbumLosslessRequest
+	12, // 9: album.AlbumService.IsAlbumSaved:input_type -> album.IsAlbumSavedRequest
+	10, // 10: album.AlbumService.SaveAlbum:input_type -> album.SaveAlbumRequest
+	14, // 11: album.AlbumService.GetSavedAlbums:input_type -> album.GetSavedAlbumsRequest
+	2,  // 12: album.AlbumService.GetAlbumDetails:output_type -> album.GetAlbumDetailsResponse
+	4,  // 13: album.AlbumService.SearchAlbums:output_type -> album.SearchAlbumsResponse
+	19, // 14: album.AlbumService.CreateTrackAlbum:output_type -> google.protobuf.Empty
+	7,  // 15: album.AlbumService.GetAlbumLiveCover:output_type -> album.GetAlbumLiveCoverResponse
+	9,  // 16: album.AlbumService.IsAlbumLossless:output_type -> album.IsAlbumLosslessResponse
+	13, // 17: album.AlbumService.IsAlbumSaved:output_type -> album.IsAlbumSavedResponse
+	11, // 18: album.AlbumService.SaveAlbum:output_type -> album.SaveAlbumResponse
+	15, // 19: album.AlbumService.GetSavedAlbums:output_type -> album.GetSavedAlbumsResponse
+	12, // [12:20] is the sub-list for method output_type
+	4,  // [4:12] is the sub-list for method input_type
+	4,  // [4:4] is the sub-list for extension type_name
+	4,  // [4:4] is the sub-list for extension extendee
+	0,  // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_proto_album_proto_init() }
@@ -325,18 +902,22 @@ func file_proto_album_proto_init() {
 	if File_proto_album_proto != nil {
 		return
 	}
+	file_proto_album_proto_msgTypes[6].OneofWrappers = []any{}
+	file_proto_album_proto_msgTypes[8].OneofWrappers = []any{}
+	file_proto_album_proto_msgTypes[12].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_album_proto_rawDesc), len(file_proto_album_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   5,
+			NumEnums:      1,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_proto_album_proto_goTypes,
 		DependencyIndexes: file_proto_album_proto_depIdxs,
+		EnumInfos:         file_proto_album_proto_enumTypes,
 		MessageInfos:      file_proto_album_proto_msgTypes,
 	}.Build()
 	File_proto_album_proto = out.File

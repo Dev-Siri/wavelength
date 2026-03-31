@@ -2,10 +2,10 @@ package playlist_controllers
 
 import (
 	"github.com/Dev-Siri/wavelength/server/proto/playlistpb"
-	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
 	"github.com/Dev-Siri/wavelength/server/services/gateway/models/schemas"
 	"github.com/Dev-Siri/wavelength/server/shared/clients"
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
+	shared_models "github.com/Dev-Siri/wavelength/server/shared/models"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -44,5 +44,5 @@ func RearrangePlaylistTracks(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Playlist rearrangement failed.")
 	}
 
-	return models.Success(ctx, "Playlist positions updated successfully.")
+	return shared_models.Success(ctx, "Playlist positions updated successfully.")
 }

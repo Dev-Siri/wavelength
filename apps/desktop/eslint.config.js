@@ -20,7 +20,7 @@ export default [
     },
   },
   {
-    files: ["**/*.svelte"],
+    files: ["**/*.svelte", "**/*.svelte.ts"],
     languageOptions: {
       parserOptions: {
         parser: ts.parser,
@@ -28,6 +28,14 @@ export default [
     },
   },
   {
-    ignores: ["build/", ".svelte-kit/", "dist/", "node_modules/", ".vercel/"],
+    ignores: [
+      "build/",
+      ".svelte-kit/",
+      "dist/",
+      "node_modules/",
+      ".vercel/",
+      "src-tauri/",
+      "dev-dist/",
+    ],
   },
 ];

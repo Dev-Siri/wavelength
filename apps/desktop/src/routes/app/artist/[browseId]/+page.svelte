@@ -1,50 +1,45 @@
 <script lang="ts">
   import { page } from "$app/state";
   import { ArrowUpRightIcon } from "@lucide/svelte";
-  import { createQuery } from "@tanstack/svelte-query";
   import { fly } from "svelte/transition";
 
-  import { svelteQueryKeys } from "$lib/constants/keys.js";
-  import { backendClient } from "$lib/utils/query-client.js";
-  import { artistResponseSchema } from "$lib/utils/validation/artist-response";
+  import useArtistQuery from "$lib/queries/artist";
 
   import ArtistFollowButton from "$lib/components/artist/ArtistFollowButton.svelte";
   import Image from "$lib/components/Image.svelte";
-  import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
   import { Button } from "$lib/components/ui/button";
+  import Spinner from "$lib/components/ui/spinner/spinner.svelte";
   import * as Tabs from "$lib/components/ui/tabs";
   import About from "./about.svelte";
   import Albums from "./albums.svelte";
+  import Home from "./home.svelte";
   import Popular from "./popular.svelte";
   import SinglesAndEps from "./singles-and-eps.svelte";
 
-  const artistQuery = createQuery(() => ({
-    queryKey: svelteQueryKeys.artist(page.params.browseId ?? ""),
-    queryFn: () => backendClient(`/artists/artist/${page.params.browseId}`, artistResponseSchema),
-    staleTime: Infinity,
-    gcTime: Infinity,
-  }));
+  let value = $state<"home" | "popular" | "albums" | "singles-and-eps" | "about">("home");
+
+  const artistQuery = $derived(useArtistQuery(page.params.browseId ?? ""));
 </script>
 
 <div
-  class="h-full w-full bg-black rounded-2xl pb-[15%]"
+  class="h-full w-full bg-black rounded-2xl"
   in:fly={{ y: 20, duration: 250 }}
   out:fly={{ y: 20, duration: 100 }}
 >
   {#if artistQuery.isLoading}
     <div class="h-full flex w-full items-center justify-center">
-      <LoadingSpinner />
+      <Spinner class="size-28" />
     </div>
   {:else if artistQuery.isSuccess}
     {@const { artist } = artistQuery.data}
-    <div class="relative h-full overflow-scroll scrollbar-hidden">
+    <div class="relative h-full select-none overflow-scroll scrollbar-hidden">
       <div class="relative h-[45vh] min-h-[320px] w-full overflow-hidden">
         <Image
           src={artist.thumbnail}
           alt="Artist Image"
           height={1080}
           width={1920}
-          draggable
+          draggable="false"
           class="h-full w-full absolute object-cover"
         />
         <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-black/50 to-black"></div>
@@ -68,24 +63,32 @@
           </div>
         </div>
       </div>
-      <div class="flex flex-col gap-2 h-full px-10 z-40 mt-6">
-        <Tabs.Root value="home">
-          <Tabs.List>
+      <div class="flex flex-col gap-2 h-[55vh] z-40">
+        <Tabs.Root bind:value>
+          <Tabs.List class="mx-2">
             <Tabs.Trigger value="home">Home</Tabs.Trigger>
+            <Tabs.Trigger value="popular">Popular</Tabs.Trigger>
             <Tabs.Trigger value="albums">Albums</Tabs.Trigger>
             <Tabs.Trigger value="singles-and-eps">Singles & EPs</Tabs.Trigger>
             <Tabs.Trigger value="about">About</Tabs.Trigger>
           </Tabs.List>
           <Tabs.Content value="home">
-            <Popular {artist} />
+            <Home
+              {artist}
+              showPopular={() => (value = "popular")}
+              showAbout={() => (value = "about")}
+            />
           </Tabs.Content>
-          <Tabs.Content value="albums">
+          <Tabs.Content class="px-2" value="popular">
+            <Popular {artist} showHome={() => (value = "home")} />
+          </Tabs.Content>
+          <Tabs.Content class="px-2" value="albums">
             <Albums {artist} />
           </Tabs.Content>
-          <Tabs.Content value="singles-and-eps">
+          <Tabs.Content class="px-2" value="singles-and-eps">
             <SinglesAndEps {artist} />
           </Tabs.Content>
-          <Tabs.Content value="about">
+          <Tabs.Content class="px-2" value="about">
             <About {artist} />
           </Tabs.Content>
         </Tabs.Root>

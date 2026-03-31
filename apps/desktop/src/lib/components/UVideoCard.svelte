@@ -1,51 +1,46 @@
 <script lang="ts">
   import { EllipsisIcon, PlusIcon } from "@lucide/svelte";
-  import { createMutation, createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { createMutation, useQueryClient } from "@tanstack/svelte-query";
   import { toast } from "svelte-sonner";
   import { z } from "zod";
 
-  import { playlistsSchema } from "$lib/utils/validation/playlists";
-  import type { YouTubeVideo } from "$lib/utils/validation/youtube-video";
+  import type { YouTubeVideo } from "$lib/schemas/youtube-video";
 
   import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";
-  import musicPlayerStore from "$lib/stores/music-player.svelte.js";
-  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte.js";
+  import { musicTrackDurationSchema } from "$lib/schemas/track-length";
   import userStore from "$lib/stores/user.svelte";
-  import { backendClient } from "$lib/utils/query-client.js";
-  import { getThumbnailUrl } from "$lib/utils/url";
-  import { musicTrackDurationSchema } from "$lib/utils/validation/track-length";
+  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { backendClient, reportErrorToBackend } from "$lib/utils/query-client.js";
 
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import * as Tooltip from "$lib/components/ui/tooltip";
+  import useUserPlaylistsQuery from "$lib/queries/userPlaylists";
   import Image from "./Image.svelte";
 
   const { uvideo }: { uvideo: YouTubeVideo } = $props();
 
   const queryClient = useQueryClient();
-  const playlistsQuery = createQuery(() => ({
-    queryKey: svelteQueryKeys.userPlaylists,
-    async queryFn() {
-      if (!userStore.user) return;
-
-      return backendClient(`/playlists/user/${userStore.user.email}`, playlistsSchema);
-    },
-  }));
+  const userPlaylistsQuery = $derived(useUserPlaylistsQuery(userStore.user?.email ?? ""));
 
   async function playYtVideo() {
-    const queueableTrack = {
-      ...uvideo,
-      artists: [
-        {
-          title: uvideo.author,
-          browseId: uvideo.authorChannelId,
-        },
-      ],
-      videoType: "VIDEO_TYPE_UVIDEO",
-    } satisfies QueueableMusic;
-
-    musicQueueStore.musicPlayingNow = queueableTrack;
-    musicQueueStore.musicPlaylistContext = [];
-    musicPlayerStore.visiblePanel = "playingNow";
+    try {
+      await musicPlayer.load({
+        ...uvideo,
+        artists: [
+          {
+            title: uvideo.author,
+            browseId: uvideo.authorChannelId,
+          },
+        ],
+        videoType: "VIDEO_TYPE_UVIDEO",
+      });
+    } catch (error) {
+      toast.error(`Playback ${error}`);
+      await reportErrorToBackend({
+        error,
+        source: "UVideoCard: playYtVideo()",
+      });
+    }
   }
 
   const addToPlaylistMutation = createMutation(() => ({
@@ -53,7 +48,8 @@
     onError: () => toast.error("Failed to update playlist."),
     onSuccess(data: string, playlistId: string) {
       toast.success(data);
-      queryClient.invalidateQueries({ queryKey: svelteQueryKeys.playlist(playlistId) });
+      queryClient.invalidateQueries({ queryKey: svelteQueryKeys.playlistTrackLength(playlistId) });
+      queryClient.invalidateQueries({ queryKey: svelteQueryKeys.playlistTrack(playlistId) });
     },
     async mutationFn(playlistId: string) {
       const duration = await backendClient(
@@ -74,7 +70,7 @@
           videoId: uvideo.videoId,
           duration: duration.durationSeconds.toString(),
           isExplicit: false,
-          thumbnail: getThumbnailUrl(uvideo.videoId),
+          thumbnail: uvideo.thumbnail,
           videoType: "uvideo",
         },
       });
@@ -99,11 +95,11 @@
         class="absolute bottom-0 w-full right-0 p-4 text-xl text-left  opacity-100 z-40"
       >
         <p class="text-start">
-          {#each (uvideo.title.length > 50 ? `${uvideo.title.slice(0, 49) ?? ""}..` : (uvideo.title ?? "")).split(" ") as titleWord}
+          {#each (uvideo.title.length > 50 ? `${uvideo.title.slice(0, 49) ?? ""}..` : (uvideo.title ?? "")).split(" ") as titleWord, i (`${titleWord}-${i}`)}
             {#if titleWord.startsWith("#")}
-              <span class="text-blue-500">{titleWord}{" "}</span>
+              <span class="text-blue-500">{titleWord}</span>
             {:else}
-              {titleWord}{" "}
+              {titleWord}
             {/if}
           {/each}
         </p>
@@ -130,7 +126,7 @@
       </p>
     </div>
   </button>
-  {#if playlistsQuery.data?.playlists}
+  {#if userPlaylistsQuery.data?.playlists}
     <DropdownMenu.Content>
       <DropdownMenu.Sub>
         <DropdownMenu.SubTrigger>
@@ -138,7 +134,7 @@
           Add to playlist
         </DropdownMenu.SubTrigger>
         <DropdownMenu.SubContent>
-          {#each playlistsQuery.data.playlists as playlist}
+          {#each userPlaylistsQuery.data.playlists as playlist (playlist.playlistId)}
             <DropdownMenu.Item onclick={() => addToPlaylistMutation.mutate(playlist.playlistId)}>
               {playlist.name}
             </DropdownMenu.Item>

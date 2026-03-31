@@ -20,6 +20,7 @@ services:
       - ALBUM_CLIENT_URL=album:8085
       - IMAGE_CLIENT_URL=image:8086
       - AUTH_CLIENT_URL=auth:8087
+      - LYRIC_CLIENT_URL=lyrics:8088
       - GO_ENV=dev
     depends_on:
       - playlist
@@ -28,13 +29,14 @@ services:
       - album
       - image
       - auth
+      - lyrics
     develop:
       watch:
         - action: rebuild
           path: services/gateway
   playlist:
-    mem_limit: 512m
-    cpus: 1
+    mem_limit: 256m
+    cpus: 0.25
     build:
       platforms:
         - linux/amd64
@@ -58,7 +60,7 @@ services:
         - action: rebuild
           path: services
   music:
-    mem_limit: 512m
+    mem_limit: 256m
     cpus: 1
     build:
       platforms:
@@ -104,8 +106,8 @@ services:
         - action: rebuild
           path: services/yt-scraper/package.json
   artist:
-    mem_limit: 512m
-    cpus: 1
+    mem_limit: 128m
+    cpus: 0.25
     build:
       platforms:
         - linux/amd64
@@ -125,8 +127,8 @@ services:
         - action: rebuild
           path: services
   album:
-    mem_limit: 512m
-    cpus: 1
+    mem_limit: 128m
+    cpus: 0.25
     build:
       platforms:
         - linux/amd64
@@ -146,8 +148,8 @@ services:
         - action: rebuild
           path: services
   auth:
-    mem_limit: 512m
-    cpus: 1
+    mem_limit: 256m
+    cpus: 0.25
     build:
       platforms:
         - linux/amd64
@@ -176,6 +178,79 @@ services:
     environment:
       - PORT=8086
       - GO_ENV=dev
+    develop:
+      watch:
+        - action: rebuild
+          path: services
+  lyrics:
+    mem_limit: 128m
+    cpus: 0.25
+    build:
+      platforms:
+        - linux/amd64
+      context: .
+      dockerfile: services/lyrics/Dockerfile
+    image: wavelength/services/lyrics
+    container_name: lyrics
+    env_file: services/lyrics/.env
+    environment:
+      - PORT=8088
+      - YT_SCRAPER_URL=yt-scraper:8083
+      - GO_ENV=dev
+    depends_on:
+      - yt-scraper
+    develop:
+      watch:
+        - action: rebuild
+          path: services
+  player:
+    mem_limit: 256m
+    cpus: 1
+    build:
+      platforms:
+        - linux/amd64
+      context: .
+      dockerfile: services/player/Dockerfile
+    image: wavelength/services/player
+    container_name: player
+    env_file: services/player/.env
+    environment:
+      - PORT=8000
+      - GOOGLE_APPLICATION_CREDENTIALS=/root/.config/gcloud/application_default_credentials.json
+      - GO_ENV=dev
+      - COLLECTOR_CLIENT_URL=collector:8089
+      - YT_SCRAPER_URL=yt-scraper:8083
+    ports:
+      - "8000:8000"
+    volumes:
+      - ~/.config/gcloud:/root/.config/gcloud:ro
+    depends_on:
+      - collector
+      - yt-scraper
+    develop:
+      watch:
+        - action: rebuild
+          path: services
+  collector:
+    mem_limit: 2g
+    cpus: 1
+    build:
+      platforms:
+        - linux/amd64
+      context: .
+      dockerfile: services/collector/Dockerfile
+    image: wavelength/services/collector
+    container_name: collector
+    env_file: services/collector/.env
+    environment:
+      - PORT=8089
+      - GOOGLE_APPLICATION_CREDENTIALS=/root/.config/gcloud/application_default_credentials.json
+      - GO_ENV=dev
+      - YT_SCRAPER_URL=yt-scraper:8083
+    volumes:
+      - ~/.config/gcloud:/root/.config/gcloud:ro
+    depends_on:
+      - yt-scraper
     develop:
       watch:
         - action: rebuild

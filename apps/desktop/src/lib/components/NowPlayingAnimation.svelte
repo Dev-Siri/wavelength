@@ -1,4 +1,14 @@
-<div class="flex items-center justify-center w-10 h-10">
+<script lang="ts">
+  const {
+    height = 40,
+    width = 40,
+  }: {
+    height?: number;
+    width?: number;
+  } = $props();
+</script>
+
+<div class="flex items-center justify-center" style="height: {height}px; width: {width}px;">
   <div class="flex items-end w-5 h-5 gap-[10%] playing">
     <div class="bar"></div>
     <div class="bar"></div>

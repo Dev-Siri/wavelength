@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ImageService_GetThemeColor_FullMethodName = "/image.ImageService/GetThemeColor"
-	ImageService_ResizeImage_FullMethodName   = "/image.ImageService/ResizeImage"
+	ImageService_GetThemeColor_FullMethodName        = "/image.ImageService/GetThemeColor"
+	ImageService_ResizeImage_FullMethodName          = "/image.ImageService/ResizeImage"
+	ImageService_GetCoverEffectColors_FullMethodName = "/image.ImageService/GetCoverEffectColors"
 )
 
 // ImageServiceClient is the client API for ImageService service.
@@ -29,6 +30,7 @@ const (
 type ImageServiceClient interface {
 	GetThemeColor(ctx context.Context, in *GetThemeColorRequest, opts ...grpc.CallOption) (*GetThemeColorResponse, error)
 	ResizeImage(ctx context.Context, in *ResizeImageRequest, opts ...grpc.CallOption) (*ResizeImageResponse, error)
+	GetCoverEffectColors(ctx context.Context, in *GetCoverEffectColorsRequest, opts ...grpc.CallOption) (*GetCoverEffectColorsResponse, error)
 }
 
 type imageServiceClient struct {
@@ -59,12 +61,23 @@ func (c *imageServiceClient) ResizeImage(ctx context.Context, in *ResizeImageReq
 	return out, nil
 }
 
+func (c *imageServiceClient) GetCoverEffectColors(ctx context.Context, in *GetCoverEffectColorsRequest, opts ...grpc.CallOption) (*GetCoverEffectColorsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetCoverEffectColorsResponse)
+	err := c.cc.Invoke(ctx, ImageService_GetCoverEffectColors_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ImageServiceServer is the server API for ImageService service.
 // All implementations must embed UnimplementedImageServiceServer
 // for forward compatibility.
 type ImageServiceServer interface {
 	GetThemeColor(context.Context, *GetThemeColorRequest) (*GetThemeColorResponse, error)
 	ResizeImage(context.Context, *ResizeImageRequest) (*ResizeImageResponse, error)
+	GetCoverEffectColors(context.Context, *GetCoverEffectColorsRequest) (*GetCoverEffectColorsResponse, error)
 	mustEmbedUnimplementedImageServiceServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedImageServiceServer) GetThemeColor(context.Context, *GetThemeC
 }
 func (UnimplementedImageServiceServer) ResizeImage(context.Context, *ResizeImageRequest) (*ResizeImageResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ResizeImage not implemented")
+}
+func (UnimplementedImageServiceServer) GetCoverEffectColors(context.Context, *GetCoverEffectColorsRequest) (*GetCoverEffectColorsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetCoverEffectColors not implemented")
 }
 func (UnimplementedImageServiceServer) mustEmbedUnimplementedImageServiceServer() {}
 func (UnimplementedImageServiceServer) testEmbeddedByValue()                      {}
@@ -138,6 +154,24 @@ func _ImageService_ResizeImage_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ImageService_GetCoverEffectColors_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCoverEffectColorsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ImageServiceServer).GetCoverEffectColors(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ImageService_GetCoverEffectColors_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ImageServiceServer).GetCoverEffectColors(ctx, req.(*GetCoverEffectColorsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ImageService_ServiceDesc is the grpc.ServiceDesc for ImageService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +186,10 @@ var ImageService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ResizeImage",
 			Handler:    _ImageService_ResizeImage_Handler,
+		},
+		{
+			MethodName: "GetCoverEffectColors",
+			Handler:    _ImageService_GetCoverEffectColors_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

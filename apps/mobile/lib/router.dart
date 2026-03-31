@@ -19,10 +19,13 @@ import "package:wavelength/screens/home.dart";
 import "package:wavelength/screens/library.dart";
 import "package:wavelength/screens/explore.dart";
 import "package:wavelength/screens/likes.dart";
-import "package:wavelength/screens/playing_now.dart";
 import "package:wavelength/screens/playlist.dart";
 import "package:wavelength/screens/settings.dart";
-import "package:wavelength/transitions.dart";
+import "package:wavelength/screens/settings/audio_quality.dart";
+import "package:wavelength/screens/settings/download_quality.dart";
+import "package:wavelength/screens/settings/streaming_preference.dart";
+import "package:wavelength/screens/settings/cellular_streaming_quality.dart";
+import "package:wavelength/screens/settings/wifi_streaming_quality.dart";
 
 final router = GoRouter(
   routes: [
@@ -30,10 +33,10 @@ final router = GoRouter(
       routes: [
         ShellRoute(
           routes: [
-            GoRoute(path: "/", builder: (_, __) => const HomeScreen()),
+            GoRoute(path: "/", builder: (_, _) => const HomeScreen()),
             GoRoute(
               path: "/explore",
-              builder: (_, __) => MultiBlocProvider(
+              builder: (_, _) => MultiBlocProvider(
                 providers: [
                   BlocProvider(create: (_) => PublicPlaylistsBloc()),
                   BlocProvider(create: (_) => TracksBloc()),
@@ -44,100 +47,84 @@ final router = GoRouter(
                 child: const ExploreScreen(),
               ),
             ),
-            GoRoute(
-              path: "/library",
-              builder: (_, __) => const LibraryScreen(),
-            ),
+            GoRoute(path: "/library", builder: (_, _) => const LibraryScreen()),
           ],
-          builder: (_, __, child) {
+          builder: (_, _, child) {
             return AppShell(child: child);
           },
         ),
         GoRoute(
           path: "/playlist/:id",
-          pageBuilder: (_, state) {
+          builder: (_, state) {
             final id = state.pathParameters["id"]!;
-            return CustomTransitionPage(
-              key: state.pageKey,
-              child: PlaylistScreen(playlistId: id),
-              transitionsBuilder: pageSlideUpTransition,
-            );
+            return PlaylistScreen(playlistId: id);
           },
         ),
         GoRoute(
           path: "/playlist/:id/edit",
-          pageBuilder: (_, state) {
+          builder: (_, state) {
             final id = state.pathParameters["id"]!;
             final isRouteDataValid = state.extra is EditPlaylistRouteData;
 
-            return CustomTransitionPage(
-              key: state.pageKey,
-              child: isRouteDataValid
-                  ? EditPlaylistScreen(
-                      playlistId: id,
-                      routeData: state.extra as EditPlaylistRouteData,
-                    )
-                  : const SizedBox.shrink(),
-              transitionsBuilder: pageSlideUpTransition,
-            );
+            return isRouteDataValid
+                ? EditPlaylistScreen(
+                    playlistId: id,
+                    routeData: state.extra as EditPlaylistRouteData,
+                  )
+                : const SizedBox.shrink();
           },
         ),
         GoRoute(
           path: "/likes",
-          pageBuilder: (_, state) {
-            return CustomTransitionPage(
-              key: state.pageKey,
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider(create: (_) => LikedTracksBloc()),
-                  BlocProvider(create: (_) => LikedTracksPlaylengthBloc()),
-                ],
-                child: const LikesScreen(),
-              ),
-              transitionsBuilder: pageSlideUpTransition,
+          builder: (_, state) {
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider(create: (_) => LikedTracksBloc()),
+                BlocProvider(create: (_) => LikedTracksPlaylengthBloc()),
+              ],
+              child: const LikesScreen(),
             );
           },
         ),
         GoRoute(
           path: "/artist/:id",
-          pageBuilder: (_, state) {
+          builder: (_, state) {
             final id = state.pathParameters["id"]!;
-            return CustomTransitionPage(
-              key: state.pageKey,
-              child: ArtistScreen(browseId: id),
-              transitionsBuilder: pageSlideUpTransition,
-            );
+            return ArtistScreen(browseId: id);
           },
         ),
         GoRoute(
           path: "/album/:id",
-          pageBuilder: (_, state) {
+          builder: (_, state) {
             final id = state.pathParameters["id"]!;
-            return CustomTransitionPage(
-              key: state.pageKey,
-              child: MultiBlocProvider(
-                providers: [BlocProvider(create: (_) => AlbumBloc())],
-                child: AlbumScreen(browseId: id),
-              ),
-              transitionsBuilder: pageSlideUpTransition,
+            return BlocProvider(
+              create: (_) => AlbumBloc(),
+              child: AlbumScreen(browseId: id),
             );
           },
         ),
+        GoRoute(path: "/downloads", builder: (_, _) => const DownloadsScreen()),
+        GoRoute(path: "/settings", builder: (_, _) => const SettingsScreen()),
         GoRoute(
-          path: "/playing-now",
-          pageBuilder: (_, state) {
-            return CustomTransitionPage(
-              key: state.pageKey,
-              child: const PlayingNowScreen(),
-              transitionsBuilder: pageSlideUpTransition,
-            );
-          },
+          path: "/settings/streaming-preference",
+          builder: (_, _) => const StreamingPreferenceSetting(),
         ),
         GoRoute(
-          path: "/downloads",
-          builder: (_, __) => const DownloadsScreen(),
+          path: "/settings/audio-quality",
+          builder: (_, _) => const AudioQualitySetting(),
         ),
-        GoRoute(path: "/settings", builder: (_, __) => const SettingsScreen()),
+        GoRoute(
+          path: "/settings/audio-quality/streaming/cellular",
+          builder: (_, _) => const CellularStreamingQualitySetting(),
+        ),
+        GoRoute(
+          path: "/settings/audio-quality/streaming/wifi",
+          builder: (_, _) => const WifiStreamingQualitySetting(),
+        ),
+        GoRoute(
+          path: "/settings/audio-quality/downloads",
+          builder: (_, _) => const DownloadQualitySetting(),
+        ),
       ],
       builder: (context, state, child) {
         return Root(uri: state.uri.toString(), child: child);

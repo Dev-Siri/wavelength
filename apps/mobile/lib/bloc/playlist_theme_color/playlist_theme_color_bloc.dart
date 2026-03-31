@@ -1,6 +1,6 @@
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:wavelength/api/models/api_response.dart";
-import "package:wavelength/api/models/playlist_theme_color.dart";
+import "package:wavelength/api/models/theme_color.dart";
 import "package:wavelength/api/repositories/image_repo.dart";
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_event.dart";
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_state.dart";

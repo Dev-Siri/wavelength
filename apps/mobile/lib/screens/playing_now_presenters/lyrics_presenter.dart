@@ -1,36 +1,19 @@
+import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:wavelength/api/models/lyric.dart";
-import "package:wavelength/bloc/lyrics/lyrics_bloc.dart";
-import "package:wavelength/bloc/lyrics/lyrics_event.dart";
-import "package:wavelength/bloc/lyrics/lyrics_state.dart";
+import "package:text_scroll/text_scroll.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_event.dart";
 import "package:wavelength/bloc/music_player/music_player_duration/music_player_duration_state.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
-import "package:wavelength/widgets/error_message_dialog.dart";
-import "package:wavelength/widgets/loading_indicator.dart";
-import "package:wavelength/widgets/music_player_play_options.dart";
-
-bool _isLyricInFocus(MusicPlayerDurationAvailableState state, Lyric lyric) {
-  final endMs = lyric.startMs + lyric.durMs;
-
-  return state.currentDuration.inMilliseconds > lyric.startMs &&
-      state.currentDuration.inMilliseconds < endMs;
-}
-
-Color _getLyricTextColor(MusicPlayerDurationAvailableState state, Lyric lyric) {
-  final isLyricFocused = _isLyricInFocus(state, lyric);
-
-  if (isLyricFocused) {
-    return Colors.white;
-  } else if (state.currentDuration.inMilliseconds > lyric.startMs) {
-    return Colors.white.withAlpha(180);
-  } else {
-    return Colors.grey;
-  }
-}
+import "package:wavelength/utils/format.dart";
+import "package:wavelength/utils/url.dart";
+import "package:wavelength/widgets/animations/blur_in_animation.dart";
+import "package:wavelength/widgets/hifi_badge.dart";
+import "package:wavelength/widgets/music_player/music_player_lyrics_list.dart";
+import "package:wavelength/widgets/music_player/music_player_play_controls.dart";
+import "package:wavelength/widgets/music_player/music_player_progress_bar.dart";
 
 class LyricsPresenter extends StatefulWidget {
   const LyricsPresenter({super.key});
@@ -40,155 +23,152 @@ class LyricsPresenter extends StatefulWidget {
 }
 
 class _LyricsPresenterState extends State<LyricsPresenter> {
-  final _lyricsBloc = LyricsBloc();
-
-  int? _activeIndex;
-  List<GlobalKey> lyricKeys = [];
-
-  void _triggerFetchLyricsEvent() {
-    final musicPlayerTrackState = context.read<MusicPlayerTrackBloc>().state;
-
-    if (musicPlayerTrackState is MusicPlayerTrackPlayingNowState) {
-      _lyricsBloc.add(
-        LyricsFetchEvent(
-          title: musicPlayerTrackState.playingNowTrack.title,
-          artist: musicPlayerTrackState.playingNowTrack.artists
-              .map((artist) => artist.title)
-              .join(","),
-          trackId: musicPlayerTrackState.playingNowTrack.videoId,
-        ),
-      );
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _triggerFetchLyricsEvent();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          BlocBuilder<LyricsBloc, LyricsState>(
-            bloc: _lyricsBloc,
-            builder: (context, state) {
-              if (state is! LyricsFetchSuccessState) {
-                if (state is LyricsFetchErrorState) {
-                  return Expanded(
-                    flex: 2,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ErrorMessageDialog(
-                          message: "Failed to get lyrics for this track.",
-                          onRetry: _triggerFetchLyricsEvent,
-                        ),
-                      ],
+    return SizedBox.expand(
+      child: BlocBuilder<MusicPlayerTrackBloc, MusicPlayerTrackState>(
+        builder: (context, state) {
+          if (state is! MusicPlayerTrackPlayingNowState) {
+            return const SizedBox.shrink();
+          }
+
+          return Column(
+            children: [
+              Expanded(
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: MusicPlayerLyricsList(
+                        key: Key("${state.playingNowTrack.videoId}-lyrics"),
+                      ),
                     ),
-                  );
-                }
-
-                return const Expanded(flex: 2, child: LoadingIndicator());
-              }
-
-              lyricKeys = List.generate(
-                state.lyrics.length,
-                (_) => GlobalKey(),
-              );
-
-              return Expanded(
-                flex: 2,
-                child: ListView.builder(
-                  itemCount: state.lyrics.length,
-                  itemBuilder: (context, index) {
-                    final lyric = state.lyrics[index];
-
-                    return KeyedSubtree(
-                      key: lyricKeys[index],
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: IgnorePointer(
+                        child: Container(
+                          height: MediaQuery.sizeOf(context).height * 0.35,
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Color.fromARGB(220, 0, 0, 0),
+                                Color.fromARGB(119, 0, 0, 0),
+                                Color.fromARGB(0, 0, 0, 0),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    BlurInAnimation(
                       child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child:
-                            BlocBuilder<
-                              MusicPlayerDurationBloc,
-                              MusicPlayerDurationState
-                            >(
-                              builder: (context, state) {
-                                // I'm very sorry if you're eyes had to see all of this.
-                                final isProgressStateAvailable =
-                                    state is MusicPlayerDurationAvailableState;
-                                final isActive =
-                                    isProgressStateAvailable &&
-                                    _isLyricInFocus(state, lyric);
-
-                                if (isActive && _activeIndex != index) {
-                                  _activeIndex = index;
-                                  WidgetsBinding.instance.addPostFrameCallback((
-                                    _,
-                                  ) {
-                                    final context =
-                                        lyricKeys[index].currentContext;
-                                    if (context != null) {
-                                      Scrollable.ensureVisible(
-                                        context,
-                                        duration: const Duration(
-                                          milliseconds: 300,
-                                        ),
-                                        curve: Curves.easeInOut,
-                                        alignment: 0.5,
-                                      );
-                                    }
-                                  });
-                                }
-
-                                final lyricTextColor = isProgressStateAvailable
-                                    ? _getLyricTextColor(state, lyric)
-                                    : Colors.grey;
-
-                                final musicPlayerDurationBloc = context
-                                    .read<MusicPlayerDurationBloc>();
-                                final musicPlayerDurationState =
-                                    musicPlayerDurationBloc.state;
-
-                                return GestureDetector(
-                                  onTap: () => musicPlayerDurationBloc.add(
-                                    MusicPlayerDurationSeekToEvent(
-                                      totalDuration:
-                                          musicPlayerDurationState
-                                              is MusicPlayerDurationAvailableState
-                                          ? musicPlayerDurationState
-                                                .totalDuration
-                                          : Duration.zero,
-                                      newDuration: Duration(
-                                        milliseconds: lyric.startMs,
+                        padding: EdgeInsets.only(
+                          top: MediaQuery.sizeOf(context).height * 0.10,
+                          left: 16,
+                          right: 16,
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Hero(
+                              tag: "playing-now-cover",
+                              child: SizedBox(
+                                height: 70,
+                                width: 70,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(4),
+                                  child: CachedNetworkImage(
+                                    imageUrl: getUpscaledTrackThumbnail(
+                                      state.playingNowTrack.thumbnail,
+                                    ),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 15),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width:
+                                        MediaQuery.sizeOf(context).width * 0.65,
+                                    child: TextScroll(
+                                      state.playingNowTrack.title,
+                                      mode: TextScrollMode.endless,
+                                      fadeBorderSide: FadeBorderSide.both,
+                                      velocity: const Velocity(
+                                        pixelsPerSecond: Offset(20, 0),
+                                      ),
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                   ),
-                                  child: AnimatedDefaultTextStyle(
-                                    duration: const Duration(milliseconds: 200),
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 28,
-                                      color: lyricTextColor,
+                                  SizedBox(
+                                    width:
+                                        MediaQuery.sizeOf(context).width * 0.65,
+                                    child: TextScroll(
+                                      formatList(
+                                        state.playingNowTrack.artists.map(
+                                          (artist) => artist.title,
+                                        ),
+                                      ),
+                                      mode: TextScrollMode.bouncing,
+                                      fadeBorderSide: FadeBorderSide.both,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
-                                    child: Text(lyric.text),
                                   ),
-                                );
-                              },
+                                ],
+                              ),
                             ),
+                          ],
+                        ),
                       ),
-                    );
-                  },
+                    ),
+                  ],
                 ),
-              );
-            },
-          ),
-          const SizedBox(height: 10),
-          const MusicPlayerPlayOptions(),
-          const SizedBox(height: 100),
-        ],
+              ),
+              BlocBuilder<MusicPlayerDurationBloc, MusicPlayerDurationState>(
+                builder: (context, state) {
+                  if (state is! MusicPlayerDurationAvailableState) {
+                    return const SizedBox.shrink();
+                  }
+
+                  return MusicPlayerProgressBar(
+                    duration: state.totalDuration,
+                    position: state.currentDuration,
+                    onSeek: (value) =>
+                        context.read<MusicPlayerDurationBloc>().add(
+                          MusicPlayerDurationSeekToEvent(
+                            newDuration: value,
+                            totalDuration: state.totalDuration,
+                          ),
+                        ),
+                  );
+                },
+              ),
+              Transform.translate(
+                offset: const Offset(0, -30),
+                child: const BlurInAnimation(child: HifiBadge()),
+              ),
+              const MusicPlayerControls(),
+              const SizedBox(height: 100),
+            ],
+          );
+        },
       ),
     );
   }

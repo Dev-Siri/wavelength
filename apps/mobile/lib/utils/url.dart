@@ -1,7 +1,5 @@
-import "package:wavelength/constants.dart";
-
-String getTrackThumbnail(String videoId) {
-  return "$ytImgApiUrl/vi/$videoId/maxresdefault.jpg";
+String getUpscaledTrackThumbnail(String thumbnail) {
+  return thumbnail
+      .replaceFirst("h120-", "h1024-")
+      .replaceFirst("w120-", "w1024-");
 }
-
-enum StreamPlaybackType { audio, video }

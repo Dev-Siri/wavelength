@@ -21,11 +21,10 @@ import "package:wavelength/bloc/location/location_bloc.dart";
 import "package:wavelength/bloc/location/location_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_state.dart";
-import "package:wavelength/widgets/music_player_preview.dart";
-import "package:wavelength/widgets/playlist_creation_bottom_sheet.dart";
-import "package:wavelength/widgets/app_shell_bar.dart";
-import "package:wavelength/widgets/update_version_dialog.dart";
-import "package:wavelength/widgets/user_info_drawer.dart";
+import "package:wavelength/widgets/music_player_preview/music_player_preview.dart";
+import "package:wavelength/widgets/bottom_sheets/playlist_creation_bottom_sheet.dart";
+import "package:wavelength/widgets/app_bars/app_shell_bar.dart";
+import "package:wavelength/widgets/dialogs/update_version_dialog.dart";
 
 class AppShell extends StatefulWidget {
   final Widget child;
@@ -70,6 +69,19 @@ class _AppShellState extends State<AppShell> {
       tooltip: "Create",
     ),
   ];
+
+  String _getScreenTitle() {
+    switch (_activeRouteIndex) {
+      case 0:
+        return "Home";
+      case 1:
+        return "Search";
+      case 2:
+        return "Your Library";
+      default:
+        return "";
+    }
+  }
 
   void _onScreenChange(int value) {
     if (_activeRouteIndex == value) {
@@ -129,56 +141,54 @@ class _AppShellState extends State<AppShell> {
   Widget build(BuildContext context) {
     return BlocBuilder<MusicPlayerTrackBloc, MusicPlayerTrackState>(
       builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: SafeArea(
-            child: Scaffold(
-              resizeToAvoidBottomInset: false,
-              appBar: const AppShellBar(),
-              drawer: const UserInfoDrawer(),
-              body: BlocConsumer<AuthBloc, AuthState>(
-                listener: (context, state) {
-                  if (state is AuthStateAuthorized) {
-                    context.read<LibraryBloc>().add(
-                      LibraryFetchEvent(
-                        email: state.user.email,
-                        authToken: state.authToken,
-                      ),
-                    );
-                    context.read<LikeCountBloc>().add(
-                      LikeCountFetchEvent(authToken: state.authToken),
-                    );
-                  }
-                },
-                builder: (_, __) => widget.child,
-              ),
-              bottomNavigationBar: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  BlocBuilder<AppBottomSheetBloc, AppBottomSheetState>(
-                    builder: (context, state) {
-                      if (state is AppBottomSheetClosedState) {
-                        return const MusicPlayerPreview();
-                      }
-
-                      return const SizedBox.shrink();
-                    },
-                  ),
-                  Theme(
-                    data: Theme.of(
-                      context,
-                    ).copyWith(splashFactory: NoSplash.splashFactory),
-                    child: BottomNavigationBar(
-                      type: BottomNavigationBarType.fixed,
-                      selectedItemColor: Colors.white,
-                      unselectedItemColor: Colors.grey.shade600,
-                      currentIndex: _activeRouteIndex,
-                      onTap: _onScreenChange,
-                      items: _getBottomNavItems(),
+        return SafeArea(
+          bottom: false,
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            appBar: AppShellBar(title: _getScreenTitle()),
+            // drawer: const UserInfoDrawer(),
+            body: BlocConsumer<AuthBloc, AuthState>(
+              listener: (context, state) {
+                if (state is AuthStateAuthorized) {
+                  context.read<LibraryBloc>().add(
+                    LibraryFetchEvent(
+                      email: state.user.email,
+                      authToken: state.authToken,
                     ),
+                  );
+                  context.read<LikeCountBloc>().add(
+                    LikeCountFetchEvent(authToken: state.authToken),
+                  );
+                }
+              },
+              builder: (_, __) => widget.child,
+            ),
+            bottomNavigationBar: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                BlocBuilder<AppBottomSheetBloc, AppBottomSheetState>(
+                  builder: (context, state) {
+                    if (state is AppBottomSheetClosedState) {
+                      return const MusicPlayerPreview();
+                    }
+
+                    return const SizedBox.shrink();
+                  },
+                ),
+                Theme(
+                  data: Theme.of(
+                    context,
+                  ).copyWith(splashFactory: NoSplash.splashFactory),
+                  child: BottomNavigationBar(
+                    type: BottomNavigationBarType.fixed,
+                    selectedItemColor: Colors.white,
+                    unselectedItemColor: Colors.grey.shade600,
+                    currentIndex: _activeRouteIndex,
+                    onTap: _onScreenChange,
+                    items: _getBottomNavItems(),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );

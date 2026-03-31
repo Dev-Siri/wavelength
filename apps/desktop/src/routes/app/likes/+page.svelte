@@ -1,32 +1,33 @@
 <script lang="ts">
   import { ClockIcon, HeartIcon, HeartPlusIcon } from "@lucide/svelte";
-  import { createQuery } from "@tanstack/svelte-query";
   import { fly } from "svelte/transition";
 
-  import { svelteQueryKeys } from "$lib/constants/keys.js";
+  import type { MusicPlaylistContextSource } from "$lib/stream-player/MusicQueue.svelte";
+
+  import useLikesQuery from "$lib/queries/likes";
+  import useLikesPlaylengthQuery from "$lib/queries/likesPlaylength";
   import userStore from "$lib/stores/user.svelte.js";
-  import { backendClient } from "$lib/utils/query-client.js";
-  import { likedTracksSchema } from "$lib/utils/validation/liked-track";
-  import { likedTracksLengthSchema } from "$lib/utils/validation/track-length";
 
   import Image from "$lib/components/Image.svelte";
-  import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
   import PlaylistLength from "$lib/components/playlist/PlaylistLength.svelte";
   import PlaylistPlayOptions from "$lib/components/playlist/PlaylistPlayOptions.svelte";
   import TrackItem from "$lib/components/track/Track.svelte";
   import { Button } from "$lib/components/ui/button";
+  import Spinner from "$lib/components/ui/spinner/spinner.svelte";
 
-  const likedTracksQuery = createQuery(() => ({
-    queryKey: svelteQueryKeys.likes,
-    networkMode: "offlineFirst",
-    queryFn: () => backendClient("/music/track/likes", likedTracksSchema),
-  }));
+  const likedTracksQuery = useLikesQuery();
+  const likesPlaylengthQuery = useLikesPlaylengthQuery();
 
-  const likesPlaylengthQuery = createQuery(() => ({
-    queryKey: svelteQueryKeys.likesLength,
-    networkMode: "offlineFirst",
-    queryFn: () => backendClient("/music/track/likes/length", likedTracksLengthSchema),
-  }));
+  const context = $derived({
+    sourceName: "Liked Songs",
+    type: "likes",
+    email: userStore.user?.email ?? "",
+  } satisfies MusicPlaylistContextSource);
+
+  const likedTracks = $derived.by(() => {
+    if (!likedTracksQuery.data?.likedTracks) return [];
+    return likedTracksQuery.data.likedTracks;
+  });
 </script>
 
 <svelte:head>
@@ -37,23 +38,23 @@
 
 {#if userStore.user}
   <div
-    class="flex flex-col h-full w-full bg-black rounded-2xl overflow-y-auto"
+    class="flex flex-col h-full w-full bg-secondary/30 rounded-2xl overflow-y-auto"
     in:fly={{ y: 20, duration: 250 }}
     out:fly={{ y: 20, duration: 100 }}
   >
-    <div class="w-full p-4 pb-2 bg-black h-full mt-4 sm:mt-6 lg:mt-1 rounded-2xl">
+    <div class="w-full p-4 pb-2 h-full mt-4 sm:mt-6 lg:mt-1 rounded-2xl">
       <div class="flex gap-4">
         {#if userStore.user.pictureUrl}
           {#key userStore.user.pictureUrl}
-            <div class="grid place-items-center h-56 w-56 rounded-2xl like-gradient">
+            <div class="grid place-items-center h-56 w-56 rounded-sm like-gradient">
               <HeartIcon fill="white" size={50} />
             </div>
           {/key}
         {:else}
           <div class="h-48 w-48 rounded-2xl aspect-square bg-muted"></div>
         {/if}
-        <div class="flex flex-col justify-center w-3/5 h-56 gap-2">
-          <h1 class="text-6xl lg:text-7xl font-black">Liked Songs</h1>
+        <div class="flex flex-col justify-center w-3/5 h-60 gap-2">
+          <h1 class="text-6xl lg:text-7xl font-semibold">Liked Songs</h1>
           <div class="flex gap-2 items-center">
             {#if userStore.user.pictureUrl}
               {#key userStore.user.pictureUrl}
@@ -77,19 +78,18 @@
               {/key}
             </p>
           </div>
+          <div class="mt-4">
+            <PlaylistPlayOptions {context} tracks={likedTracks} />
+          </div>
         </div>
       </div>
-      <div class="h-full bg-black">
+      <div class="h-full">
         {#if likedTracksQuery.isLoading}
           <div class="w-full flex items-center justify-center py-20">
-            <LoadingSpinner />
+            <Spinner class="size-28" />
           </div>
         {:else if likedTracksQuery.isSuccess}
-          {@const { likedTracks } = likedTracksQuery.data}
           {#if likedTracks.length}
-            <div class="my-4">
-              <PlaylistPlayOptions tracks={likedTracks} />
-            </div>
             <header class="flex items-center select-none text-muted-foreground">
               <section class="flex pl-16 items-center gap-10 w-1/3">
                 <p class="text-sm">Title</p>
@@ -104,8 +104,8 @@
             <div class="bg-secondary h-[1px] w-full my-2.5 rounded-full"></div>
             <div class="mt-2 overflow-x-hidden pb-[80%] md:pb-[40%] lg:pb-[20%]">
               {#key likedTracks}
-                {#each likedTracks as likedTrack}
-                  <TrackItem music={likedTrack} toggle={{ type: "add" }} />
+                {#each likedTracks as likedTrack (likedTrack.videoId)}
+                  <TrackItem isPreLiked music={likedTrack} toggle={{ type: "add" }} {context} />
                 {/each}
               {/key}
             </div>

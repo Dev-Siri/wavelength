@@ -4,7 +4,8 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/enums/video_type.dart";
 import "package:wavelength/api/models/quick_picks_item.dart";
-import "package:wavelength/api/models/representations/queueable_music.dart";
+import "package:wavelength/audio/music_context_queue.dart";
+import "package:wavelength/audio/queueable_music.dart";
 import "package:wavelength/api/repositories/track_repo.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
@@ -24,15 +25,21 @@ class QuickPickSongCard extends StatelessWidget {
     if (response is ApiResponseSuccess<int>) {
       musicTrackBloc.add(
         MusicPlayerTrackLoadEvent(
-          queueableMusic: QueueableMusic(
-            videoId: quickPicksItem.videoId,
-            title: quickPicksItem.title,
-            thumbnail: quickPicksItem.thumbnail,
-            artists: quickPicksItem.artists,
-            isExplicit: false,
-            album: quickPicksItem.album,
-            videoType: VideoType.track,
-          ),
+          context: MusicContextTypeNone(),
+          sourceLabel: null,
+          trackId: quickPicksItem.videoId,
+          tracks: [
+            QueueableMusic(
+              videoId: quickPicksItem.videoId,
+              title: quickPicksItem.title,
+              thumbnail: quickPicksItem.thumbnail,
+              duration: 0,
+              artists: quickPicksItem.artists,
+              isExplicit: false,
+              album: quickPicksItem.album,
+              videoType: VideoType.track,
+            ),
+          ],
         ),
       );
     }

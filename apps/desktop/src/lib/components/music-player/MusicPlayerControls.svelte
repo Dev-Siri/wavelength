@@ -10,173 +10,102 @@
   } from "@lucide/svelte";
   import { scale } from "svelte/transition";
 
-  import musicPlayerStore from "$lib/stores/music-player.svelte";
-  import musicQueueStore from "$lib/stores/music-queue.svelte";
-  import { shuffle } from "$lib/utils/shuffle";
+  import { musicPlayer } from "$lib/stream-player/musicPlayer";
 
-  import { Button } from "../ui/button";
+  import { buttonVariants } from "../ui/button";
   import * as Tooltip from "../ui/tooltip";
-  import ProgressBar from "./MusicPlayerProgressBar.svelte";
-
-  function changeMusicRepeatMode() {
-    if (musicPlayerStore.repeatMode === "none") {
-      musicPlayerStore.repeatMode = "all";
-    } else if (musicPlayerStore.repeatMode === "all") {
-      musicPlayerStore.repeatMode = "one";
-    } else {
-      musicPlayerStore.repeatMode = "none";
-    }
-  }
-
-  function playNextSong() {
-    if (!musicQueueStore.musicPlayingNow) return;
-
-    const songThatWasPlayedIndex = musicQueueStore.musicPlaylistContext.findIndex(
-      track => musicQueueStore.musicPlayingNow?.title === track.title,
-    );
-
-    let nextIndex = 0;
-
-    if (musicQueueStore.musicPlaylistContext.length - 1 === songThatWasPlayedIndex) {
-      if (musicPlayerStore.repeatMode === "all") {
-        nextIndex = 0;
-        musicQueueStore.musicPlaylistContext = shuffle(musicQueueStore.musicPlaylistContext);
-      } else return;
-    } else {
-      nextIndex = songThatWasPlayedIndex + 1;
-    }
-
-    musicQueueStore.musicPlayingNow = musicQueueStore.musicPlaylistContext[nextIndex];
-    musicPlayerStore.playMusic();
-  }
-
-  function playPreviousSong() {
-    if (!musicQueueStore.musicPlayingNow) return;
-
-    const songThatWasPlayedIndex = musicQueueStore.musicPlaylistContext.findIndex(
-      track => musicQueueStore.musicPlayingNow?.title === track.title,
-    );
-
-    let prevIndex = 0;
-
-    if (songThatWasPlayedIndex === 0) {
-      if (musicPlayerStore.repeatMode === "all")
-        prevIndex = musicQueueStore.musicPlaylistContext.length - 1;
-      else return;
-    } else {
-      prevIndex = songThatWasPlayedIndex - 1;
-    }
-
-    musicQueueStore.musicPlayingNow = musicQueueStore.musicPlaylistContext[prevIndex];
-    musicPlayerStore.playMusic();
-  }
-
-  function changeShuffleMode() {
-    musicPlayerStore.isShuffleModeOn = !musicPlayerStore.isShuffleModeOn;
-    if (musicPlayerStore.isShuffleModeOn) {
-      musicQueueStore.musicPlaylistContextPreshuffle = musicQueueStore.musicPlaylistContext;
-      musicQueueStore.musicPlaylistContext = shuffle(musicQueueStore.musicPlaylistContext);
-    } else {
-      musicQueueStore.musicPlaylistContext = musicQueueStore.musicPlaylistContextPreshuffle;
-      musicQueueStore.musicPlaylistContextPreshuffle = [];
-    }
-  }
+  import MusicPlayerProgressBar from "./MusicPlayerProgressBar.svelte";
 </script>
 
-<div class="flex w-full gap-3 items-center justify-center mt-4">
+<div class="flex w-full gap-3 items-center justify-center">
   <Tooltip.Root>
-    <Tooltip.Trigger>
-      <Button class="rounded-full h-10 w-10 p-2" variant="ghost" onclick={changeShuffleMode}>
-        {#key musicPlayerStore.isShuffleModeOn}
-          <div in:scale>
-            <ShuffleIcon
-              fill="white"
-              font-weight="normal"
-              size={22}
-              opacity={musicPlayerStore.isShuffleModeOn ? 1 : 0.4}
-            />
-          </div>
-        {/key}
-      </Button>
+    <Tooltip.Trigger
+      class={buttonVariants({ variant: "ghost", size: "icon", class: "rounded-full" })}
+      onclick={() =>
+        musicPlayer.queue.shuffleEnabled
+          ? musicPlayer.queue.disableShuffle()
+          : musicPlayer.queue.enableShuffle()}
+    >
+      {#key musicPlayer.queue.shuffleEnabled}
+        <div in:scale>
+          <ShuffleIcon
+            fill="white"
+            font-weight="normal"
+            size={22}
+            opacity={musicPlayer.queue.shuffleEnabled ? 1 : 0.4}
+          />
+        </div>
+      {/key}
     </Tooltip.Trigger>
     <Tooltip.Content class="z-99999">
       <p>
-        {musicPlayerStore.isShuffleModeOn ? "Disable" : "Enable"} shuffle
+        {musicPlayer.queue.shuffleEnabled ? "Disable" : "Enable"} Shuffle
       </p>
     </Tooltip.Content>
   </Tooltip.Root>
   <Tooltip.Root>
-    <Tooltip.Trigger>
-      <Button
-        class="rounded-full h-10 w-10 p-2"
-        disabled={!musicQueueStore.musicPlayingNow}
-        variant="ghost"
-        onclick={playPreviousSong}
-      >
-        <SkipBackIcon fill="white" font-weight="normal" size={24} />
-      </Button>
+    <Tooltip.Trigger
+      class={buttonVariants({ variant: "ghost", size: "icon", class: "rounded-full" })}
+      disabled={!musicPlayer.queue.playingNow}
+      onclick={() => musicPlayer.previous()}
+    >
+      <SkipBackIcon fill="white" font-weight="normal" size={24} />
     </Tooltip.Trigger>
     <Tooltip.Content class="z-99999">
       <p>Previous</p>
     </Tooltip.Content>
   </Tooltip.Root>
   <Tooltip.Root>
-    <Tooltip.Trigger>
-      <Button
-        class="rounded-full h-10 w-10 p-1"
-        disabled={!musicQueueStore.musicPlayingNow}
-        onclick={musicPlayerStore.isPlaying
-          ? musicPlayerStore.pauseMusic
-          : musicPlayerStore.playMusic}
-      >
-        {#if musicPlayerStore.isPlaying}
-          <PauseIcon fill="black" size={20} />
-        {:else}
-          <PlayIcon fill="black" size={20} />
-        {/if}
-      </Button>
+    <Tooltip.Trigger
+      class={buttonVariants({ size: "icon", class: "rounded-full" })}
+      disabled={!musicPlayer.queue.playingNow}
+      onclick={() => (musicPlayer.isPlaying ? musicPlayer.pause() : musicPlayer.play())}
+    >
+      {#if musicPlayer.isPlaying}
+        <PauseIcon color="transparent" fill="black" class="rounded-full" size={28} />
+      {:else}
+        <PlayIcon color="transparent" fill="black" class="rounded-full" size={28} />
+      {/if}
     </Tooltip.Trigger>
     <Tooltip.Content class="z-99999">
-      <p>{musicPlayerStore.isPlaying ? "Pause" : "Play"}</p>
+      <p>{musicPlayer.isPlaying ? "Pause" : "Play"}</p>
     </Tooltip.Content>
   </Tooltip.Root>
   <Tooltip.Root>
-    <Tooltip.Trigger>
-      <Button
-        class="rounded-full h-10 w-10 p-2"
-        disabled={!musicQueueStore.musicPlayingNow}
-        variant="ghost"
-        onclick={playNextSong}
-      >
-        <SkipForwardIcon fill="white" font-weight="normal" size={24} />
-      </Button>
+    <Tooltip.Trigger
+      class={buttonVariants({ size: "icon", variant: "ghost", class: "rounded-full" })}
+      disabled={!musicPlayer.queue.playingNow}
+      onclick={() => musicPlayer.next()}
+    >
+      <SkipForwardIcon fill="white" font-weight="normal" size={24} />
     </Tooltip.Trigger>
     <Tooltip.Content class="z-99999">
       <p>Next</p>
     </Tooltip.Content>
   </Tooltip.Root>
   <Tooltip.Root>
-    <Tooltip.Trigger>
-      <Button class="rounded-full h-10 w-10 p-2" variant="ghost" onclick={changeMusicRepeatMode}>
-        {#if musicPlayerStore.repeatMode === "none"}
-          <div in:scale>
-            <RepeatIcon opacity={0.4} font-weight="normal" size={22} />
-          </div>
-        {:else if musicPlayerStore.repeatMode === "all"}
-          <div in:scale>
-            <RepeatIcon fill="white" font-weight="normal" size={22} />
-          </div>
-        {:else}
-          <div in:scale>
-            <Repeat1Icon fill="white" font-weight="normal" size={22} />
-          </div>
-        {/if}
-      </Button>
+    <Tooltip.Trigger
+      class={buttonVariants({ variant: "ghost", size: "icon", class: "rounded-full" })}
+      onclick={() => musicPlayer.queue.cycleRepeatMode()}
+    >
+      {#if musicPlayer.queue.repeatMode === "none"}
+        <div in:scale>
+          <RepeatIcon opacity={0.4} font-weight="normal" size={22} />
+        </div>
+      {:else if musicPlayer.queue.repeatMode === "all"}
+        <div in:scale>
+          <RepeatIcon fill="white" font-weight="normal" size={22} />
+        </div>
+      {:else}
+        <div in:scale>
+          <Repeat1Icon fill="white" font-weight="normal" size={22} />
+        </div>
+      {/if}
     </Tooltip.Trigger>
     <Tooltip.Content class="z-99999">
-      {#if musicPlayerStore.repeatMode === "none"}
+      {#if musicPlayer.queue.repeatMode === "none"}
         <p>Enable Repeat All</p>
-      {:else if musicPlayerStore.repeatMode === "all"}
+      {:else if musicPlayer.queue.repeatMode === "all"}
         <p>Enable Repeat One</p>
       {:else}
         <p>Disable Repeat</p>
@@ -184,4 +113,4 @@
     </Tooltip.Content>
   </Tooltip.Root>
 </div>
-<ProgressBar />
+<MusicPlayerProgressBar />

@@ -1,13 +1,15 @@
 <script lang="ts">
-  import type { Artist } from "$lib/utils/validation/artist";
+  import { resolve } from "$app/paths";
+
+  import type { SearchArtist } from "$lib/schemas/artist";
 
   import Image from "../Image.svelte";
 
-  const { artist }: { artist: Artist } = $props();
+  const { artist }: { artist: SearchArtist } = $props();
 </script>
 
 <a
-  href="/app/artist/{artist.browseId}"
+  href={resolve(`/app/artist/${artist.browseId}`)}
   class="flex justify-center items-center h-fit p-4 hover:opacity-80 duration-200"
 >
   {#key artist.thumbnail}

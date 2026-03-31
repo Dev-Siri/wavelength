@@ -6,9 +6,9 @@
 
   import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";
   import userStore from "$lib/stores/user.svelte.js";
+  import cn from "$lib/utils/cn";
   import { backendClient } from "$lib/utils/query-client.js";
 
-  import cn from "$lib/utils/cn";
   import Library from "./Library.svelte";
   import { Button, buttonVariants } from "./ui/button";
 
@@ -36,7 +36,7 @@
   }));
 </script>
 
-<aside class="h-full overflow-y-auto bg-[#111]">
+<aside class="h-full overflow-y-hidden bg-[#111] scrollbar-hidden">
   <div class="flex flex-col h-full w-full px-3 mt-2 gap-2">
     {#if userStore.user}
       <div

@@ -1,5 +1,6 @@
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
+import "package:lucide_icons_flutter/lucide_icons.dart";
 
 class BrandCoverImage extends StatelessWidget {
   final Color? shadowColor;
@@ -12,11 +13,12 @@ class BrandCoverImage extends StatelessWidget {
     if (imageUrl == null) {
       return Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(4),
           color: Colors.grey.shade900,
         ),
         height: 300,
         width: 300,
+        child: const Icon(LucideIcons.music, size: 75),
       );
     }
 
@@ -31,7 +33,7 @@ class BrandCoverImage extends StatelessWidget {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(4),
         child: CachedNetworkImage(imageUrl: imageUrl ?? "", fit: BoxFit.fill),
       ),
     );

@@ -1,7 +1,8 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import { resolve } from "$app/paths";
 
-  import type { EmbeddedAlbum } from "$lib/utils/validation/albums";
+  import type { EmbeddedAlbum } from "$lib/schemas/embedded";
 
   import cn from "$lib/utils/cn";
 
@@ -9,7 +10,7 @@
 
   const { browseId, title, class: className }: EmbeddedAlbum & { class?: string } = $props();
 
-  const albumPath = `/app/album/${browseId}`;
+  const albumPath = $derived(`/app/album/${browseId}` as const);
 
   function handleNavigation(
     e:
@@ -19,15 +20,15 @@
     e.preventDefault();
     e.stopPropagation();
 
-    goto(albumPath);
+    goto(resolve(albumPath));
   }
 </script>
 
 <Button
   variant="link"
-  class={cn("p-0 m-0 h-4 -mt-2 mr-1 text-sm text-muted-foreground", className)}
+  class={cn("text-sm text-muted-foreground", className)}
   href={albumPath}
   onclick={handleNavigation}
 >
-  {title.length > 50 ? `${title.slice(0, 49).trim()}...` : title}
+  {title.length > 30 ? `${title.slice(0, 29).trim()}...` : title}
 </Button>

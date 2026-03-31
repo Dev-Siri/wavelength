@@ -16,8 +16,10 @@ service PlaylistService {
   rpc GetPlaylistTracks(GetPlaylistTracksRequest) returns (GetPlaylistTracksResponse);
   rpc GetUserPlaylists(GetUserPlaylistsRequest) returns (GetUserPlaylistsResponse);
   rpc GetPlaylistById(GetPlaylistByIdRequest) returns (GetPlaylistByIdResponse);
+  rpc GetSongRecommendations(GetSongRecommendationsRequest) returns (GetSongRecommendationsResponse);
   rpc EditPlaylist(EditPlaylistRequest) returns (google.protobuf.Empty); 
   rpc CreatePlaylist(CreatePlaylistRequest) returns (google.protobuf.Empty);
+  rpc GetPlaylistTracksLikedStatus(GetPlaylistTracksLikedStatusRequest) returns (GetPlaylistTracksLikedStatusResponse);
 }
 
 // Request/Response messages
@@ -79,10 +81,12 @@ message RearrangePlaylistTracksRequest {
 
 message GetPlaylistTracksRequest {
   string playlist_id = 1;
+  optional string query = 2;
 }
 
 message GetPlaylistTracksResponse {
-  repeated common.PlaylistTrack playlist_tracks = 1;
+  common.PaginationParams pagination = 1;
+  repeated common.PlaylistTrack playlist_tracks = 2;
 }
 
 message DeletePlaylistRequest {
@@ -109,4 +113,23 @@ message GetPublicPlaylistsRequest {
 
 message GetPublicPlaylistsResponse {
   repeated common.Playlist playlists = 1;
+}
+
+message GetSongRecommendationsRequest {
+  string playlist_id = 1;
+  optional string continuation_token = 2;
+}
+
+message GetSongRecommendationsResponse {
+  string continuation_token = 1;
+  repeated common.Track tracks = 2;
+}
+
+message GetPlaylistTracksLikedStatusRequest {
+  string playlist_id = 1;
+  string liker_email = 2;
+}
+
+message GetPlaylistTracksLikedStatusResponse {
+  map<string, bool> liked_tracks = 1;
 }

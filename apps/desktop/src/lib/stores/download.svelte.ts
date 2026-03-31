@@ -1,22 +1,33 @@
-import type { MusicTrack } from "$lib/utils/validation/music-track";
+import type { MusicTrack } from "$lib/schemas/music-track";
+
+interface DownloadTrack {
+  downloadId: string;
+  track: MusicTrack;
+}
 
 class DownloadStore {
-  currentDownload = $state<MusicTrack | null>(null);
-  activeDownloads = $state<MusicTrack[]>([]);
+  currentDownload = $state<DownloadTrack | null>(null);
+  activeDownloads = $state<DownloadTrack[]>([]);
 
   addToQueue = (...downloadTrack: MusicTrack[]) => {
     const hasExisting = this.activeDownloads.some(active =>
-      downloadTrack.some(track => track.videoId === active.videoId),
+      downloadTrack.some(track => track.videoId === active.track.videoId),
     );
 
     if (hasExisting) return;
 
-    this.activeDownloads = [...this.activeDownloads, ...downloadTrack];
+    this.activeDownloads = [
+      ...this.activeDownloads,
+      ...downloadTrack.map(track => ({
+        downloadId: crypto.randomUUID(),
+        track,
+      })),
+    ];
 
     this.nextDownload();
   };
 
-  popQueue = (): MusicTrack | null => {
+  popQueue = (): DownloadTrack | null => {
     const poppedTrack = this.activeDownloads[0];
     this.activeDownloads = this.activeDownloads.slice(1);
     return poppedTrack;

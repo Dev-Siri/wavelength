@@ -2,9 +2,9 @@ package playlist_controllers
 
 import (
 	"github.com/Dev-Siri/wavelength/server/proto/playlistpb"
-	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
 	"github.com/Dev-Siri/wavelength/server/shared/clients"
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
+	shared_models "github.com/Dev-Siri/wavelength/server/shared/models"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -12,7 +12,6 @@ import (
 
 func GetUserPlaylists(ctx *fiber.Ctx) error {
 	email := ctx.Params("email")
-
 	if email == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "Email is required.")
 	}
@@ -25,5 +24,5 @@ func GetUserPlaylists(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Playlists fetch failed.")
 	}
 
-	return models.Success(ctx, playlistsResponse)
+	return shared_models.Success(ctx, playlistsResponse)
 }

@@ -1,16 +1,25 @@
 <script lang="ts">
-  import { EllipsisIcon, GlobeIcon, PencilIcon, PlayIcon, Trash2Icon } from "@lucide/svelte";
-  import { createMutation, createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { resolve } from "$app/paths";
+  import {
+    EllipsisIcon,
+    GlobeIcon,
+    MusicIcon,
+    PencilIcon,
+    PlayIcon,
+    Trash2Icon,
+  } from "@lucide/svelte";
+  import { createMutation, useQueryClient } from "@tanstack/svelte-query";
   import { toast } from "svelte-sonner";
   import { z } from "zod";
 
-  import type { Playlist } from "$lib/utils/validation/playlists";
+  import type { Playlist } from "$lib/schemas/playlist";
 
   import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";
-  import musicPlayerStore from "$lib/stores/music-player.svelte";
-  import musicQueueStore from "$lib/stores/music-queue.svelte";
-  import { backendClient } from "$lib/utils/query-client";
-  import { playlistTracksSchema } from "$lib/utils/validation/playlist-track";
+  import usePlaylistTracksQuery from "$lib/queries/playlistTracks";
+  import musicInterfaceStore from "$lib/stores/musicInterface.svelte";
+  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { backendClient, reportErrorToBackend } from "$lib/utils/query-client";
+  import { shuffleStartIndex } from "$lib/utils/shuffle";
 
   import EditPlaylistDetailsDialog from "../EditPlaylistDetailsDialog.svelte";
   import Image from "../Image.svelte";
@@ -34,11 +43,7 @@
   const { coverImage, name, playlistId, isPublic } = playlist;
   const queryClient = useQueryClient();
 
-  const playlistTracksQuery = createQuery(() => ({
-    queryKey: svelteQueryKeys.playlistTrack(playlistId ?? ""),
-    queryFn: () => backendClient(`/playlists/playlist/${playlistId}/tracks`, playlistTracksSchema),
-  }));
-
+  const playlistTracksQuery = $derived(usePlaylistTracksQuery(playlistId));
   const playlistDeleteMutation = createMutation(() => ({
     mutationKey: svelteMutationKeys.deletePlaylist(playlistId),
     mutationFn: () =>
@@ -53,10 +58,23 @@
   async function playPlaylist() {
     if (!playlistTracksQuery.data?.playlistTracks) return;
 
-    musicQueueStore.musicPlaylistContext = playlistTracksQuery.data.playlistTracks;
-    musicQueueStore.musicPlayingNow = playlistTracksQuery.data.playlistTracks[0];
-    musicPlayerStore.playMusic();
-    musicPlayerStore.visiblePanel = "playingNow";
+    try {
+      const starterTrack =
+        playlistTracksQuery.data.playlistTracks[
+          shuffleStartIndex(playlistTracksQuery.data.playlistTracks.length)
+        ];
+      await musicPlayer.load(starterTrack, {
+        type: "playlist",
+        playlistId: playlistId,
+        offlineTracks: playlistTracksQuery.data.playlistTracks,
+      });
+    } catch (error) {
+      toast.error(`Playback ${error}`);
+      await reportErrorToBackend({
+        error,
+        source: "PlaylistTile: playPlaylist()",
+      });
+    }
   }
 
   const coverBtnProps = $derived(
@@ -68,6 +86,7 @@
   role="button"
   tabindex={0}
   onkeydown={wrapperClick}
+  title={playlist.name}
   onclick={wrapperClick}
   class="flex group cursor-pointer items-center p-2.5 pr-3 hover:bg-[#1c1c1c] duration-200 my-0.5 rounded-xl w-full gap-2 {wrapperClasses} {mode ===
   'full'
@@ -85,8 +104,10 @@
       />
     {:else}
       <div
-        class="bg-primary-foreground rounded-md h-15 group-hover:opacity-50 duration-200 w-15"
-      ></div>
+        class="bg-primary-foreground grid place-items-center rounded-md h-15 group-hover:opacity-50 duration-200 w-15"
+      >
+        <MusicIcon class="text-gray-300" />
+      </div>
     {/if}
     {#if mode === "full"}
       <PlayIcon
@@ -99,11 +120,11 @@
   {#if mode === "full"}
     <a
       class="w-full"
-      href="/app/playlist/{playlistId}"
-      onclick={() => (musicPlayerStore.visiblePanel = null)}
+      href={resolve(`/app/playlist/${playlistId}`)}
+      onclick={() => (musicInterfaceStore.visiblePanel = null)}
     >
       <div class="text-start">
-        <p class="text-md">{name}</p>
+        <p class="text-md font-semibold">{name}</p>
         <div class="flex">
           {#if isPublic}
             <Tooltip.Root>
@@ -113,7 +134,13 @@
               <Tooltip.Content>Public</Tooltip.Content>
             </Tooltip.Root>
           {/if}
-          <p class="text-xs text-muted-foreground {isPublic ? 'ml-1' : ''}">Playlist</p>
+          <p
+            class="text-xs text-muted-foreground font-medium bg-secondary py-0.5 px-1 mt-0.5 {isPublic
+              ? 'ml-1'
+              : ''}"
+          >
+            Playlist
+          </p>
         </div>
       </div>
     </a>

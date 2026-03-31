@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TrackLength } from "$lib/utils/validation/track-length";
+  import type { TrackLength } from "$lib/schemas/track-length";
 
   const { playlistTrackLength }: { playlistTrackLength: TrackLength } = $props();
 

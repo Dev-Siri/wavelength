@@ -5,16 +5,22 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Dev-Siri/wavelength/server/services/gateway/constants"
 	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
+	shared_models "github.com/Dev-Siri/wavelength/server/shared/models"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 )
 
+const (
+	githubRepoOwner = "Dev-Siri"
+	githubRepoName  = "wavelength"
+	githubApiUrl    = "https://api.github.com"
+)
+
 func GetVersionStatus(ctx *fiber.Ctx) error {
-	githubTagUrl := fmt.Sprintf("%s/repos/%s/%s/releases/latest", constants.GithubApiUrl, constants.GithubRepoOwner, constants.GithubRepoName)
+	githubTagUrl := fmt.Sprintf("%s/repos/%s/%s/releases/latest", githubApiUrl, githubRepoOwner, githubRepoName)
 	response, err := http.DefaultClient.Get(githubTagUrl)
 
 	if err != nil {
@@ -34,7 +40,7 @@ func GetVersionStatus(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to get version status from GitHub.")
 	}
 
-	return models.Success(ctx, models.VersionStatus{
+	return shared_models.Success(ctx, models.VersionStatus{
 		LatestVersion: requiredResponse.TagName[1:],
 	})
 }

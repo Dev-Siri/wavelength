@@ -22,13 +22,14 @@ class AlbumTrackAdapter extends TypeAdapter<AlbumTrack> {
       duration: fields[2] as int,
       positionInAlbum: fields[3] as int,
       isExplicit: fields[4] as bool,
+      artists: (fields[5] as List).cast<EmbeddedArtist>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, AlbumTrack obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.videoId)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class AlbumTrackAdapter extends TypeAdapter<AlbumTrack> {
       ..writeByte(3)
       ..write(obj.positionInAlbum)
       ..writeByte(4)
-      ..write(obj.isExplicit);
+      ..write(obj.isExplicit)
+      ..writeByte(5)
+      ..write(obj.artists);
   }
 
   @override

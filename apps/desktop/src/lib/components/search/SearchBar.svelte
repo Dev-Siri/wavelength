@@ -1,9 +1,10 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import { resolve } from "$app/paths";
   import { page } from "$app/state";
   import { SearchIcon } from "@lucide/svelte";
 
-  import musicPlayerStore from "$lib/stores/music-player.svelte.js";
+  import musicInterfaceStore from "$lib/stores/musicInterface.svelte.js";
 
   import SearchSuggestions from "./SearchSuggestions.svelte";
 
@@ -46,27 +47,15 @@
     e.preventDefault();
 
     const searchType = page.url.searchParams.get("type") ?? "tracks";
-    goto(`/app/search?q=${encodeURIComponent(q)}&type=${encodeURIComponent(searchType)}`);
+    goto(
+      resolve(
+        `/app/search?q=${encodeURIComponent(q)}&type=${encodeURIComponent(searchType)}` as `/app/search`,
+      ),
+    );
   }
 </script>
 
-<div class="relative w-full">
-  {#if (isInputFocused || isHoveringOverSuggestions || isSuggestionsFocused) && !musicPlayerStore.visiblePanel}
-    <div
-      class="absolute inset-0 top-full w-full z-9999"
-      role="list"
-      onmouseenter={() => (isHoveringOverSuggestions = true)}
-      onmouseleave={() => (isHoveringOverSuggestions = false)}
-    >
-      <SearchSuggestions
-        {q}
-        {isInputFocused}
-        {searchInput}
-        onFocus={focusSuggestions}
-        onBlur={unfocusSuggestions}
-      />
-    </div>
-  {/if}
+<div class="w-full">
   <form
     action="/app/search"
     method="GET"
@@ -88,6 +77,22 @@
       onblur={() => (isInputFocused = false)}
     />
   </form>
+  {#if (isInputFocused || isHoveringOverSuggestions || isSuggestionsFocused) && !musicInterfaceStore.visiblePanel}
+    <div
+      class="absolute top-full left-0 flex justify-center w-full z-50"
+      role="list"
+      onmouseenter={() => (isHoveringOverSuggestions = true)}
+      onmouseleave={() => (isHoveringOverSuggestions = false)}
+    >
+      <SearchSuggestions
+        {q}
+        {isInputFocused}
+        {searchInput}
+        onFocus={focusSuggestions}
+        onBlur={unfocusSuggestions}
+      />
+    </div>
+  {/if}
 </div>
 
 <style lang="postcss">

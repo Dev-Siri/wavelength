@@ -3,8 +3,8 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:wavelength/bloc/public_playlists/public_playlists_bloc.dart";
 import "package:wavelength/bloc/public_playlists/public_playlists_event.dart";
 import "package:wavelength/bloc/public_playlists/public_playlists_state.dart";
-import "package:wavelength/widgets/error_message_dialog.dart";
-import "package:wavelength/widgets/playlist_tile.dart";
+import "package:wavelength/widgets/dialogs/error_message_dialog.dart";
+import "package:wavelength/widgets/playlist/playlist_tile.dart";
 import "package:wavelength/widgets/skeletons/playlist_tile_skeleton.dart";
 
 class PlaylistsSearchPresenter extends StatefulWidget {

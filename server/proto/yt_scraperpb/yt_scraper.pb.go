@@ -735,6 +735,198 @@ func (x *SearchYouTubeVideosResponse) GetVideos() []*commonpb.YouTubeVideo {
 	return nil
 }
 
+type GetUpNextRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Automix       bool                   `protobuf:"varint,1,opt,name=automix,proto3" json:"automix,omitempty"`
+	VideoId       string                 `protobuf:"bytes,2,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUpNextRequest) Reset() {
+	*x = GetUpNextRequest{}
+	mi := &file_proto_yt_scraper_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUpNextRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUpNextRequest) ProtoMessage() {}
+
+func (x *GetUpNextRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_yt_scraper_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUpNextRequest.ProtoReflect.Descriptor instead.
+func (*GetUpNextRequest) Descriptor() ([]byte, []int) {
+	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *GetUpNextRequest) GetAutomix() bool {
+	if x != nil {
+		return x.Automix
+	}
+	return false
+}
+
+func (x *GetUpNextRequest) GetVideoId() string {
+	if x != nil {
+		return x.VideoId
+	}
+	return ""
+}
+
+type GetUpNextResponse struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	ContinuationToken string                 `protobuf:"bytes,1,opt,name=continuation_token,json=continuationToken,proto3" json:"continuation_token,omitempty"`
+	Tracks            []*commonpb.Track      `protobuf:"bytes,2,rep,name=tracks,proto3" json:"tracks,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *GetUpNextResponse) Reset() {
+	*x = GetUpNextResponse{}
+	mi := &file_proto_yt_scraper_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUpNextResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUpNextResponse) ProtoMessage() {}
+
+func (x *GetUpNextResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_yt_scraper_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUpNextResponse.ProtoReflect.Descriptor instead.
+func (*GetUpNextResponse) Descriptor() ([]byte, []int) {
+	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *GetUpNextResponse) GetContinuationToken() string {
+	if x != nil {
+		return x.ContinuationToken
+	}
+	return ""
+}
+
+func (x *GetUpNextResponse) GetTracks() []*commonpb.Track {
+	if x != nil {
+		return x.Tracks
+	}
+	return nil
+}
+
+type GetTrackInfoRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VideoId       string                 `protobuf:"bytes,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTrackInfoRequest) Reset() {
+	*x = GetTrackInfoRequest{}
+	mi := &file_proto_yt_scraper_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTrackInfoRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTrackInfoRequest) ProtoMessage() {}
+
+func (x *GetTrackInfoRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_yt_scraper_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTrackInfoRequest.ProtoReflect.Descriptor instead.
+func (*GetTrackInfoRequest) Descriptor() ([]byte, []int) {
+	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *GetTrackInfoRequest) GetVideoId() string {
+	if x != nil {
+		return x.VideoId
+	}
+	return ""
+}
+
+type GetTrackInfoResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Track         *commonpb.Track        `protobuf:"bytes,1,opt,name=track,proto3" json:"track,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTrackInfoResponse) Reset() {
+	*x = GetTrackInfoResponse{}
+	mi := &file_proto_yt_scraper_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTrackInfoResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTrackInfoResponse) ProtoMessage() {}
+
+func (x *GetTrackInfoResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_yt_scraper_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTrackInfoResponse.ProtoReflect.Descriptor instead.
+func (*GetTrackInfoResponse) Descriptor() ([]byte, []int) {
+	return file_proto_yt_scraper_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *GetTrackInfoResponse) GetTrack() *commonpb.Track {
+	if x != nil {
+		return x.Track
+	}
+	return nil
+}
+
 var File_proto_yt_scraper_proto protoreflect.FileDescriptor
 
 const file_proto_yt_scraper_proto_rawDesc = "" +
@@ -774,16 +966,28 @@ const file_proto_yt_scraper_proto_rawDesc = "" +
 	"\x1aSearchYouTubeVideosRequest\x12\x14\n" +
 	"\x05query\x18\x01 \x01(\tR\x05query\"K\n" +
 	"\x1bSearchYouTubeVideosResponse\x12,\n" +
-	"\x06videos\x18\x01 \x03(\v2\x14.common.YouTubeVideoR\x06videos2\xeb\x05\n" +
+	"\x06videos\x18\x01 \x03(\v2\x14.common.YouTubeVideoR\x06videos\"G\n" +
+	"\x10GetUpNextRequest\x12\x18\n" +
+	"\aautomix\x18\x01 \x01(\bR\aautomix\x12\x19\n" +
+	"\bvideo_id\x18\x02 \x01(\tR\avideoId\"i\n" +
+	"\x11GetUpNextResponse\x12-\n" +
+	"\x12continuation_token\x18\x01 \x01(\tR\x11continuationToken\x12%\n" +
+	"\x06tracks\x18\x02 \x03(\v2\r.common.TrackR\x06tracks\"0\n" +
+	"\x13GetTrackInfoRequest\x12\x19\n" +
+	"\bvideo_id\x18\x01 \x01(\tR\avideoId\";\n" +
+	"\x14GetTrackInfoResponse\x12#\n" +
+	"\x05track\x18\x01 \x01(\v2\r.common.TrackR\x05track2\x88\a\n" +
 	"\tYTScraper\x12i\n" +
 	"\x14GetSearchSuggestions\x12'.yt_scraper.GetSearchSuggestionsRequest\x1a(.yt_scraper.GetSearchSuggestionsResponse\x12T\n" +
 	"\rGetQuickPicks\x12 .yt_scraper.GetQuickPicksRequest\x1a!.yt_scraper.GetQuickPicksResponse\x12Z\n" +
 	"\x0fGetAlbumDetails\x12\".yt_scraper.GetAlbumDetailsRequest\x1a#.yt_scraper.GetAlbumDetailsResponse\x12]\n" +
-	"\x10GetArtistDetails\x12#.yt_scraper.GetArtistDetailsRequest\x1a$.yt_scraper.GetArtistDetailsResponse\x12Q\n" +
+	"\x10GetArtistDetails\x12#.yt_scraper.GetArtistDetailsRequest\x1a$.yt_scraper.GetArtistDetailsResponse\x12H\n" +
+	"\tGetUpNext\x12\x1c.yt_scraper.GetUpNextRequest\x1a\x1d.yt_scraper.GetUpNextResponse\x12Q\n" +
 	"\fSearchTracks\x12\x1f.yt_scraper.SearchTracksRequest\x1a .yt_scraper.SearchTracksResponse\x12T\n" +
 	"\rSearchArtists\x12 .yt_scraper.SearchArtistsRequest\x1a!.yt_scraper.SearchArtistsResponse\x12Q\n" +
 	"\fSearchAlbums\x12\x1f.yt_scraper.SearchAlbumsRequest\x1a .yt_scraper.SearchAlbumsResponse\x12f\n" +
-	"\x13SearchYouTubeVideos\x12&.yt_scraper.SearchYouTubeVideosRequest\x1a'.yt_scraper.SearchYouTubeVideosResponseBEZCgithub.com/Dev-Siri/wavelength/server/proto/yt_scraper;yt_scraperpbb\x06proto3"
+	"\x13SearchYouTubeVideos\x12&.yt_scraper.SearchYouTubeVideosRequest\x1a'.yt_scraper.SearchYouTubeVideosResponse\x12Q\n" +
+	"\fGetTrackInfo\x12\x1f.yt_scraper.GetTrackInfoRequest\x1a .yt_scraper.GetTrackInfoResponseBEZCgithub.com/Dev-Siri/wavelength/server/proto/yt_scraper;yt_scraperpbb\x06proto3"
 
 var (
 	file_proto_yt_scraper_proto_rawDescOnce sync.Once
@@ -797,7 +1001,7 @@ func file_proto_yt_scraper_proto_rawDescGZIP() []byte {
 	return file_proto_yt_scraper_proto_rawDescData
 }
 
-var file_proto_yt_scraper_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_proto_yt_scraper_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_proto_yt_scraper_proto_goTypes = []any{
 	(*GetSearchSuggestionsRequest)(nil),  // 0: yt_scraper.GetSearchSuggestionsRequest
 	(*GetSearchSuggestionsResponse)(nil), // 1: yt_scraper.GetSearchSuggestionsResponse
@@ -815,45 +1019,55 @@ var file_proto_yt_scraper_proto_goTypes = []any{
 	(*GetArtistDetailsResponse)(nil),     // 13: yt_scraper.GetArtistDetailsResponse
 	(*SearchYouTubeVideosRequest)(nil),   // 14: yt_scraper.SearchYouTubeVideosRequest
 	(*SearchYouTubeVideosResponse)(nil),  // 15: yt_scraper.SearchYouTubeVideosResponse
-	(*commonpb.SuggestedLink)(nil),       // 16: common.SuggestedLink
-	(*commonpb.QuickPick)(nil),           // 17: common.QuickPick
-	(*commonpb.Track)(nil),               // 18: common.Track
-	(*commonpb.Album)(nil),               // 19: common.Album
-	(*commonpb.SearchArtist)(nil),        // 20: common.SearchArtist
-	(*commonpb.SearchAlbum)(nil),         // 21: common.SearchAlbum
-	(*commonpb.Artist)(nil),              // 22: common.Artist
-	(*commonpb.YouTubeVideo)(nil),        // 23: common.YouTubeVideo
+	(*GetUpNextRequest)(nil),             // 16: yt_scraper.GetUpNextRequest
+	(*GetUpNextResponse)(nil),            // 17: yt_scraper.GetUpNextResponse
+	(*GetTrackInfoRequest)(nil),          // 18: yt_scraper.GetTrackInfoRequest
+	(*GetTrackInfoResponse)(nil),         // 19: yt_scraper.GetTrackInfoResponse
+	(*commonpb.SuggestedLink)(nil),       // 20: common.SuggestedLink
+	(*commonpb.QuickPick)(nil),           // 21: common.QuickPick
+	(*commonpb.Track)(nil),               // 22: common.Track
+	(*commonpb.Album)(nil),               // 23: common.Album
+	(*commonpb.SearchArtist)(nil),        // 24: common.SearchArtist
+	(*commonpb.SearchAlbum)(nil),         // 25: common.SearchAlbum
+	(*commonpb.Artist)(nil),              // 26: common.Artist
+	(*commonpb.YouTubeVideo)(nil),        // 27: common.YouTubeVideo
 }
 var file_proto_yt_scraper_proto_depIdxs = []int32{
-	16, // 0: yt_scraper.GetSearchSuggestionsResponse.suggested_links:type_name -> common.SuggestedLink
-	17, // 1: yt_scraper.GetQuickPicksResponse.quick_picks:type_name -> common.QuickPick
-	18, // 2: yt_scraper.SearchTracksResponse.tracks:type_name -> common.Track
-	19, // 3: yt_scraper.GetAlbumDetailsResponse.album:type_name -> common.Album
-	20, // 4: yt_scraper.SearchArtistsResponse.artists:type_name -> common.SearchArtist
-	21, // 5: yt_scraper.SearchAlbumsResponse.albums:type_name -> common.SearchAlbum
-	22, // 6: yt_scraper.GetArtistDetailsResponse.artist:type_name -> common.Artist
-	23, // 7: yt_scraper.SearchYouTubeVideosResponse.videos:type_name -> common.YouTubeVideo
-	0,  // 8: yt_scraper.YTScraper.GetSearchSuggestions:input_type -> yt_scraper.GetSearchSuggestionsRequest
-	2,  // 9: yt_scraper.YTScraper.GetQuickPicks:input_type -> yt_scraper.GetQuickPicksRequest
-	6,  // 10: yt_scraper.YTScraper.GetAlbumDetails:input_type -> yt_scraper.GetAlbumDetailsRequest
-	12, // 11: yt_scraper.YTScraper.GetArtistDetails:input_type -> yt_scraper.GetArtistDetailsRequest
-	4,  // 12: yt_scraper.YTScraper.SearchTracks:input_type -> yt_scraper.SearchTracksRequest
-	8,  // 13: yt_scraper.YTScraper.SearchArtists:input_type -> yt_scraper.SearchArtistsRequest
-	10, // 14: yt_scraper.YTScraper.SearchAlbums:input_type -> yt_scraper.SearchAlbumsRequest
-	14, // 15: yt_scraper.YTScraper.SearchYouTubeVideos:input_type -> yt_scraper.SearchYouTubeVideosRequest
-	1,  // 16: yt_scraper.YTScraper.GetSearchSuggestions:output_type -> yt_scraper.GetSearchSuggestionsResponse
-	3,  // 17: yt_scraper.YTScraper.GetQuickPicks:output_type -> yt_scraper.GetQuickPicksResponse
-	7,  // 18: yt_scraper.YTScraper.GetAlbumDetails:output_type -> yt_scraper.GetAlbumDetailsResponse
-	13, // 19: yt_scraper.YTScraper.GetArtistDetails:output_type -> yt_scraper.GetArtistDetailsResponse
-	5,  // 20: yt_scraper.YTScraper.SearchTracks:output_type -> yt_scraper.SearchTracksResponse
-	9,  // 21: yt_scraper.YTScraper.SearchArtists:output_type -> yt_scraper.SearchArtistsResponse
-	11, // 22: yt_scraper.YTScraper.SearchAlbums:output_type -> yt_scraper.SearchAlbumsResponse
-	15, // 23: yt_scraper.YTScraper.SearchYouTubeVideos:output_type -> yt_scraper.SearchYouTubeVideosResponse
-	16, // [16:24] is the sub-list for method output_type
-	8,  // [8:16] is the sub-list for method input_type
-	8,  // [8:8] is the sub-list for extension type_name
-	8,  // [8:8] is the sub-list for extension extendee
-	0,  // [0:8] is the sub-list for field type_name
+	20, // 0: yt_scraper.GetSearchSuggestionsResponse.suggested_links:type_name -> common.SuggestedLink
+	21, // 1: yt_scraper.GetQuickPicksResponse.quick_picks:type_name -> common.QuickPick
+	22, // 2: yt_scraper.SearchTracksResponse.tracks:type_name -> common.Track
+	23, // 3: yt_scraper.GetAlbumDetailsResponse.album:type_name -> common.Album
+	24, // 4: yt_scraper.SearchArtistsResponse.artists:type_name -> common.SearchArtist
+	25, // 5: yt_scraper.SearchAlbumsResponse.albums:type_name -> common.SearchAlbum
+	26, // 6: yt_scraper.GetArtistDetailsResponse.artist:type_name -> common.Artist
+	27, // 7: yt_scraper.SearchYouTubeVideosResponse.videos:type_name -> common.YouTubeVideo
+	22, // 8: yt_scraper.GetUpNextResponse.tracks:type_name -> common.Track
+	22, // 9: yt_scraper.GetTrackInfoResponse.track:type_name -> common.Track
+	0,  // 10: yt_scraper.YTScraper.GetSearchSuggestions:input_type -> yt_scraper.GetSearchSuggestionsRequest
+	2,  // 11: yt_scraper.YTScraper.GetQuickPicks:input_type -> yt_scraper.GetQuickPicksRequest
+	6,  // 12: yt_scraper.YTScraper.GetAlbumDetails:input_type -> yt_scraper.GetAlbumDetailsRequest
+	12, // 13: yt_scraper.YTScraper.GetArtistDetails:input_type -> yt_scraper.GetArtistDetailsRequest
+	16, // 14: yt_scraper.YTScraper.GetUpNext:input_type -> yt_scraper.GetUpNextRequest
+	4,  // 15: yt_scraper.YTScraper.SearchTracks:input_type -> yt_scraper.SearchTracksRequest
+	8,  // 16: yt_scraper.YTScraper.SearchArtists:input_type -> yt_scraper.SearchArtistsRequest
+	10, // 17: yt_scraper.YTScraper.SearchAlbums:input_type -> yt_scraper.SearchAlbumsRequest
+	14, // 18: yt_scraper.YTScraper.SearchYouTubeVideos:input_type -> yt_scraper.SearchYouTubeVideosRequest
+	18, // 19: yt_scraper.YTScraper.GetTrackInfo:input_type -> yt_scraper.GetTrackInfoRequest
+	1,  // 20: yt_scraper.YTScraper.GetSearchSuggestions:output_type -> yt_scraper.GetSearchSuggestionsResponse
+	3,  // 21: yt_scraper.YTScraper.GetQuickPicks:output_type -> yt_scraper.GetQuickPicksResponse
+	7,  // 22: yt_scraper.YTScraper.GetAlbumDetails:output_type -> yt_scraper.GetAlbumDetailsResponse
+	13, // 23: yt_scraper.YTScraper.GetArtistDetails:output_type -> yt_scraper.GetArtistDetailsResponse
+	17, // 24: yt_scraper.YTScraper.GetUpNext:output_type -> yt_scraper.GetUpNextResponse
+	5,  // 25: yt_scraper.YTScraper.SearchTracks:output_type -> yt_scraper.SearchTracksResponse
+	9,  // 26: yt_scraper.YTScraper.SearchArtists:output_type -> yt_scraper.SearchArtistsResponse
+	11, // 27: yt_scraper.YTScraper.SearchAlbums:output_type -> yt_scraper.SearchAlbumsResponse
+	15, // 28: yt_scraper.YTScraper.SearchYouTubeVideos:output_type -> yt_scraper.SearchYouTubeVideosResponse
+	19, // 29: yt_scraper.YTScraper.GetTrackInfo:output_type -> yt_scraper.GetTrackInfoResponse
+	20, // [20:30] is the sub-list for method output_type
+	10, // [10:20] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_proto_yt_scraper_proto_init() }
@@ -867,7 +1081,7 @@ func file_proto_yt_scraper_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_yt_scraper_proto_rawDesc), len(file_proto_yt_scraper_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   16,
+			NumMessages:   20,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

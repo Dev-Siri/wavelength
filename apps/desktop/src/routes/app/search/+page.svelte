@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import { resolve } from "$app/paths";
   import { page } from "$app/state";
 
   import Button from "$lib/components/ui/button/button.svelte";
@@ -15,16 +16,17 @@
   const currentSearchType = $derived.by(() => page.url.searchParams.get("type"));
 
   $effect(() => {
-    if (!q) goto("/");
+    if (!q) goto(resolve("/"));
 
     if (!currentSearchType || !searchTypes.includes(currentSearchType))
+      // eslint-disable-next-line svelte/no-navigation-without-resolve
       goto(`/app/search?q=${encodeURIComponent(q)}&type=tracks`);
   });
 </script>
 
 <div class="h-screen p-4 overflow-auto bg-black pb-[20%]">
   <section class="flex items-center gap-4 mt-4">
-    {#each searchTypes as searchType}
+    {#each searchTypes as searchType (searchType)}
       <Button
         href={`/app/search?q=${encodeURIComponent(q)}&type=${encodeURIComponent(searchType)}`}
         variant={searchType === currentSearchType ? "default" : "secondary"}

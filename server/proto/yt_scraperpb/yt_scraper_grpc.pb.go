@@ -23,10 +23,12 @@ const (
 	YTScraper_GetQuickPicks_FullMethodName        = "/yt_scraper.YTScraper/GetQuickPicks"
 	YTScraper_GetAlbumDetails_FullMethodName      = "/yt_scraper.YTScraper/GetAlbumDetails"
 	YTScraper_GetArtistDetails_FullMethodName     = "/yt_scraper.YTScraper/GetArtistDetails"
+	YTScraper_GetUpNext_FullMethodName            = "/yt_scraper.YTScraper/GetUpNext"
 	YTScraper_SearchTracks_FullMethodName         = "/yt_scraper.YTScraper/SearchTracks"
 	YTScraper_SearchArtists_FullMethodName        = "/yt_scraper.YTScraper/SearchArtists"
 	YTScraper_SearchAlbums_FullMethodName         = "/yt_scraper.YTScraper/SearchAlbums"
 	YTScraper_SearchYouTubeVideos_FullMethodName  = "/yt_scraper.YTScraper/SearchYouTubeVideos"
+	YTScraper_GetTrackInfo_FullMethodName         = "/yt_scraper.YTScraper/GetTrackInfo"
 )
 
 // YTScraperClient is the client API for YTScraper service.
@@ -37,10 +39,12 @@ type YTScraperClient interface {
 	GetQuickPicks(ctx context.Context, in *GetQuickPicksRequest, opts ...grpc.CallOption) (*GetQuickPicksResponse, error)
 	GetAlbumDetails(ctx context.Context, in *GetAlbumDetailsRequest, opts ...grpc.CallOption) (*GetAlbumDetailsResponse, error)
 	GetArtistDetails(ctx context.Context, in *GetArtistDetailsRequest, opts ...grpc.CallOption) (*GetArtistDetailsResponse, error)
+	GetUpNext(ctx context.Context, in *GetUpNextRequest, opts ...grpc.CallOption) (*GetUpNextResponse, error)
 	SearchTracks(ctx context.Context, in *SearchTracksRequest, opts ...grpc.CallOption) (*SearchTracksResponse, error)
 	SearchArtists(ctx context.Context, in *SearchArtistsRequest, opts ...grpc.CallOption) (*SearchArtistsResponse, error)
 	SearchAlbums(ctx context.Context, in *SearchAlbumsRequest, opts ...grpc.CallOption) (*SearchAlbumsResponse, error)
 	SearchYouTubeVideos(ctx context.Context, in *SearchYouTubeVideosRequest, opts ...grpc.CallOption) (*SearchYouTubeVideosResponse, error)
+	GetTrackInfo(ctx context.Context, in *GetTrackInfoRequest, opts ...grpc.CallOption) (*GetTrackInfoResponse, error)
 }
 
 type yTScraperClient struct {
@@ -91,6 +95,16 @@ func (c *yTScraperClient) GetArtistDetails(ctx context.Context, in *GetArtistDet
 	return out, nil
 }
 
+func (c *yTScraperClient) GetUpNext(ctx context.Context, in *GetUpNextRequest, opts ...grpc.CallOption) (*GetUpNextResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUpNextResponse)
+	err := c.cc.Invoke(ctx, YTScraper_GetUpNext_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *yTScraperClient) SearchTracks(ctx context.Context, in *SearchTracksRequest, opts ...grpc.CallOption) (*SearchTracksResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SearchTracksResponse)
@@ -131,6 +145,16 @@ func (c *yTScraperClient) SearchYouTubeVideos(ctx context.Context, in *SearchYou
 	return out, nil
 }
 
+func (c *yTScraperClient) GetTrackInfo(ctx context.Context, in *GetTrackInfoRequest, opts ...grpc.CallOption) (*GetTrackInfoResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetTrackInfoResponse)
+	err := c.cc.Invoke(ctx, YTScraper_GetTrackInfo_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // YTScraperServer is the server API for YTScraper service.
 // All implementations must embed UnimplementedYTScraperServer
 // for forward compatibility.
@@ -139,10 +163,12 @@ type YTScraperServer interface {
 	GetQuickPicks(context.Context, *GetQuickPicksRequest) (*GetQuickPicksResponse, error)
 	GetAlbumDetails(context.Context, *GetAlbumDetailsRequest) (*GetAlbumDetailsResponse, error)
 	GetArtistDetails(context.Context, *GetArtistDetailsRequest) (*GetArtistDetailsResponse, error)
+	GetUpNext(context.Context, *GetUpNextRequest) (*GetUpNextResponse, error)
 	SearchTracks(context.Context, *SearchTracksRequest) (*SearchTracksResponse, error)
 	SearchArtists(context.Context, *SearchArtistsRequest) (*SearchArtistsResponse, error)
 	SearchAlbums(context.Context, *SearchAlbumsRequest) (*SearchAlbumsResponse, error)
 	SearchYouTubeVideos(context.Context, *SearchYouTubeVideosRequest) (*SearchYouTubeVideosResponse, error)
+	GetTrackInfo(context.Context, *GetTrackInfoRequest) (*GetTrackInfoResponse, error)
 	mustEmbedUnimplementedYTScraperServer()
 }
 
@@ -165,6 +191,9 @@ func (UnimplementedYTScraperServer) GetAlbumDetails(context.Context, *GetAlbumDe
 func (UnimplementedYTScraperServer) GetArtistDetails(context.Context, *GetArtistDetailsRequest) (*GetArtistDetailsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetArtistDetails not implemented")
 }
+func (UnimplementedYTScraperServer) GetUpNext(context.Context, *GetUpNextRequest) (*GetUpNextResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetUpNext not implemented")
+}
 func (UnimplementedYTScraperServer) SearchTracks(context.Context, *SearchTracksRequest) (*SearchTracksResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method SearchTracks not implemented")
 }
@@ -176,6 +205,9 @@ func (UnimplementedYTScraperServer) SearchAlbums(context.Context, *SearchAlbumsR
 }
 func (UnimplementedYTScraperServer) SearchYouTubeVideos(context.Context, *SearchYouTubeVideosRequest) (*SearchYouTubeVideosResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method SearchYouTubeVideos not implemented")
+}
+func (UnimplementedYTScraperServer) GetTrackInfo(context.Context, *GetTrackInfoRequest) (*GetTrackInfoResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetTrackInfo not implemented")
 }
 func (UnimplementedYTScraperServer) mustEmbedUnimplementedYTScraperServer() {}
 func (UnimplementedYTScraperServer) testEmbeddedByValue()                   {}
@@ -270,6 +302,24 @@ func _YTScraper_GetArtistDetails_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _YTScraper_GetUpNext_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUpNextRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(YTScraperServer).GetUpNext(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: YTScraper_GetUpNext_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(YTScraperServer).GetUpNext(ctx, req.(*GetUpNextRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _YTScraper_SearchTracks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SearchTracksRequest)
 	if err := dec(in); err != nil {
@@ -342,6 +392,24 @@ func _YTScraper_SearchYouTubeVideos_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _YTScraper_GetTrackInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTrackInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(YTScraperServer).GetTrackInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: YTScraper_GetTrackInfo_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(YTScraperServer).GetTrackInfo(ctx, req.(*GetTrackInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // YTScraper_ServiceDesc is the grpc.ServiceDesc for YTScraper service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -366,6 +434,10 @@ var YTScraper_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _YTScraper_GetArtistDetails_Handler,
 		},
 		{
+			MethodName: "GetUpNext",
+			Handler:    _YTScraper_GetUpNext_Handler,
+		},
+		{
 			MethodName: "SearchTracks",
 			Handler:    _YTScraper_SearchTracks_Handler,
 		},
@@ -380,6 +452,10 @@ var YTScraper_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchYouTubeVideos",
 			Handler:    _YTScraper_SearchYouTubeVideos_Handler,
+		},
+		{
+			MethodName: "GetTrackInfo",
+			Handler:    _YTScraper_GetTrackInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

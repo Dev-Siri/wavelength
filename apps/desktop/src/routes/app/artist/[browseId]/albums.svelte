@@ -1,15 +1,15 @@
 <script lang="ts">
-  import type { FullArtist } from "$lib/utils/validation/artist-response";
+  import type { Artist } from "$lib/schemas/artist";
 
   import AlbumCard from "$lib/components/album/AlbumCard.svelte";
 
-  const { artist }: { artist: FullArtist } = $props();
+  const { artist }: { artist: Artist } = $props();
 </script>
 
-<div class="px-2 pb-20">
-  <h4 class="text-xl font-semibold select-none my-2">Albums</h4>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-2">
-    {#each artist.albums as album}
+<div class="pb-[20%]">
+  <h4 class="text-xl font-semibold select-none my-2">Albums by {artist.title}</h4>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    {#each artist.albums as album (album.albumId)}
       <AlbumCard album={{ ...album, artist }} />
     {/each}
   </div>

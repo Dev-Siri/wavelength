@@ -34,7 +34,7 @@ func (p *PlaylistService) DeletePlaylist(
 		logging.Logger.Error("Deletion operation cannot be performed because the authorized user is not the author of the playlist.",
 			zap.String("playlistId", request.PlaylistId),
 			zap.String("authUserEmail", request.AuthUserEmail))
-		return nil, status.Error(codes.Unauthenticated, "Deletion operation cannot be performed because the authorized user is not the author of the playlist.")
+		return nil, status.Error(codes.PermissionDenied, "Deletion operation cannot be performed because the authorized user is not the author of the playlist.")
 	}
 
 	_, err := shared_db.Database.Exec(`

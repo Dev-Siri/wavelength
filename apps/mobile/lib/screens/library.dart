@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
 import "package:wavelength/bloc/auth/auth_state.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
@@ -7,15 +8,25 @@ import "package:wavelength/bloc/library/library_event.dart";
 import "package:wavelength/bloc/library/library_state.dart";
 import "package:wavelength/bloc/likes/like_count/like_count_bloc.dart";
 import "package:wavelength/bloc/likes/like_count/like_count_event.dart";
-import "package:wavelength/widgets/followed_artists_carousel.dart";
-import "package:wavelength/widgets/google_login_button.dart";
-import "package:wavelength/widgets/liked_tracks_link.dart";
-import "package:wavelength/widgets/playlist_tile.dart";
+import "package:wavelength/widgets/action_buttons/downloads_link_button.dart";
+import "package:wavelength/widgets/album/album_card.dart";
+import "package:wavelength/widgets/artist/artist_tile.dart";
+import "package:wavelength/widgets/action_buttons/google_login_button.dart";
+import "package:wavelength/widgets/action_buttons/liked_tracks_link_button.dart";
+import "package:wavelength/widgets/playlist/playlist_tile.dart";
 import "package:wavelength/widgets/skeletons/playlist_tile_skeleton.dart";
 
-class LibraryScreen extends StatelessWidget {
+class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
 
+  @override
+  State<LibraryScreen> createState() => _LibraryScreenState();
+}
+
+enum LibraryFilter { playlists, artists, albums }
+
+class _LibraryScreenState extends State<LibraryScreen> {
+  LibraryFilter _libraryFilter = LibraryFilter.playlists;
   void _refreshLibrary(
     BuildContext context, {
     required String email,
@@ -44,15 +55,6 @@ class LibraryScreen extends StatelessWidget {
               : null,
           child: ListView(
             children: [
-              const SizedBox(height: 16),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Text(
-                  "Your Library",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                ),
-              ),
-              const SizedBox(height: 10),
               BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
                   if (state is AuthStateUnauthorized) {
@@ -83,15 +85,132 @@ class LibraryScreen extends StatelessWidget {
                       }
                       return Column(
                         children: [
-                          FollowedArtistsCarousel(
-                            follows: state.followedArtists,
+                          Row(
+                            children: [
+                              const SizedBox(width: 5),
+                              ChoiceChip(
+                                label: const Text("Playlists"),
+                                selectedColor: Colors.white,
+                                selected:
+                                    _libraryFilter == LibraryFilter.playlists,
+                                onSelected: (_) => setState(
+                                  () =>
+                                      _libraryFilter = LibraryFilter.playlists,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              ChoiceChip(
+                                label: const Text("Artists"),
+                                selectedColor: Colors.white,
+                                selected:
+                                    _libraryFilter == LibraryFilter.artists,
+                                onSelected: (_) => setState(
+                                  () => _libraryFilter = LibraryFilter.artists,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              ChoiceChip(
+                                label: const Text("Albums"),
+                                selectedColor: Colors.white,
+                                selected:
+                                    _libraryFilter == LibraryFilter.albums,
+                                onSelected: (_) => setState(
+                                  () => _libraryFilter = LibraryFilter.albums,
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 5),
-                          const LikedTracksLink(),
-                          for (final playlist in state.playlists)
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 5),
-                              child: PlaylistTile(playlist: playlist),
+                          Visibility(
+                            visible: _libraryFilter == LibraryFilter.playlists,
+                            child: Column(
+                              children: [
+                                const LikedTracksLinkButton(),
+                                const DownloadsLinkButton(),
+                                for (final playlist in state.playlists)
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 5),
+                                    child: PlaylistTile(playlist: playlist),
+                                  ),
+                              ],
+                            ),
+                          ),
+                          if (_libraryFilter == LibraryFilter.artists)
+                            if (state.followedArtists.isEmpty)
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height:
+                                        MediaQuery.sizeOf(context).height * 0.2,
+                                  ),
+                                  const Icon(LucideIcons.disc3, size: 40),
+                                  const SizedBox(height: 5),
+                                  const Text(
+                                    "You are not following any artists.",
+                                  ),
+                                ],
+                              )
+                            else
+                              for (final artist in state.followedArtists)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 5,
+                                  ),
+                                  child: ArtistTile(
+                                    browseId: artist.browseId,
+                                    title: artist.name,
+                                    thumbnail: artist.thumbnail,
+                                    subtitle: "Artist",
+                                  ),
+                                ),
+                          if (_libraryFilter == LibraryFilter.albums)
+                            LayoutBuilder(
+                              builder: (context, constraints) {
+                                const spacing = 12.0;
+                                final itemWidth =
+                                    (constraints.maxWidth - spacing) / 2;
+
+                                if (state.savedAlbums.isEmpty) {
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        height:
+                                            MediaQuery.sizeOf(context).height *
+                                            0.2,
+                                      ),
+                                      const Icon(
+                                        LucideIcons.discAlbum,
+                                        size: 40,
+                                      ),
+                                      const SizedBox(height: 5),
+                                      const Text("You have no albums saved."),
+                                    ],
+                                  );
+                                }
+
+                                return Wrap(
+                                  spacing: spacing,
+                                  children: [
+                                    for (final album in state.savedAlbums)
+                                      Container(
+                                        padding: const EdgeInsets.only(
+                                          bottom: 10,
+                                        ),
+                                        width: itemWidth,
+                                        child: AlbumCard(
+                                          browseId: album.albumId,
+                                          cover: album.albumCover,
+                                          title: album.title,
+                                          albumType: album.albumType,
+                                        ),
+                                      ),
+                                  ],
+                                );
+                              },
                             ),
                         ],
                       );

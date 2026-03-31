@@ -6,6 +6,7 @@ import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/playlist.dart";
 import "package:wavelength/api/models/playlist_track.dart";
 import "package:wavelength/api/models/playlist_tracks_length.dart";
+import "package:wavelength/api/models/track.dart";
 import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/constants.dart";
 
@@ -301,6 +302,43 @@ class PlaylistsRepo {
       DiagnosticsRepo.reportError(
         error: errorString,
         source: "PlaylistsRepo.togglePlaylistVisibility",
+      );
+      return ApiResponseError(message: errorString);
+    }
+  }
+
+  static Future<ApiResponse<List<Track>>> fetchRecommendedSongs({
+    required String playlistId,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          "$apiGatewayUrl/playlists/playlist/$playlistId/recommendations",
+        ),
+      );
+
+      final decodedResponse = await compute<String, ApiResponse<List<Track>>>((
+        stringResponse,
+      ) {
+        final decodedJson = jsonDecode(stringResponse);
+        final isSuccessful = decodedJson["success"] as bool;
+
+        if (isSuccessful) {
+          final tracks = decodedJson["data"]["tracks"] as List?;
+          return ApiResponseSuccess(
+            data: tracks?.map((track) => Track.fromJson(track)).toList() ?? [],
+          );
+        }
+
+        return ApiResponseError(message: decodedJson["message"] as String);
+      }, response.body);
+
+      return decodedResponse;
+    } catch (e) {
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "PlaylistsRepo.fetchRecommendedSongs",
       );
       return ApiResponseError(message: errorString);
     }

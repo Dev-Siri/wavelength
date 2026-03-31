@@ -1,8 +1,7 @@
 package apicontrollers
 
 import (
-	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
-
+	shared_models "github.com/Dev-Siri/wavelength/server/shared/models"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -16,12 +15,12 @@ func GenericErrorHandler(ctx *fiber.Ctx, err error) error {
 
 		switch code {
 		case fiber.StatusMethodNotAllowed:
-			return models.Error(ctx, "Method not allowed.")
+			return shared_models.Error(ctx, "Method not allowed.")
 		case fiber.StatusNotFound:
-			return models.Error(ctx, message)
+			return shared_models.Error(ctx, message)
 		}
 	}
 
 	ctx.Status(code)
-	return models.Error(ctx, message)
+	return shared_models.Error(ctx, message)
 }

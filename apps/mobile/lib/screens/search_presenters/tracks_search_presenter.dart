@@ -2,10 +2,10 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:wavelength/bloc/search/tracks/tracks_bloc.dart";
 import "package:wavelength/bloc/search/tracks/tracks_state.dart";
-import "package:wavelength/widgets/error_message_dialog.dart";
+import "package:wavelength/widgets/dialogs/error_message_dialog.dart";
 import "package:wavelength/widgets/skeletons/playlist_tile_skeleton.dart";
-import "package:wavelength/widgets/top_track_result.dart";
-import "package:wavelength/widgets/track_tile.dart";
+import "package:wavelength/widgets/track/top_track_result.dart";
+import "package:wavelength/widgets/track/track_tile.dart";
 
 class TracksSearchPresenter extends StatelessWidget {
   const TracksSearchPresenter({super.key});
@@ -61,12 +61,15 @@ class TracksSearchPresenter extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TopTrackResult(track: state.tracks[0]),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: TopTrackResult(track: state.tracks[0]),
+            ),
             const SizedBox(height: 10),
             for (final track in state.tracks.skip(1))
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
-                child: TrackTile(track: track),
+                child: TrackTile(sourceLabel: null, track: track),
               ),
           ],
         );

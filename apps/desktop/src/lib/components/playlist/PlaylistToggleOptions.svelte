@@ -1,23 +1,40 @@
+<script lang="ts" module>
+  export type PlaylistToggle =
+    | {
+        type: "add";
+      }
+    | {
+        type: "remove";
+        from: Playlist;
+      };
+</script>
+
 <script lang="ts">
-  import { AlbumIcon, CheckIcon, DownloadIcon, MinusIcon, PlusIcon } from "@lucide/svelte";
-  import { createMutation, createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { resolve } from "$app/paths";
+  import {
+    AlbumIcon,
+    CheckIcon,
+    DownloadIcon,
+    ListPlusIcon,
+    MinusIcon,
+    PlusIcon,
+  } from "@lucide/svelte";
+  import { createMutation, useQueryClient } from "@tanstack/svelte-query";
   import { isTauri } from "@tauri-apps/api/core";
   import { toast } from "svelte-sonner";
   import { z } from "zod";
 
-  import type { MusicTrack } from "$lib/utils/validation/music-track";
+  import type { MusicTrack } from "$lib/schemas/music-track";
+  import { type Playlist, type PlaylistVideoType } from "$lib/schemas/playlist";
 
   import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";
+  import { deleteDownload, isDownloaded } from "$lib/ipc/download";
+  import useUserPlaylistsQuery from "$lib/queries/userPlaylists";
+  import { musicTrackDurationSchema } from "$lib/schemas/track-length";
   import downloadStore from "$lib/stores/download.svelte";
   import userStore from "$lib/stores/user.svelte";
-  import {
-    deleteDownload,
-    getDownloadedStreamPath,
-    isAlreadyDownloaded,
-  } from "$lib/utils/download";
+  import { musicPlayer } from "$lib/stream-player/musicPlayer";
   import { backendClient } from "$lib/utils/query-client.js";
-  import { playlistsSchema, type Playlist } from "$lib/utils/validation/playlists";
-  import { musicTrackDurationSchema } from "$lib/utils/validation/track-length";
 
   import * as ContextMenu from "../ui/context-menu";
   import * as DropdownMenu from "../ui/dropdown-menu";
@@ -25,29 +42,17 @@
   const {
     music,
     toggle,
-    ui = "dropdown",
+    videoType = "VIDEO_TYPE_TRACK",
+    ui,
   }: {
     music: MusicTrack;
-    ui?: "dropdown" | "contextmenu";
-    toggle:
-      | {
-          type: "add";
-        }
-      | {
-          type: "remove";
-          from: Playlist;
-        };
+    videoType?: PlaylistVideoType;
+    ui: "dropdown" | "contextmenu";
+    toggle: PlaylistToggle;
   } = $props();
 
   const queryClient = useQueryClient();
-  const playlistsQuery = createQuery(() => ({
-    queryKey: svelteQueryKeys.userPlaylists,
-    async queryFn() {
-      if (!userStore.user) return;
-
-      return backendClient(`/playlists/user/${userStore.user.email}`, playlistsSchema);
-    },
-  }));
+  const userPlaylistsQuery = $derived(useUserPlaylistsQuery(userStore.user?.email ?? ""));
 
   const playlistsAddMutation = createMutation(() => ({
     mutationKey: svelteMutationKeys.addToPlaylists,
@@ -74,23 +79,16 @@
     onError: () => toast.error("Failed to update playlist."),
     onSuccess(data, playlistId) {
       toast.success(data);
-      queryClient.invalidateQueries({
-        queryKey: [
-          ...svelteQueryKeys.playlist(playlistId),
-          svelteQueryKeys.playlistTrack(playlistId),
-        ],
-      });
+      queryClient.invalidateQueries({ queryKey: svelteQueryKeys.playlistTrack(playlistId) });
+      queryClient.invalidateQueries({ queryKey: svelteQueryKeys.playlistTrackLength(playlistId) });
     },
   }));
 
   async function downloadTrack() {
     if (!isTauri()) return;
 
-    if (await isAlreadyDownloaded(music.videoId)) {
-      const { remove } = await import("@tauri-apps/plugin-fs");
-      const trackPath = await getDownloadedStreamPath(music.videoId);
+    if (await isDownloaded(music.videoId)) {
       await deleteDownload(music.videoId);
-      await remove(trackPath);
       queryClient.invalidateQueries({ queryKey: svelteQueryKeys.downloads });
       return;
     }
@@ -106,7 +104,7 @@
 
 {#if isTauri()}
   <Menu.Item onclick={downloadTrack}>
-    {#await isAlreadyDownloaded(music.videoId) then isDownloaded}
+    {#await isDownloaded(music.videoId) then isDownloaded}
       {#if isDownloaded}
         <CheckIcon />
         Saved
@@ -118,20 +116,30 @@
   </Menu.Item>
 {/if}
 {#if music.album}
+  <Menu.Item
+    onclick={() =>
+      musicPlayer.queue.addToQueue({
+        ...music,
+        videoType,
+      })}
+  >
+    <ListPlusIcon />
+    <span>Add to queue</span>
+  </Menu.Item>
   <Menu.Item>
     <AlbumIcon />
-    <a href="/app/album/{music.album.browseId}">Go to album</a>
+    <a href={resolve(`/app/album/${music.album.browseId}`)}>Go to album</a>
   </Menu.Item>
 {/if}
 {#if toggle.type === "add"}
-  {#if playlistsQuery.data?.playlists}
+  {#if userPlaylistsQuery.data?.playlists}
     <Menu.Sub>
       <Menu.SubTrigger>
         <PlusIcon size={20} />
         Add to playlist
       </Menu.SubTrigger>
       <Menu.SubContent>
-        {#each playlistsQuery.data.playlists as playlist}
+        {#each userPlaylistsQuery.data.playlists as playlist (`add-to-${playlist.playlistId}`)}
           <Menu.Item onclick={() => playlistsAddMutation.mutate(playlist.playlistId)}>
             {playlist.name}
           </Menu.Item>
@@ -139,7 +147,7 @@
       </Menu.SubContent>
     </Menu.Sub>
   {/if}
-{:else}
+{:else if toggle.type === "remove"}
   <Menu.Item onclick={() => playlistsAddMutation.mutate(toggle.from.playlistId)}>
     <MinusIcon size={20} /> Remove from playlist.
   </Menu.Item>

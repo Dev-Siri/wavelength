@@ -10,5 +10,6 @@ func registerImageRoutes(app *fiber.App) {
 	images := app.Group("/image")
 
 	images.Get("/theme-color", image_controllers.GetThemeColor)
+	images.Get("/cover-effect", image_controllers.GetCoverEffectColor)
 	images.Post("/manual-upload", image_controllers.ManualImageUpload)
 }

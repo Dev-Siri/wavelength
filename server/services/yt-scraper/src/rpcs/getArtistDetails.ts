@@ -14,7 +14,7 @@ import {
 } from "@/gen/proto/common.js";
 import { getYtMusicClient } from "@/innertube.js";
 import { createErrorResponse } from "@/response.js";
-import { parseStringToAlbumType } from "@/utils/parse.js";
+import { parseDuration, parseStringToAlbumType } from "@/utils/parse.js";
 import { getHighestQualityThumbnail } from "@/utils/thumbnail.js";
 
 export default async function getArtistDetails(
@@ -79,11 +79,10 @@ export default async function getArtistDetails(
         !playCount?.title.text ||
         !albumInfo?.title.text ||
         !albumId ||
-        !parsedTopSong.duration?.seconds ||
+        !parsedTopSong.duration ||
         !thumbnail
       )
         continue;
-
       const artists = parsedTopSong.artists?.map((artist) => ({
         title: artist.name,
         browseId: artist.channel_id ?? "VARIOUS_ARTISTS",
@@ -92,7 +91,9 @@ export default async function getArtistDetails(
       const topSongTrack = {
         videoId: parsedTopSong.id,
         title: parsedTopSong.title,
-        duration: parsedTopSong.duration.seconds,
+        duration:
+          parsedTopSong.duration.seconds ||
+          parseDuration(parsedTopSong.duration.text),
         playCount: playCount.title.text,
         album: {
           title: albumInfo.title.text,

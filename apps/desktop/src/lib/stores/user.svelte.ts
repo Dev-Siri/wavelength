@@ -1,4 +1,4 @@
-import type { AuthUser } from "$lib/utils/validation/auth";
+import type { AuthUser } from "$lib/schemas/auth";
 
 class UserStore {
   user = $state<AuthUser | null>(null);

@@ -4,9 +4,9 @@
   import { z } from "zod";
 
   import { localStorageKeys } from "$lib/constants/keys";
+  import { authUserSchema } from "$lib/schemas/auth";
   import userStore from "$lib/stores/user.svelte";
   import { backendClient } from "$lib/utils/query-client";
-  import { authUserSchema } from "$lib/utils/validation/auth";
 
   import { Button } from "../ui/button";
   import GoogleLogo from "../vectors/GoogleLogo.svelte";

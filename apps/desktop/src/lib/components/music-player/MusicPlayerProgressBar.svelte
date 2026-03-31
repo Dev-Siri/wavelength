@@ -1,63 +1,37 @@
 <script lang="ts">
-  import musicPlayerStore from "$lib/stores/music-player.svelte";
-  import musicQueueStore from "$lib/stores/music-queue.svelte";
+  import { musicPlayer } from "$lib/stream-player/musicPlayer";
 
   let progressBarElement: HTMLDivElement;
   let isDragging = $state(false);
 
-  async function seekFromClientX(clientX: number) {
-    if (!progressBarElement || !musicPlayerStore.musicPlayer) return;
+  let totalMinutes = $derived(Math.floor((musicPlayer.duration - musicPlayer.currentTime) / 60));
+  let totalSeconds = $derived(Math.floor((musicPlayer.duration - musicPlayer.currentTime) % 60));
+  let currentMinutes = $derived(Math.floor(musicPlayer.currentTime / 60));
+  let currentSeconds = $derived(Math.floor(musicPlayer.currentTime % 60));
 
-    const { left, width } = progressBarElement.getBoundingClientRect();
-    const clampedX = Math.max(0, Math.min(clientX - left, width));
-    const percentage = clampedX / width;
-
-    const duration = await musicPlayerStore.musicPlayer.getDuration();
-    const newTime = percentage * duration;
-
-    currentTime = Math.round(newTime);
-    musicPlayerStore.progress = percentage * 100;
-
-    await musicPlayerStore.musicPlayer.seek(newTime);
-
-    if (musicQueueStore.musicPlayingNow?.videoType === "VIDEO_TYPE_UVIDEO")
-      await musicPlayerStore.musicPreviewPlayer?.seek(newTime);
+  function seekFromEvent(event: PointerEvent) {
+    const rect = progressBarElement.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const percentage = Math.max(0, Math.min(1, x / rect.width));
+    const newTime = percentage * musicPlayer.duration;
+    musicPlayer.seek(newTime);
   }
 
-  let totalDuration = $state(0);
-  let currentTime = $state(0);
-
-  let totalMinutes = $derived(Math.floor((totalDuration - currentTime) / 60));
-  let totalSeconds = $derived(Math.floor((totalDuration - currentTime) % 60));
-  let currentMinutes = $derived(Math.floor(currentTime / 60));
-  let currentSeconds = $derived(Math.floor(currentTime % 60));
-
-  $effect(() => {
-    musicPlayerStore.progress;
-    async function fetchDurations() {
-      const fetchedTotalDuration = (await musicPlayerStore.musicPlayer?.getDuration()) ?? 0;
-      const fetchedCurrentTime = (await musicPlayerStore.musicPlayer?.getCurrentTime()) ?? 0;
-
-      totalDuration = Math.round(fetchedTotalDuration);
-      currentTime = Math.round(fetchedCurrentTime);
-    }
-
-    fetchDurations();
-  });
-
   async function onProgressBarClick(event: MouseEvent) {
-    await seekFromClientX(event.clientX);
+    const percentage = Math.max(0, Math.min(event.offsetX / progressBarElement.clientWidth));
+    const newTime = percentage * musicPlayer.duration;
+    await musicPlayer.seek(newTime);
   }
 
   function onPointerDown(event: PointerEvent) {
     isDragging = true;
     progressBarElement.setPointerCapture(event.pointerId);
-    seekFromClientX(event.clientX);
+    seekFromEvent(event);
   }
 
   function onPointerMove(event: PointerEvent) {
     if (!isDragging) return;
-    seekFromClientX(event.clientX);
+    seekFromEvent(event);
   }
 
   function onPointerUp(event: PointerEvent) {
@@ -67,31 +41,31 @@
 </script>
 
 <div class="flex items-center group justify-center w-full gap-2">
-  <p class="text-xs text-muted-foreground">
+  <p class="text-xs select-none">
     {currentMinutes}:{currentSeconds.toString().padStart(2, "0")}
   </p>
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <div
     role="progressbar"
-    class="flex flex-col h-1 group-hover:h-2 duration-200 w-full bg-muted group rounded-full relative justify-center cursor-pointer"
-    onclick={musicQueueStore.musicPlayingNow && onProgressBarClick}
+    class="flex flex-col h-1 group-hover:h-2 duration-200 w-full bg-gray-500 group rounded-full relative justify-center cursor-pointer"
+    onclick={musicPlayer.queue.playingNow && onProgressBarClick}
     bind:this={progressBarElement}
-    onpointerdown={musicQueueStore.musicPlayingNow && onPointerDown}
-    onpointermove={musicQueueStore.musicPlayingNow && onPointerMove}
-    onpointerup={musicQueueStore.musicPlayingNow && onPointerUp}
-    onpointercancel={musicQueueStore.musicPlayingNow && onPointerUp}
+    onpointerdown={musicPlayer.queue.playingNow && onPointerDown}
+    onpointermove={musicPlayer.queue.playingNow && onPointerMove}
+    onpointerup={musicPlayer.queue.playingNow && onPointerUp}
+    onpointercancel={musicPlayer.queue.playingNow && onPointerUp}
   >
     <div
-      class="h-1 bg-primary rounded-full duration-75"
-      style="width: {musicPlayerStore.progress}%;"
+      class="h-1 bg-white rounded-full duration-75"
+      style="width: {musicPlayer.progress}%;"
     ></div>
     <div
       class="absolute h-3.5 w-3.5 rounded-full bg-white hidden duration-75 group-hover:inline"
-      style="margin-left: {musicPlayerStore.progress}%;"
+      style="left: {musicPlayer.progress}%; transform: translateX(-50%);"
     ></div>
   </div>
-  <p class="text-xs text-muted-foreground">
+  <p class="text-xs select-none">
     -{totalMinutes}:{totalSeconds.toString().padStart(2, "0")}
   </p>
 </div>

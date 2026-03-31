@@ -1,22 +1,14 @@
 <script lang="ts">
-  import { createQuery } from "@tanstack/svelte-query";
-
-  import { svelteQueryKeys } from "$lib/constants/keys";
-  import { backendClient } from "$lib/utils/query-client";
-  import { musicSearchResponseSchema } from "$lib/utils/validation/search-response";
+  import useTrackSearch from "$lib/queries/trackSearch";
 
   import TopSearchResult from "$lib/components/search/TopSearchResult.svelte";
-  import TrackItemSkeleton from "$lib/components/skeletons/TrackItemSkeleton.svelte";
+  import TrackSkeleton from "$lib/components/skeletons/TrackSkeleton.svelte";
   import TrackItem from "$lib/components/track/Track.svelte";
   import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
 
   const { q }: { q: string } = $props();
 
-  const trackSearchQuery = createQuery(() => ({
-    queryKey: svelteQueryKeys.search(q, "tracks"),
-    queryFn: () =>
-      backendClient("/music/search", musicSearchResponseSchema, { searchParams: { q } }),
-  }));
+  const trackSearchQuery = $derived(useTrackSearch(q));
 </script>
 
 {#if trackSearchQuery.isLoading}
@@ -35,16 +27,15 @@
   </div>
   <div class="w-2/3">
     <h2 class="text-xl font-semibold select-none mb-2">Songs</h2>
-    <TrackItemSkeleton />
-    <TrackItemSkeleton />
-    <TrackItemSkeleton />
-    <TrackItemSkeleton />
+    {#each new Array(8)}
+      <TrackSkeleton />
+    {/each}
   </div>
 {:else if trackSearchQuery.isSuccess && trackSearchQuery.data.tracks}
   {@const topResults = trackSearchQuery.data.tracks.slice(0, 2)}
   <div class="h-full w-1/2">
     <h2 class="text-xl font-semibold select-none mb-2">Top Results</h2>
-    {#each topResults as topResult}
+    {#each topResults as topResult (topResult.videoId)}
       <div class="mt-2">
         <TopSearchResult {topResult} />
       </div>
@@ -52,8 +43,8 @@
   </div>
   <div class="h-full w-1/2">
     <h2 class="text-xl font-semibold select-none mb-2">Songs</h2>
-    {#each trackSearchQuery.data.tracks.slice(3) as music}
-      <TrackItem showAlbum={false} {music} toggle={{ type: "add" }} />
+    {#each trackSearchQuery.data.tracks.slice(3) as music (music.videoId)}
+      <TrackItem showAlbum={false} context={{ type: "none" }} {music} toggle={{ type: "add" }} />
     {/each}
   </div>
 {/if}

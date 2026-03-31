@@ -172,7 +172,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
       behavior: HitTestBehavior.translucent,
       child: ListView(
         children: [
-          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Autocomplete(

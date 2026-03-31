@@ -1,6 +1,7 @@
 import "package:flutter/foundation.dart";
 import "package:wavelength/api/models/artist.dart";
 import "package:wavelength/api/models/playlist.dart";
+import "package:wavelength/api/models/saved_album.dart";
 
 @immutable
 sealed class LibraryState {
@@ -22,9 +23,11 @@ class LibraryFetchErrorState extends LibraryState {
 class LibraryFetchSuccessState extends LibraryState {
   final List<Playlist> playlists;
   final List<FollowedArtist> followedArtists;
+  final List<SavedAlbum> savedAlbums;
 
   const LibraryFetchSuccessState({
     required this.playlists,
     required this.followedArtists,
+    required this.savedAlbums,
   });
 }

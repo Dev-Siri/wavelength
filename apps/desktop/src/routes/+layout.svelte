@@ -1,6 +1,8 @@
 <script lang="ts">
   import { dev } from "$app/environment";
   import { goto } from "$app/navigation";
+  import { resolve } from "$app/paths";
+  import { page } from "$app/state";
   import { injectAnalytics } from "@vercel/analytics/sveltekit";
   import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit";
   import "../app.css";
@@ -8,8 +10,8 @@
   import type { Snippet } from "svelte";
 
   import { localStorageKeys } from "$lib/constants/keys";
+  import { authUserSchema } from "$lib/schemas/auth";
   import userStore from "$lib/stores/user.svelte.js";
-  import { authUserSchema } from "$lib/utils/validation/auth";
 
   injectAnalytics({ mode: dev ? "development" : "production" });
   injectSpeedInsights();
@@ -34,7 +36,7 @@
   });
 
   $effect(() => {
-    if (userStore.user) goto("/app");
+    if (userStore.user && page.url.pathname === "/") goto(resolve("/app"));
   });
 </script>
 

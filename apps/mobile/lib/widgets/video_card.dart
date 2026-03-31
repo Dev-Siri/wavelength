@@ -5,7 +5,8 @@ import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:wavelength/api/models/api_response.dart";
 import "package:wavelength/api/models/embedded.dart";
 import "package:wavelength/api/models/enums/video_type.dart";
-import "package:wavelength/api/models/representations/queueable_music.dart";
+import "package:wavelength/audio/music_context_queue.dart";
+import "package:wavelength/audio/queueable_music.dart";
 import "package:wavelength/api/models/track.dart";
 import "package:wavelength/api/models/video.dart";
 import "package:wavelength/api/repositories/track_repo.dart";
@@ -14,7 +15,7 @@ import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_event.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_track/music_player_track_event.dart";
 import "package:wavelength/utils/url.dart";
-import "package:wavelength/widgets/track_options_bottom_sheet.dart";
+import "package:wavelength/widgets/bottom_sheets/track_options_bottom_sheet.dart";
 import "package:wavelength/widgets/ui/amplitude.dart";
 
 class VideoCard extends StatelessWidget {
@@ -31,20 +32,26 @@ class VideoCard extends StatelessWidget {
     if (durationResponse is ApiResponseSuccess<int>) {
       musicTrackBloc.add(
         MusicPlayerTrackLoadEvent(
-          queueableMusic: QueueableMusic(
-            videoId: video.videoId,
-            title: video.title,
-            isExplicit: false,
-            thumbnail: getTrackThumbnail(video.videoId),
-            artists: [
-              EmbeddedArtist(
-                title: video.author,
-                browseId: video.authorChannelId,
-              ),
-            ],
-            album: null,
-            videoType: VideoType.uvideo,
-          ),
+          context: MusicContextTypeNone(),
+          trackId: video.videoId,
+          sourceLabel: null,
+          tracks: [
+            QueueableMusic(
+              videoId: video.videoId,
+              title: video.title,
+              duration: video.duration,
+              isExplicit: false,
+              thumbnail: getUpscaledTrackThumbnail(video.thumbnail),
+              artists: [
+                EmbeddedArtist(
+                  title: video.author,
+                  browseId: video.authorChannelId,
+                ),
+              ],
+              album: null,
+              videoType: VideoType.uvideo,
+            ),
+          ],
         ),
       );
     }
@@ -75,7 +82,7 @@ class VideoCard extends StatelessWidget {
             track: Track(
               videoId: video.videoId,
               title: video.title,
-              thumbnail: getTrackThumbnail(video.videoId),
+              thumbnail: getUpscaledTrackThumbnail(video.thumbnail),
               artists: [
                 EmbeddedArtist(
                   title: video.author,

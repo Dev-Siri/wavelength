@@ -5,6 +5,7 @@ class Video {
   final String videoId;
   final String title;
   final String thumbnail;
+  final int duration;
   final String author;
   final String authorChannelId;
 
@@ -12,6 +13,7 @@ class Video {
     required this.videoId,
     required this.title,
     required this.thumbnail,
+    required this.duration,
     required this.author,
     required this.authorChannelId,
   });
@@ -22,6 +24,7 @@ class Video {
       title: json["title"] as String,
       thumbnail: json["thumbnail"] as String,
       author: json["author"] as String,
+      duration: json["duration"] as int,
       authorChannelId: json["authorChannelId"] as String,
     );
   }

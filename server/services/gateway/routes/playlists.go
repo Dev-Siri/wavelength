@@ -2,7 +2,7 @@ package routes
 
 import (
 	playlist_controllers "github.com/Dev-Siri/wavelength/server/services/gateway/controllers/playlist"
-	"github.com/Dev-Siri/wavelength/server/services/gateway/middleware"
+	"github.com/Dev-Siri/wavelength/server/shared/middleware"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -22,4 +22,5 @@ func registerPlaylistRoutes(app *fiber.App) {
 	playlists.Get("/playlist/:playlistId/recommendations", playlist_controllers.GetSongRecommendations)
 	playlists.Put("/playlist/:playlistId/tracks", playlist_controllers.RearrangePlaylistTracks)
 	playlists.Patch("/playlist/:playlistId/visibility", middleware.JwtAuthMiddleware, playlist_controllers.ChangePlaylistVisibility)
+	playlists.Get("/playlist/:playlistId/likes", middleware.JwtAuthMiddleware, playlist_controllers.GetPlaylistTracksLikedStatus)
 }

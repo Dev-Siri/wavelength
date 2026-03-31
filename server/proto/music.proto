@@ -18,7 +18,7 @@ service MusicService {
   rpc GetMusicVideoId(GetMusicVideoIdRequest) returns (GetMusicVideoIdResponse);
   rpc SearchMusicTracks(SearchMusicTracksRequest) returns (SearchMusicTracksResponse);
   rpc SearchYouTubeVideos(SearchYouTubeVideosRequest) returns (SearchYouTubeVideosResponse);
-  rpc GetMusicLyrics(GetMusicLyricsRequest) returns (GetMusicLyricsResponse);
+  rpc GetUpNext(GetUpNextRequest) returns (GetUpNextResponse);
 }
 
 message LikeTrackRequest {
@@ -48,18 +48,11 @@ message GetMusicSearchSuggestionsRequest {
 
 message GetMusicSearchSuggestionsResponse {
   message SearchSuggestedLink {
-    message SearchSuggestedLinkMeta {
-      string type = 1;
-      string author_or_album = 2;
-      string plays_or_album_release = 3;
-    }
-
-    SearchSuggestedLinkMeta meta = 1;
-    string thumbnail = 2;
-    string title = 3;
-    string subtitle = 4;
-    string browse_id = 5;
-    string type = 7;
+    string thumbnail = 1;
+    string title = 2;
+    string subtitle = 3;
+    string browse_id = 4;
+    string type = 5;
   }
 
   repeated string matching_queries = 1;
@@ -80,7 +73,7 @@ message GetLikedTrackCountRequest {
 }
 
 message GetLikedTrackCountResponse {
-  uint32 like_count = 1; 
+  optional uint32 like_count = 1; 
 }
 
 message GetLikedTracksLengthRequest {
@@ -150,11 +143,10 @@ message SearchMusicTracksResponse {
   repeated common.Track tracks = 1;
 }
 
-message GetMusicLyricsRequest {
-  string title = 1;
-  string artist = 2;
+message GetUpNextRequest {
+  string video_id = 1;
 }
 
-message GetMusicLyricsResponse {
-  repeated common.Lyric lyrics = 1;
+message GetUpNextResponse {
+  repeated common.Track tracks = 1;
 }

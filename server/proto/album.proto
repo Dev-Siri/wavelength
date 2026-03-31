@@ -10,6 +10,11 @@ service AlbumService {
   rpc GetAlbumDetails(GetAlbumDetailsRequest) returns (GetAlbumDetailsResponse);
   rpc SearchAlbums(SearchAlbumsRequest) returns (SearchAlbumsResponse);
   rpc CreateTrackAlbum(CreateTrackAlbumRequest) returns (google.protobuf.Empty);
+  rpc GetAlbumLiveCover(GetAlbumLiveCoverRequest) returns (GetAlbumLiveCoverResponse);
+  rpc IsAlbumLossless(IsAlbumLosslessRequest) returns (IsAlbumLosslessResponse);
+  rpc IsAlbumSaved(IsAlbumSavedRequest) returns (IsAlbumSavedResponse);
+  rpc SaveAlbum(SaveAlbumRequest) returns (SaveAlbumResponse);
+  rpc GetSavedAlbums(GetSavedAlbumsRequest) returns (GetSavedAlbumsResponse);
 }
 
 message GetAlbumDetailsRequest {
@@ -32,4 +37,52 @@ message CreateTrackAlbumRequest {
   string browse_id = 1;
   string track_id = 2;
   string title = 3;
+}
+
+message GetAlbumLiveCoverRequest {
+  string video_id = 1;
+  string album_id = 2;
+}
+
+message GetAlbumLiveCoverResponse {
+  optional string live_album_cover_uri = 1;
+}
+
+message IsAlbumLosslessRequest {
+  string album_id = 1;
+}
+
+message IsAlbumLosslessResponse {
+  optional bool is_lossless = 1;
+}
+
+message SaveAlbumRequest {
+  string album_id = 1;
+  string saver_email = 2;
+}
+
+message SaveAlbumResponse {
+  enum AlbumSaveType {
+    ALBUM_SAVE_TYPE_UNSPECIFIED = 0;
+    ALBUM_SAVE_TYPE_ADD_SAVE = 1;
+    ALBUM_SAVE_TYPE_REMOVE_SAVE = 2;
+  }
+  AlbumSaveType save_type = 1;
+}
+
+message IsAlbumSavedRequest {
+  string album_id = 1;
+  string saver_email = 2;
+}
+
+message IsAlbumSavedResponse {
+  optional bool is_saved = 1;
+}
+
+message GetSavedAlbumsRequest {
+  string saver_email = 1;
+}
+
+message GetSavedAlbumsResponse {
+  repeated common.SavedAlbum albums = 1;
 }

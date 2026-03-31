@@ -32,7 +32,7 @@ android {
     defaultConfig {
         applicationId = "dev.siri.wavelength"
 
-        minSdk = flutter.minSdkVersion
+        minSdk = 31
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

@@ -8,15 +8,17 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/Dev-Siri/wavelength/server/services/gateway/constants"
 	"github.com/Dev-Siri/wavelength/server/services/gateway/env"
 	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
+	shared_models "github.com/Dev-Siri/wavelength/server/shared/models"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 )
+
+const uploadThingApiURL = "https://api.uploadthing.com"
 
 func ManualImageUpload(ctx *fiber.Ctx) error {
 	imageBytes := ctx.Body()
@@ -50,7 +52,7 @@ func ManualImageUpload(ctx *fiber.Ctx) error {
 	}
 
 	jsonPayloadBuffer := bytes.NewBuffer(jsonPayload)
-	uploadFilesRequest, err := http.NewRequest(http.MethodPost, constants.UploadThingApiUrl+"/v6/uploadFiles", jsonPayloadBuffer)
+	uploadFilesRequest, err := http.NewRequest(http.MethodPost, uploadThingApiURL+"/v6/uploadFiles", jsonPayloadBuffer)
 
 	uploadFilesRequest.Header.Set("Content-Type", "application/json")
 	uploadFilesRequest.Header.Add("X-Uploadthing-Api-Key", uploadThingKey)
@@ -126,7 +128,7 @@ func ManualImageUpload(ctx *fiber.Ctx) error {
 	}
 
 	ctx.Status(fiber.StatusCreated)
-	return models.Success(ctx, models.UploadThingManualFileUploadResponse{
+	return shared_models.Success(ctx, models.UploadThingManualFileUploadResponse{
 		Url:  data.Url,
 		Key:  data.Key,
 		Name: data.FileName,

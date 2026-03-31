@@ -1,0 +1,129 @@
+import "package:cached_network_image/cached_network_image.dart";
+import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:go_router/go_router.dart";
+import "package:lucide_icons_flutter/lucide_icons.dart";
+import "package:wavelength/api/models/api_response.dart";
+import "package:wavelength/api/models/playlist.dart";
+import "package:wavelength/api/repositories/playlists_repo.dart";
+import "package:wavelength/bloc/auth/auth_bloc.dart";
+import "package:wavelength/bloc/auth/auth_state.dart";
+import "package:wavelength/bloc/library/library_bloc.dart";
+import "package:wavelength/bloc/library/library_event.dart";
+import "package:wavelength/utils/toaster.dart";
+import "package:wavelength/widgets/dialogs/confirmation_dialog.dart";
+import "package:wavelength/widgets/ui/amplitude.dart";
+
+class PlaylistTile extends StatefulWidget {
+  final Playlist playlist;
+
+  const PlaylistTile({super.key, required this.playlist});
+
+  @override
+  State<PlaylistTile> createState() => _PlaylistTileState();
+}
+
+class _PlaylistTileState extends State<PlaylistTile> with Toaster {
+  Future<void> _deletePlaylist({required String userEmail}) async {
+    final libraryBloc = context.read<LibraryBloc>();
+    final authBlocState = context.read<AuthBloc>().state;
+
+    if (authBlocState is! AuthStateAuthorized) return;
+
+    final response = await PlaylistsRepo.deletePlaylist(
+      playlistId: widget.playlist.playlistId,
+      authToken: authBlocState.authToken,
+    );
+
+    if (response is ApiResponseSuccess) {
+      libraryBloc.add(
+        LibraryFetchEvent(email: userEmail, authToken: authBlocState.authToken),
+      );
+      return;
+    }
+
+    if (mounted) {
+      showToast(context, "Failed to delete playlist.", ToastType.error);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AmplButton(
+      padding: EdgeInsets.zero,
+      onPressed: () => context.push("/playlist/${widget.playlist.playlistId}"),
+      child: Padding(
+        padding: const EdgeInsets.all(5),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (widget.playlist.coverImage != null)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: CachedNetworkImage(
+                  imageUrl: widget.playlist.coverImage!,
+                  height: 60,
+                  width: 60,
+                  fit: BoxFit.cover,
+                ),
+              )
+            else
+              Container(
+                height: 60,
+                width: 60,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade900,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: const Icon(LucideIcons.music),
+              ),
+            const SizedBox(width: 10),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.playlist.name,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  widget.playlist.authorName,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    height: 1,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+            const Spacer(),
+            BlocBuilder<AuthBloc, AuthState>(
+              builder: (context, state) {
+                return IconButton(
+                  icon: const Icon(LucideIcons.trash2, color: Colors.red),
+                  onPressed: () => state is AuthStateAuthorized
+                      ? showDialog(
+                          context: context,
+                          builder: (_) => ConfirmationDialog(
+                            onConfirm: () =>
+                                _deletePlaylist(userEmail: state.user.email),
+                            title: "Delete '${widget.playlist.name}' ?",
+                            content: "This action cannot be undone.",
+                          ),
+                        )
+                      : null,
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

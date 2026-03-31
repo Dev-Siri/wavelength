@@ -26,6 +26,17 @@ class EmbeddedArtist {
 
   @override
   String toString() => "EmbeddedArtist(title: $title, browseId: $browseId)";
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is EmbeddedArtist &&
+        other.title == title &&
+        other.browseId == browseId;
+  }
+
+  @override
+  int get hashCode => Object.hash(title, browseId);
 }
 
 @immutable
@@ -51,4 +62,15 @@ class EmbeddedAlbum {
 
   @override
   String toString() => "EmbeddedAlbum(title: $title, browseId: $browseId)";
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is EmbeddedAlbum &&
+        other.title == title &&
+        other.browseId == browseId;
+  }
+
+  @override
+  int get hashCode => Object.hash(title, browseId);
 }

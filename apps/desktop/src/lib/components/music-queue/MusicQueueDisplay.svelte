@@ -1,53 +1,81 @@
 <script lang="ts">
   import { XIcon } from "@lucide/svelte";
-  import { slide } from "svelte/transition";
 
-  import musicQueueStore from "$lib/stores/music-queue.svelte";
+  import musicInterfaceStore from "$lib/stores/musicInterface.svelte";
+  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import cn from "$lib/utils/cn";
 
   import Button from "../ui/button/button.svelte";
   import MusicQueueListItem from "./MusicQueueListItem.svelte";
 
-  const currentIndex = $derived(
-    musicQueueStore.musicPlayingNow
-      ? musicQueueStore.musicPlaylistContext.indexOf(musicQueueStore.musicPlayingNow) + 1
-      : -1,
-  );
-  const nextIndex = $derived(currentIndex + 1);
-  const upNextItem = $derived(
-    musicQueueStore.musicPlaylistContext[
-      nextIndex === musicQueueStore.musicPlaylistContext.length ? 0 : nextIndex
-    ] || null,
-  );
+  const { class: className, presentationOnly }: { class?: string; presentationOnly?: boolean } =
+    $props();
+
+  const nextTextWithSource = $derived.by(() => {
+    const { playlistContextSource } = musicPlayer.queue;
+
+    if (playlistContextSource.type === "none") return "Next";
+
+    return playlistContextSource.sourceName
+      ? `Next from: ${playlistContextSource.sourceName}`
+      : "Next";
+  });
 </script>
 
-<div class="h-full w-full bg-[#111] rounded-xl">
+<div class={cn("h-full w-full bg-[#111]", className)}>
   <header class="flex justify-between items-center px-4 pt-2">
-    <p class="text-xl font-semibold select-none">Queue</p>
-    <Button
-      class="px-3"
-      variant="ghost"
-      onclick={() => (musicQueueStore.isMusicQueueVisible = false)}
-    >
-      <XIcon size={18} />
-    </Button>
+    <p class="text-lg font-semibold select-none">Queue</p>
+    {#if !presentationOnly}
+      <Button
+        size="icon"
+        variant="ghost"
+        onclick={() => (musicInterfaceStore.isMusicQueueVisible = false)}
+      >
+        <XIcon size={18} />
+      </Button>
+    {/if}
   </header>
-  {#if musicQueueStore.musicPlaylistContext.length}
-    <div class="h-full w-full flex flex-col gap-2 px-4 overflow-auto">
-      <ul class="w-full overflow-auto">
-        {#each musicQueueStore.musicPlaylistContext as musicQueueItem, i}
-          <li class="h-fit flex flex-col items-center w-full mb-1">
+  <div
+    class="h-full w-full flex flex-col gap-2 px-4 overflow-auto mt-2 pb-[60%] {presentationOnly
+      ? 'scrollbar-hidden'
+      : ''}"
+  >
+    <ul class="w-full">
+      {#each musicPlayer.queue.queue as musicQueueItem (musicQueueItem.videoId)}
+        <li class="h-fit flex flex-col w-full">
+          <MusicQueueListItem {musicQueueItem} dismissable />
+        </li>
+      {/each}
+    </ul>
+    {#if musicPlayer.queue.playingNow}
+      <ul class="w-full">
+        <p class="text-lg font-semibold select-none my-2">Now playing</p>
+        <li class="h-fit flex flex-col w-full">
+          <MusicQueueListItem musicQueueItem={musicPlayer.queue.playingNow} />
+        </li>
+      </ul>
+    {/if}
+    {#if musicPlayer.queue.nextTracks?.length}
+      <ul class="w-full">
+        <p class="text-lg font-semibold select-none mb-2">
+          {nextTextWithSource}
+        </p>
+        {#each musicPlayer.queue.nextTracks as musicQueueItem (musicQueueItem.videoId)}
+          <li class="h-fit flex flex-col w-full">
             <MusicQueueListItem {musicQueueItem} />
           </li>
         {/each}
       </ul>
-      <div class="flex flex-col">
-        <p class="text-xl font-semibold mb-2 select-none">Next</p>
-        {#key upNextItem}
-          <div in:slide={{ duration: 200 }} out:slide={{ duration: 200 }}>
-            <MusicQueueListItem musicQueueItem={upNextItem} />
-          </div>
-        {/key}
-      </div>
-    </div>
-  {/if}
+    {/if}
+    {#if musicPlayer.queue.automixedTracks?.length}
+      <ul class="w-full">
+        <p class="text-lg font-semibold select-none mb-2">Up next</p>
+        {#each musicPlayer.queue.automixedTracks as musicQueueItem (musicQueueItem.videoId)}
+          <li class="h-fit flex flex-col w-full">
+            <MusicQueueListItem {musicQueueItem} />
+          </li>
+        {/each}
+      </ul>
+    {/if}
+  </div>
 </div>

@@ -1,10 +1,12 @@
 <script lang="ts">
+  /* eslint-disable svelte/no-navigation-without-resolve */
   import { goto } from "$app/navigation";
-  import { createQuery } from "@tanstack/svelte-query";
+  import { blur } from "svelte/transition";
 
-  import { svelteQueryKeys } from "$lib/constants/keys";
-  import { backendClient } from "$lib/utils/query-client";
-  import { searchRecommendationsSchema } from "$lib/utils/validation/search-recommendations";
+  import useSearchRecommendationsQuery from "$lib/queries/searchRecommendations";
+
+  import { resolve } from "$app/paths";
+  import Image from "../Image.svelte";
 
   let searchSuggestionsList: HTMLDivElement | null = $state(null);
   let {
@@ -21,24 +23,7 @@
     onBlur?: () => void;
   } = $props();
 
-  const cachedQueries = new Set<string>();
-  const searchRecommendationsQuery = createQuery(() => ({
-    initialData: {
-      matchingQueries: [],
-      matchingLinks: [],
-    },
-    staleTime: query => (cachedQueries.has(query.queryKey[1]) ? 1000 * 60 * 5 : 0),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    queryKey: svelteQueryKeys.searchRecommendations(q),
-    queryFn: () => {
-      if (!cachedQueries.has(q)) cachedQueries.add(q);
-      return backendClient("/music/search/search-recommendations", searchRecommendationsSchema, {
-        searchParams: { q },
-      });
-    },
-  }));
+  const searchRecommendationsQuery = $derived(useSearchRecommendationsQuery(q));
 
   $effect(() => {
     function keyboardSuggestionNavigationHandler(e: KeyboardEvent) {
@@ -59,7 +44,7 @@
       e.preventDefault();
       activeIndex = Math.min(
         activeIndex + 1,
-        searchRecommendationsQuery.data.matchingQueries.length - 1,
+        searchRecommendationsQuery.data?.matchingQueries.length ?? 0 - 1,
       );
     }
 
@@ -71,44 +56,69 @@
     }
 
     if (e.key === "Enter") {
-      const term = searchRecommendationsQuery.data.matchingQueries[activeIndex];
+      const term = searchRecommendationsQuery.data?.matchingQueries[activeIndex];
       if (term) goto(`/app/search?q=${encodeURIComponent(term)}`);
     }
   }
 </script>
 
-<div class="bg-black border-secondary rounded-xl w-full overflow-hidden shadow-2xl">
-  {#if searchRecommendationsQuery.data.matchingQueries.length || searchRecommendationsQuery.data?.matchingLinks?.length || q}
-    <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-    <div
-      role="list"
-      class="flex flex-col items-center py-4 outline-none"
-      bind:this={searchSuggestionsList}
-      onkeydown={handleSearchSuggestionListKeyDown}
-      onfocus={onFocus}
-      onblur={onBlur}
-      tabindex="0"
-    >
-      {#each searchRecommendationsQuery.data.matchingQueries.slice(0, 3) as searchTerm, i}
-        <li
-          class="flex justify-center relative items-center h-full w-full backdrop-opacity-20 z-9999"
-          class:bg-secondary={i === activeIndex}
+{#if searchRecommendationsQuery.data?.matchingQueries.length || searchRecommendationsQuery.data?.matchingLinks?.length || q}
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+  <div
+    in:blur
+    out:blur
+    role="list"
+    class="bg-primary-foreground h-full w-2/5 shadow-2xl border-secondary rounded-sm flex flex-col items-center py-2 outline-none"
+    bind:this={searchSuggestionsList}
+    onkeydown={handleSearchSuggestionListKeyDown}
+    onfocus={onFocus}
+    onblur={onBlur}
+    tabindex="0"
+  >
+    {#each searchRecommendationsQuery.data?.matchingQueries.slice(0, 3) as searchTerm, i (`${searchTerm}-${i}`)}
+      <li
+        class="flex justify-center relative items-center h-full w-full backdrop-opacity-20 z-9999"
+        class:bg-secondary={i === activeIndex}
+      >
+        <a
+          href="/app/search?q={encodeURIComponent(searchTerm)}"
+          class="h-full w-full p-4 hover:bg-secondary duration-200"
         >
+          {#each searchTerm.split("") as char, i (`${char}-${i}`)}
+            {#if char === q.charAt(i)}
+              <span class="font-semibold">{char}</span>
+            {:else}
+              {char}
+            {/if}
+          {/each}
+        </a>
+      </li>
+    {/each}
+    {#each searchRecommendationsQuery.data?.matchingLinks?.slice(0, 6) as searchLink, i (`${searchLink.title}-${i}`)}
+      <li
+        class="flex justify-center relative items-center h-full w-full backdrop-opacity-20 z-9999"
+        class:bg-secondary={i === activeIndex}
+      >
+        {#if searchLink.type === "album" || searchLink.type === "artist"}
           <a
-            href="/app/search?q={encodeURIComponent(searchTerm)}"
-            class="h-full w-full p-4 hover:bg-secondary duration-200"
+            href={resolve(`/app/${searchLink.type}/${searchLink.browseId}`)}
+            class="flex items-center p-2 h-full gap-2 w-full hover:bg-secondary duration-200"
           >
-            {#each searchTerm.split("") as char, i}
-              {#if char === q[i]}
-                <span class="font-semibold">{char}</span>
-              {:else}
-                {char}
-              {/if}
-            {/each}
+            <Image
+              src={searchLink.thumbnail}
+              alt="{searchLink.title} Thumbnail"
+              height={40}
+              width={40}
+              class={searchLink.type === "album" ? "rounded-sm" : "rounded-full"}
+            />
+            <div class="flex flex-col">
+              <span class="font-semibold">{searchLink.title}</span>
+              <span class="text-xs text-gray-400">{searchLink.subtitle}</span>
+            </div>
           </a>
-        </li>
-      {/each}
-    </div>
-  {/if}
-</div>
+        {/if}
+      </li>
+    {/each}
+  </div>
+{/if}

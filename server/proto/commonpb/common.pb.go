@@ -123,6 +123,55 @@ func (AlbumType) EnumDescriptor() ([]byte, []int) {
 	return file_proto_common_proto_rawDescGZIP(), []int{1}
 }
 
+type LyricsLine_AlignmentDirection int32
+
+const (
+	LyricsLine_ALIGNMENT_DIRECTION_UNSPECIFIED LyricsLine_AlignmentDirection = 0
+	LyricsLine_ALIGNMENT_DIRECTION_START       LyricsLine_AlignmentDirection = 1
+	LyricsLine_ALIGNMENT_DIRECTION_END         LyricsLine_AlignmentDirection = 2
+)
+
+// Enum value maps for LyricsLine_AlignmentDirection.
+var (
+	LyricsLine_AlignmentDirection_name = map[int32]string{
+		0: "ALIGNMENT_DIRECTION_UNSPECIFIED",
+		1: "ALIGNMENT_DIRECTION_START",
+		2: "ALIGNMENT_DIRECTION_END",
+	}
+	LyricsLine_AlignmentDirection_value = map[string]int32{
+		"ALIGNMENT_DIRECTION_UNSPECIFIED": 0,
+		"ALIGNMENT_DIRECTION_START":       1,
+		"ALIGNMENT_DIRECTION_END":         2,
+	}
+)
+
+func (x LyricsLine_AlignmentDirection) Enum() *LyricsLine_AlignmentDirection {
+	p := new(LyricsLine_AlignmentDirection)
+	*p = x
+	return p
+}
+
+func (x LyricsLine_AlignmentDirection) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (LyricsLine_AlignmentDirection) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_common_proto_enumTypes[2].Descriptor()
+}
+
+func (LyricsLine_AlignmentDirection) Type() protoreflect.EnumType {
+	return &file_proto_common_proto_enumTypes[2]
+}
+
+func (x LyricsLine_AlignmentDirection) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use LyricsLine_AlignmentDirection.Descriptor instead.
+func (LyricsLine_AlignmentDirection) EnumDescriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{19, 0}
+}
+
 type Playlist struct {
 	state             protoimpl.MessageState `protogen:"open.v1"`
 	PlaylistId        string                 `protobuf:"bytes,1,opt,name=playlist_id,json=playlistId,proto3" json:"playlist_id,omitempty"`
@@ -830,8 +879,9 @@ type YouTubeVideo struct {
 	VideoId         string                 `protobuf:"bytes,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
 	Title           string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
 	Thumbnail       string                 `protobuf:"bytes,3,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
-	Author          string                 `protobuf:"bytes,4,opt,name=author,proto3" json:"author,omitempty"`
-	AuthorChannelId string                 `protobuf:"bytes,5,opt,name=author_channel_id,json=authorChannelId,proto3" json:"author_channel_id,omitempty"`
+	Duration        uint64                 `protobuf:"varint,4,opt,name=duration,proto3" json:"duration,omitempty"`
+	Author          string                 `protobuf:"bytes,5,opt,name=author,proto3" json:"author,omitempty"`
+	AuthorChannelId string                 `protobuf:"bytes,6,opt,name=author_channel_id,json=authorChannelId,proto3" json:"author_channel_id,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -885,6 +935,13 @@ func (x *YouTubeVideo) GetThumbnail() string {
 		return x.Thumbnail
 	}
 	return ""
+}
+
+func (x *YouTubeVideo) GetDuration() uint64 {
+	if x != nil {
+		return x.Duration
+	}
+	return 0
 }
 
 func (x *YouTubeVideo) GetAuthor() string {
@@ -1575,29 +1632,27 @@ func (x *ThemeColor) GetB() uint32 {
 	return 0
 }
 
-type Lyric struct {
+type PaginationParams struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Text          string                 `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
-	StartMs       int32                  `protobuf:"varint,2,opt,name=start_ms,json=startMs,proto3" json:"start_ms,omitempty"`
-	DurMs         int32                  `protobuf:"varint,3,opt,name=dur_ms,json=durMs,proto3" json:"dur_ms,omitempty"`
+	Current       int32                  `protobuf:"varint,1,opt,name=current,proto3" json:"current,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Lyric) Reset() {
-	*x = Lyric{}
+func (x *PaginationParams) Reset() {
+	*x = PaginationParams{}
 	mi := &file_proto_common_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Lyric) String() string {
+func (x *PaginationParams) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Lyric) ProtoMessage() {}
+func (*PaginationParams) ProtoMessage() {}
 
-func (x *Lyric) ProtoReflect() protoreflect.Message {
+func (x *PaginationParams) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_common_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1609,30 +1664,240 @@ func (x *Lyric) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Lyric.ProtoReflect.Descriptor instead.
-func (*Lyric) Descriptor() ([]byte, []int) {
+// Deprecated: Use PaginationParams.ProtoReflect.Descriptor instead.
+func (*PaginationParams) Descriptor() ([]byte, []int) {
 	return file_proto_common_proto_rawDescGZIP(), []int{18}
 }
 
-func (x *Lyric) GetText() string {
+func (x *PaginationParams) GetCurrent() int32 {
+	if x != nil {
+		return x.Current
+	}
+	return 0
+}
+
+type LyricsLine struct {
+	state          protoimpl.MessageState         `protogen:"open.v1"`
+	Text           []*LyricsLine_Syllable         `protobuf:"bytes,1,rep,name=text,proto3" json:"text,omitempty"`
+	Background     bool                           `protobuf:"varint,2,opt,name=background,proto3" json:"background,omitempty"`
+	BackgroundText []*LyricsLine_Syllable         `protobuf:"bytes,3,rep,name=background_text,json=backgroundText,proto3" json:"background_text,omitempty"`
+	OppositeTurn   bool                           `protobuf:"varint,4,opt,name=opposite_turn,json=oppositeTurn,proto3" json:"opposite_turn,omitempty"`
+	Timestamp      uint64                         `protobuf:"varint,5,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	Endtime        uint64                         `protobuf:"varint,6,opt,name=endtime,proto3" json:"endtime,omitempty"`
+	IsWordSynced   *bool                          `protobuf:"varint,7,opt,name=is_word_synced,json=isWordSynced,proto3,oneof" json:"is_word_synced,omitempty"`
+	Alignment      *LyricsLine_AlignmentDirection `protobuf:"varint,8,opt,name=alignment,proto3,enum=common.LyricsLine_AlignmentDirection,oneof" json:"alignment,omitempty"`
+	SongPart       *string                        `protobuf:"bytes,9,opt,name=song_part,json=songPart,proto3,oneof" json:"song_part,omitempty"`
+	RomanizedText  *string                        `protobuf:"bytes,10,opt,name=romanized_text,json=romanizedText,proto3,oneof" json:"romanized_text,omitempty"`
+	Translation    *string                        `protobuf:"bytes,11,opt,name=translation,proto3,oneof" json:"translation,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *LyricsLine) Reset() {
+	*x = LyricsLine{}
+	mi := &file_proto_common_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LyricsLine) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LyricsLine) ProtoMessage() {}
+
+func (x *LyricsLine) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LyricsLine.ProtoReflect.Descriptor instead.
+func (*LyricsLine) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *LyricsLine) GetText() []*LyricsLine_Syllable {
 	if x != nil {
 		return x.Text
+	}
+	return nil
+}
+
+func (x *LyricsLine) GetBackground() bool {
+	if x != nil {
+		return x.Background
+	}
+	return false
+}
+
+func (x *LyricsLine) GetBackgroundText() []*LyricsLine_Syllable {
+	if x != nil {
+		return x.BackgroundText
+	}
+	return nil
+}
+
+func (x *LyricsLine) GetOppositeTurn() bool {
+	if x != nil {
+		return x.OppositeTurn
+	}
+	return false
+}
+
+func (x *LyricsLine) GetTimestamp() uint64 {
+	if x != nil {
+		return x.Timestamp
+	}
+	return 0
+}
+
+func (x *LyricsLine) GetEndtime() uint64 {
+	if x != nil {
+		return x.Endtime
+	}
+	return 0
+}
+
+func (x *LyricsLine) GetIsWordSynced() bool {
+	if x != nil && x.IsWordSynced != nil {
+		return *x.IsWordSynced
+	}
+	return false
+}
+
+func (x *LyricsLine) GetAlignment() LyricsLine_AlignmentDirection {
+	if x != nil && x.Alignment != nil {
+		return *x.Alignment
+	}
+	return LyricsLine_ALIGNMENT_DIRECTION_UNSPECIFIED
+}
+
+func (x *LyricsLine) GetSongPart() string {
+	if x != nil && x.SongPart != nil {
+		return *x.SongPart
 	}
 	return ""
 }
 
-func (x *Lyric) GetStartMs() int32 {
+func (x *LyricsLine) GetRomanizedText() string {
+	if x != nil && x.RomanizedText != nil {
+		return *x.RomanizedText
+	}
+	return ""
+}
+
+func (x *LyricsLine) GetTranslation() string {
+	if x != nil && x.Translation != nil {
+		return *x.Translation
+	}
+	return ""
+}
+
+type SavedAlbum struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	SaverEmail     string                 `protobuf:"bytes,1,opt,name=saver_email,json=saverEmail,proto3" json:"saver_email,omitempty"`
+	AlbumId        string                 `protobuf:"bytes,2,opt,name=album_id,json=albumId,proto3" json:"album_id,omitempty"`
+	Title          string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	AlbumCover     string                 `protobuf:"bytes,4,opt,name=album_cover,json=albumCover,proto3" json:"album_cover,omitempty"`
+	AlbumSongCount uint32                 `protobuf:"varint,5,opt,name=album_song_count,json=albumSongCount,proto3" json:"album_song_count,omitempty"`
+	AlbumDuration  string                 `protobuf:"bytes,6,opt,name=album_duration,json=albumDuration,proto3" json:"album_duration,omitempty"`
+	AlbumAuthor    string                 `protobuf:"bytes,7,opt,name=album_author,json=albumAuthor,proto3" json:"album_author,omitempty"`
+	AlbumType      AlbumType              `protobuf:"varint,8,opt,name=album_type,json=albumType,proto3,enum=common.AlbumType" json:"album_type,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *SavedAlbum) Reset() {
+	*x = SavedAlbum{}
+	mi := &file_proto_common_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SavedAlbum) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SavedAlbum) ProtoMessage() {}
+
+func (x *SavedAlbum) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[20]
 	if x != nil {
-		return x.StartMs
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SavedAlbum.ProtoReflect.Descriptor instead.
+func (*SavedAlbum) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *SavedAlbum) GetSaverEmail() string {
+	if x != nil {
+		return x.SaverEmail
+	}
+	return ""
+}
+
+func (x *SavedAlbum) GetAlbumId() string {
+	if x != nil {
+		return x.AlbumId
+	}
+	return ""
+}
+
+func (x *SavedAlbum) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *SavedAlbum) GetAlbumCover() string {
+	if x != nil {
+		return x.AlbumCover
+	}
+	return ""
+}
+
+func (x *SavedAlbum) GetAlbumSongCount() uint32 {
+	if x != nil {
+		return x.AlbumSongCount
 	}
 	return 0
 }
 
-func (x *Lyric) GetDurMs() int32 {
+func (x *SavedAlbum) GetAlbumDuration() string {
 	if x != nil {
-		return x.DurMs
+		return x.AlbumDuration
 	}
-	return 0
+	return ""
+}
+
+func (x *SavedAlbum) GetAlbumAuthor() string {
+	if x != nil {
+		return x.AlbumAuthor
+	}
+	return ""
+}
+
+func (x *SavedAlbum) GetAlbumType() AlbumType {
+	if x != nil {
+		return x.AlbumType
+	}
+	return AlbumType_ALBUM_TYPE_UNSPECIFIED
 }
 
 type Artist_TopSongTrack struct {
@@ -1641,15 +1906,17 @@ type Artist_TopSongTrack struct {
 	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
 	Thumbnail     string                 `protobuf:"bytes,3,opt,name=thumbnail,proto3" json:"thumbnail,omitempty"`
 	PlayCount     string                 `protobuf:"bytes,4,opt,name=play_count,json=playCount,proto3" json:"play_count,omitempty"`
-	IsExplicit    *bool                  `protobuf:"varint,5,opt,name=is_explicit,json=isExplicit,proto3,oneof" json:"is_explicit,omitempty"`
-	Album         *EmbeddedAlbum         `protobuf:"bytes,6,opt,name=album,proto3,oneof" json:"album,omitempty"`
+	Duration      uint64                 `protobuf:"varint,5,opt,name=duration,proto3" json:"duration,omitempty"`
+	Artists       []*EmbeddedArtist      `protobuf:"bytes,6,rep,name=artists,proto3" json:"artists,omitempty"`
+	IsExplicit    *bool                  `protobuf:"varint,7,opt,name=is_explicit,json=isExplicit,proto3,oneof" json:"is_explicit,omitempty"`
+	Album         *EmbeddedAlbum         `protobuf:"bytes,8,opt,name=album,proto3,oneof" json:"album,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Artist_TopSongTrack) Reset() {
 	*x = Artist_TopSongTrack{}
-	mi := &file_proto_common_proto_msgTypes[19]
+	mi := &file_proto_common_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1661,7 +1928,7 @@ func (x *Artist_TopSongTrack) String() string {
 func (*Artist_TopSongTrack) ProtoMessage() {}
 
 func (x *Artist_TopSongTrack) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_common_proto_msgTypes[19]
+	mi := &file_proto_common_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1705,6 +1972,20 @@ func (x *Artist_TopSongTrack) GetPlayCount() string {
 	return ""
 }
 
+func (x *Artist_TopSongTrack) GetDuration() uint64 {
+	if x != nil {
+		return x.Duration
+	}
+	return 0
+}
+
+func (x *Artist_TopSongTrack) GetArtists() []*EmbeddedArtist {
+	if x != nil {
+		return x.Artists
+	}
+	return nil
+}
+
 func (x *Artist_TopSongTrack) GetIsExplicit() bool {
 	if x != nil && x.IsExplicit != nil {
 		return *x.IsExplicit
@@ -1732,7 +2013,7 @@ type Artist_ArtistAlbum struct {
 
 func (x *Artist_ArtistAlbum) Reset() {
 	*x = Artist_ArtistAlbum{}
-	mi := &file_proto_common_proto_msgTypes[20]
+	mi := &file_proto_common_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1744,7 +2025,7 @@ func (x *Artist_ArtistAlbum) String() string {
 func (*Artist_ArtistAlbum) ProtoMessage() {}
 
 func (x *Artist_ArtistAlbum) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_common_proto_msgTypes[20]
+	mi := &file_proto_common_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1793,6 +2074,90 @@ func (x *Artist_ArtistAlbum) GetAlbumType() AlbumType {
 		return x.AlbumType
 	}
 	return AlbumType_ALBUM_TYPE_UNSPECIFIED
+}
+
+type LyricsLine_Syllable struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Text          string                 `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
+	Part          bool                   `protobuf:"varint,2,opt,name=part,proto3" json:"part,omitempty"`
+	Timestamp     uint64                 `protobuf:"varint,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	Endtime       uint64                 `protobuf:"varint,4,opt,name=endtime,proto3" json:"endtime,omitempty"`
+	RomanizedText *string                `protobuf:"bytes,5,opt,name=romanized_text,json=romanizedText,proto3,oneof" json:"romanized_text,omitempty"`
+	LineSynced    *bool                  `protobuf:"varint,6,opt,name=line_synced,json=lineSynced,proto3,oneof" json:"line_synced,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LyricsLine_Syllable) Reset() {
+	*x = LyricsLine_Syllable{}
+	mi := &file_proto_common_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LyricsLine_Syllable) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LyricsLine_Syllable) ProtoMessage() {}
+
+func (x *LyricsLine_Syllable) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LyricsLine_Syllable.ProtoReflect.Descriptor instead.
+func (*LyricsLine_Syllable) Descriptor() ([]byte, []int) {
+	return file_proto_common_proto_rawDescGZIP(), []int{19, 0}
+}
+
+func (x *LyricsLine_Syllable) GetText() string {
+	if x != nil {
+		return x.Text
+	}
+	return ""
+}
+
+func (x *LyricsLine_Syllable) GetPart() bool {
+	if x != nil {
+		return x.Part
+	}
+	return false
+}
+
+func (x *LyricsLine_Syllable) GetTimestamp() uint64 {
+	if x != nil {
+		return x.Timestamp
+	}
+	return 0
+}
+
+func (x *LyricsLine_Syllable) GetEndtime() uint64 {
+	if x != nil {
+		return x.Endtime
+	}
+	return 0
+}
+
+func (x *LyricsLine_Syllable) GetRomanizedText() string {
+	if x != nil && x.RomanizedText != nil {
+		return *x.RomanizedText
+	}
+	return ""
+}
+
+func (x *LyricsLine_Syllable) GetLineSynced() bool {
+	if x != nil && x.LineSynced != nil {
+		return *x.LineSynced
+	}
+	return false
 }
 
 var File_proto_common_proto protoreflect.FileDescriptor
@@ -1877,13 +2242,14 @@ const file_proto_common_proto_rawDesc = "" +
 	"view_count\x18\x01 \x01(\x04R\tviewCount\x12\x1d\n" +
 	"\n" +
 	"like_count\x18\x02 \x01(\x04R\tlikeCount\x12#\n" +
-	"\rcomment_count\x18\x03 \x01(\x04R\fcommentCount\"\xa1\x01\n" +
+	"\rcomment_count\x18\x03 \x01(\x04R\fcommentCount\"\xbd\x01\n" +
 	"\fYouTubeVideo\x12\x19\n" +
 	"\bvideo_id\x18\x01 \x01(\tR\avideoId\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1c\n" +
-	"\tthumbnail\x18\x03 \x01(\tR\tthumbnail\x12\x16\n" +
-	"\x06author\x18\x04 \x01(\tR\x06author\x12*\n" +
-	"\x11author_channel_id\x18\x05 \x01(\tR\x0fauthorChannelId\"\xed\x01\n" +
+	"\tthumbnail\x18\x03 \x01(\tR\tthumbnail\x12\x1a\n" +
+	"\bduration\x18\x04 \x01(\x04R\bduration\x12\x16\n" +
+	"\x06author\x18\x05 \x01(\tR\x06author\x12*\n" +
+	"\x11author_channel_id\x18\x06 \x01(\tR\x0fauthorChannelId\"\xed\x01\n" +
 	"\n" +
 	"AlbumTrack\x12\x19\n" +
 	"\bvideo_id\x18\x01 \x01(\tR\avideoId\x12\x14\n" +
@@ -1920,7 +2286,7 @@ const file_proto_common_proto_rawDesc = "" +
 	"\tbrowse_id\x18\x01 \x01(\tR\bbrowseId\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1c\n" +
 	"\tthumbnail\x18\x03 \x01(\tR\tthumbnail\x12\x1a\n" +
-	"\baudience\x18\x04 \x01(\tR\baudience\"\xee\x05\n" +
+	"\baudience\x18\x04 \x01(\tR\baudience\"\xbc\x06\n" +
 	"\x06Artist\x12\x1b\n" +
 	"\tbrowse_id\x18\x01 \x01(\tR\bbrowseId\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1c\n" +
@@ -1929,16 +2295,18 @@ const file_proto_common_proto_rawDesc = "" +
 	"\baudience\x18\x05 \x01(\tR\baudience\x128\n" +
 	"\ttop_songs\x18\x06 \x03(\v2\x1b.common.Artist.TopSongTrackR\btopSongs\x122\n" +
 	"\x06albums\x18\a \x03(\v2\x1a.common.Artist.ArtistAlbumR\x06albums\x12B\n" +
-	"\x0fsingles_and_eps\x18\b \x03(\v2\x1a.common.Artist.ArtistAlbumR\rsinglesAndEps\x1a\xee\x01\n" +
+	"\x0fsingles_and_eps\x18\b \x03(\v2\x1a.common.Artist.ArtistAlbumR\rsinglesAndEps\x1a\xbc\x02\n" +
 	"\fTopSongTrack\x12\x19\n" +
 	"\bvideo_id\x18\x01 \x01(\tR\avideoId\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1c\n" +
 	"\tthumbnail\x18\x03 \x01(\tR\tthumbnail\x12\x1d\n" +
 	"\n" +
-	"play_count\x18\x04 \x01(\tR\tplayCount\x12$\n" +
-	"\vis_explicit\x18\x05 \x01(\bH\x00R\n" +
+	"play_count\x18\x04 \x01(\tR\tplayCount\x12\x1a\n" +
+	"\bduration\x18\x05 \x01(\x04R\bduration\x120\n" +
+	"\aartists\x18\x06 \x03(\v2\x16.common.EmbeddedArtistR\aartists\x12$\n" +
+	"\vis_explicit\x18\a \x01(\bH\x00R\n" +
 	"isExplicit\x88\x01\x01\x120\n" +
-	"\x05album\x18\x06 \x01(\v2\x15.common.EmbeddedAlbumH\x01R\x05album\x88\x01\x01B\x0e\n" +
+	"\x05album\x18\b \x01(\v2\x15.common.EmbeddedAlbumH\x01R\x05album\x88\x01\x01B\x0e\n" +
 	"\f_is_explicitB\b\n" +
 	"\x06_album\x1a\xb1\x01\n" +
 	"\vArtistAlbum\x12\x19\n" +
@@ -1966,11 +2334,59 @@ const file_proto_common_proto_rawDesc = "" +
 	"ThemeColor\x12\f\n" +
 	"\x01r\x18\x01 \x01(\rR\x01r\x12\f\n" +
 	"\x01g\x18\x02 \x01(\rR\x01g\x12\f\n" +
-	"\x01b\x18\x03 \x01(\rR\x01b\"M\n" +
-	"\x05Lyric\x12\x12\n" +
-	"\x04text\x18\x01 \x01(\tR\x04text\x12\x19\n" +
-	"\bstart_ms\x18\x02 \x01(\x05R\astartMs\x12\x15\n" +
-	"\x06dur_ms\x18\x03 \x01(\x05R\x05durMs*T\n" +
+	"\x01b\x18\x03 \x01(\rR\x01b\",\n" +
+	"\x10PaginationParams\x12\x18\n" +
+	"\acurrent\x18\x01 \x01(\x05R\acurrent\"\x95\a\n" +
+	"\n" +
+	"LyricsLine\x12/\n" +
+	"\x04text\x18\x01 \x03(\v2\x1b.common.LyricsLine.SyllableR\x04text\x12\x1e\n" +
+	"\n" +
+	"background\x18\x02 \x01(\bR\n" +
+	"background\x12D\n" +
+	"\x0fbackground_text\x18\x03 \x03(\v2\x1b.common.LyricsLine.SyllableR\x0ebackgroundText\x12#\n" +
+	"\ropposite_turn\x18\x04 \x01(\bR\foppositeTurn\x12\x1c\n" +
+	"\ttimestamp\x18\x05 \x01(\x04R\ttimestamp\x12\x18\n" +
+	"\aendtime\x18\x06 \x01(\x04R\aendtime\x12)\n" +
+	"\x0eis_word_synced\x18\a \x01(\bH\x00R\fisWordSynced\x88\x01\x01\x12H\n" +
+	"\talignment\x18\b \x01(\x0e2%.common.LyricsLine.AlignmentDirectionH\x01R\talignment\x88\x01\x01\x12 \n" +
+	"\tsong_part\x18\t \x01(\tH\x02R\bsongPart\x88\x01\x01\x12*\n" +
+	"\x0eromanized_text\x18\n" +
+	" \x01(\tH\x03R\rromanizedText\x88\x01\x01\x12%\n" +
+	"\vtranslation\x18\v \x01(\tH\x04R\vtranslation\x88\x01\x01\x1a\xdf\x01\n" +
+	"\bSyllable\x12\x12\n" +
+	"\x04text\x18\x01 \x01(\tR\x04text\x12\x12\n" +
+	"\x04part\x18\x02 \x01(\bR\x04part\x12\x1c\n" +
+	"\ttimestamp\x18\x03 \x01(\x04R\ttimestamp\x12\x18\n" +
+	"\aendtime\x18\x04 \x01(\x04R\aendtime\x12*\n" +
+	"\x0eromanized_text\x18\x05 \x01(\tH\x00R\rromanizedText\x88\x01\x01\x12$\n" +
+	"\vline_synced\x18\x06 \x01(\bH\x01R\n" +
+	"lineSynced\x88\x01\x01B\x11\n" +
+	"\x0f_romanized_textB\x0e\n" +
+	"\f_line_synced\"u\n" +
+	"\x12AlignmentDirection\x12#\n" +
+	"\x1fALIGNMENT_DIRECTION_UNSPECIFIED\x10\x00\x12\x1d\n" +
+	"\x19ALIGNMENT_DIRECTION_START\x10\x01\x12\x1b\n" +
+	"\x17ALIGNMENT_DIRECTION_END\x10\x02B\x11\n" +
+	"\x0f_is_word_syncedB\f\n" +
+	"\n" +
+	"_alignmentB\f\n" +
+	"\n" +
+	"_song_partB\x11\n" +
+	"\x0f_romanized_textB\x0e\n" +
+	"\f_translation\"\xa5\x02\n" +
+	"\n" +
+	"SavedAlbum\x12\x1f\n" +
+	"\vsaver_email\x18\x01 \x01(\tR\n" +
+	"saverEmail\x12\x19\n" +
+	"\balbum_id\x18\x02 \x01(\tR\aalbumId\x12\x14\n" +
+	"\x05title\x18\x03 \x01(\tR\x05title\x12\x1f\n" +
+	"\valbum_cover\x18\x04 \x01(\tR\n" +
+	"albumCover\x12(\n" +
+	"\x10album_song_count\x18\x05 \x01(\rR\x0ealbumSongCount\x12%\n" +
+	"\x0ealbum_duration\x18\x06 \x01(\tR\ralbumDuration\x12!\n" +
+	"\falbum_author\x18\a \x01(\tR\valbumAuthor\x120\n" +
+	"\n" +
+	"album_type\x18\b \x01(\x0e2\x11.common.AlbumTypeR\talbumType*T\n" +
 	"\tVideoType\x12\x1a\n" +
 	"\x16VIDEO_TYPE_UNSPECIFIED\x10\x00\x12\x14\n" +
 	"\x10VIDEO_TYPE_TRACK\x10\x01\x12\x15\n" +
@@ -1993,60 +2409,69 @@ func file_proto_common_proto_rawDescGZIP() []byte {
 	return file_proto_common_proto_rawDescData
 }
 
-var file_proto_common_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_proto_common_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
+var file_proto_common_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
+var file_proto_common_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
 var file_proto_common_proto_goTypes = []any{
-	(VideoType)(0),              // 0: common.VideoType
-	(AlbumType)(0),              // 1: common.AlbumType
-	(*Playlist)(nil),            // 2: common.Playlist
-	(*PlaylistTrack)(nil),       // 3: common.PlaylistTrack
-	(*TracksLength)(nil),        // 4: common.TracksLength
-	(*LikedTrack)(nil),          // 5: common.LikedTrack
-	(*SuggestedLink)(nil),       // 6: common.SuggestedLink
-	(*EmbeddedAlbum)(nil),       // 7: common.EmbeddedAlbum
-	(*EmbeddedArtist)(nil),      // 8: common.EmbeddedArtist
-	(*QuickPick)(nil),           // 9: common.QuickPick
-	(*MusicTrackStats)(nil),     // 10: common.MusicTrackStats
-	(*YouTubeVideo)(nil),        // 11: common.YouTubeVideo
-	(*AlbumTrack)(nil),          // 12: common.AlbumTrack
-	(*Album)(nil),               // 13: common.Album
-	(*Track)(nil),               // 14: common.Track
-	(*SearchArtist)(nil),        // 15: common.SearchArtist
-	(*Artist)(nil),              // 16: common.Artist
-	(*SearchAlbum)(nil),         // 17: common.SearchAlbum
-	(*FollowedArtist)(nil),      // 18: common.FollowedArtist
-	(*ThemeColor)(nil),          // 19: common.ThemeColor
-	(*Lyric)(nil),               // 20: common.Lyric
-	(*Artist_TopSongTrack)(nil), // 21: common.Artist.TopSongTrack
-	(*Artist_ArtistAlbum)(nil),  // 22: common.Artist.ArtistAlbum
+	(VideoType)(0),                     // 0: common.VideoType
+	(AlbumType)(0),                     // 1: common.AlbumType
+	(LyricsLine_AlignmentDirection)(0), // 2: common.LyricsLine.AlignmentDirection
+	(*Playlist)(nil),                   // 3: common.Playlist
+	(*PlaylistTrack)(nil),              // 4: common.PlaylistTrack
+	(*TracksLength)(nil),               // 5: common.TracksLength
+	(*LikedTrack)(nil),                 // 6: common.LikedTrack
+	(*SuggestedLink)(nil),              // 7: common.SuggestedLink
+	(*EmbeddedAlbum)(nil),              // 8: common.EmbeddedAlbum
+	(*EmbeddedArtist)(nil),             // 9: common.EmbeddedArtist
+	(*QuickPick)(nil),                  // 10: common.QuickPick
+	(*MusicTrackStats)(nil),            // 11: common.MusicTrackStats
+	(*YouTubeVideo)(nil),               // 12: common.YouTubeVideo
+	(*AlbumTrack)(nil),                 // 13: common.AlbumTrack
+	(*Album)(nil),                      // 14: common.Album
+	(*Track)(nil),                      // 15: common.Track
+	(*SearchArtist)(nil),               // 16: common.SearchArtist
+	(*Artist)(nil),                     // 17: common.Artist
+	(*SearchAlbum)(nil),                // 18: common.SearchAlbum
+	(*FollowedArtist)(nil),             // 19: common.FollowedArtist
+	(*ThemeColor)(nil),                 // 20: common.ThemeColor
+	(*PaginationParams)(nil),           // 21: common.PaginationParams
+	(*LyricsLine)(nil),                 // 22: common.LyricsLine
+	(*SavedAlbum)(nil),                 // 23: common.SavedAlbum
+	(*Artist_TopSongTrack)(nil),        // 24: common.Artist.TopSongTrack
+	(*Artist_ArtistAlbum)(nil),         // 25: common.Artist.ArtistAlbum
+	(*LyricsLine_Syllable)(nil),        // 26: common.LyricsLine.Syllable
 }
 var file_proto_common_proto_depIdxs = []int32{
 	0,  // 0: common.PlaylistTrack.video_type:type_name -> common.VideoType
-	8,  // 1: common.PlaylistTrack.artists:type_name -> common.EmbeddedArtist
-	7,  // 2: common.PlaylistTrack.album:type_name -> common.EmbeddedAlbum
+	9,  // 1: common.PlaylistTrack.artists:type_name -> common.EmbeddedArtist
+	8,  // 2: common.PlaylistTrack.album:type_name -> common.EmbeddedAlbum
 	0,  // 3: common.LikedTrack.video_type:type_name -> common.VideoType
-	8,  // 4: common.LikedTrack.artists:type_name -> common.EmbeddedArtist
-	7,  // 5: common.LikedTrack.album:type_name -> common.EmbeddedAlbum
-	8,  // 6: common.QuickPick.artists:type_name -> common.EmbeddedArtist
-	7,  // 7: common.QuickPick.album:type_name -> common.EmbeddedAlbum
-	8,  // 8: common.AlbumTrack.artists:type_name -> common.EmbeddedArtist
+	9,  // 4: common.LikedTrack.artists:type_name -> common.EmbeddedArtist
+	8,  // 5: common.LikedTrack.album:type_name -> common.EmbeddedAlbum
+	9,  // 6: common.QuickPick.artists:type_name -> common.EmbeddedArtist
+	8,  // 7: common.QuickPick.album:type_name -> common.EmbeddedAlbum
+	9,  // 8: common.AlbumTrack.artists:type_name -> common.EmbeddedArtist
 	1,  // 9: common.Album.album_type:type_name -> common.AlbumType
-	8,  // 10: common.Album.artist:type_name -> common.EmbeddedArtist
-	12, // 11: common.Album.album_tracks:type_name -> common.AlbumTrack
-	8,  // 12: common.Track.artists:type_name -> common.EmbeddedArtist
-	7,  // 13: common.Track.album:type_name -> common.EmbeddedAlbum
-	21, // 14: common.Artist.top_songs:type_name -> common.Artist.TopSongTrack
-	22, // 15: common.Artist.albums:type_name -> common.Artist.ArtistAlbum
-	22, // 16: common.Artist.singles_and_eps:type_name -> common.Artist.ArtistAlbum
+	9,  // 10: common.Album.artist:type_name -> common.EmbeddedArtist
+	13, // 11: common.Album.album_tracks:type_name -> common.AlbumTrack
+	9,  // 12: common.Track.artists:type_name -> common.EmbeddedArtist
+	8,  // 13: common.Track.album:type_name -> common.EmbeddedAlbum
+	24, // 14: common.Artist.top_songs:type_name -> common.Artist.TopSongTrack
+	25, // 15: common.Artist.albums:type_name -> common.Artist.ArtistAlbum
+	25, // 16: common.Artist.singles_and_eps:type_name -> common.Artist.ArtistAlbum
 	1,  // 17: common.SearchAlbum.album_type:type_name -> common.AlbumType
-	8,  // 18: common.SearchAlbum.artist:type_name -> common.EmbeddedArtist
-	7,  // 19: common.Artist.TopSongTrack.album:type_name -> common.EmbeddedAlbum
-	1,  // 20: common.Artist.ArtistAlbum.album_type:type_name -> common.AlbumType
-	21, // [21:21] is the sub-list for method output_type
-	21, // [21:21] is the sub-list for method input_type
-	21, // [21:21] is the sub-list for extension type_name
-	21, // [21:21] is the sub-list for extension extendee
-	0,  // [0:21] is the sub-list for field type_name
+	9,  // 18: common.SearchAlbum.artist:type_name -> common.EmbeddedArtist
+	26, // 19: common.LyricsLine.text:type_name -> common.LyricsLine.Syllable
+	26, // 20: common.LyricsLine.background_text:type_name -> common.LyricsLine.Syllable
+	2,  // 21: common.LyricsLine.alignment:type_name -> common.LyricsLine.AlignmentDirection
+	1,  // 22: common.SavedAlbum.album_type:type_name -> common.AlbumType
+	9,  // 23: common.Artist.TopSongTrack.artists:type_name -> common.EmbeddedArtist
+	8,  // 24: common.Artist.TopSongTrack.album:type_name -> common.EmbeddedAlbum
+	1,  // 25: common.Artist.ArtistAlbum.album_type:type_name -> common.AlbumType
+	26, // [26:26] is the sub-list for method output_type
+	26, // [26:26] is the sub-list for method input_type
+	26, // [26:26] is the sub-list for extension type_name
+	26, // [26:26] is the sub-list for extension extendee
+	0,  // [0:26] is the sub-list for field type_name
 }
 
 func init() { file_proto_common_proto_init() }
@@ -2061,13 +2486,15 @@ func file_proto_common_proto_init() {
 	file_proto_common_proto_msgTypes[10].OneofWrappers = []any{}
 	file_proto_common_proto_msgTypes[12].OneofWrappers = []any{}
 	file_proto_common_proto_msgTypes[19].OneofWrappers = []any{}
+	file_proto_common_proto_msgTypes[21].OneofWrappers = []any{}
+	file_proto_common_proto_msgTypes[23].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_common_proto_rawDesc), len(file_proto_common_proto_rawDesc)),
-			NumEnums:      2,
-			NumMessages:   21,
+			NumEnums:      3,
+			NumMessages:   24,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

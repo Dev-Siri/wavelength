@@ -20,31 +20,62 @@ func (p *PlaylistService) GetPlaylistTracks(
 	ctx context.Context,
 	request *playlistpb.GetPlaylistTracksRequest,
 ) (*playlistpb.GetPlaylistTracksResponse, error) {
-	rows, err := shared_db.Database.Query(`
-		SELECT
-			pt.playlist_track_id,
-			pt.title,
-			pt.thumbnail,
-			pt.position_in_playlist,
-			pt.is_explicit,
-			pt.duration,
-			pt.video_id,
-			pt.video_type,
-			pt.playlist_id,
+	var rows *sql.Rows
+	var err error
 
-			a.title AS artist_title,
-			a.browse_id AS artist_browse_id,
-			al.title AS album_title,
-			al.browse_id AS album_browse_id
-		FROM "playlist_tracks" pt
-		LEFT JOIN "artists" a
-		ON pt.video_id = a.authored_track_id
-		LEFT JOIN "albums" al
-		ON pt.video_id = al.track_id
-		WHERE pt.playlist_id = $1
-	`, request.PlaylistId)
+	if request.Query == nil {
+		rows, err = shared_db.Database.Query(`
+        SELECT
+            pt.playlist_track_id,
+            pt.title,
+            pt.thumbnail,
+            pt.position_in_playlist,
+            pt.is_explicit,
+            pt.duration,
+            pt.video_id,
+            pt.video_type,
+            pt.playlist_id,
 
+            a.title AS artist_title,
+            a.browse_id AS artist_browse_id,
+            al.title AS album_title,
+            al.browse_id AS album_browse_id
+        FROM "playlist_tracks" pt
+        LEFT JOIN "artists" a ON pt.video_id = a.authored_track_id
+        LEFT JOIN "albums" al ON pt.video_id = al.track_id
+        WHERE pt.playlist_id = $1;
+    `, request.PlaylistId)
+	} else {
+		rows, err = shared_db.Database.Query(`
+        SELECT
+            pt.playlist_track_id,
+            pt.title,
+            pt.thumbnail,
+            pt.position_in_playlist,
+            pt.is_explicit,
+            pt.duration,
+            pt.video_id,
+            pt.video_type,
+            pt.playlist_id,
+
+            a.title AS artist_title,
+            a.browse_id AS artist_browse_id,
+            al.title AS album_title,
+            al.browse_id AS album_browse_id
+        FROM "playlist_tracks" pt
+        LEFT JOIN "artists" a ON pt.video_id = a.authored_track_id
+        LEFT JOIN "albums" al ON pt.video_id = al.track_id
+        WHERE pt.playlist_id = $1
+          AND (pt.title ILIKE '%' || $2 || '%' OR a.title ILIKE '%' || $2 || '%');
+    `, request.PlaylistId, request.Query)
+	}
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return &playlistpb.GetPlaylistTracksResponse{
+				PlaylistTracks: make([]*commonpb.PlaylistTrack, 0),
+			}, nil
+		}
+
 		logging.Logger.Error("Playlist tracks fetch failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Playlist tracks fetch failed.")
 	}

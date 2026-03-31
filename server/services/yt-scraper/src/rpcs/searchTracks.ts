@@ -28,14 +28,20 @@ export default async function searchTracks(
     if (!contents)
       callback(createErrorResponse("YouTube Music sent an empty response."));
 
-    let parsedContents = contents?.[0]?.as(YTNodes.MusicShelf);
+    let parsedContents = contents?.[0]?.as(
+      YTNodes.MusicShelf,
+      YTNodes.ItemSection,
+    );
 
-    if (!parsedContents) {
+    if (!parsedContents || parsedContents.is(YTNodes.ItemSection)) {
       const maybeCorrection = contents?.[0]?.contents?.[0];
+
       if (
         !maybeCorrection ||
-        !maybeCorrection.is(YTNodes.DidYouMean) ||
-        !maybeCorrection.is(YTNodes.ShowingResultsFor) ||
+        !(
+          maybeCorrection.is(YTNodes.DidYouMean) ||
+          maybeCorrection.is(YTNodes.ShowingResultsFor)
+        ) ||
         !maybeCorrection.corrected_query.text
       )
         return callback(

@@ -1,13 +1,14 @@
 <script lang="ts">
   import { CheckIcon, UserIcon } from "@lucide/svelte";
-  import { createMutation, createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { createMutation, useQueryClient } from "@tanstack/svelte-query";
   import { toast } from "svelte-sonner";
   import { scale } from "svelte/transition";
   import { z } from "zod";
 
-  import type { EmbeddedArtist } from "$lib/utils/validation/artist";
+  import type { EmbeddedArtist } from "$lib/schemas/embedded";
 
   import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";
+  import useIsFollowingQuery from "$lib/queries/isFollowing";
   import { backendClient } from "$lib/utils/query-client";
 
   import { Button } from "$lib/components/ui/button";
@@ -16,14 +17,7 @@
 
   const queryClient = useQueryClient();
 
-  const isFollowingQuery = createQuery(() => ({
-    queryKey: svelteQueryKeys.isFollowingArtist(browseId),
-    queryFn: () =>
-      backendClient(
-        `/artists/followed/${browseId}/is-following`,
-        z.object({ isFollowing: z.boolean() }),
-      ),
-  }));
+  const isFollowingQuery = $derived(useIsFollowingQuery(browseId));
 
   let isFollowing = $derived(isFollowingQuery.data?.isFollowing);
 

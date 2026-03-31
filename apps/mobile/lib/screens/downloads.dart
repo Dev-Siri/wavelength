@@ -5,13 +5,18 @@ import "package:hive_flutter/adapters.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "package:wavelength/api/models/track.dart";
+import "package:wavelength/audio/music_context_queue.dart";
+import "package:wavelength/audio/queueable_music.dart";
+import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
+import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_state.dart";
 import "package:wavelength/bloc/download/download_bloc.dart";
 import "package:wavelength/bloc/download/download_event.dart";
 import "package:wavelength/bloc/download/download_state.dart";
 import "package:wavelength/constants.dart";
-import "package:wavelength/widgets/common_app_bar.dart";
-import "package:wavelength/widgets/queued_track_tile.dart";
-import "package:wavelength/widgets/track_tile.dart";
+import "package:wavelength/widgets/app_bars/common_app_bar.dart";
+import "package:wavelength/widgets/music_player_preview/music_player_preview.dart";
+import "package:wavelength/widgets/track/queued_track_tile.dart";
+import "package:wavelength/widgets/track/track_tile.dart";
 
 class DownloadsScreen extends StatefulWidget {
   const DownloadsScreen({super.key});
@@ -22,7 +27,7 @@ class DownloadsScreen extends StatefulWidget {
 
 class _DownloadsScreenState extends State<DownloadsScreen> {
   bool _isDownloadStalledForWifi = false;
-  List<Track> _downloads = [];
+  List<QueueableMusic> _downloads = [];
 
   @override
   void initState() {
@@ -54,7 +59,7 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
 
   Future<void> _fetchAllDownloadedTracks() async {
     final box = await Hive.openBox(hiveStreamsKey);
-    final downloads = box.values.toList().cast<Track>();
+    final downloads = box.values.toList().cast<QueueableMusic>();
 
     setState(() => _downloads = downloads);
   }
@@ -62,25 +67,27 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CommonAppBar(),
+      appBar: const CommonAppBar(title: "Downloads"),
       backgroundColor: Colors.black,
       body: BlocBuilder<DownloadBloc, DownloadState>(
         builder: (context, state) {
           return ListView(
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
             children: [
               if (state.inQueue.isNotEmpty)
-                const Text(
-                  "Active Downloads",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(
+                    "Active Downloads",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                  ),
                 ),
               if (state.inQueue.isNotEmpty) const SizedBox(height: 10),
               if (_isDownloadStalledForWifi)
                 const Padding(
-                  padding: EdgeInsets.only(bottom: 10),
+                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
                   child: Text(
-                    "Downloads are paused because Wi-Fi is not available. If you prefer downloading over mobile data anyway, disable the setting for Wi-Fi only downloads.",
-                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                    "Downloads are paused because Wi-Fi is not available. If you prefer downloading over mobile data anyway, disable the Wi-Fi only downloads in settings.",
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
                   ),
                 ),
               ...state.inQueue.map(
@@ -89,28 +96,58 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
                   child: QueuedTrackTile(queuedDownload: queuedDownload),
                 ),
               ),
-              const Text(
-                "Downloads",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 10),
               if (_downloads.isEmpty)
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(height: MediaQuery.sizeOf(context).height / 4),
-                    const Icon(LucideIcons.cloudDownload, size: 40),
+                    const Icon(
+                      LucideIcons.folder,
+                      size: 40,
+                      color: Colors.grey,
+                    ),
                     const SizedBox(height: 10),
                     const Text(
                       "Your downloads are empty.",
-                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
                   ],
                 ),
               for (final download in _downloads)
-                TrackTile(contextId: "downloads", track: download),
+                TrackTile(
+                  musicContext: MusicContextTypeDownloads(),
+                  sourceLabel: "Downloads",
+                  tracks: _downloads,
+                  track: Track(
+                    videoId: download.videoId,
+                    title: download.title,
+                    thumbnail: download.thumbnail,
+                    artists: download.artists,
+                    duration: download.duration,
+                    isExplicit: download.isExplicit,
+                    album: download.album,
+                  ),
+                ),
             ],
           );
+        },
+      ),
+      bottomNavigationBar: BlocBuilder<AppBottomSheetBloc, AppBottomSheetState>(
+        builder: (context, state) {
+          if (state is AppBottomSheetClosedState) {
+            return Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade900,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).padding.bottom,
+              ),
+              child: const MusicPlayerPreview(),
+            );
+          }
+
+          return const SizedBox.shrink();
         },
       ),
     );

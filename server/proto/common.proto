@@ -93,8 +93,9 @@ message YouTubeVideo {
   string video_id = 1;
   string title = 2;
   string thumbnail = 3;
-  string author = 4;
-  string author_channel_id = 5;
+  uint64 duration = 4;
+  string author = 5;
+  string author_channel_id = 6;
 }
 
 message AlbumTrack {
@@ -153,9 +154,11 @@ message Artist {
     string title = 2;
     string thumbnail = 3;
     string play_count = 4;
+    uint64 duration = 5;
 
-    optional bool is_explicit = 5;
-    optional EmbeddedAlbum album = 6;
+    repeated common.EmbeddedArtist artists = 6;
+    optional bool is_explicit = 7;
+    optional EmbeddedAlbum album = 8;
   }
   message ArtistAlbum {
     string album_id = 1;
@@ -198,8 +201,46 @@ message ThemeColor {
   uint32 b = 3;
 }
 
-message Lyric {
-  string text = 1;
-  int32 start_ms = 2;
-  int32 dur_ms = 3;
+message PaginationParams {
+  int32 current = 1;
+}
+
+message LyricsLine {
+  enum AlignmentDirection {
+    ALIGNMENT_DIRECTION_UNSPECIFIED = 0;
+    ALIGNMENT_DIRECTION_START = 1;
+    ALIGNMENT_DIRECTION_END = 2;
+  }
+  message Syllable {
+    string text = 1;
+    bool part = 2;
+    uint64 timestamp = 3;
+    uint64 endtime = 4;
+
+    optional string romanized_text = 5;
+    optional bool line_synced = 6;
+  }
+	repeated Syllable text = 1;
+	bool background = 2;
+	repeated Syllable background_text = 3;
+  bool opposite_turn = 4;
+  uint64 timestamp = 5;
+  uint64 endtime = 6;
+
+  optional bool is_word_synced = 7;
+  optional AlignmentDirection alignment = 8;
+  optional string song_part = 9;
+  optional string romanized_text = 10;
+  optional string translation = 11;
+}
+
+message SavedAlbum {
+  string saver_email = 1;
+  string album_id = 2;
+  string title = 3;
+  string album_cover = 4;
+  uint32 album_song_count = 5;
+  string album_duration = 6;
+  string album_author = 7;
+  AlbumType album_type = 8;
 }

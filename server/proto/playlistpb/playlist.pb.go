@@ -560,6 +560,7 @@ func (x *RearrangePlaylistTracksRequest) GetUpdates() []*RearrangePlaylistTracks
 type GetPlaylistTracksRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	PlaylistId    string                 `protobuf:"bytes,1,opt,name=playlist_id,json=playlistId,proto3" json:"playlist_id,omitempty"`
+	Query         *string                `protobuf:"bytes,2,opt,name=query,proto3,oneof" json:"query,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -601,9 +602,17 @@ func (x *GetPlaylistTracksRequest) GetPlaylistId() string {
 	return ""
 }
 
+func (x *GetPlaylistTracksRequest) GetQuery() string {
+	if x != nil && x.Query != nil {
+		return *x.Query
+	}
+	return ""
+}
+
 type GetPlaylistTracksResponse struct {
-	state          protoimpl.MessageState    `protogen:"open.v1"`
-	PlaylistTracks []*commonpb.PlaylistTrack `protobuf:"bytes,1,rep,name=playlist_tracks,json=playlistTracks,proto3" json:"playlist_tracks,omitempty"`
+	state          protoimpl.MessageState     `protogen:"open.v1"`
+	Pagination     *commonpb.PaginationParams `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	PlaylistTracks []*commonpb.PlaylistTrack  `protobuf:"bytes,2,rep,name=playlist_tracks,json=playlistTracks,proto3" json:"playlist_tracks,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -636,6 +645,13 @@ func (x *GetPlaylistTracksResponse) ProtoReflect() protoreflect.Message {
 // Deprecated: Use GetPlaylistTracksResponse.ProtoReflect.Descriptor instead.
 func (*GetPlaylistTracksResponse) Descriptor() ([]byte, []int) {
 	return file_proto_playlist_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *GetPlaylistTracksResponse) GetPagination() *commonpb.PaginationParams {
+	if x != nil {
+		return x.Pagination
+	}
+	return nil
 }
 
 func (x *GetPlaylistTracksResponse) GetPlaylistTracks() []*commonpb.PlaylistTrack {
@@ -925,6 +941,206 @@ func (x *GetPublicPlaylistsResponse) GetPlaylists() []*commonpb.Playlist {
 	return nil
 }
 
+type GetSongRecommendationsRequest struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	PlaylistId        string                 `protobuf:"bytes,1,opt,name=playlist_id,json=playlistId,proto3" json:"playlist_id,omitempty"`
+	ContinuationToken *string                `protobuf:"bytes,2,opt,name=continuation_token,json=continuationToken,proto3,oneof" json:"continuation_token,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *GetSongRecommendationsRequest) Reset() {
+	*x = GetSongRecommendationsRequest{}
+	mi := &file_proto_playlist_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetSongRecommendationsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetSongRecommendationsRequest) ProtoMessage() {}
+
+func (x *GetSongRecommendationsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_playlist_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetSongRecommendationsRequest.ProtoReflect.Descriptor instead.
+func (*GetSongRecommendationsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_playlist_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *GetSongRecommendationsRequest) GetPlaylistId() string {
+	if x != nil {
+		return x.PlaylistId
+	}
+	return ""
+}
+
+func (x *GetSongRecommendationsRequest) GetContinuationToken() string {
+	if x != nil && x.ContinuationToken != nil {
+		return *x.ContinuationToken
+	}
+	return ""
+}
+
+type GetSongRecommendationsResponse struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	ContinuationToken string                 `protobuf:"bytes,1,opt,name=continuation_token,json=continuationToken,proto3" json:"continuation_token,omitempty"`
+	Tracks            []*commonpb.Track      `protobuf:"bytes,2,rep,name=tracks,proto3" json:"tracks,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *GetSongRecommendationsResponse) Reset() {
+	*x = GetSongRecommendationsResponse{}
+	mi := &file_proto_playlist_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetSongRecommendationsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetSongRecommendationsResponse) ProtoMessage() {}
+
+func (x *GetSongRecommendationsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_playlist_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetSongRecommendationsResponse.ProtoReflect.Descriptor instead.
+func (*GetSongRecommendationsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_playlist_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *GetSongRecommendationsResponse) GetContinuationToken() string {
+	if x != nil {
+		return x.ContinuationToken
+	}
+	return ""
+}
+
+func (x *GetSongRecommendationsResponse) GetTracks() []*commonpb.Track {
+	if x != nil {
+		return x.Tracks
+	}
+	return nil
+}
+
+type GetPlaylistTracksLikedStatusRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PlaylistId    string                 `protobuf:"bytes,1,opt,name=playlist_id,json=playlistId,proto3" json:"playlist_id,omitempty"`
+	LikerEmail    string                 `protobuf:"bytes,2,opt,name=liker_email,json=likerEmail,proto3" json:"liker_email,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPlaylistTracksLikedStatusRequest) Reset() {
+	*x = GetPlaylistTracksLikedStatusRequest{}
+	mi := &file_proto_playlist_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPlaylistTracksLikedStatusRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPlaylistTracksLikedStatusRequest) ProtoMessage() {}
+
+func (x *GetPlaylistTracksLikedStatusRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_playlist_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPlaylistTracksLikedStatusRequest.ProtoReflect.Descriptor instead.
+func (*GetPlaylistTracksLikedStatusRequest) Descriptor() ([]byte, []int) {
+	return file_proto_playlist_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *GetPlaylistTracksLikedStatusRequest) GetPlaylistId() string {
+	if x != nil {
+		return x.PlaylistId
+	}
+	return ""
+}
+
+func (x *GetPlaylistTracksLikedStatusRequest) GetLikerEmail() string {
+	if x != nil {
+		return x.LikerEmail
+	}
+	return ""
+}
+
+type GetPlaylistTracksLikedStatusResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	LikedTracks   map[string]bool        `protobuf:"bytes,1,rep,name=liked_tracks,json=likedTracks,proto3" json:"liked_tracks,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPlaylistTracksLikedStatusResponse) Reset() {
+	*x = GetPlaylistTracksLikedStatusResponse{}
+	mi := &file_proto_playlist_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPlaylistTracksLikedStatusResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPlaylistTracksLikedStatusResponse) ProtoMessage() {}
+
+func (x *GetPlaylistTracksLikedStatusResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_playlist_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPlaylistTracksLikedStatusResponse.ProtoReflect.Descriptor instead.
+func (*GetPlaylistTracksLikedStatusResponse) Descriptor() ([]byte, []int) {
+	return file_proto_playlist_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *GetPlaylistTracksLikedStatusResponse) GetLikedTracks() map[string]bool {
+	if x != nil {
+		return x.LikedTracks
+	}
+	return nil
+}
+
 type RearrangePlaylistTracksRequest_PlaylistTrackPosUpdate struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
 	PlaylistTrackId string                 `protobuf:"bytes,1,opt,name=playlist_track_id,json=playlistTrackId,proto3" json:"playlist_track_id,omitempty"`
@@ -935,7 +1151,7 @@ type RearrangePlaylistTracksRequest_PlaylistTrackPosUpdate struct {
 
 func (x *RearrangePlaylistTracksRequest_PlaylistTrackPosUpdate) Reset() {
 	*x = RearrangePlaylistTracksRequest_PlaylistTrackPosUpdate{}
-	mi := &file_proto_playlist_proto_msgTypes[17]
+	mi := &file_proto_playlist_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -947,7 +1163,7 @@ func (x *RearrangePlaylistTracksRequest_PlaylistTrackPosUpdate) String() string 
 func (*RearrangePlaylistTracksRequest_PlaylistTrackPosUpdate) ProtoMessage() {}
 
 func (x *RearrangePlaylistTracksRequest_PlaylistTrackPosUpdate) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_playlist_proto_msgTypes[17]
+	mi := &file_proto_playlist_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1027,12 +1243,17 @@ const file_proto_playlist_proto_rawDesc = "" +
 	"\aupdates\x18\x02 \x03(\v2?.playlist.RearrangePlaylistTracksRequest.PlaylistTrackPosUpdateR\aupdates\x1a]\n" +
 	"\x16PlaylistTrackPosUpdate\x12*\n" +
 	"\x11playlist_track_id\x18\x01 \x01(\tR\x0fplaylistTrackId\x12\x17\n" +
-	"\anew_pos\x18\x02 \x01(\rR\x06newPos\";\n" +
+	"\anew_pos\x18\x02 \x01(\rR\x06newPos\"`\n" +
 	"\x18GetPlaylistTracksRequest\x12\x1f\n" +
 	"\vplaylist_id\x18\x01 \x01(\tR\n" +
-	"playlistId\"[\n" +
-	"\x19GetPlaylistTracksResponse\x12>\n" +
-	"\x0fplaylist_tracks\x18\x01 \x03(\v2\x15.common.PlaylistTrackR\x0eplaylistTracks\"`\n" +
+	"playlistId\x12\x19\n" +
+	"\x05query\x18\x02 \x01(\tH\x00R\x05query\x88\x01\x01B\b\n" +
+	"\x06_query\"\x95\x01\n" +
+	"\x19GetPlaylistTracksResponse\x128\n" +
+	"\n" +
+	"pagination\x18\x01 \x01(\v2\x18.common.PaginationParamsR\n" +
+	"pagination\x12>\n" +
+	"\x0fplaylist_tracks\x18\x02 \x03(\v2\x15.common.PlaylistTrackR\x0eplaylistTracks\"`\n" +
 	"\x15DeletePlaylistRequest\x12\x1f\n" +
 	"\vplaylist_id\x18\x01 \x01(\tR\n" +
 	"playlistId\x12&\n" +
@@ -1049,7 +1270,25 @@ const file_proto_playlist_proto_rawDesc = "" +
 	"\x19GetPublicPlaylistsRequest\x12\x14\n" +
 	"\x05query\x18\x01 \x01(\tR\x05query\"L\n" +
 	"\x1aGetPublicPlaylistsResponse\x12.\n" +
-	"\tplaylists\x18\x01 \x03(\v2\x10.common.PlaylistR\tplaylists2\xf3\a\n" +
+	"\tplaylists\x18\x01 \x03(\v2\x10.common.PlaylistR\tplaylists\"\x8b\x01\n" +
+	"\x1dGetSongRecommendationsRequest\x12\x1f\n" +
+	"\vplaylist_id\x18\x01 \x01(\tR\n" +
+	"playlistId\x122\n" +
+	"\x12continuation_token\x18\x02 \x01(\tH\x00R\x11continuationToken\x88\x01\x01B\x15\n" +
+	"\x13_continuation_token\"v\n" +
+	"\x1eGetSongRecommendationsResponse\x12-\n" +
+	"\x12continuation_token\x18\x01 \x01(\tR\x11continuationToken\x12%\n" +
+	"\x06tracks\x18\x02 \x03(\v2\r.common.TrackR\x06tracks\"g\n" +
+	"#GetPlaylistTracksLikedStatusRequest\x12\x1f\n" +
+	"\vplaylist_id\x18\x01 \x01(\tR\n" +
+	"playlistId\x12\x1f\n" +
+	"\vliker_email\x18\x02 \x01(\tR\n" +
+	"likerEmail\"\xca\x01\n" +
+	"$GetPlaylistTracksLikedStatusResponse\x12b\n" +
+	"\fliked_tracks\x18\x01 \x03(\v2?.playlist.GetPlaylistTracksLikedStatusResponse.LikedTracksEntryR\vlikedTracks\x1a>\n" +
+	"\x10LikedTracksEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\bR\x05value:\x028\x012\xdf\t\n" +
 	"\x0fPlaylistService\x12_\n" +
 	"\x12GetPublicPlaylists\x12#.playlist.GetPublicPlaylistsRequest\x1a$.playlist.GetPublicPlaylistsResponse\x12h\n" +
 	"\x17GetPlaylistTracksLength\x12%.playlist.PlaylistTracksLengthRequest\x1a&.playlist.PlaylistTracksLengthResponse\x12k\n" +
@@ -1059,9 +1298,11 @@ const file_proto_playlist_proto_rawDesc = "" +
 	"\x0eDeletePlaylist\x12\x1f.playlist.DeletePlaylistRequest\x1a\x16.google.protobuf.Empty\x12\\\n" +
 	"\x11GetPlaylistTracks\x12\".playlist.GetPlaylistTracksRequest\x1a#.playlist.GetPlaylistTracksResponse\x12Y\n" +
 	"\x10GetUserPlaylists\x12!.playlist.GetUserPlaylistsRequest\x1a\".playlist.GetUserPlaylistsResponse\x12V\n" +
-	"\x0fGetPlaylistById\x12 .playlist.GetPlaylistByIdRequest\x1a!.playlist.GetPlaylistByIdResponse\x12E\n" +
+	"\x0fGetPlaylistById\x12 .playlist.GetPlaylistByIdRequest\x1a!.playlist.GetPlaylistByIdResponse\x12k\n" +
+	"\x16GetSongRecommendations\x12'.playlist.GetSongRecommendationsRequest\x1a(.playlist.GetSongRecommendationsResponse\x12E\n" +
 	"\fEditPlaylist\x12\x1d.playlist.EditPlaylistRequest\x1a\x16.google.protobuf.Empty\x12I\n" +
-	"\x0eCreatePlaylist\x12\x1f.playlist.CreatePlaylistRequest\x1a\x16.google.protobuf.EmptyBAZ?github.com/Dev-Siri/wavelength/server/proto/playlist;playlistpbb\x06proto3"
+	"\x0eCreatePlaylist\x12\x1f.playlist.CreatePlaylistRequest\x1a\x16.google.protobuf.Empty\x12}\n" +
+	"\x1cGetPlaylistTracksLikedStatus\x12-.playlist.GetPlaylistTracksLikedStatusRequest\x1a..playlist.GetPlaylistTracksLikedStatusResponseBAZ?github.com/Dev-Siri/wavelength/server/proto/playlist;playlistpbb\x06proto3"
 
 var (
 	file_proto_playlist_proto_rawDescOnce sync.Once
@@ -1076,7 +1317,7 @@ func file_proto_playlist_proto_rawDescGZIP() []byte {
 }
 
 var file_proto_playlist_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_proto_playlist_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
+var file_proto_playlist_proto_msgTypes = make([]protoimpl.MessageInfo, 23)
 var file_proto_playlist_proto_goTypes = []any{
 	(AddRemovePlaylistTrackResponse_PlaylistTrackToggleType)(0),   // 0: playlist.AddRemovePlaylistTrackResponse.PlaylistTrackToggleType
 	(*EditPlaylistRequest)(nil),                                   // 1: playlist.EditPlaylistRequest
@@ -1096,53 +1337,67 @@ var file_proto_playlist_proto_goTypes = []any{
 	(*PlaylistTracksLengthResponse)(nil),                          // 15: playlist.PlaylistTracksLengthResponse
 	(*GetPublicPlaylistsRequest)(nil),                             // 16: playlist.GetPublicPlaylistsRequest
 	(*GetPublicPlaylistsResponse)(nil),                            // 17: playlist.GetPublicPlaylistsResponse
-	(*RearrangePlaylistTracksRequest_PlaylistTrackPosUpdate)(nil), // 18: playlist.RearrangePlaylistTracksRequest.PlaylistTrackPosUpdate
-	(*commonpb.Playlist)(nil),                                     // 19: common.Playlist
-	(*commonpb.EmbeddedArtist)(nil),                               // 20: common.EmbeddedArtist
-	(commonpb.VideoType)(0),                                       // 21: common.VideoType
-	(*commonpb.EmbeddedAlbum)(nil),                                // 22: common.EmbeddedAlbum
-	(*commonpb.PlaylistTrack)(nil),                                // 23: common.PlaylistTrack
-	(*commonpb.TracksLength)(nil),                                 // 24: common.TracksLength
-	(*emptypb.Empty)(nil),                                         // 25: google.protobuf.Empty
+	(*GetSongRecommendationsRequest)(nil),                         // 18: playlist.GetSongRecommendationsRequest
+	(*GetSongRecommendationsResponse)(nil),                        // 19: playlist.GetSongRecommendationsResponse
+	(*GetPlaylistTracksLikedStatusRequest)(nil),                   // 20: playlist.GetPlaylistTracksLikedStatusRequest
+	(*GetPlaylistTracksLikedStatusResponse)(nil),                  // 21: playlist.GetPlaylistTracksLikedStatusResponse
+	(*RearrangePlaylistTracksRequest_PlaylistTrackPosUpdate)(nil), // 22: playlist.RearrangePlaylistTracksRequest.PlaylistTrackPosUpdate
+	nil,                               // 23: playlist.GetPlaylistTracksLikedStatusResponse.LikedTracksEntry
+	(*commonpb.Playlist)(nil),         // 24: common.Playlist
+	(*commonpb.EmbeddedArtist)(nil),   // 25: common.EmbeddedArtist
+	(commonpb.VideoType)(0),           // 26: common.VideoType
+	(*commonpb.EmbeddedAlbum)(nil),    // 27: common.EmbeddedAlbum
+	(*commonpb.PaginationParams)(nil), // 28: common.PaginationParams
+	(*commonpb.PlaylistTrack)(nil),    // 29: common.PlaylistTrack
+	(*commonpb.TracksLength)(nil),     // 30: common.TracksLength
+	(*commonpb.Track)(nil),            // 31: common.Track
+	(*emptypb.Empty)(nil),             // 32: google.protobuf.Empty
 }
 var file_proto_playlist_proto_depIdxs = []int32{
-	19, // 0: playlist.GetUserPlaylistsResponse.playlists:type_name -> common.Playlist
-	19, // 1: playlist.GetPlaylistByIdResponse.playlist:type_name -> common.Playlist
-	20, // 2: playlist.AddRemovePlaylistTrackRequest.artists:type_name -> common.EmbeddedArtist
-	21, // 3: playlist.AddRemovePlaylistTrackRequest.video_type:type_name -> common.VideoType
-	22, // 4: playlist.AddRemovePlaylistTrackRequest.album:type_name -> common.EmbeddedAlbum
+	24, // 0: playlist.GetUserPlaylistsResponse.playlists:type_name -> common.Playlist
+	24, // 1: playlist.GetPlaylistByIdResponse.playlist:type_name -> common.Playlist
+	25, // 2: playlist.AddRemovePlaylistTrackRequest.artists:type_name -> common.EmbeddedArtist
+	26, // 3: playlist.AddRemovePlaylistTrackRequest.video_type:type_name -> common.VideoType
+	27, // 4: playlist.AddRemovePlaylistTrackRequest.album:type_name -> common.EmbeddedAlbum
 	0,  // 5: playlist.AddRemovePlaylistTrackResponse.toggle_type:type_name -> playlist.AddRemovePlaylistTrackResponse.PlaylistTrackToggleType
-	18, // 6: playlist.RearrangePlaylistTracksRequest.updates:type_name -> playlist.RearrangePlaylistTracksRequest.PlaylistTrackPosUpdate
-	23, // 7: playlist.GetPlaylistTracksResponse.playlist_tracks:type_name -> common.PlaylistTrack
-	24, // 8: playlist.PlaylistTracksLengthResponse.playlist_tracks_length:type_name -> common.TracksLength
-	19, // 9: playlist.GetPublicPlaylistsResponse.playlists:type_name -> common.Playlist
-	16, // 10: playlist.PlaylistService.GetPublicPlaylists:input_type -> playlist.GetPublicPlaylistsRequest
-	14, // 11: playlist.PlaylistService.GetPlaylistTracksLength:input_type -> playlist.PlaylistTracksLengthRequest
-	7,  // 12: playlist.PlaylistService.AddRemovePlaylistTrack:input_type -> playlist.AddRemovePlaylistTrackRequest
-	13, // 13: playlist.PlaylistService.ChangePlaylistVisibility:input_type -> playlist.ChangePlaylistVisibilityRequest
-	9,  // 14: playlist.PlaylistService.RearrangePlaylistTracks:input_type -> playlist.RearrangePlaylistTracksRequest
-	12, // 15: playlist.PlaylistService.DeletePlaylist:input_type -> playlist.DeletePlaylistRequest
-	10, // 16: playlist.PlaylistService.GetPlaylistTracks:input_type -> playlist.GetPlaylistTracksRequest
-	3,  // 17: playlist.PlaylistService.GetUserPlaylists:input_type -> playlist.GetUserPlaylistsRequest
-	5,  // 18: playlist.PlaylistService.GetPlaylistById:input_type -> playlist.GetPlaylistByIdRequest
-	1,  // 19: playlist.PlaylistService.EditPlaylist:input_type -> playlist.EditPlaylistRequest
-	2,  // 20: playlist.PlaylistService.CreatePlaylist:input_type -> playlist.CreatePlaylistRequest
-	17, // 21: playlist.PlaylistService.GetPublicPlaylists:output_type -> playlist.GetPublicPlaylistsResponse
-	15, // 22: playlist.PlaylistService.GetPlaylistTracksLength:output_type -> playlist.PlaylistTracksLengthResponse
-	8,  // 23: playlist.PlaylistService.AddRemovePlaylistTrack:output_type -> playlist.AddRemovePlaylistTrackResponse
-	25, // 24: playlist.PlaylistService.ChangePlaylistVisibility:output_type -> google.protobuf.Empty
-	25, // 25: playlist.PlaylistService.RearrangePlaylistTracks:output_type -> google.protobuf.Empty
-	25, // 26: playlist.PlaylistService.DeletePlaylist:output_type -> google.protobuf.Empty
-	11, // 27: playlist.PlaylistService.GetPlaylistTracks:output_type -> playlist.GetPlaylistTracksResponse
-	4,  // 28: playlist.PlaylistService.GetUserPlaylists:output_type -> playlist.GetUserPlaylistsResponse
-	6,  // 29: playlist.PlaylistService.GetPlaylistById:output_type -> playlist.GetPlaylistByIdResponse
-	25, // 30: playlist.PlaylistService.EditPlaylist:output_type -> google.protobuf.Empty
-	25, // 31: playlist.PlaylistService.CreatePlaylist:output_type -> google.protobuf.Empty
-	21, // [21:32] is the sub-list for method output_type
-	10, // [10:21] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	22, // 6: playlist.RearrangePlaylistTracksRequest.updates:type_name -> playlist.RearrangePlaylistTracksRequest.PlaylistTrackPosUpdate
+	28, // 7: playlist.GetPlaylistTracksResponse.pagination:type_name -> common.PaginationParams
+	29, // 8: playlist.GetPlaylistTracksResponse.playlist_tracks:type_name -> common.PlaylistTrack
+	30, // 9: playlist.PlaylistTracksLengthResponse.playlist_tracks_length:type_name -> common.TracksLength
+	24, // 10: playlist.GetPublicPlaylistsResponse.playlists:type_name -> common.Playlist
+	31, // 11: playlist.GetSongRecommendationsResponse.tracks:type_name -> common.Track
+	23, // 12: playlist.GetPlaylistTracksLikedStatusResponse.liked_tracks:type_name -> playlist.GetPlaylistTracksLikedStatusResponse.LikedTracksEntry
+	16, // 13: playlist.PlaylistService.GetPublicPlaylists:input_type -> playlist.GetPublicPlaylistsRequest
+	14, // 14: playlist.PlaylistService.GetPlaylistTracksLength:input_type -> playlist.PlaylistTracksLengthRequest
+	7,  // 15: playlist.PlaylistService.AddRemovePlaylistTrack:input_type -> playlist.AddRemovePlaylistTrackRequest
+	13, // 16: playlist.PlaylistService.ChangePlaylistVisibility:input_type -> playlist.ChangePlaylistVisibilityRequest
+	9,  // 17: playlist.PlaylistService.RearrangePlaylistTracks:input_type -> playlist.RearrangePlaylistTracksRequest
+	12, // 18: playlist.PlaylistService.DeletePlaylist:input_type -> playlist.DeletePlaylistRequest
+	10, // 19: playlist.PlaylistService.GetPlaylistTracks:input_type -> playlist.GetPlaylistTracksRequest
+	3,  // 20: playlist.PlaylistService.GetUserPlaylists:input_type -> playlist.GetUserPlaylistsRequest
+	5,  // 21: playlist.PlaylistService.GetPlaylistById:input_type -> playlist.GetPlaylistByIdRequest
+	18, // 22: playlist.PlaylistService.GetSongRecommendations:input_type -> playlist.GetSongRecommendationsRequest
+	1,  // 23: playlist.PlaylistService.EditPlaylist:input_type -> playlist.EditPlaylistRequest
+	2,  // 24: playlist.PlaylistService.CreatePlaylist:input_type -> playlist.CreatePlaylistRequest
+	20, // 25: playlist.PlaylistService.GetPlaylistTracksLikedStatus:input_type -> playlist.GetPlaylistTracksLikedStatusRequest
+	17, // 26: playlist.PlaylistService.GetPublicPlaylists:output_type -> playlist.GetPublicPlaylistsResponse
+	15, // 27: playlist.PlaylistService.GetPlaylistTracksLength:output_type -> playlist.PlaylistTracksLengthResponse
+	8,  // 28: playlist.PlaylistService.AddRemovePlaylistTrack:output_type -> playlist.AddRemovePlaylistTrackResponse
+	32, // 29: playlist.PlaylistService.ChangePlaylistVisibility:output_type -> google.protobuf.Empty
+	32, // 30: playlist.PlaylistService.RearrangePlaylistTracks:output_type -> google.protobuf.Empty
+	32, // 31: playlist.PlaylistService.DeletePlaylist:output_type -> google.protobuf.Empty
+	11, // 32: playlist.PlaylistService.GetPlaylistTracks:output_type -> playlist.GetPlaylistTracksResponse
+	4,  // 33: playlist.PlaylistService.GetUserPlaylists:output_type -> playlist.GetUserPlaylistsResponse
+	6,  // 34: playlist.PlaylistService.GetPlaylistById:output_type -> playlist.GetPlaylistByIdResponse
+	19, // 35: playlist.PlaylistService.GetSongRecommendations:output_type -> playlist.GetSongRecommendationsResponse
+	32, // 36: playlist.PlaylistService.EditPlaylist:output_type -> google.protobuf.Empty
+	32, // 37: playlist.PlaylistService.CreatePlaylist:output_type -> google.protobuf.Empty
+	21, // 38: playlist.PlaylistService.GetPlaylistTracksLikedStatus:output_type -> playlist.GetPlaylistTracksLikedStatusResponse
+	26, // [26:39] is the sub-list for method output_type
+	13, // [13:26] is the sub-list for method input_type
+	13, // [13:13] is the sub-list for extension type_name
+	13, // [13:13] is the sub-list for extension extendee
+	0,  // [0:13] is the sub-list for field type_name
 }
 
 func init() { file_proto_playlist_proto_init() }
@@ -1151,13 +1406,15 @@ func file_proto_playlist_proto_init() {
 		return
 	}
 	file_proto_playlist_proto_msgTypes[6].OneofWrappers = []any{}
+	file_proto_playlist_proto_msgTypes[9].OneofWrappers = []any{}
+	file_proto_playlist_proto_msgTypes[17].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_playlist_proto_rawDesc), len(file_proto_playlist_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   18,
+			NumMessages:   23,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

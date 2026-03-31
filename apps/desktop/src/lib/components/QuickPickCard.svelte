@@ -1,12 +1,13 @@
 <script lang="ts">
   import { PlayIcon } from "@lucide/svelte";
+  import { toast } from "svelte-sonner";
   import { fade } from "svelte/transition";
 
-  import type { EmbeddedAlbum } from "$lib/utils/validation/albums";
-  import type { QuickPick } from "$lib/utils/validation/quick-picks-response";
+  import type { EmbeddedAlbum } from "$lib/schemas/embedded";
+  import type { QuickPick } from "$lib/schemas/quick-picks-response";
 
-  import musicPlayerStore from "$lib/stores/music-player.svelte";
-  import musicQueueStore, { type QueueableMusic } from "$lib/stores/music-queue.svelte";
+  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { reportErrorToBackend } from "$lib/utils/query-client";
 
   import Button from "$lib/components/ui/button/button.svelte";
   import * as Tooltip from "$lib/components/ui/tooltip";
@@ -16,17 +17,22 @@
 
   let isHoveringCard = $state(false);
 
-  function playSong() {
-    const queueableTrack = {
-      ...quickPick,
-      // Brilliant TypeScript.
-      album: quickPick.album as EmbeddedAlbum | undefined,
-      videoType: "VIDEO_TYPE_TRACK",
-    } satisfies QueueableMusic;
-
-    musicQueueStore.musicPlayingNow = queueableTrack;
-    musicQueueStore.musicPlaylistContext = [];
-    musicPlayerStore.visiblePanel = "playingNow";
+  async function playSong() {
+    try {
+      await musicPlayer.load({
+        ...quickPick,
+        duration: "",
+        // Brilliant TypeScript.
+        album: quickPick.album as EmbeddedAlbum | undefined,
+        videoType: "VIDEO_TYPE_TRACK",
+      });
+    } catch (error) {
+      toast.error(`Playback ${error}`);
+      await reportErrorToBackend({
+        error,
+        source: "QuickPickCard: playSong()",
+      });
+    }
   }
 </script>
 
@@ -65,7 +71,7 @@
         {quickPick.title.length > 25 ? `${quickPick.title.slice(0, 25)}...` : quickPick.title}
       </p>
       <p class="text-muted-foreground text-xs">
-        {#each quickPick.artists as artist, i}
+        {#each quickPick.artists as artist, i (`qp-${artist.browseId}`)}
           <span>
             {artist.title}{quickPick.artists[i + 1] ? ", " : ""}
           </span>

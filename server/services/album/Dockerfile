@@ -1,4 +1,4 @@
-FROM golang:1.24.1-bullseye AS builder
+FROM golang:1.25-alpine AS builder
 
 WORKDIR /usr/src/app
 
@@ -17,10 +17,6 @@ WORKDIR /app
 RUN apt update && apt install -y --no-install-recommends ca-certificates
 
 COPY --from=builder /usr/local/bin/album /usr/local/bin/album
-
-RUN chmod +x /usr/local/bin/album
-
-ENV GO_ENV=prod
 
 EXPOSE 8080
 

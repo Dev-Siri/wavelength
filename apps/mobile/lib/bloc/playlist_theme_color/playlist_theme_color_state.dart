@@ -1,5 +1,5 @@
 import "package:flutter/foundation.dart";
-import "package:wavelength/api/models/playlist_theme_color.dart";
+import "package:wavelength/api/models/theme_color.dart";
 
 @immutable
 sealed class PlaylistThemeColorState {}

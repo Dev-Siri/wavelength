@@ -4,11 +4,12 @@ import getAlbumDetails from "@/rpcs/getAlbumDetails.js";
 import getArtistDetails from "@/rpcs/getArtistDetails.js";
 import getQuickPicks from "@/rpcs/getQuickPicks.js";
 import getSearchSuggestions from "@/rpcs/getSearchSuggestions.js";
+import getTrackInfo from "@/rpcs/getTrackInfo.js";
+import getUpNext from "@/rpcs/getUpNext.js";
 import searchAlbums from "@/rpcs/searchAlbums.js";
 import searchArtists from "@/rpcs/searchArtists.js";
 import searchTracks from "@/rpcs/searchTracks.js";
-import getUpNext from "./rpcs/getUpNext.js";
-import searchYouTubeVideos from "./rpcs/searchYouTubeVideos.js";
+import searchYouTubeVideos from "@/rpcs/searchYouTubeVideos.js";
 
 export const ytScraperServer: YTScraperServer = {
   getSearchSuggestions,
@@ -20,4 +21,5 @@ export const ytScraperServer: YTScraperServer = {
   getArtistDetails,
   searchYouTubeVideos,
   getUpNext,
+  getTrackInfo,
 };

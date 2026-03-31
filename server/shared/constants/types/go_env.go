@@ -12,9 +12,9 @@ const (
 func GetGoEnv() GoEnv {
 	goEnv := os.Getenv("GO_ENV")
 
-	if goEnv == "dev" {
-		return GoEnvDevelopment
+	if goEnv == "prod" {
+		return GoEnvProduction
 	}
 
-	return GoEnvProduction
+	return GoEnvDevelopment
 }

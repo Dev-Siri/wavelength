@@ -5,15 +5,16 @@ package main
 
 import (
 	"log"
+	"strings"
 	"time"
 
-	"github.com/Dev-Siri/wavelength/server/services/gateway/middleware"
 	"github.com/Dev-Siri/wavelength/server/services/gateway/routes"
 	"github.com/Dev-Siri/wavelength/server/shared/apicontrollers"
 	"github.com/Dev-Siri/wavelength/server/shared/clients"
 	shared_type_constants "github.com/Dev-Siri/wavelength/server/shared/constants/types"
 	shared_env "github.com/Dev-Siri/wavelength/server/shared/env"
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
+	"github.com/Dev-Siri/wavelength/server/shared/middleware"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -62,6 +63,10 @@ func main() {
 		logging.Logger.Error("Auth-service client failed to connect.", zap.Error(err))
 	}
 
+	if err := clients.InitLyricClient(); err != nil {
+		logging.Logger.Error("Lyrics-service client failed to connect.", zap.Error(err))
+	}
+
 	app := fiber.New(fiber.Config{
 		ErrorHandler:            apicontrollers.GenericErrorHandler,
 		EnableTrustedProxyCheck: true,
@@ -72,13 +77,18 @@ func main() {
 	addr := ":" + shared_env.GetPORT()
 	staticDir := shared_env.GetStaticDir()
 
+	goEnv := shared_type_constants.GetGoEnv()
+
 	app.Use(requestid.New())
 	app.Use(limiter.New(limiter.Config{
 		Max:        rateLimitMaxRequests,
 		Expiration: rateLimitExpiration,
 		Next: func(ctx *fiber.Ctx) bool {
-			goEnv := shared_type_constants.GetGoEnv()
-			return goEnv == shared_type_constants.GoEnvDevelopment || ctx.Path() == "/healthz" || ctx.Path() == "/search/search-recommendations"
+
+			return goEnv == shared_type_constants.GoEnvDevelopment ||
+				ctx.Path() == "/healthz" ||
+				ctx.Path() == "/search/search-recommendations" ||
+				strings.HasSuffix(ctx.Path(), "/is-liked")
 		},
 		LimitReached:      apicontrollers.RateLimitExceededHandler,
 		LimiterMiddleware: limiter.SlidingWindow{},

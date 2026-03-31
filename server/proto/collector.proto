@@ -1,0 +1,19 @@
+syntax = "proto3";
+package collector;
+
+option go_package = "github.com/Dev-Siri/wavelength/server/proto/collector;collectorpb";
+
+import "google/protobuf/empty.proto";
+
+service CollectorService {
+  rpc CollectYouTubeStream(CollectYouTubeStreamRequest) returns (google.protobuf.Empty);
+  rpc CollectHifiStream(CollectHifiStreamRequest) returns (google.protobuf.Empty);
+}
+
+message CollectYouTubeStreamRequest {
+  string video_id = 1;
+}
+
+message CollectHifiStreamRequest {
+  string video_id = 1;
+}

@@ -3,19 +3,19 @@ package music_controllers
 import (
 	"github.com/Dev-Siri/wavelength/server/proto/commonpb"
 	"github.com/Dev-Siri/wavelength/server/proto/musicpb"
-	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
 	"github.com/Dev-Siri/wavelength/server/services/gateway/models/schemas"
 	"github.com/Dev-Siri/wavelength/server/services/gateway/validation"
 	"github.com/Dev-Siri/wavelength/server/shared/clients"
 	shared_type_constants "github.com/Dev-Siri/wavelength/server/shared/constants/types"
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
+	shared_models "github.com/Dev-Siri/wavelength/server/shared/models"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 )
 
 func LikeTrack(ctx *fiber.Ctx) error {
-	authUser, ok := ctx.Locals("authUser").(models.AuthUser)
+	authUser, ok := ctx.Locals("authUser").(shared_models.AuthUser)
 	if !ok {
 		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
 	}
@@ -64,8 +64,8 @@ func LikeTrack(ctx *fiber.Ctx) error {
 	}
 
 	if likedTracksResponse.LikeType == musicpb.LikeTrackResponse_LIKE_TYPE_UNLIKE {
-		return models.Success(ctx, "Track removed from likes.")
+		return shared_models.Success(ctx, "Track removed from likes.")
 	}
 
-	return models.Success(ctx, "Track saved to likes.")
+	return shared_models.Success(ctx, "Track saved to likes.")
 }

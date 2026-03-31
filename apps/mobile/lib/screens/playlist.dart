@@ -6,9 +6,9 @@ import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:shimmer_animation/shimmer_animation.dart";
 import "package:uuid/v4.dart";
 import "package:wavelength/api/models/playlist_track.dart";
-import "package:wavelength/api/models/representations/queueable_music.dart";
+import "package:wavelength/audio/music_context_queue.dart";
+import "package:wavelength/audio/queueable_music.dart";
 import "package:wavelength/api/models/stream_download.dart";
-import "package:wavelength/api/models/track.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_bloc.dart";
 import "package:wavelength/bloc/app_bottom_sheet/app_bottom_sheet_state.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
@@ -30,13 +30,15 @@ import "package:wavelength/cache.dart";
 import "package:wavelength/screens/edit_playlist.dart";
 import "package:wavelength/utils/toaster.dart";
 import "package:wavelength/widgets/brand_cover_image.dart";
-import "package:wavelength/widgets/common_app_bar.dart";
+import "package:wavelength/widgets/app_bars/common_app_bar.dart";
 import "package:wavelength/widgets/loading_indicator.dart";
-import "package:wavelength/widgets/music_player_preview.dart";
+import "package:wavelength/widgets/music_player_preview/music_player_preview.dart";
 import "package:wavelength/widgets/play_options.dart";
-import "package:wavelength/widgets/playlist_length_text.dart";
-import "package:wavelength/widgets/playlist_track_tile.dart";
-import "package:wavelength/widgets/playlist_visibility_toggle.dart";
+import "package:wavelength/widgets/playlist/playlist_length_text.dart";
+import "package:wavelength/widgets/playlist/playlist_track_tile.dart";
+import "package:wavelength/widgets/playlist/playlist_visibility_toggle.dart";
+import "package:sliver_tools/sliver_tools.dart";
+import "package:wavelength/widgets/playlist/recommended_songs.dart";
 import "package:wavelength/widgets/ui/amplitude.dart";
 
 class PlaylistScreen extends StatefulWidget {
@@ -77,7 +79,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Toaster {
         DownloadAddToQueueEvent(
           newDownload: StreamDownload(
             downloadId: const UuidV4().generate(),
-            metadata: Track(
+            metadata: QueueableMusic(
               videoId: track.videoId,
               title: track.title,
               thumbnail: track.thumbnail,
@@ -85,6 +87,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Toaster {
               duration: track.duration,
               isExplicit: track.isExplicit,
               album: track.album,
+              videoType: track.videoType,
             ),
           ),
         ),
@@ -125,116 +128,124 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Toaster {
               ),
             ],
           ),
-          body: ListView(
-            children: [
-              BlocBuilder(
-                bloc: _playlistThemeColorBloc,
-                builder: (context, state) {
-                  final shadowColor = state is PlaylistThemeColorSuccessState
-                      ? Color.fromRGBO(
-                          state.playlistThemeColor.r,
-                          state.playlistThemeColor.g,
-                          state.playlistThemeColor.b,
-                          0.8,
-                        )
-                      : Colors.transparent;
+          body: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: BlocBuilder(
+                  bloc: _playlistThemeColorBloc,
+                  builder: (context, state) {
+                    final shadowColor = state is PlaylistThemeColorSuccessState
+                        ? Color.fromRGBO(
+                            state.playlistThemeColor.r,
+                            state.playlistThemeColor.g,
+                            state.playlistThemeColor.b,
+                            0.8,
+                          )
+                        : Colors.transparent;
 
-                  return Center(
-                    child: BrandCoverImage(
-                      imageUrl: playlist.coverImage,
-                      shadowColor: shadowColor,
-                    ),
-                  );
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 20,
-                  right: 20,
-                  top: 20,
-                  bottom: 10,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      playlist.name,
-                      style: const TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w600,
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Center(
+                        child: BrandCoverImage(
+                          imageUrl: playlist.coverImage,
+                          shadowColor: shadowColor,
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 5),
-                      child:
-                          BlocBuilder<PlaylistLengthBloc, PlaylistLengthState>(
-                            builder: (context, state) {
-                              if (state is! PlaylistLengthSuccessState) {
-                                if (state is PlaylistLengthErrorState) {
-                                  return const Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        LucideIcons.circleAlert,
-                                        color: Colors.redAccent,
-                                        size: 20,
-                                      ),
-                                      SizedBox(width: 5),
-                                      Text(
-                                        "An error occured.",
-                                        style: TextStyle(
+                    );
+                  },
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 20,
+                    right: 20,
+                    top: 20,
+                    bottom: 10,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        playlist.name,
+                        style: const TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child:
+                            BlocBuilder<
+                              PlaylistLengthBloc,
+                              PlaylistLengthState
+                            >(
+                              builder: (context, state) {
+                                if (state is! PlaylistLengthSuccessState) {
+                                  if (state is PlaylistLengthErrorState) {
+                                    return const Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          LucideIcons.circleAlert,
                                           color: Colors.redAccent,
+                                          size: 20,
                                         ),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          "An error occured.",
+                                          style: TextStyle(
+                                            color: Colors.redAccent,
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }
+
+                                  return Padding(
+                                    padding: EdgeInsets.only(
+                                      right:
+                                          (MediaQuery.sizeOf(context).width -
+                                              30) /
+                                          2,
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Shimmer(
+                                        child: const SizedBox(height: 10),
                                       ),
-                                    ],
+                                    ),
                                   );
                                 }
 
-                                return Padding(
-                                  padding: EdgeInsets.only(
-                                    right:
-                                        (MediaQuery.sizeOf(context).width -
-                                            30) /
-                                        2,
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Shimmer(
-                                      child: const SizedBox(height: 10),
-                                    ),
-                                  ),
+                                return PlaylistLengthText(
+                                  playlistTracksLength:
+                                      state.playlistTracksLength,
                                 );
-                              }
-
-                              return PlaylistLengthText(
-                                playlistTracksLength:
-                                    state.playlistTracksLength,
-                                trackDownloadedCount:
-                                    _playlistTrackDownloadedCount,
-                              );
-                            },
-                          ),
-                    ),
-                    const SizedBox(height: 5),
-                    Transform.translate(
-                      offset: const Offset(-3, 0),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            foregroundImage: CachedNetworkImageProvider(
-                              playlist.authorImage,
+                              },
                             ),
-                          ),
-                          const SizedBox(width: 7.5),
-                          Text(
-                            playlist.authorName,
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ],
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 5),
+                      Transform.translate(
+                        offset: const Offset(-3, 0),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              foregroundImage: CachedNetworkImageProvider(
+                                playlist.authorImage,
+                              ),
+                            ),
+                            const SizedBox(width: 7.5),
+                            Text(
+                              playlist.authorName,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               BlocConsumer<PlaylistBloc, PlaylistState>(
@@ -249,11 +260,13 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Toaster {
                 },
                 builder: (context, state) {
                   if (state is! PlaylistSuccessState) {
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        top: (MediaQuery.sizeOf(context).height / 4) - 150,
+                    return SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          top: (MediaQuery.sizeOf(context).height / 4) - 150,
+                        ),
+                        child: const Center(child: LoadingIndicator()),
                       ),
-                      child: const Center(child: LoadingIndicator()),
                     );
                   }
 
@@ -264,66 +277,85 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Toaster {
                         a.positionInPlaylist.compareTo(b.positionInPlaylist),
                   );
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  return MultiSliver(
                     children: [
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: PlayOptions(
-                              contextId: playlist.playlistId,
-                              songs: state.songs
-                                  .map(
-                                    (track) => QueueableMusic(
-                                      videoId: track.videoId,
-                                      title: track.title,
-                                      isExplicit: track.isExplicit,
-                                      thumbnail: track.thumbnail,
-                                      artists: track.artists,
-                                      videoType: track.videoType,
-                                      album: track.album,
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
-                          ),
-                          const Spacer(),
-                          BlocBuilder<AuthBloc, AuthState>(
-                            builder: (context, state) {
-                              if (state is! AuthStateAuthorized ||
-                                  state.user.email !=
-                                      playlist.authorGoogleEmail) {
-                                return const SizedBox.shrink();
-                              }
-
-                              return PlaylistVisibilityToggle(
-                                playlistId: playlist.playlistId,
-                                isInitiallyPrivate: !playlist.isPublic,
-                              );
-                            },
-                          ),
-                          if (_playlistTrackDownloadedCount !=
-                              state.songs.length)
-                            AmplIconButton(
-                              padding: EdgeInsets.zero,
-                              onPressed: () => _downloadAllTracks(state.songs),
-                              icon: const Icon(
-                                LucideIcons.hardDriveDownload,
-                                size: 20,
+                      SliverToBoxAdapter(
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                              ),
+                              child: PlayOptions(
+                                sourceLabel: playlist.name,
+                                musicContext: MusicContextTypePlaylist(
+                                  playlistId: playlist.playlistId,
+                                ),
+                                songs: state.songs
+                                    .map(
+                                      (track) => QueueableMusic(
+                                        videoId: track.videoId,
+                                        title: track.title,
+                                        duration: track.duration,
+                                        isExplicit: track.isExplicit,
+                                        thumbnail: track.thumbnail,
+                                        artists: track.artists,
+                                        videoType: track.videoType,
+                                        album: track.album,
+                                      ),
+                                    )
+                                    .toList(),
                               ),
                             ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      for (final song in orderedSongs)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: PlaylistTrackTile(
-                            playlistTrack: song,
-                            allPlaylistTracks: orderedSongs,
-                          ),
+                            const Spacer(),
+                            BlocBuilder<AuthBloc, AuthState>(
+                              builder: (context, state) {
+                                if (state is! AuthStateAuthorized ||
+                                    state.user.email !=
+                                        playlist.authorGoogleEmail) {
+                                  return const SizedBox.shrink();
+                                }
+
+                                return PlaylistVisibilityToggle(
+                                  playlistId: playlist.playlistId,
+                                  isInitiallyPrivate: !playlist.isPublic,
+                                );
+                              },
+                            ),
+                            if (_playlistTrackDownloadedCount !=
+                                state.songs.length)
+                              AmplIconButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () =>
+                                    _downloadAllTracks(state.songs),
+                                icon: const Icon(
+                                  LucideIcons.hardDriveDownload,
+                                  size: 20,
+                                ),
+                              ),
+                          ],
                         ),
+                      ),
+                      const SliverToBoxAdapter(child: SizedBox(height: 20)),
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          final song = orderedSongs[index];
+
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: PlaylistTrackTile(
+                              key: ValueKey(song.videoId),
+                              playlistTitle: playlist.name,
+                              playlistTrack: song,
+                              allPlaylistTracks: orderedSongs,
+                            ),
+                          );
+                        }, childCount: orderedSongs.length),
+                      ),
+                      RecommendedSongs(
+                        playlistTitle: playlist.name,
+                        playlistId: playlist.playlistId,
+                      ),
                     ],
                   );
                 },

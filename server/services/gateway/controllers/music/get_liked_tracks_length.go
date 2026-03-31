@@ -2,16 +2,16 @@ package music_controllers
 
 import (
 	"github.com/Dev-Siri/wavelength/server/proto/musicpb"
-	"github.com/Dev-Siri/wavelength/server/services/gateway/models"
 	"github.com/Dev-Siri/wavelength/server/shared/clients"
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
+	shared_models "github.com/Dev-Siri/wavelength/server/shared/models"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 )
 
 func GetLikedTracksLength(ctx *fiber.Ctx) error {
-	authUser, ok := ctx.Locals("authUser").(models.AuthUser)
+	authUser, ok := ctx.Locals("authUser").(shared_models.AuthUser)
 
 	if !ok {
 		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
@@ -25,5 +25,5 @@ func GetLikedTracksLength(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Liked tracks length fetch failed.")
 	}
 
-	return models.Success(ctx, likedTracksLengthResponse)
+	return shared_models.Success(ctx, likedTracksLengthResponse)
 }

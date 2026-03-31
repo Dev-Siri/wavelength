@@ -11,8 +11,8 @@ import "package:wavelength/bloc/location/location_state.dart";
 import "package:wavelength/bloc/quick_picks/quick_picks_bloc.dart";
 import "package:wavelength/bloc/quick_picks/quick_picks_event.dart";
 import "package:wavelength/bloc/quick_picks/quick_picks_state.dart";
-import "package:wavelength/widgets/error_message_dialog.dart";
-import "package:wavelength/widgets/followed_artists_carousel.dart";
+import "package:wavelength/widgets/dialogs/error_message_dialog.dart";
+import "package:wavelength/widgets/artist/followed_artists_carousel.dart";
 import "package:wavelength/widgets/quick_pick_song_card.dart";
 import "package:wavelength/widgets/skeletons/quick_pick_song_card_skeleton.dart";
 

@@ -59,12 +59,14 @@ class ArtistRepo {
             final isSuccessful = (decodedJson["success"] as bool);
 
             if (isSuccessful) {
-              final artists = decodedJson["data"]["artists"] as List;
+              final artists = decodedJson["data"]["artists"] as List?;
 
               return ApiResponseSuccess(
-                data: artists
-                    .map((artist) => FollowedArtist.fromJson(artist))
-                    .toList(),
+                data:
+                    artists
+                        ?.map((artist) => FollowedArtist.fromJson(artist))
+                        .toList() ??
+                    [],
               );
             }
 

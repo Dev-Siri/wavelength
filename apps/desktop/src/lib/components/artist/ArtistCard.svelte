@@ -1,16 +1,20 @@
 <script lang="ts">
-  import type { FollowedArtist } from "$lib/utils/validation/artist-response";
+  import { resolve } from "$app/paths";
+
+  import type { FollowedArtist } from "$lib/schemas/artist";
 
   import Image from "../Image.svelte";
 
   const {
     thumbnail,
     browseId,
+    audience,
     name,
     height = 128,
     width = 128,
     showName,
   }: Pick<FollowedArtist, "thumbnail" | "browseId" | "name"> & {
+    audience?: string;
     height?: number;
     width?: number;
     showName?: boolean;
@@ -18,7 +22,7 @@
 </script>
 
 <a
-  href="/app/artist/{browseId}"
+  href={resolve(`/app/artist/${browseId}`)}
   role="button"
   tabindex={0}
   title={name}
@@ -32,6 +36,9 @@
     class="rounded-full aspect-square object-cover duration-200"
   />
   {#if showName}
-    <p>{name}</p>
+    <p class="font-semibold text-xl">{name}</p>
+    {#if audience}
+      <p class="text-sm text-muted-foreground -mt-2">{audience}</p>
+    {/if}
   {/if}
 </a>

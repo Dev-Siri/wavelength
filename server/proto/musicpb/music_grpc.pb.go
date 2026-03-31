@@ -31,7 +31,7 @@ const (
 	MusicService_GetMusicVideoId_FullMethodName           = "/music.MusicService/GetMusicVideoId"
 	MusicService_SearchMusicTracks_FullMethodName         = "/music.MusicService/SearchMusicTracks"
 	MusicService_SearchYouTubeVideos_FullMethodName       = "/music.MusicService/SearchYouTubeVideos"
-	MusicService_GetMusicLyrics_FullMethodName            = "/music.MusicService/GetMusicLyrics"
+	MusicService_GetUpNext_FullMethodName                 = "/music.MusicService/GetUpNext"
 )
 
 // MusicServiceClient is the client API for MusicService service.
@@ -50,7 +50,7 @@ type MusicServiceClient interface {
 	GetMusicVideoId(ctx context.Context, in *GetMusicVideoIdRequest, opts ...grpc.CallOption) (*GetMusicVideoIdResponse, error)
 	SearchMusicTracks(ctx context.Context, in *SearchMusicTracksRequest, opts ...grpc.CallOption) (*SearchMusicTracksResponse, error)
 	SearchYouTubeVideos(ctx context.Context, in *SearchYouTubeVideosRequest, opts ...grpc.CallOption) (*SearchYouTubeVideosResponse, error)
-	GetMusicLyrics(ctx context.Context, in *GetMusicLyricsRequest, opts ...grpc.CallOption) (*GetMusicLyricsResponse, error)
+	GetUpNext(ctx context.Context, in *GetUpNextRequest, opts ...grpc.CallOption) (*GetUpNextResponse, error)
 }
 
 type musicServiceClient struct {
@@ -181,10 +181,10 @@ func (c *musicServiceClient) SearchYouTubeVideos(ctx context.Context, in *Search
 	return out, nil
 }
 
-func (c *musicServiceClient) GetMusicLyrics(ctx context.Context, in *GetMusicLyricsRequest, opts ...grpc.CallOption) (*GetMusicLyricsResponse, error) {
+func (c *musicServiceClient) GetUpNext(ctx context.Context, in *GetUpNextRequest, opts ...grpc.CallOption) (*GetUpNextResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetMusicLyricsResponse)
-	err := c.cc.Invoke(ctx, MusicService_GetMusicLyrics_FullMethodName, in, out, cOpts...)
+	out := new(GetUpNextResponse)
+	err := c.cc.Invoke(ctx, MusicService_GetUpNext_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -207,7 +207,7 @@ type MusicServiceServer interface {
 	GetMusicVideoId(context.Context, *GetMusicVideoIdRequest) (*GetMusicVideoIdResponse, error)
 	SearchMusicTracks(context.Context, *SearchMusicTracksRequest) (*SearchMusicTracksResponse, error)
 	SearchYouTubeVideos(context.Context, *SearchYouTubeVideosRequest) (*SearchYouTubeVideosResponse, error)
-	GetMusicLyrics(context.Context, *GetMusicLyricsRequest) (*GetMusicLyricsResponse, error)
+	GetUpNext(context.Context, *GetUpNextRequest) (*GetUpNextResponse, error)
 	mustEmbedUnimplementedMusicServiceServer()
 }
 
@@ -254,8 +254,8 @@ func (UnimplementedMusicServiceServer) SearchMusicTracks(context.Context, *Searc
 func (UnimplementedMusicServiceServer) SearchYouTubeVideos(context.Context, *SearchYouTubeVideosRequest) (*SearchYouTubeVideosResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method SearchYouTubeVideos not implemented")
 }
-func (UnimplementedMusicServiceServer) GetMusicLyrics(context.Context, *GetMusicLyricsRequest) (*GetMusicLyricsResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method GetMusicLyrics not implemented")
+func (UnimplementedMusicServiceServer) GetUpNext(context.Context, *GetUpNextRequest) (*GetUpNextResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetUpNext not implemented")
 }
 func (UnimplementedMusicServiceServer) mustEmbedUnimplementedMusicServiceServer() {}
 func (UnimplementedMusicServiceServer) testEmbeddedByValue()                      {}
@@ -494,20 +494,20 @@ func _MusicService_SearchYouTubeVideos_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MusicService_GetMusicLyrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetMusicLyricsRequest)
+func _MusicService_GetUpNext_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUpNextRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MusicServiceServer).GetMusicLyrics(ctx, in)
+		return srv.(MusicServiceServer).GetUpNext(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MusicService_GetMusicLyrics_FullMethodName,
+		FullMethod: MusicService_GetUpNext_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MusicServiceServer).GetMusicLyrics(ctx, req.(*GetMusicLyricsRequest))
+		return srv.(MusicServiceServer).GetUpNext(ctx, req.(*GetUpNextRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -568,8 +568,8 @@ var MusicService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _MusicService_SearchYouTubeVideos_Handler,
 		},
 		{
-			MethodName: "GetMusicLyrics",
-			Handler:    _MusicService_GetMusicLyrics_Handler,
+			MethodName: "GetUpNext",
+			Handler:    _MusicService_GetUpNext_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

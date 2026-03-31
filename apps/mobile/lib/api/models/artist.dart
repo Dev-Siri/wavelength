@@ -48,6 +48,8 @@ class ArtistTopSongTrack {
   final bool isExplicit;
   @HiveField(5)
   final EmbeddedAlbum? album;
+  @HiveField(8)
+  final int duration;
 
   const ArtistTopSongTrack({
     required this.videoId,
@@ -56,6 +58,7 @@ class ArtistTopSongTrack {
     required this.playCount,
     required this.isExplicit,
     required this.album,
+    required this.duration,
   });
 
   factory ArtistTopSongTrack.fromJson(Map<String, dynamic> json) {
@@ -68,6 +71,7 @@ class ArtistTopSongTrack {
       album: json["album"] != null
           ? EmbeddedAlbum.fromJson(json["album"])
           : null,
+      duration: int.parse(json["duration"] as String),
     );
   }
 
