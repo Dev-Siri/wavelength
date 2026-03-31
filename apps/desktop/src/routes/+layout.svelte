@@ -36,7 +36,9 @@
   });
 
   $effect(() => {
-    if (userStore.user && page.url.pathname === "/") goto(resolve("/app"));
+    if (page.url.pathname !== "/downloads") {
+      if (userStore.user && !page.url.pathname.includes("/app")) goto(resolve("/app"));
+    }
   });
 </script>
 
