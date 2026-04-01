@@ -98,7 +98,7 @@
       });
     }
 
-    createAnimations();
+    if (typeof window !== "undefined") createAnimations();
     return () => {
       if (riveInstance) riveInstance.cleanup();
     };
@@ -150,7 +150,7 @@
       });
     }
 
-    createAnimations();
+    if (typeof window !== "undefined") createAnimations();
   });
 
   function shuffleArray<T>(array: T[]): T[] {
