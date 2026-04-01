@@ -23,8 +23,10 @@
 
   let riveInstance: Rive;
 
-  gsap.registerPlugin(ScrollTrigger);
-  ScrollTrigger.defaults({ scroller: "main" });
+  if (typeof window !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.defaults({ scroller: "main" });
+  }
 
   $effect(() => {
     gsap.from("h1", {
