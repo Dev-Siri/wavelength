@@ -67,6 +67,13 @@
       <section class="flex flex-col gap-2 h-full w-full">
         <Library {isCollapsed} />
       </section>
+    {:else}
+      <div class="flex flex-col items-center justify-center h-full w-full gap-4">
+        <LibraryIcon size={50} />
+        <p class="text-lg font-medium text-center pb-[60%]">
+          Sign in to view your library and playlists.
+        </p>
+      </div>
     {/if}
   </div>
 </aside>

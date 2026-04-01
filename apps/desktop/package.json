@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@lucide/svelte": "^0.546.0",
+    "@rive-app/canvas": "^2.36.0",
     "@rodrigodagostino/svelte-sortable-list": "^2.1.6",
     "@tanstack/svelte-query": "^6.0.3",
     "@tanstack/svelte-query-persist-client": "^6.0.5",
@@ -56,6 +57,7 @@
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "bits-ui": "^2.14.0",
+    "gsap": "^3.14.2",
     "hls.js": "^1.6.15",
     "idb-keyval": "^6.2.2",
     "svelte-splitpanes": "^8.0.9",

@@ -1,8 +1,5 @@
 <script lang="ts">
   import { dev } from "$app/environment";
-  import { goto } from "$app/navigation";
-  import { resolve } from "$app/paths";
-  import { page } from "$app/state";
   import { injectAnalytics } from "@vercel/analytics/sveltekit";
   import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit";
   import "../app.css";
@@ -33,12 +30,6 @@
     }
 
     initializeAuth();
-  });
-
-  $effect(() => {
-    if (page.url.pathname !== "/downloads") {
-      if (userStore.user && !page.url.pathname.includes("/app")) goto(resolve("/app"));
-    }
   });
 </script>
 
