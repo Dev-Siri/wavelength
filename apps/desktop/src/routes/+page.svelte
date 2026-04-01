@@ -23,75 +23,78 @@
 
   let riveInstance: Rive;
 
-  if (typeof window !== "undefined") {
-    gsap.registerPlugin(ScrollTrigger);
-    ScrollTrigger.defaults({ scroller: "main" });
-  }
-
   $effect(() => {
-    gsap.from("h1", {
-      opacity: 0,
-      scale: 0.9,
-      duration: 0.8,
-      ease: "power2.out",
-    });
+    async function createAnimations() {
+      if (typeof window !== "undefined") {
+        gsap.registerPlugin(ScrollTrigger);
+        ScrollTrigger.defaults({ scroller: "main" });
+      }
 
-    const subtextWords = document.querySelectorAll(".subtext-word");
-    gsap.from(subtextWords, {
-      opacity: 0,
-      duration: 0.6,
-      y: 10,
-      delay: 0.4,
-      ease: "power2.out",
-      stagger: 0.05,
-    });
-
-    const albumPlaceholder = document.getElementById("album-placeholder");
-    if (albumPlaceholder) {
-      gsap.from(albumPlaceholder.children, {
+      gsap.from("h1", {
         opacity: 0,
-        y: 20,
-        duration: 0.6,
+        scale: 0.9,
+        duration: 0.8,
         ease: "power2.out",
-        stagger: {
-          each: 0.1,
-          from: "end",
+      });
+
+      const subtextWords = document.querySelectorAll(".subtext-word");
+      gsap.from(subtextWords, {
+        opacity: 0,
+        duration: 0.6,
+        y: 10,
+        delay: 0.4,
+        ease: "power2.out",
+        stagger: 0.05,
+      });
+
+      const albumPlaceholder = document.getElementById("album-placeholder");
+      if (albumPlaceholder) {
+        gsap.from(albumPlaceholder.children, {
+          opacity: 0,
+          y: 20,
+          duration: 0.6,
+          ease: "power2.out",
+          stagger: {
+            each: 0.1,
+            from: "end",
+          },
+        });
+      }
+
+      const totalWidth = marqueeRef.scrollWidth / 2;
+      gsap.to(marqueeRef, {
+        x: -totalWidth,
+        duration: 30,
+        ease: "linear",
+        repeat: -1,
+        modifiers: {
+          x: x => `${parseFloat(x) % -totalWidth}px`,
+        },
+      });
+
+      const seeMoreLink = document.getElementById("see-more-link");
+      if (seeMoreLink) {
+        gsap.from(seeMoreLink, {
+          opacity: 0,
+          y: 10,
+          duration: 0.6,
+          delay: 1.5,
+          ease: "power2.out",
+        });
+      }
+
+      riveInstance = new Rive({
+        src: "/rive/wave.riv",
+        canvas: waveCanvas,
+        autoplay: true,
+        onLoad: () => {
+          riveInstance.resizeDrawingSurfaceToCanvas();
+          ScrollTrigger.refresh();
         },
       });
     }
 
-    const totalWidth = marqueeRef.scrollWidth / 2;
-    gsap.to(marqueeRef, {
-      x: -totalWidth,
-      duration: 30,
-      ease: "linear",
-      repeat: -1,
-      modifiers: {
-        x: x => `${parseFloat(x) % -totalWidth}px`,
-      },
-    });
-
-    const seeMoreLink = document.getElementById("see-more-link");
-    if (seeMoreLink) {
-      gsap.from(seeMoreLink, {
-        opacity: 0,
-        y: 10,
-        duration: 0.6,
-        delay: 1.5,
-        ease: "power2.out",
-      });
-    }
-
-    riveInstance = new Rive({
-      src: "/rive/wave.riv",
-      canvas: waveCanvas,
-      autoplay: true,
-      onLoad: () => {
-        riveInstance.resizeDrawingSurfaceToCanvas();
-        ScrollTrigger.refresh();
-      },
-    });
-
+    createAnimations();
     return () => {
       if (riveInstance) riveInstance.cleanup();
     };
