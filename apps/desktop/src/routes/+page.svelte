@@ -1,7 +1,6 @@
 <script lang="ts">
   import { ChevronDownIcon, PlayIcon, SkipBackIcon, SkipForwardIcon } from "@lucide/svelte";
   import { Rive } from "@rive-app/canvas";
-  import { gsap } from "gsap";
 
   import wvlenDesktopUsage from "$lib/assets/wvlen-desktop-usage.png";
   import wvlenMobileUsage from "$lib/assets/wvlen-mobile-usage.png";
@@ -24,7 +23,12 @@
 
   $effect(() => {
     async function createAnimations() {
-      const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+      // @ts-expect-error GSAP's types don't work with dist/ imports
+      const ScrollTriggerModule = await import("gsap/dist/ScrollTrigger");
+      const ScrollTrigger = ScrollTriggerModule.ScrollTrigger;
+      // @ts-expect-error GSAP's types don't work with dist/ imports
+      const { gsap } = await import("gsap/dist/gsap");
+
       if (typeof window !== "undefined") {
         gsap.registerPlugin(ScrollTrigger);
         ScrollTrigger.defaults({ scroller: "main" });
@@ -68,7 +72,7 @@
         ease: "linear",
         repeat: -1,
         modifiers: {
-          x: x => `${parseFloat(x) % -totalWidth}px`,
+          x: (x: string) => `${parseFloat(x) % -totalWidth}px`,
         },
       });
 
@@ -101,45 +105,52 @@
   });
 
   $effect(() => {
-    gsap.from(
-      "#features p, #features h4, #features .glow, #features #play-button, #features #record-player",
-      {
+    async function createAnimations() {
+      // @ts-expect-error GSAP's types don't work with dist/ imports
+      const { gsap } = await import("gsap/dist/gsap");
+
+      gsap.from(
+        "#features p, #features h4, #features .glow, #features #play-button, #features #record-player",
+        {
+          opacity: 0,
+          y: 50,
+          duration: 0.8,
+          stagger: 0.2,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: "#features",
+            start: "top 80%",
+            end: "bottom 20%",
+            toggleActions: "play none none reverse",
+          },
+        },
+      );
+
+      gsap.from("#mobile h4, #mobile p, #mobile img, #mobile div", {
         opacity: 0,
         y: 50,
         duration: 0.8,
         stagger: 0.2,
         ease: "power2.out",
         scrollTrigger: {
-          trigger: "#features",
+          trigger: "#mobile",
           start: "top 80%",
           end: "bottom 20%",
           toggleActions: "play none none reverse",
         },
-      },
-    );
+      });
 
-    gsap.from("#mobile h4, #mobile p, #mobile img, #mobile div", {
-      opacity: 0,
-      y: 50,
-      duration: 0.8,
-      stagger: 0.2,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: "#mobile",
-        start: "top 80%",
-        end: "bottom 20%",
-        toggleActions: "play none none reverse",
-      },
-    });
+      gsap.to(".glow", {
+        textShadow: "0 0 20px #ff1493, 0 0 30px #ff69b4",
+        repeat: -1,
+        yoyo: true,
+        duration: 1,
+        ease: "power1.inOut",
+        scrub: true,
+      });
+    }
 
-    gsap.to(".glow", {
-      textShadow: "0 0 20px #ff1493, 0 0 30px #ff69b4",
-      repeat: -1,
-      yoyo: true,
-      duration: 1,
-      ease: "power1.inOut",
-      scrub: true,
-    });
+    createAnimations();
   });
 
   function shuffleArray<T>(array: T[]): T[] {
