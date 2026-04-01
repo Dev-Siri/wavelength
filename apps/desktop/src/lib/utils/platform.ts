@@ -5,6 +5,10 @@ export type Platform = ReturnType<typeof getPlatform>;
 
 // https://stackoverflow.com/a/38241481
 export function getPlatform() {
+  if (typeof window === "undefined") {
+    return "unknown";
+  }
+
   const userAgent = window.navigator.userAgent;
   const platform = window.navigator?.userAgentData?.platform || window.navigator.platform;
 
