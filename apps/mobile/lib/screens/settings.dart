@@ -8,7 +8,7 @@ import "package:shared_preferences/shared_preferences.dart";
 import "package:wavelength/audio/stream_resolver.dart";
 import "package:wavelength/bloc/location/location_bloc.dart";
 import "package:wavelength/bloc/location/location_state.dart";
-import "package:wavelength/cache.dart";
+import "package:wavelength/audio_manager.dart";
 import "package:wavelength/constants.dart";
 import "package:wavelength/settings_manager.dart";
 import "package:wavelength/utils/format.dart";
@@ -38,7 +38,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _fetchStreamCacheOccupiedSize() async {
-    final usedBytes = await AudioCache.calculateStorageUsage();
+    final usedBytes = await AudioManager.calculateStorageUsage();
 
     setState(() => _streamCacheFilesOccupiedSize = usedBytes);
   }
@@ -65,7 +65,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _clearDownloadedTracks() async {
-    await AudioCache.clear();
+    await AudioManager.clear();
 
     _fetchStreamCacheOccupiedSize();
   }
@@ -155,10 +155,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           padding: EdgeInsets.only(
                             right: Platform.isIOS ? 5 : 0,
                           ),
-                          child: AmplButton(
+                          child: AmplIconButton(
                             onPressed: _clearDownloadedTracks,
                             padding: const EdgeInsets.all(10),
-                            child: const Icon(
+                            icon: const Icon(
                               LucideIcons.trash,
                               color: Colors.redAccent,
                             ),

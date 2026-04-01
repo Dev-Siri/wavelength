@@ -87,7 +87,7 @@ class _PlaylistTrackExtendedOptionsState
         leading: Icon(LucideIcons.circleMinus, color: Colors.red.shade400),
         title: Text(
           "Remove from playlist.",
-          style: TextStyle(color: Colors.red.shade400),
+          style: TextStyle(color: Colors.red.shade400, fontSize: 16),
         ),
       ),
     );

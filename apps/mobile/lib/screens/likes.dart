@@ -23,7 +23,7 @@ import "package:wavelength/bloc/likes/liked_tracks_playlength/liked_tracks_playl
 import "package:wavelength/bloc/likes/liked_tracks_playlength/liked_tracks_playlength_event.dart";
 import "package:wavelength/bloc/likes/liked_tracks_playlength/liked_tracks_playlength_state.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
-import "package:wavelength/cache.dart";
+import "package:wavelength/audio_manager.dart";
 import "package:wavelength/utils/toaster.dart";
 import "package:wavelength/widgets/loading_indicator.dart";
 import "package:wavelength/widgets/music_player_preview/music_player_preview.dart";
@@ -65,7 +65,7 @@ class _LikesScreenState extends State<LikesScreen> with Toaster {
     showToast(context, "Downloading playlist...", ToastType.info);
 
     for (final track in playlistTracks) {
-      if (await AudioCache.isTrackDownloaded(track.videoId)) {
+      if (await AudioManager.isTrackDownloaded(track.videoId)) {
         continue;
       }
 
@@ -194,7 +194,7 @@ class _LikesScreenState extends State<LikesScreen> with Toaster {
             listener: (context, state) async {
               if (state is! LikedTracksFetchSuccessState) return;
               final downloadCount =
-                  await AudioCache.countDownloadedTracksInPlaylist(
+                  await AudioManager.countDownloadedTracksInPlaylist(
                     state.likedTracks.map((song) => song.videoId).toList(),
                   );
 

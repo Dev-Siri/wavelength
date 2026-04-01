@@ -13,6 +13,7 @@ import "package:wavelength/bloc/audio_device/audio_device_bloc.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
 import "package:wavelength/bloc/cover_effect_colors/cover_effect_colors_bloc.dart";
 import "package:wavelength/bloc/download/download_bloc.dart";
+import "package:wavelength/bloc/downloaded_tracks/downloaded_tracks_bloc.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/likes/like_count/like_count_bloc.dart";
 import "package:wavelength/bloc/location/location_bloc.dart";
@@ -110,6 +111,7 @@ class App extends StatelessWidget {
         BlocProvider(create: (_) => LikeCountBloc()),
         BlocProvider(create: (_) => AudioDeviceBloc()),
         BlocProvider(create: (_) => CoverEffectColorsBloc()),
+        BlocProvider(create: (_) => DownloadedTracksBloc()),
         BlocProvider(
           create: (_) => AuthBloc(
             GoogleSignIn(

@@ -5,7 +5,7 @@ import "package:hive/hive.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "package:wavelength/bloc/download/download_event.dart";
 import "package:wavelength/bloc/download/download_state.dart";
-import "package:wavelength/cache.dart";
+import "package:wavelength/audio_manager.dart";
 import "package:wavelength/constants.dart";
 
 class DownloadBloc extends Bloc<DownloadEvent, DownloadState> {
@@ -28,7 +28,7 @@ class DownloadBloc extends Bloc<DownloadEvent, DownloadState> {
     final streamsMetadataStore = await Hive.openBox(hiveStreamsMetadataKey);
 
     await streamsStore.put(current.metadata.videoId, current.metadata);
-    final metadata = await AudioCache.downloadAndCache(
+    final metadata = await AudioManager.download(
       current.metadata,
       _secureStorage,
       onProgress: (downloaded, total) {

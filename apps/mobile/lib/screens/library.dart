@@ -3,6 +3,8 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
 import "package:wavelength/bloc/auth/auth_state.dart";
+import "package:wavelength/bloc/downloaded_tracks/downloaded_tracks_bloc.dart";
+import "package:wavelength/bloc/downloaded_tracks/downloaded_tracks_event.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/library/library_event.dart";
 import "package:wavelength/bloc/library/library_state.dart";
@@ -38,6 +40,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
     context.read<LikeCountBloc>().add(
       LikeCountFetchEvent(authToken: authToken),
     );
+    context.read<DownloadedTracksBloc>().add(DownloadedTracksFetchEvent());
   }
 
   @override

@@ -17,9 +17,11 @@ import "package:wavelength/bloc/auth/auth_bloc.dart";
 import "package:wavelength/bloc/auth/auth_state.dart";
 import "package:wavelength/bloc/download/download_bloc.dart";
 import "package:wavelength/bloc/download/download_event.dart";
+import "package:wavelength/bloc/downloaded_tracks/downloaded_tracks_bloc.dart";
+import "package:wavelength/bloc/downloaded_tracks/downloaded_tracks_event.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/library/library_state.dart";
-import "package:wavelength/cache.dart";
+import "package:wavelength/audio_manager.dart";
 import "package:wavelength/constants.dart";
 import "package:wavelength/utils/toaster.dart";
 import "package:wavelength/widgets/ui/amplitude.dart";
@@ -114,16 +116,22 @@ class _TrackOptionsBottomSheetState extends State<TrackOptionsBottomSheet>
   }
 
   Future<void> _downloadTrack() async {
+    final appBottomSheetBloc = context.read<AppBottomSheetBloc>();
+    final downloadedTracksBloc = context.read<DownloadedTracksBloc>();
+
     if (_isTrackDownloaded) {
-      await AudioCache.deleteTrack(widget.track.videoId);
+      appBottomSheetBloc.add(AppBottomSheetCloseEvent(context: context));
+
+      await AudioManager.deleteTrack(widget.track.videoId);
       final box = await Hive.openBox(hiveStreamsKey);
       await box.delete(widget.track.videoId);
 
+      downloadedTracksBloc.add(DownloadedTracksFetchEvent());
       setState(() => _isTrackDownloaded = false);
       return;
     }
 
-    showToast(context, "Saving track...", ToastType.info);
+    showToast(context, "Saving ${widget.track.title}", ToastType.info);
 
     context.read<DownloadBloc>().add(
       DownloadAddToQueueEvent(
@@ -143,9 +151,7 @@ class _TrackOptionsBottomSheetState extends State<TrackOptionsBottomSheet>
       ),
     );
 
-    context.read<AppBottomSheetBloc>().add(
-      AppBottomSheetCloseEvent(context: context),
-    );
+    appBottomSheetBloc.add(AppBottomSheetCloseEvent(context: context));
   }
 
   void _addToQueue() {
@@ -204,7 +210,7 @@ class _TrackOptionsBottomSheetState extends State<TrackOptionsBottomSheet>
                     ),
                     title: const Text(
                       "Add to queue",
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
                 ),
@@ -229,7 +235,7 @@ class _TrackOptionsBottomSheetState extends State<TrackOptionsBottomSheet>
                     ),
                     title: Text(
                       _isTrackDownloaded ? "Remove save." : "Save offline",
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
                 ),
@@ -265,7 +271,10 @@ class _TrackOptionsBottomSheetState extends State<TrackOptionsBottomSheet>
                       leading: const Icon(LucideIcons.album),
                       title: Text(
                         album.title,
-                        style: const TextStyle(color: Colors.white),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   ),
@@ -296,7 +305,10 @@ class _TrackOptionsBottomSheetState extends State<TrackOptionsBottomSheet>
                       ),
                       title: Text(
                         artist.title,
-                        style: const TextStyle(color: Colors.white),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   );

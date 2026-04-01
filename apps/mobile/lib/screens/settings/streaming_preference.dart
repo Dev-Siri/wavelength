@@ -1,5 +1,3 @@
-import "dart:io";
-
 import "package:lucide_icons_flutter/lucide_icons.dart";
 import "package:flutter/material.dart";
 import "package:shared_preferences/shared_preferences.dart";
@@ -7,7 +5,7 @@ import "package:wavelength/audio/stream_resolver.dart";
 import "package:wavelength/constants.dart";
 import "package:wavelength/settings_manager.dart";
 import "package:wavelength/widgets/app_bars/common_app_bar.dart";
-import "package:wavelength/widgets/ui/amplitude.dart";
+import "package:wavelength/widgets/settings/setting_option.dart";
 
 class StreamingPreferenceSetting extends StatefulWidget {
   const StreamingPreferenceSetting({super.key});
@@ -69,61 +67,37 @@ class _StreamingPreferenceSettingState
               ),
               child: Column(
                 children: [
-                  AmplListTile(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: Platform.isIOS ? 12 : 4,
-                    ),
-                    onTap: () =>
+                  SettingOption(
+                    onPressed: () =>
                         _updateStreamingPreference(StreamingPreference.always),
-                    title: const Text("Always", style: TextStyle(fontSize: 18)),
-                    subtitle: const Text(
-                      "Stream even for a downloaded song.",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    trailing: _getSelectedBadge(StreamingPreference.always),
+                    title: "Always",
+                    description: "Stream even for a downloaded song.",
+                    modifier: _getSelectedBadge(StreamingPreference.always),
                   ),
                   Container(
                     height: 1,
                     width: double.infinity,
                     color: Colors.grey.shade800,
                   ),
-                  AmplListTile(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: Platform.isIOS ? 12 : 4,
-                    ),
-                    onTap: () =>
+                  SettingOption(
+                    onPressed: () =>
                         _updateStreamingPreference(StreamingPreference.wifi),
-                    title: const Text(
-                      "Wi-Fi Only",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    subtitle: const Text(
-                      "Stream over Wi-Fi only.",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    trailing: _getSelectedBadge(StreamingPreference.wifi),
+                    title: "Wi-Fi Only",
+                    description: "Stream over Wi-Fi only.",
+                    modifier: _getSelectedBadge(StreamingPreference.wifi),
                   ),
                   Container(
                     height: 1,
                     width: double.infinity,
                     color: Colors.grey.shade800,
                   ),
-                  AmplListTile(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: Platform.isIOS ? 12 : 4,
-                    ),
-                    onTap: () => _updateStreamingPreference(
+                  SettingOption(
+                    onPressed: () => _updateStreamingPreference(
                       StreamingPreference.downloads,
                     ),
-                    title: const Text("Never", style: TextStyle(fontSize: 18)),
-                    subtitle: const Text(
-                      "Avoid streaming for a downloaded song.",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    trailing: _getSelectedBadge(StreamingPreference.downloads),
+                    title: "Never",
+                    description: "Avoid streaming for a downloaded song.",
+                    modifier: _getSelectedBadge(StreamingPreference.downloads),
                   ),
                 ],
               ),

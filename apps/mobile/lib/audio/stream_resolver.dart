@@ -8,7 +8,7 @@ import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/api/repositories/stream_repo.dart";
 import "package:wavelength/audio/queueable_music.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
-import "package:wavelength/cache.dart";
+import "package:wavelength/audio_manager.dart";
 import "package:wavelength/constants.dart";
 import "package:wavelength/settings_manager.dart";
 import "package:wavelength/src/rust/api/tydle_caller.dart" as tydle_caller;
@@ -59,9 +59,14 @@ class PlayableStreamYouTubeMetadata extends PlayableStreamMetadata {
 
 class PlayableStream {
   final Uri source;
+  final bool isLocalHls;
   final PlayableStreamMetadata? metadata;
 
-  const PlayableStream({required this.source, required this.metadata});
+  const PlayableStream({
+    required this.source,
+    required this.isLocalHls,
+    this.metadata,
+  });
 }
 
 class StreamResolver {
@@ -79,7 +84,7 @@ class StreamResolver {
     final streamingPreference =
         await SettingsManager.fetchPreferStreamingConnection();
     final connectivityResult = await Connectivity().checkConnectivity();
-    final isDownloaded = await AudioCache.isTrackDownloaded(
+    final isDownloaded = await AudioManager.isTrackDownloaded(
       queueableMusic.videoId,
     );
 
@@ -122,13 +127,15 @@ class StreamResolver {
   Future<PlayableStream> _fetchDownloadedStream(
     QueueableMusic queueableMusic,
   ) async {
-    final downloadedStream = await AudioCache.get(queueableMusic.videoId);
-    final streamableUri = Uri.file(downloadedStream!);
+    final downloadedStream = await AudioManager.get(queueableMusic.videoId);
     final box = await Hive.openBox(hiveStreamsMetadataKey);
     final metadata = await box.get(queueableMusic.videoId);
 
+    final source = Uri.file(downloadedStream!);
+
     return PlayableStream(
-      source: streamableUri,
+      source: source,
+      isLocalHls: downloadedStream.contains("index.m3u8"),
       metadata: metadata != null
           ? PlayableStreamHlsMetadata(metadata: metadata)
           : null,
@@ -156,6 +163,7 @@ class StreamResolver {
 
       return PlayableStream(
         source: streamableUri,
+        isLocalHls: false,
         metadata: PlayableStreamHlsMetadata(metadata: cachedStream.metadata),
       );
     }
@@ -178,6 +186,7 @@ class StreamResolver {
 
     return PlayableStream(
       source: streamableUri,
+      isLocalHls: false,
       metadata: PlayableStreamHlsMetadata(metadata: streamSource.data.metadata),
     );
   }
@@ -193,6 +202,7 @@ class StreamResolver {
 
     return PlayableStream(
       source: streamableUri,
+      isLocalHls: false,
       metadata: PlayableStreamYouTubeMetadata(metadata: stream.metadata),
     );
   }

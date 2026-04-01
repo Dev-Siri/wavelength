@@ -85,6 +85,7 @@ class _PlaylistCreationBottomSheetState
                   ),
                 ),
               ),
+              const SizedBox(height: kBottomNavigationBarHeight),
             ],
           ),
         );

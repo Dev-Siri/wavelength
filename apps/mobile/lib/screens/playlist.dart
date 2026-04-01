@@ -26,7 +26,7 @@ import "package:wavelength/bloc/playlist_length/playlist_length_state.dart";
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_bloc.dart";
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_event.dart";
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_state.dart";
-import "package:wavelength/cache.dart";
+import "package:wavelength/audio_manager.dart";
 import "package:wavelength/screens/edit_playlist.dart";
 import "package:wavelength/utils/toaster.dart";
 import "package:wavelength/widgets/brand_cover_image.dart";
@@ -71,7 +71,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Toaster {
     showToast(context, "Downloading playlist...", ToastType.info);
 
     for (final track in playlistTracks) {
-      if (await AudioCache.isTrackDownloaded(track.videoId)) {
+      if (await AudioManager.isTrackDownloaded(track.videoId)) {
         continue;
       }
 
@@ -252,7 +252,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Toaster {
                 listener: (context, state) async {
                   if (state is! PlaylistSuccessState) return;
                   final downloadCount =
-                      await AudioCache.countDownloadedTracksInPlaylist(
+                      await AudioManager.countDownloadedTracksInPlaylist(
                         state.songs.map((song) => song.videoId).toList(),
                       );
 

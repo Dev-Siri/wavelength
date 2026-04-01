@@ -12,6 +12,7 @@ import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/api/repositories/stream_repo.dart";
 import "package:wavelength/api/repositories/track_repo.dart";
 import "package:wavelength/audio/background_data_constructors.dart";
+import "package:wavelength/audio/local_hls_server.dart";
 import "package:wavelength/audio/music_context_queue.dart";
 import "package:wavelength/audio/queueable_music.dart";
 import "package:wavelength/audio/stream_resolver.dart";
@@ -27,6 +28,7 @@ enum PlaybackSource { queue, context }
 
 class WavelengthAudioHandler extends BaseAudioHandler {
   final AudioPlayer _player = AudioPlayer();
+  final LocalHlsServer _localHlsServer = LocalHlsServer();
 
   late StreamResolver _streamResolver;
 
@@ -81,13 +83,15 @@ class WavelengthAudioHandler extends BaseAudioHandler {
   bool _is30sReported = false;
   bool _isSwitchingTrack = false;
   int _automixIndex = 0;
+  int _localHlsPort = 0;
 
   WavelengthAudioHandler(FlutterSecureStorage secureStorage) {
     _streamResolver = StreamResolver(secureStorage);
     _init();
   }
 
-  void _init() {
+  Future<void> _init() async {
+    _localHlsPort = await _localHlsServer.start();
     final errorSub = _player.errorStream.listen((error) async {
       DiagnosticsRepo.reportError(
         error: error.toString(),
@@ -314,38 +318,56 @@ class WavelengthAudioHandler extends BaseAudioHandler {
 
   Future<void> _playSource(QueueableMusic queueableMusic) async {
     if (_isSwitchingTrack) return;
+
+    final index = _musicContextQueue.queue.indexWhere(
+      (t) => t.videoId == queueableMusic.videoId,
+    );
+
+    if (index != -1) {
+      _playingNowIndex = index;
+    }
+
     _isSwitchingTrack = true;
     _is30sReported = false;
 
-    try {
-      await _player.clearAudioSources();
+    await _player.clearAudioSources();
 
-      mediaItem.add(constructMediaItem(queueableMusic));
-      _trackChangeController.add(
-        TrackChangeEvent(track: queueableMusic, metadata: null),
-      );
+    mediaItem.add(constructMediaItem(queueableMusic));
+    _trackChangeController.add(
+      TrackChangeEvent(track: queueableMusic, metadata: null),
+    );
 
-      final stream = await _streamResolver.fetchStreamSource(
-        queueableMusic,
-        null,
+    final stream = await _streamResolver.fetchStreamSource(
+      queueableMusic,
+      null,
+    );
+    unawaited(_preloadNext());
+    _trackChangeController.add(
+      TrackChangeEvent(track: queueableMusic, metadata: stream.metadata),
+    );
+    unawaited(
+      StreamRepo.recordStream(
+        track: queueableMusic,
+        type: StreamRecordType.playStart,
+      ),
+    );
+
+    Uri finalUri;
+
+    if (stream.isLocalHls) {
+      finalUri = Uri.parse(
+        "http://127.0.0.1:$_localHlsPort/${stream.source.toString().replaceFirst("file:///", "")}",
       );
-      unawaited(_preloadNext());
-      _trackChangeController.add(
-        TrackChangeEvent(track: queueableMusic, metadata: stream.metadata),
-      );
-      unawaited(
-        StreamRepo.recordStream(
-          track: queueableMusic,
-          type: StreamRecordType.playStart,
-        ),
-      );
-      await _player.setAudioSource(
-        AudioSource.uri(stream.source, tag: constructMediaItem(queueableMusic)),
-      );
-      await _player.play();
-    } finally {
-      _isSwitchingTrack = false;
+    } else {
+      finalUri = stream.source;
     }
+
+    await _player.stop();
+    await _player.setAudioSource(
+      AudioSource.uri(finalUri, tag: constructMediaItem(queueableMusic)),
+    );
+    _isSwitchingTrack = false;
+    await _player.play();
   }
 
   Future<void> _preloadNext() async {
@@ -400,7 +422,7 @@ class WavelengthAudioHandler extends BaseAudioHandler {
       return null;
     }
 
-    return _musicContextQueue.queue[(_playingNowIndex ?? 0) + 1];
+    return _musicContextQueue.queue[(_playingNowIndex ?? -1) + 1];
   }
 
   Future<void> _automixTracks() async {
@@ -576,7 +598,7 @@ class WavelengthAudioHandler extends BaseAudioHandler {
   Future<void> skipToPrevious() async {
     final prev = _getPrevious();
     if (prev != null) {
-      _playSource(prev);
+      await _playSource(prev);
     }
   }
 
@@ -598,6 +620,7 @@ class WavelengthAudioHandler extends BaseAudioHandler {
     _trackChangeController.close();
 
     await _player.dispose();
+    _localHlsServer.stop();
 
     return super.stop();
   }
