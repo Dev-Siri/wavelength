@@ -2,7 +2,6 @@
   import { ChevronDownIcon, PlayIcon, SkipBackIcon, SkipForwardIcon } from "@lucide/svelte";
   import { Rive } from "@rive-app/canvas";
   import { gsap } from "gsap";
-  import { ScrollTrigger } from "gsap/ScrollTrigger";
 
   import wvlenDesktopUsage from "$lib/assets/wvlen-desktop-usage.png";
   import wvlenMobileUsage from "$lib/assets/wvlen-mobile-usage.png";
@@ -26,6 +25,7 @@
   $effect(() => {
     async function createAnimations() {
       if (typeof window !== "undefined") {
+        const { ScrollTrigger } = await import("gsap/ScrollTrigger");
         gsap.registerPlugin(ScrollTrigger);
         ScrollTrigger.defaults({ scroller: "main" });
       }
