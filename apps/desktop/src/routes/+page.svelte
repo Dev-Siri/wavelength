@@ -24,8 +24,8 @@
 
   $effect(() => {
     async function createAnimations() {
+      const { ScrollTrigger } = await import("gsap/ScrollTrigger");
       if (typeof window !== "undefined") {
-        const { ScrollTrigger } = await import("gsap/ScrollTrigger");
         gsap.registerPlugin(ScrollTrigger);
         ScrollTrigger.defaults({ scroller: "main" });
       }
