@@ -2,9 +2,7 @@ package music_rpcs
 
 import (
 	"context"
-	"html"
 
-	"github.com/Dev-Siri/wavelength/server/proto/commonpb"
 	"github.com/Dev-Siri/wavelength/server/proto/musicpb"
 	"github.com/Dev-Siri/wavelength/server/proto/yt_scraperpb"
 	"github.com/Dev-Siri/wavelength/server/shared/clients"
@@ -31,19 +29,7 @@ func (m *MusicService) SearchYouTubeVideos(
 		return nil, status.Error(codes.NotFound, "No search results for that query.")
 	}
 
-	youtubeVideos := make([]*commonpb.YouTubeVideo, len(videosResponse.Videos))
-
-	for i, ytVideo := range videosResponse.Videos {
-		youtubeVideos[i] = &commonpb.YouTubeVideo{
-			VideoId:         ytVideo.VideoId,
-			Title:           html.UnescapeString(ytVideo.Title),
-			Thumbnail:       ytVideo.Thumbnail,
-			Author:          ytVideo.Author,
-			AuthorChannelId: ytVideo.AuthorChannelId,
-		}
-	}
-
 	return &musicpb.SearchYouTubeVideosResponse{
-		YoutubeVideos: youtubeVideos,
+		YoutubeVideos: videosResponse.Videos,
 	}, nil
 }
