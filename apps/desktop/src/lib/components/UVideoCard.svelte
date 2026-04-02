@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { EllipsisIcon, PlusIcon } from "@lucide/svelte";
+  import { PlusIcon } from "@lucide/svelte";
   import { createMutation, useQueryClient } from "@tanstack/svelte-query";
   import { toast } from "svelte-sonner";
   import { z } from "zod";
@@ -79,80 +79,59 @@
 </script>
 
 <DropdownMenu.Root>
-  <button type="button" class="relative rounded-2xl group" onclick={playYtVideo}>
-    {#key uvideo.thumbnail}
-      <Image
-        src={uvideo.thumbnail}
-        height={300}
-        width={360}
-        alt="YouTube Video Thumbnail"
-        class="rounded-2xl h-full w-full object-cover opacity-75 group-hover:opacity-100 duration-200"
-      />
-    {/key}
-    <div class="fade-shadow"></div>
+  <div
+    role="button"
+    class="bg-[#212121] flex flex-col rounded-md pb-3"
+    tabindex="0"
+    onclick={playYtVideo}
+    onkeydown={playYtVideo}
+  >
+    <div class="relative rounded-md group">
+      {#key uvideo.thumbnail}
+        <Image
+          src={uvideo.thumbnail}
+          height={300}
+          width={360}
+          alt="YouTube Video Thumbnail"
+          class="rounded-md h-full w-full object-cover opacity-75 group-hover:opacity-100 duration-200"
+        />
+      {/key}
+    </div>
+    {#if userPlaylistsQuery.data?.playlists}
+      <DropdownMenu.Content>
+        <DropdownMenu.Sub>
+          <DropdownMenu.SubTrigger>
+            <PlusIcon size={20} />
+            Add to playlist
+          </DropdownMenu.SubTrigger>
+          <DropdownMenu.SubContent>
+            {#each userPlaylistsQuery.data.playlists as playlist (playlist.playlistId)}
+              <DropdownMenu.Item onclick={() => addToPlaylistMutation.mutate(playlist.playlistId)}>
+                {playlist.name}
+              </DropdownMenu.Item>
+            {/each}
+          </DropdownMenu.SubContent>
+        </DropdownMenu.Sub>
+      </DropdownMenu.Content>
+    {/if}
     <Tooltip.Root>
-      <Tooltip.Trigger
-        class="absolute bottom-0 w-full right-0 p-4 text-xl text-left  opacity-100 z-40"
-      >
+      <Tooltip.Trigger class="w-full mt-2 px-3 text-sm font-semibold text-left">
         <p class="text-start">
-          {#each (uvideo.title.length > 50 ? `${uvideo.title.slice(0, 49) ?? ""}..` : (uvideo.title ?? "")).split(" ") as titleWord, i (`${titleWord}-${i}`)}
-            {#if titleWord.startsWith("#")}
-              <span class="text-blue-500">{titleWord}</span>
-            {:else}
-              {titleWord}
-            {/if}
-          {/each}
+          {uvideo.title}
         </p>
       </Tooltip.Trigger>
       <Tooltip.Content>
         <p>{uvideo.title ?? ""}</p>
       </Tooltip.Content>
     </Tooltip.Root>
-    <div
-      class="absolute flex inset-0 bottom-auto justify-between w-full left-auto z-40 pr-4 pt-2"
-      role="presentation"
-      onclick={e => e.stopImmediatePropagation()}
+    <p class="font-semibold text-xs px-3 text-muted-foreground">
+      {uvideo.author}
+    </p>
+    <DropdownMenu.Trigger
+      onclick={e => e.stopPropagation()}
+      class="flex ml-auto items-center gap-1 cursor-pointer mr-3 mt-auto hover:text-white duration-200 justify-center px-1 text-muted-foreground"
     >
-      <DropdownMenu.Trigger>
-        <button
-          type="button"
-          class="flex items-center cursor-pointer ml-2 hover:text-white duration-200 justify-center px-1 text-muted-foreground"
-        >
-          <EllipsisIcon />
-        </button>
-      </DropdownMenu.Trigger>
-      <p class="font-bold">
-        {uvideo.author}
-      </p>
-    </div>
-  </button>
-  {#if userPlaylistsQuery.data?.playlists}
-    <DropdownMenu.Content>
-      <DropdownMenu.Sub>
-        <DropdownMenu.SubTrigger>
-          <PlusIcon size={20} />
-          Add to playlist
-        </DropdownMenu.SubTrigger>
-        <DropdownMenu.SubContent>
-          {#each userPlaylistsQuery.data.playlists as playlist (playlist.playlistId)}
-            <DropdownMenu.Item onclick={() => addToPlaylistMutation.mutate(playlist.playlistId)}>
-              {playlist.name}
-            </DropdownMenu.Item>
-          {/each}
-        </DropdownMenu.SubContent>
-      </DropdownMenu.Sub>
-    </DropdownMenu.Content>
-  {/if}
+      <PlusIcon size={14} class="font-bold" /> Add
+    </DropdownMenu.Trigger>
+  </div>
 </DropdownMenu.Root>
-
-<style>
-  .fade-shadow {
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)),
-      linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
-    z-index: 40;
-    border-radius: inherit;
-  }
-</style>
