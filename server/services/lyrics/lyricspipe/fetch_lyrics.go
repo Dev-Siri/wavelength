@@ -4,7 +4,7 @@ import "strings"
 
 func FetchLyrics(
 	title, artist, album string,
-	durationMs float64,
+	durationMs float64, isrc *string,
 ) ([]YouLyPlusLyricsResult, error) {
 	collectedSources := make([]YouLyPlusLyricsResult, 0)
 	nTitle := strings.TrimSpace(title)
@@ -19,6 +19,17 @@ func FetchLyrics(
 	)
 	if err == nil && len(results) > 0 {
 		collectedSources = append(collectedSources, results...)
+	}
+
+	if len(collectedSources) == 0 {
+		results, err := fetchLyricsFromTidal(
+			nTitle,
+			nArtist,
+			isrc,
+		)
+		if err == nil && len(results) > 0 {
+			collectedSources = append(collectedSources, results...)
+		}
 	}
 
 	if len(collectedSources) > 0 {

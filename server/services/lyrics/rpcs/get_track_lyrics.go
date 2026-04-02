@@ -8,6 +8,7 @@ import (
 	"github.com/Dev-Siri/wavelength/server/services/lyrics/lyricspipe"
 	"github.com/Dev-Siri/wavelength/server/shared/clients"
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
+	"github.com/Dev-Siri/wavelength/server/shared/tidal"
 	"github.com/Dev-Siri/wavelength/server/utils"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
@@ -26,11 +27,18 @@ func (l *LyricService) GetTrackLyrics(
 		return nil, err
 	}
 
+	universalIDs, err := tidal.Hifi.FetchUniversalIDs(ctx, request.VideoId)
+	var isrcPtr *string
+	if err == nil && universalIDs.ISRC != "" {
+		isrcPtr = &universalIDs.ISRC
+	}
+
 	lyrics, err := lyricspipe.FetchLyrics(
 		trackResponse.Track.Title,
 		utils.FormatAndJoinArtists(trackResponse.Track.Artists),
 		trackResponse.Track.Album.Title,
 		float64(trackResponse.Track.Duration*1000),
+		isrcPtr,
 	)
 	if err != nil {
 		logging.Logger.Error("Lyrics fetch failed.", zap.Error(err))

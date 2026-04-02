@@ -1,7 +1,6 @@
 package lyricspipe
 
 const (
-	version                = "1.1.4"
 	defaultKpoeSourceOrder = "apple,lyricsplus,musixmatch,spotify,musixmatch-word"
 	geniusWorkerURL        = "https://fetch-genius.samidy.workers.dev/"
 	cacheServerURL         = "https://lyrics-api.binimum.org"

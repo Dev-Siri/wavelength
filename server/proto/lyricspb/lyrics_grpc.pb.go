@@ -19,7 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	LyricService_GetTrackLyrics_FullMethodName = "/lyrics.LyricService/GetTrackLyrics"
+	LyricService_GetTrackLyrics_FullMethodName  = "/lyrics.LyricService/GetTrackLyrics"
+	LyricService_RomanizeLyrics_FullMethodName  = "/lyrics.LyricService/RomanizeLyrics"
+	LyricService_TranslateLyrics_FullMethodName = "/lyrics.LyricService/TranslateLyrics"
 )
 
 // LyricServiceClient is the client API for LyricService service.
@@ -27,6 +29,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LyricServiceClient interface {
 	GetTrackLyrics(ctx context.Context, in *GetTrackLyricsRequest, opts ...grpc.CallOption) (*GetTrackLyricsResponse, error)
+	RomanizeLyrics(ctx context.Context, in *RomanizeLyricsRequest, opts ...grpc.CallOption) (*RomanizeLyricsResponse, error)
+	TranslateLyrics(ctx context.Context, in *TranslateLyricsRequest, opts ...grpc.CallOption) (*TranslateLyricsResponse, error)
 }
 
 type lyricServiceClient struct {
@@ -47,11 +51,33 @@ func (c *lyricServiceClient) GetTrackLyrics(ctx context.Context, in *GetTrackLyr
 	return out, nil
 }
 
+func (c *lyricServiceClient) RomanizeLyrics(ctx context.Context, in *RomanizeLyricsRequest, opts ...grpc.CallOption) (*RomanizeLyricsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RomanizeLyricsResponse)
+	err := c.cc.Invoke(ctx, LyricService_RomanizeLyrics_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *lyricServiceClient) TranslateLyrics(ctx context.Context, in *TranslateLyricsRequest, opts ...grpc.CallOption) (*TranslateLyricsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TranslateLyricsResponse)
+	err := c.cc.Invoke(ctx, LyricService_TranslateLyrics_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LyricServiceServer is the server API for LyricService service.
 // All implementations must embed UnimplementedLyricServiceServer
 // for forward compatibility.
 type LyricServiceServer interface {
 	GetTrackLyrics(context.Context, *GetTrackLyricsRequest) (*GetTrackLyricsResponse, error)
+	RomanizeLyrics(context.Context, *RomanizeLyricsRequest) (*RomanizeLyricsResponse, error)
+	TranslateLyrics(context.Context, *TranslateLyricsRequest) (*TranslateLyricsResponse, error)
 	mustEmbedUnimplementedLyricServiceServer()
 }
 
@@ -64,6 +90,12 @@ type UnimplementedLyricServiceServer struct{}
 
 func (UnimplementedLyricServiceServer) GetTrackLyrics(context.Context, *GetTrackLyricsRequest) (*GetTrackLyricsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetTrackLyrics not implemented")
+}
+func (UnimplementedLyricServiceServer) RomanizeLyrics(context.Context, *RomanizeLyricsRequest) (*RomanizeLyricsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method RomanizeLyrics not implemented")
+}
+func (UnimplementedLyricServiceServer) TranslateLyrics(context.Context, *TranslateLyricsRequest) (*TranslateLyricsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method TranslateLyrics not implemented")
 }
 func (UnimplementedLyricServiceServer) mustEmbedUnimplementedLyricServiceServer() {}
 func (UnimplementedLyricServiceServer) testEmbeddedByValue()                      {}
@@ -104,6 +136,42 @@ func _LyricService_GetTrackLyrics_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LyricService_RomanizeLyrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RomanizeLyricsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LyricServiceServer).RomanizeLyrics(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LyricService_RomanizeLyrics_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LyricServiceServer).RomanizeLyrics(ctx, req.(*RomanizeLyricsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LyricService_TranslateLyrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TranslateLyricsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LyricServiceServer).TranslateLyrics(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LyricService_TranslateLyrics_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LyricServiceServer).TranslateLyrics(ctx, req.(*TranslateLyricsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LyricService_ServiceDesc is the grpc.ServiceDesc for LyricService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +182,14 @@ var LyricService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetTrackLyrics",
 			Handler:    _LyricService_GetTrackLyrics_Handler,
+		},
+		{
+			MethodName: "RomanizeLyrics",
+			Handler:    _LyricService_RomanizeLyrics_Handler,
+		},
+		{
+			MethodName: "TranslateLyrics",
+			Handler:    _LyricService_TranslateLyrics_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

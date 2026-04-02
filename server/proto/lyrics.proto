@@ -7,6 +7,8 @@ import "proto/common.proto";
 
 service LyricService {
   rpc GetTrackLyrics(GetTrackLyricsRequest) returns (GetTrackLyricsResponse);  
+  rpc RomanizeLyrics(RomanizeLyricsRequest) returns (RomanizeLyricsResponse);
+  rpc TranslateLyrics(TranslateLyricsRequest) returns (TranslateLyricsResponse);
 }
 
 message GetTrackLyricsRequest {
@@ -16,4 +18,21 @@ message GetTrackLyricsRequest {
 message GetTrackLyricsResponse {
   string source = 1;
   repeated common.LyricsLine lines = 2;
+}
+
+message RomanizeLyricsRequest {
+  repeated common.LyricsLine lyrics = 1;
+}
+
+message RomanizeLyricsResponse {
+  repeated common.LyricsLine romanized_lines = 1;
+}
+
+message TranslateLyricsRequest {
+  string language = 1;
+  repeated string text_to_translate = 2;
+}
+
+message TranslateLyricsResponse {
+  repeated string translations = 1;
 }

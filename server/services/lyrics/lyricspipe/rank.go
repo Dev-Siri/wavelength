@@ -12,7 +12,7 @@ func getRank(sourceLabel string, parsedLines []*commonpb.LyricsLine) int {
 	hasWordSync := false
 
 	for _, line := range parsedLines {
-		if line.Text != nil && len(line.Text) > 1 {
+		if len(line.Text) > 1 {
 			hasWordSync = true
 			break
 		}
@@ -67,7 +67,7 @@ func getRankForCollected(sourceLabel string, parsedLines []*commonpb.LyricsLine)
 
 	hasWordSync := false
 	for _, line := range parsedLines {
-		if line.Text != nil && len(line.Text) > 1 {
+		if len(line.Text) > 1 {
 			hasWordSync = true
 			break
 		}

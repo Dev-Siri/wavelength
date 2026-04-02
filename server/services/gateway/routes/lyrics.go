@@ -9,4 +9,6 @@ func registerLyricsRoutes(app *fiber.App) {
 	lyrics := app.Group("/lyrics")
 
 	lyrics.Get("/:videoId", lyrics_controllers.GetTrackLyrics)
+	lyrics.Post("/romanize", lyrics_controllers.RomanizeLyrics)
+	lyrics.Post("/translate", lyrics_controllers.TranslateLyrics)
 }

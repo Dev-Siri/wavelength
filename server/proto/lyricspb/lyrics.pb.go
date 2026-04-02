@@ -118,6 +118,190 @@ func (x *GetTrackLyricsResponse) GetLines() []*commonpb.LyricsLine {
 	return nil
 }
 
+type RomanizeLyricsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Lyrics        []*commonpb.LyricsLine `protobuf:"bytes,1,rep,name=lyrics,proto3" json:"lyrics,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RomanizeLyricsRequest) Reset() {
+	*x = RomanizeLyricsRequest{}
+	mi := &file_proto_lyrics_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RomanizeLyricsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RomanizeLyricsRequest) ProtoMessage() {}
+
+func (x *RomanizeLyricsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_lyrics_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RomanizeLyricsRequest.ProtoReflect.Descriptor instead.
+func (*RomanizeLyricsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_lyrics_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *RomanizeLyricsRequest) GetLyrics() []*commonpb.LyricsLine {
+	if x != nil {
+		return x.Lyrics
+	}
+	return nil
+}
+
+type RomanizeLyricsResponse struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	RomanizedLines []*commonpb.LyricsLine `protobuf:"bytes,1,rep,name=romanized_lines,json=romanizedLines,proto3" json:"romanized_lines,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *RomanizeLyricsResponse) Reset() {
+	*x = RomanizeLyricsResponse{}
+	mi := &file_proto_lyrics_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RomanizeLyricsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RomanizeLyricsResponse) ProtoMessage() {}
+
+func (x *RomanizeLyricsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_lyrics_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RomanizeLyricsResponse.ProtoReflect.Descriptor instead.
+func (*RomanizeLyricsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_lyrics_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *RomanizeLyricsResponse) GetRomanizedLines() []*commonpb.LyricsLine {
+	if x != nil {
+		return x.RomanizedLines
+	}
+	return nil
+}
+
+type TranslateLyricsRequest struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Language        string                 `protobuf:"bytes,1,opt,name=language,proto3" json:"language,omitempty"`
+	TextToTranslate []string               `protobuf:"bytes,2,rep,name=text_to_translate,json=textToTranslate,proto3" json:"text_to_translate,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *TranslateLyricsRequest) Reset() {
+	*x = TranslateLyricsRequest{}
+	mi := &file_proto_lyrics_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TranslateLyricsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TranslateLyricsRequest) ProtoMessage() {}
+
+func (x *TranslateLyricsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_lyrics_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TranslateLyricsRequest.ProtoReflect.Descriptor instead.
+func (*TranslateLyricsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_lyrics_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *TranslateLyricsRequest) GetLanguage() string {
+	if x != nil {
+		return x.Language
+	}
+	return ""
+}
+
+func (x *TranslateLyricsRequest) GetTextToTranslate() []string {
+	if x != nil {
+		return x.TextToTranslate
+	}
+	return nil
+}
+
+type TranslateLyricsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Translations  []string               `protobuf:"bytes,1,rep,name=translations,proto3" json:"translations,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TranslateLyricsResponse) Reset() {
+	*x = TranslateLyricsResponse{}
+	mi := &file_proto_lyrics_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TranslateLyricsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TranslateLyricsResponse) ProtoMessage() {}
+
+func (x *TranslateLyricsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_lyrics_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TranslateLyricsResponse.ProtoReflect.Descriptor instead.
+func (*TranslateLyricsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_lyrics_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *TranslateLyricsResponse) GetTranslations() []string {
+	if x != nil {
+		return x.Translations
+	}
+	return nil
+}
+
 var File_proto_lyrics_proto protoreflect.FileDescriptor
 
 const file_proto_lyrics_proto_rawDesc = "" +
@@ -127,9 +311,20 @@ const file_proto_lyrics_proto_rawDesc = "" +
 	"\bvideo_id\x18\x01 \x01(\tR\avideoId\"Z\n" +
 	"\x16GetTrackLyricsResponse\x12\x16\n" +
 	"\x06source\x18\x01 \x01(\tR\x06source\x12(\n" +
-	"\x05lines\x18\x02 \x03(\v2\x12.common.LyricsLineR\x05lines2_\n" +
+	"\x05lines\x18\x02 \x03(\v2\x12.common.LyricsLineR\x05lines\"C\n" +
+	"\x15RomanizeLyricsRequest\x12*\n" +
+	"\x06lyrics\x18\x01 \x03(\v2\x12.common.LyricsLineR\x06lyrics\"U\n" +
+	"\x16RomanizeLyricsResponse\x12;\n" +
+	"\x0fromanized_lines\x18\x01 \x03(\v2\x12.common.LyricsLineR\x0eromanizedLines\"`\n" +
+	"\x16TranslateLyricsRequest\x12\x1a\n" +
+	"\blanguage\x18\x01 \x01(\tR\blanguage\x12*\n" +
+	"\x11text_to_translate\x18\x02 \x03(\tR\x0ftextToTranslate\"=\n" +
+	"\x17TranslateLyricsResponse\x12\"\n" +
+	"\ftranslations\x18\x01 \x03(\tR\ftranslations2\x84\x02\n" +
 	"\fLyricService\x12O\n" +
-	"\x0eGetTrackLyrics\x12\x1d.lyrics.GetTrackLyricsRequest\x1a\x1e.lyrics.GetTrackLyricsResponseB=Z;github.com/Dev-Siri/wavelength/server/proto/lyrics;lyricspbb\x06proto3"
+	"\x0eGetTrackLyrics\x12\x1d.lyrics.GetTrackLyricsRequest\x1a\x1e.lyrics.GetTrackLyricsResponse\x12O\n" +
+	"\x0eRomanizeLyrics\x12\x1d.lyrics.RomanizeLyricsRequest\x1a\x1e.lyrics.RomanizeLyricsResponse\x12R\n" +
+	"\x0fTranslateLyrics\x12\x1e.lyrics.TranslateLyricsRequest\x1a\x1f.lyrics.TranslateLyricsResponseB=Z;github.com/Dev-Siri/wavelength/server/proto/lyrics;lyricspbb\x06proto3"
 
 var (
 	file_proto_lyrics_proto_rawDescOnce sync.Once
@@ -143,21 +338,31 @@ func file_proto_lyrics_proto_rawDescGZIP() []byte {
 	return file_proto_lyrics_proto_rawDescData
 }
 
-var file_proto_lyrics_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_proto_lyrics_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_proto_lyrics_proto_goTypes = []any{
-	(*GetTrackLyricsRequest)(nil),  // 0: lyrics.GetTrackLyricsRequest
-	(*GetTrackLyricsResponse)(nil), // 1: lyrics.GetTrackLyricsResponse
-	(*commonpb.LyricsLine)(nil),    // 2: common.LyricsLine
+	(*GetTrackLyricsRequest)(nil),   // 0: lyrics.GetTrackLyricsRequest
+	(*GetTrackLyricsResponse)(nil),  // 1: lyrics.GetTrackLyricsResponse
+	(*RomanizeLyricsRequest)(nil),   // 2: lyrics.RomanizeLyricsRequest
+	(*RomanizeLyricsResponse)(nil),  // 3: lyrics.RomanizeLyricsResponse
+	(*TranslateLyricsRequest)(nil),  // 4: lyrics.TranslateLyricsRequest
+	(*TranslateLyricsResponse)(nil), // 5: lyrics.TranslateLyricsResponse
+	(*commonpb.LyricsLine)(nil),     // 6: common.LyricsLine
 }
 var file_proto_lyrics_proto_depIdxs = []int32{
-	2, // 0: lyrics.GetTrackLyricsResponse.lines:type_name -> common.LyricsLine
-	0, // 1: lyrics.LyricService.GetTrackLyrics:input_type -> lyrics.GetTrackLyricsRequest
-	1, // 2: lyrics.LyricService.GetTrackLyrics:output_type -> lyrics.GetTrackLyricsResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	6, // 0: lyrics.GetTrackLyricsResponse.lines:type_name -> common.LyricsLine
+	6, // 1: lyrics.RomanizeLyricsRequest.lyrics:type_name -> common.LyricsLine
+	6, // 2: lyrics.RomanizeLyricsResponse.romanized_lines:type_name -> common.LyricsLine
+	0, // 3: lyrics.LyricService.GetTrackLyrics:input_type -> lyrics.GetTrackLyricsRequest
+	2, // 4: lyrics.LyricService.RomanizeLyrics:input_type -> lyrics.RomanizeLyricsRequest
+	4, // 5: lyrics.LyricService.TranslateLyrics:input_type -> lyrics.TranslateLyricsRequest
+	1, // 6: lyrics.LyricService.GetTrackLyrics:output_type -> lyrics.GetTrackLyricsResponse
+	3, // 7: lyrics.LyricService.RomanizeLyrics:output_type -> lyrics.RomanizeLyricsResponse
+	5, // 8: lyrics.LyricService.TranslateLyrics:output_type -> lyrics.TranslateLyricsResponse
+	6, // [6:9] is the sub-list for method output_type
+	3, // [3:6] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_proto_lyrics_proto_init() }
@@ -171,7 +376,7 @@ func file_proto_lyrics_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_lyrics_proto_rawDesc), len(file_proto_lyrics_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
