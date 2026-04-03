@@ -32,8 +32,8 @@ const (
 	rateLimitMaxRequests = 600
 	rateLimitExpiration  = time.Second * 15
 	apiReadTimeout       = time.Second * 15
-	apiWriteTimeout      = 0
-	idleTimeout          = time.Minute * 1
+	apiWriteTimeout      = time.Second * 15
+	idleTimeout          = time.Minute * 2
 	gatewayName          = "wavelength/player"
 )
 

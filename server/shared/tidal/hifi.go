@@ -58,15 +58,23 @@ type tidalSearchResponse struct {
 	} `json:"items"`
 }
 
+type AudioQuality string
+
+const (
+	AudioQualityLow           AudioQuality = "LOW"
+	AudioQualityHigh          AudioQuality = "HIGH"
+	AudioQualityLossless      AudioQuality = "LOSSLESS"
+	AudioQualityHiResLossless AudioQuality = "HI_RES_LOSSLESS"
+)
+
 type TrackResponse struct {
-	AudioQuality     string `json:"audioQuality"`
-	ManifestMimeType string `json:"manifestMimeType"`
-	Manifest         string `json:"manifest"`
+	AudioQuality     AudioQuality `json:"audioQuality"`
+	ManifestMimeType string       `json:"manifestMimeType"`
+	Manifest         string       `json:"manifest"`
 }
 
 type universalIDCollection struct {
 	TidalID        string
-	DolbyAudioID   *string
 	YoutubeMusicID string
 	ISRC           string
 }
@@ -216,14 +224,12 @@ func (*tidalHifiClient) GetTrackUniversalIDs(track *commonpb.Track) (*universalI
 
 	result := &universalIDCollection{
 		TidalID:        *tidalID,
-		DolbyAudioID:   best.dolbyID,
 		YoutubeMusicID: track.VideoId,
 		ISRC:           best.isrc,
 	}
 
 	logging.Logger.Debug("Chosen candidate.",
 		zap.String("tidalID", result.TidalID),
-		zap.Any("dolbyAudioID", result.DolbyAudioID),
 		zap.String("isrc", result.ISRC),
 	)
 
@@ -242,7 +248,6 @@ func (t *tidalHifiClient) FetchUniversalIDs(ctx context.Context, videoID string)
 	row := shared_db.StreamDatabase.QueryRow(`
 		SELECT
 			tidal_id,
-			dolby_audio_id,
 			youtube_music_id,
 			isrc
 		FROM "labels"
@@ -250,19 +255,14 @@ func (t *tidalHifiClient) FetchUniversalIDs(ctx context.Context, videoID string)
 	`, videoID)
 
 	var storedUniversalIDs universalIDCollection
-	var dolbyAudioID sql.NullString
 
 	err := row.Scan(
 		&storedUniversalIDs.TidalID,
-		&dolbyAudioID,
 		&storedUniversalIDs.YoutubeMusicID,
 		&storedUniversalIDs.ISRC,
 	)
 
 	if err == nil {
-		if dolbyAudioID.Valid {
-			storedUniversalIDs.DolbyAudioID = &dolbyAudioID.String
-		}
 		return &storedUniversalIDs, nil
 	}
 
@@ -291,11 +291,10 @@ func (t *tidalHifiClient) FetchUniversalIDs(ctx context.Context, videoID string)
 			artist,
 			is_explicit,
 			tidal_id,
-			youtube_music_id,
-			dolby_audio_id
-		) VALUES ( $1, $2, $3, $4, $5, $6, $7, $8 )
+			youtube_music_id
+		) VALUES ( $1, $2, $3, $4, $5, $6, $7 )
 	`, labelID, tidalResponse.ISRC, trackResponse.Track.Title, utils.FormatAndJoinArtists(trackResponse.Track.Artists),
-		trackResponse.Track.IsExplicit != nil && *trackResponse.Track.IsExplicit, tidalResponse.TidalID, videoID, tidalResponse.DolbyAudioID)
+		trackResponse.Track.IsExplicit != nil && *trackResponse.Track.IsExplicit, tidalResponse.TidalID, videoID)
 	if err != nil {
 		return nil, err
 	}

@@ -6,7 +6,7 @@ import type {
 } from "@/gen/proto/yt_scraper.js";
 
 import type { Track } from "@/gen/proto/common.js";
-import { getYtMusicClient } from "@/innertube.js";
+import { getYtClient } from "@/innertube.js";
 import { createErrorResponse } from "@/response.js";
 import { getHighestQualityThumbnail } from "@/utils/thumbnail.js";
 import { YTNodes } from "youtubei.js";
@@ -16,8 +16,21 @@ export default async function getTrackInfo(
   callback: grpc.sendUnaryData<GetTrackInfoResponse>,
 ) {
   try {
-    const music = await getYtMusicClient();
-    const { contents } = await music.search(call.request.videoId, {
+    const yt = await getYtClient();
+    const {
+      basic_info: { title = "", channel },
+    } = await yt.getBasicInfo(call.request.videoId);
+    const channelName = channel?.name ?? "";
+
+    let query = "";
+    if (!title || !channelName) {
+      query = `${title} ${channelName.replace(" - Topic", "")}`;
+    } else {
+      query = call.request.videoId;
+    }
+
+    console.debug("Query", { query });
+    const { contents } = await yt.music.search(query, {
       type: "song",
     });
 
@@ -30,10 +43,11 @@ export default async function getTrackInfo(
       }
     })?.[0]?.contents;
 
-    if (!searchedSongs)
+    if (!searchedSongs) {
       return callback(
         createErrorResponse("YouTube Music search returned an empty response."),
       );
+    }
 
     const matchingSong = searchedSongs.find((song) => {
       try {

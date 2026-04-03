@@ -2,6 +2,7 @@ package collector_rpcs
 
 import (
 	"context"
+	"os"
 
 	"github.com/Dev-Siri/wavelength/server/proto/collectorpb"
 	"github.com/Dev-Siri/wavelength/server/services/collector/mediapipe"
@@ -37,19 +38,15 @@ func (c *CollectorService) CollectYouTubeStream(
 		return nil, status.Error(codes.Internal, "yt-dlp returned nil stream URL")
 	}
 
-	url := requiredMetadata.URL
-	if url == nil {
-		logging.Logger.Error("Missing stream URL.", zap.Error(err))
-		return nil, status.Error(codes.Internal, "Missing stream URL.")
-	}
-
-	hlsDir, err := mediapipe.RemuxToHLS(*url)
+	hlsDir, err := mediapipe.RemuxToHLS(ctx, *requiredMetadata.URL)
 	if err != nil {
 		logging.Logger.Error("Stream remux to HLS failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Stream remux to HLS failed.")
 	}
 
-	if err := mediapipe.UploadHlsStream(request.VideoId, hlsDir, shared_db.AdaptiveStreamsBucketName); err != nil {
+	defer os.RemoveAll(hlsDir)
+
+	if err := mediapipe.UploadHlsStream(ctx, request.VideoId, hlsDir, shared_db.AdaptiveStreamsBucketName); err != nil {
 		logging.Logger.Error("HLS stream upload failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "HLS stream upload failed.")
 	}

@@ -1,6 +1,7 @@
 package mediapipe
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 
@@ -9,7 +10,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func UploadHlsStream(id, dir, bucketName string) error {
+func UploadHlsStream(ctx context.Context, id, dir, bucketName string) error {
 	files, err := os.ReadDir(dir)
 	if err != nil {
 		logging.Logger.Error("Stream upload to GCS failed.", zap.Error(err))
@@ -26,7 +27,7 @@ func UploadHlsStream(id, dir, bucketName string) error {
 
 		defer file.Close()
 
-		if err := shared_db.UploadStream(id, bucketName, f.Name(), file); err != nil {
+		if err := shared_db.UploadStream(ctx, id, bucketName, f.Name(), file); err != nil {
 			logging.Logger.Error("Part upload to GCS failed.", zap.Error(err), zap.String("part", f.Name()))
 		}
 	}

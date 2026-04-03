@@ -2,6 +2,8 @@ package collector_rpcs
 
 import (
 	"context"
+	"os"
+	"sync"
 
 	"github.com/Dev-Siri/wavelength/server/proto/collectorpb"
 	"github.com/Dev-Siri/wavelength/server/services/collector/mediapipe"
@@ -31,7 +33,11 @@ func (c *CollectorService) CollectHifiStream(
 		return nil, status.Error(codes.Internal, "Hi-fi stream fetch failed.")
 	}
 
-	logging.Logger.Debug("Operating on Tidal Hi-Fi stream manifest (base64).", zap.String("manifest", hifiManifest.Data.Manifest))
+	logging.Logger.Debug("Operating on Tidal Hi-Fi stream manifest (base64).",
+		zap.Int("manifestLength", len(hifiManifest.Data.Manifest)),
+		zap.String("manifestMimeType", hifiManifest.Data.ManifestMimeType),
+		zap.String("audioQuality", string(hifiManifest.Data.AudioQuality)),
+	)
 
 	downloadedLosslessFilePath, err := mediapipe.DownloadHighResAudio(&hifiManifest.Data)
 	if err != nil {
@@ -39,66 +45,185 @@ func (c *CollectorService) CollectHifiStream(
 		return nil, status.Error(codes.Internal, "Hi-fi stream download failed.")
 	}
 
-	aac256Path, err := mediapipe.ReencodeToAAC(downloadedLosslessFilePath, mediapipe.FFmpegBitrate256)
+	defer os.Remove(downloadedLosslessFilePath)
+
+	var wg sync.WaitGroup
+	errorChan := make(chan error, 3)
+
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	wg.Go(func() {
+		select {
+		case <-ctx.Done():
+			return
+		default:
+		}
+
+		aac256Path, err := mediapipe.ReencodeToAAC(ctx, downloadedLosslessFilePath, mediapipe.FFmpegBitrate256)
+		if err != nil {
+			errorChan <- err
+			cancel()
+			return
+		}
+
+		defer os.Remove(aac256Path)
+
+		select {
+		case <-ctx.Done():
+			return
+		default:
+		}
+
+		hls256Dir, err := mediapipe.RemuxToHLS(ctx, aac256Path)
+		if err != nil {
+			errorChan <- err
+			cancel()
+			return
+		}
+
+		defer os.RemoveAll(hls256Dir)
+
+		select {
+		case <-ctx.Done():
+			return
+		default:
+		}
+
+		if err := mediapipe.UploadHlsStream(ctx, universalIDs.ISRC, hls256Dir, shared_db.BaseHifiStreamsBucketName); err != nil {
+			errorChan <- err
+			cancel()
+			return
+		}
+	})
+
+	wg.Go(func() {
+		select {
+		case <-ctx.Done():
+			return
+		default:
+		}
+
+		aac320Path, err := mediapipe.ReencodeToAAC(ctx, downloadedLosslessFilePath, mediapipe.FFmpegBitrate320)
+		if err != nil {
+			errorChan <- err
+			cancel()
+			return
+		}
+
+		defer os.Remove(aac320Path)
+
+		select {
+		case <-ctx.Done():
+			return
+		default:
+		}
+
+		hls320Dir, err := mediapipe.RemuxToHLS(ctx, aac320Path)
+		if err != nil {
+			errorChan <- err
+			cancel()
+			return
+		}
+
+		defer os.RemoveAll(hls320Dir)
+
+		select {
+		case <-ctx.Done():
+			return
+		default:
+		}
+
+		if err := mediapipe.UploadHlsStream(ctx, universalIDs.ISRC, hls320Dir, shared_db.TopHifiStreamsBucketName); err != nil {
+			errorChan <- err
+			cancel()
+			return
+		}
+	})
+
+	if hifiManifest.Data.AudioQuality == tidal.AudioQualityLossless ||
+		hifiManifest.Data.AudioQuality == tidal.AudioQualityHiResLossless {
+		wg.Go(func() {
+			select {
+			case <-ctx.Done():
+				return
+			default:
+			}
+
+			losslessDir, err := mediapipe.RemuxToHLS(ctx, downloadedLosslessFilePath)
+			if err != nil {
+				errorChan <- err
+				cancel()
+				return
+			}
+
+			defer os.RemoveAll(losslessDir)
+
+			select {
+			case <-ctx.Done():
+				return
+			default:
+			}
+
+			if err := mediapipe.UploadHlsStream(ctx, universalIDs.ISRC, losslessDir, shared_db.LosslessStreamBucketName); err != nil {
+				errorChan <- err
+				cancel()
+				return
+			}
+		})
+	}
+
+	wg.Wait()
+	close(errorChan)
+
+	for err := range errorChan {
+		if err != nil {
+			logging.Logger.Error("Hi-Fi extract failed.", zap.Error(err))
+			return nil, status.Error(codes.Internal, "Hi-Fi extract failed.")
+		}
+	}
+
+	tx, err := shared_db.Database.BeginTx(ctx, nil)
 	if err != nil {
-		logging.Logger.Error("Re-encode to 256k AAC failed.", zap.Error(err))
-		return nil, status.Error(codes.Internal, "Re-encode to 256k AAC failed.")
+		logging.Logger.Error("Transaction open failed.", zap.Error(err))
+		return nil, status.Error(codes.Internal, "Transaction open failed.")
 	}
 
-	hls256Dir, err := mediapipe.RemuxToHLS(aac256Path)
-	if err != nil {
-		logging.Logger.Error("Remuxing 256k AAC to HLS failed.", zap.Error(err))
-		return nil, status.Error(codes.Internal, "Remuxing 256k AAC to HLS failed.")
-	}
+	defer tx.Rollback()
 
-	if err := mediapipe.UploadHlsStream(universalIDs.ISRC, hls256Dir, shared_db.BaseHifiStreamsBucketName); err != nil {
-		logging.Logger.Error("256k (AAC) HLS stream upload failed.", zap.Error(err))
-		return nil, status.Error(codes.Internal, "256k (AAC) HLS stream upload failed.")
-	}
-
-	aac320Path, err := mediapipe.ReencodeToAAC(downloadedLosslessFilePath, mediapipe.FFmpegBitrate320)
-	if err != nil {
-		logging.Logger.Error("Re-encode to 320k AAC failed.", zap.Error(err))
-		return nil, status.Error(codes.Internal, "Re-encode to 320k AAC failed.")
-	}
-
-	hls320Dir, err := mediapipe.RemuxToHLS(aac320Path)
-	if err != nil {
-		logging.Logger.Error("Remuxing 320k AAC to HLS failed.", zap.Error(err))
-		return nil, status.Error(codes.Internal, "Remuxing 320k AAC to HLS failed.")
-	}
-
-	if err := mediapipe.UploadHlsStream(universalIDs.ISRC, hls320Dir, shared_db.TopHifiStreamsBucketName); err != nil {
-		logging.Logger.Error("320k (AAC) HLS stream upload failed.", zap.Error(err))
-		return nil, status.Error(codes.Internal, "320k (AAC) HLS stream upload failed.")
-	}
-
-	losslessDir, err := mediapipe.RemuxToHLS(downloadedLosslessFilePath)
-	if err != nil {
-		logging.Logger.Error("Remuxing lossless (FLAC) to HLS failed.", zap.Error(err))
-		return nil, status.Error(codes.Internal, "Remuxing lossless (FLAC) to HLS failed.")
-	}
-
-	if err := mediapipe.UploadHlsStream(universalIDs.ISRC, losslessDir, shared_db.LosslessStreamBucketName); err != nil {
-		logging.Logger.Error("Lossless (FLAC) HLS stream upload failed.", zap.Error(err))
-		return nil, status.Error(codes.Internal, "Lossless (FLAC) HLS stream upload failed.")
-	}
-
-	var bitType types.LosslessBitType
-	if hifiManifest.Data.AudioQuality == "LOSSLESS" {
-		bitType = types.LosslessBitType16Bit
-	} else {
-		bitType = types.LosslessBitType24Bit
-	}
-
-	_, err = shared_db.StreamDatabase.Exec(`
+	_, err = tx.Exec(`
 		UPDATE "stream_metadata"
-		SET is_hifi_available = TRUE, is_lossless_available = $2
+		SET is_hifi_available = TRUE
+		WHERE video_id = $1;
+	`, request.VideoId)
+	if err != nil {
+		logging.Logger.Error("Stream metadata Hi-Fi availability update failed.", zap.Error(err))
+		return nil, status.Error(codes.Internal, "Stream metadata Hi-Fi availability update failed.")
+	}
+
+	if hifiManifest.Data.AudioQuality == tidal.AudioQualityLossless ||
+		hifiManifest.Data.AudioQuality == tidal.AudioQualityHiResLossless {
+		var bitType types.LosslessBitType
+		if hifiManifest.Data.AudioQuality == tidal.AudioQualityLossless {
+			bitType = types.LosslessBitType16Bit
+		} else {
+			bitType = types.LosslessBitType24Bit
+		}
+
+		_, err = tx.Exec(`
+		UPDATE "stream_metadata"
+		SET is_lossless_available = $2
 		WHERE video_id = $1;
 	`, request.VideoId, bitType)
-	if err != nil {
-		logging.Logger.Error("Stream metadata Hi-fi, Lossless availability update failed.", zap.Error(err))
-		return nil, status.Error(codes.Internal, "Stream metadata Hi-fi, Lossless availability update failed.")
+		if err != nil {
+			logging.Logger.Error("Stream metadata lossless availability update failed.", zap.Error(err))
+			return nil, status.Error(codes.Internal, "Stream metadata lossless availability update failed.")
+		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		logging.Logger.Error("Stream metadata transaction commit failed.", zap.Error(err))
+		return nil, status.Error(codes.Internal, "Stream metadata transaction commit failed.")
 	}
 
 	return &emptypb.Empty{}, nil

@@ -25,7 +25,8 @@ var clientEmail = os.Getenv("GCS_SA_EMAIL")
 var privateKey = []byte(os.Getenv("GCS_PRIVATE_KEY"))
 
 func InitObjectStorage() error {
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*8)
+	defer cancel()
 
 	client, err := storage.NewClient(ctx)
 	if err != nil {
@@ -40,13 +41,13 @@ func getObjectName(isrc, part string) string {
 	return isrc + "/" + part
 }
 
-func UploadStream(id, bucketName, streamPartName string, r io.Reader) error {
+func UploadStream(ctx context.Context, id, bucketName, streamPartName string, r io.Reader) error {
 	objectName := getObjectName(id, streamPartName)
 
 	w := Store.
 		Bucket(bucketName).
 		Object(objectName).
-		NewWriter(context.Background())
+		NewWriter(ctx)
 
 	_, err := io.Copy(w, r)
 	if err != nil {

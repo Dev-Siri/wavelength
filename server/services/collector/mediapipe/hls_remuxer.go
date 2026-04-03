@@ -1,18 +1,19 @@
 package mediapipe
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/exec"
 )
 
-func RemuxToHLS(extractedURL string) (string, error) {
+func RemuxToHLS(ctx context.Context, extractedURL string) (string, error) {
 	dir, err := os.MkdirTemp("", "hls-*")
 	if err != nil {
 		return "", err
 	}
 
-	remuxer := exec.Command(
+	remuxer := exec.CommandContext(ctx,
 		"ffmpeg",
 		"-i", extractedURL,
 		"-vn",
