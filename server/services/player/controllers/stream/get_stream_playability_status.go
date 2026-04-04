@@ -26,7 +26,7 @@ func GetStreamPlayabilityStatus(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Video ID is required.")
 	}
 
-	row := shared_db.StreamDatabase.QueryRow(`
+	row := shared_db.StreamDatabase.QueryRowContext(ctx.Context(), `
 		SELECT COUNT(*) FROM "stream_metadata"
 		WHERE video_id = $1;
 	`, videoID)

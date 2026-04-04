@@ -18,7 +18,7 @@ func (p *PlaylistService) GetPlaylistById(
 	ctx context.Context,
 	request *playlistpb.GetPlaylistByIdRequest,
 ) (*playlistpb.GetPlaylistByIdResponse, error) {
-	row := shared_db.Database.QueryRow(`
+	row := shared_db.Database.QueryRowContext(ctx, `
 		SELECT
 			p.playlist_id,
 			p.name,

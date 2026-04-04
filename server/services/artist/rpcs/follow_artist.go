@@ -22,7 +22,7 @@ func (a *ArtistService) FollowArtist(
 
 	var followCount int
 
-	row := shared_db.Database.QueryRow(`
+	row := shared_db.Database.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM "follows"
 		WHERE follower_email = $1 AND artist_browse_id = $2; 
 	`, request.FollowerEmail, request.ArtistBrowseId)
@@ -33,7 +33,7 @@ func (a *ArtistService) FollowArtist(
 	}
 
 	if followCount > 0 {
-		_, err := shared_db.Database.Exec(`
+		_, err := shared_db.Database.ExecContext(ctx, `
 			DELETE FROM "follows"
 			WHERE follower_email = $1 AND artist_browse_id = $2;
 		`, request.FollowerEmail, request.ArtistBrowseId)
@@ -46,7 +46,7 @@ func (a *ArtistService) FollowArtist(
 		return &emptypb.Empty{}, nil
 	}
 
-	_, err := shared_db.Database.Exec(`
+	_, err := shared_db.Database.ExecContext(ctx, `
 			INSERT INTO "follows" (
 				follower_email,
 				follow_id,

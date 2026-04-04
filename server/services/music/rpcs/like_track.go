@@ -23,7 +23,7 @@ func (m *MusicService) LikeTrack(
 	// Check if already liked.
 	var likesCount int
 
-	row := shared_db.Database.QueryRow(`
+	row := shared_db.Database.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM "likes"
 		WHERE email = $1 AND video_id = $2;
 	`, request.LikerEmail, request.VideoId)
@@ -35,7 +35,7 @@ func (m *MusicService) LikeTrack(
 
 	if likesCount > 0 {
 		// Perform unlike instead.
-		_, err := shared_db.Database.Exec(`
+		_, err := shared_db.Database.ExecContext(ctx, `
 			DELETE FROM "likes"
 			WHERE email = $1 AND video_id = $2;
 		`, request.LikerEmail, request.VideoId)
@@ -68,7 +68,7 @@ func (m *MusicService) LikeTrack(
 		dbVideoType = "uvideo"
 	}
 
-	_, err := shared_db.Database.Exec(`
+	_, err := shared_db.Database.ExecContext(ctx, `
 		INSERT INTO "likes" (
 			like_id,
 			email,

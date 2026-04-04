@@ -43,7 +43,7 @@ func (a *AuthService) OAuthCallback(
 		return nil, status.Error(codes.Internal, "Google user info fetch failed.")
 	}
 
-	userID, err := saveUser(userInfo)
+	userID, err := saveUser(ctx, userInfo)
 	if err != nil {
 		logging.Logger.Error("User save failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "User save failed.")
@@ -91,8 +91,8 @@ func getOAuthUserInfo(ctx context.Context, token *oauth2.Token) (*models.GoogleU
 }
 
 // Saves user to the database and returns the User ID.
-func saveUser(user *models.GoogleUser) (string, error) {
-	row := shared_db.Database.QueryRow(`
+func saveUser(ctx context.Context, user *models.GoogleUser) (string, error) {
+	row := shared_db.Database.QueryRowContext(ctx, `
 		SELECT user_id FROM "users"
 		WHERE email = $1;
 	`, user.Email)
@@ -111,7 +111,7 @@ func saveUser(user *models.GoogleUser) (string, error) {
 
 	newUserID := uuid.NewString()
 
-	_, err = shared_db.Database.Exec(`
+	_, err = shared_db.Database.ExecContext(ctx, `
 		INSERT INTO "users" (
 			user_id,
 			email,

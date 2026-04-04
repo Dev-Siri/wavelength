@@ -25,7 +25,12 @@ func JwtAuthMiddleware(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnauthorized, "Invalid Authorization header.")
 	}
 
-	tokenStr := parts[1]
+	const bearerPrefix = "Bearer "
+	if !strings.HasPrefix(authorization, bearerPrefix) {
+		return fiber.NewError(fiber.StatusUnauthorized, "Invalid Authorization header.")
+	}
+
+	tokenStr := authorization[len(bearerPrefix):]
 	authUser, err := ParseAuthUser(tokenStr)
 	if err != nil {
 		return err

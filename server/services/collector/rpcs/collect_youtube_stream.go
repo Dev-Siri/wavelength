@@ -51,7 +51,7 @@ func (c *CollectorService) CollectYouTubeStream(
 		return nil, status.Error(codes.Internal, "HLS stream upload failed.")
 	}
 
-	if err := addToDatabase(metadata, request.VideoId); err != nil {
+	if err := addToDatabase(ctx, metadata, request.VideoId); err != nil {
 		logging.Logger.Error("Recording stream entry in database failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "HLS stream upload failed.")
 	}
@@ -59,7 +59,7 @@ func (c *CollectorService) CollectYouTubeStream(
 	return &emptypb.Empty{}, nil
 }
 
-func addToDatabase(metadata []*ytdlp.ExtractedInfo, videoID string) error {
+func addToDatabase(ctx context.Context, metadata []*ytdlp.ExtractedInfo, videoID string) error {
 	streamID := uuid.NewString()
 	format := metadata[0]
 
@@ -78,7 +78,7 @@ func addToDatabase(metadata []*ytdlp.ExtractedInfo, videoID string) error {
 		format.Container = &container
 	}
 
-	_, err := shared_db.StreamDatabase.Exec(`
+	_, err := shared_db.StreamDatabase.ExecContext(ctx, `
 		INSERT INTO "stream_metadata" (
 			stream_id,
 			video_id,

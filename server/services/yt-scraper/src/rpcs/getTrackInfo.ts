@@ -19,11 +19,12 @@ export default async function getTrackInfo(
     const yt = await getYtClient();
     const {
       basic_info: { title = "", channel },
-    } = await yt.getBasicInfo(call.request.videoId);
+    } = await yt.getInfo(call.request.videoId);
     const channelName = channel?.name ?? "";
 
+    console.debug("Basic Details.", { title, channelName });
     let query = "";
-    if (!title || !channelName) {
+    if (title && channelName) {
       query = `${title} ${channelName.replace(" - Topic", "")}`;
     } else {
       query = call.request.videoId;

@@ -31,19 +31,24 @@ func GetStreamSource(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnauthorized, "This route is protected. Login to Wavelength to access it's contents.")
 	}
 
-	parts := strings.SplitN(authorization, " ", 2)
-
-	if len(parts) != 2 || parts[0] != "Bearer" {
-		return fiber.NewError(fiber.StatusUnauthorized, "Invalid Authorization header.")
-	}
-
-	tokenStr := parts[1]
-
 	videoID := ctx.Params("videoId")
 	if videoID == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "Video ID is required.")
 	}
 
+	const bearerPrefix = "Bearer "
+
+	if !strings.HasPrefix(authorization, bearerPrefix) {
+		return fiber.NewError(fiber.StatusUnauthorized, "Invalid Authorization header.")
+	}
+
+	select {
+	case <-ctx.Context().Done():
+		return ctx.Context().Err()
+	default:
+	}
+
+	tokenStr := authorization[len(bearerPrefix):]
 	preferredQualityQuery := ctx.Query("preferredQuality")
 	preferredQuality := types.NewPreferredQualityOrDefault(preferredQualityQuery)
 
@@ -53,7 +58,13 @@ func GetStreamSource(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnauthorized, "Something doesn't look right.")
 	}
 
-	streamMetadata, err := fetchStreamMetadata(videoID, preferredQuality)
+	select {
+	case <-ctx.Context().Done():
+		return ctx.Context().Err()
+	default:
+	}
+
+	streamMetadata, err := fetchStreamMetadata(ctx.Context(), videoID, preferredQuality)
 	if err != nil {
 		logging.Logger.Error("Stream metadata fetch failed.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Stream metadata fetch failed.")
@@ -111,11 +122,11 @@ func getStreamSource(videoID, token, authToken string, isHifiAvailable bool, pre
 	return host + "/streams/playback/" + token + "/" + videoID + "/" + file + "?authToken=" + authToken
 }
 
-func fetchStreamMetadata(videoID string, preferredQuality types.PreferredQuality) (*models.StreamMetadata, error) {
+func fetchStreamMetadata(ctx context.Context, videoID string, preferredQuality types.PreferredQuality) (*models.StreamMetadata, error) {
 	var metadata models.StreamMetadata
 	var losslessAvailable sql.NullString
 
-	row := shared_db.StreamDatabase.QueryRow(`
+	row := shared_db.StreamDatabase.QueryRowContext(ctx, `
 		SELECT
 			stream_id,
 			bitrate,

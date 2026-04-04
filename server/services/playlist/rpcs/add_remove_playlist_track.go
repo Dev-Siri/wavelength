@@ -22,7 +22,7 @@ func (p *PlaylistService) AddRemovePlaylistTrack(
 	request *playlistpb.AddRemovePlaylistTrackRequest,
 ) (*playlistpb.AddRemovePlaylistTrackResponse, error) {
 	var songCount int
-	err := shared_db.Database.QueryRow(`
+	err := shared_db.Database.QueryRowContext(ctx, `
 		SELECT COUNT(*) 
 		FROM playlist_tracks 
 		WHERE playlist_id = $1 AND video_id = $2`,
@@ -34,7 +34,7 @@ func (p *PlaylistService) AddRemovePlaylistTrack(
 	}
 
 	if songCount > 0 {
-		_, err := shared_db.Database.Exec(`
+		_, err := shared_db.Database.ExecContext(ctx, `
 			DELETE FROM playlist_tracks 
 			WHERE playlist_id = $1 AND video_id = $2
 		`, request.PlaylistId, request.VideoId)
@@ -60,7 +60,7 @@ func (p *PlaylistService) AddRemovePlaylistTrack(
 	}
 
 	var totalSongCount int
-	err = shared_db.Database.QueryRow(`
+	err = shared_db.Database.QueryRowContext(ctx, `
 		SELECT COUNT(*) 
 		FROM playlist_tracks 
 		WHERE playlist_id = $1`,
@@ -78,7 +78,7 @@ func (p *PlaylistService) AddRemovePlaylistTrack(
 		dbVideoType = "uvideo"
 	}
 
-	_, err = shared_db.Database.Exec(`
+	_, err = shared_db.Database.ExecContext(ctx, `
 		INSERT INTO playlist_tracks (
 			title,
 			thumbnail,

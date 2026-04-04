@@ -123,7 +123,7 @@ func (*tidalHifiClient) GetTrackUniversalIDs(track *commonpb.Track) (*universalI
 
 	queryParams := request.URL.Query()
 
-	queryParams.Set("i", track.Title+" "+utils.FormatAndJoinArtists(track.Artists))
+	queryParams.Set("s", track.Title+" "+utils.FormatAndJoinArtists(track.Artists))
 	request.URL.RawQuery = queryParams.Encode()
 
 	response, err := http.DefaultClient.Do(request)
@@ -139,7 +139,6 @@ func (*tidalHifiClient) GetTrackUniversalIDs(track *commonpb.Track) (*universalI
 
 	type candidate struct {
 		stereoID *string
-		dolbyID  *string
 		isrc     string
 		hasAlbum bool
 	}
@@ -184,9 +183,6 @@ func (*tidalHifiClient) GetTrackUniversalIDs(track *commonpb.Track) (*universalI
 		if slices.Contains(item.AudioModes, "STEREO") && c.stereoID == nil {
 			c.stereoID = &id
 		}
-		if slices.Contains(item.AudioModes, "DOLBY_ATMOS") && c.dolbyID == nil {
-			c.dolbyID = &id
-		}
 	}
 
 	if len(candidatesByISRC) == 0 {
@@ -197,7 +193,7 @@ func (*tidalHifiClient) GetTrackUniversalIDs(track *commonpb.Track) (*universalI
 	bestScore := -1
 
 	for _, c := range candidatesByISRC {
-		if c.stereoID == nil && c.dolbyID == nil {
+		if c.stereoID == nil {
 			continue
 		}
 		score := 0
@@ -218,9 +214,6 @@ func (*tidalHifiClient) GetTrackUniversalIDs(track *commonpb.Track) (*universalI
 	}
 
 	tidalID := best.stereoID
-	if tidalID == nil {
-		tidalID = best.dolbyID
-	}
 
 	result := &universalIDCollection{
 		TidalID:        *tidalID,
@@ -245,7 +238,7 @@ func (t *tidalHifiClient) FetchUniversalIDs(ctx context.Context, videoID string)
 		return nil, errors.New("YT Scraper not initialized.")
 	}
 
-	row := shared_db.StreamDatabase.QueryRow(`
+	row := shared_db.StreamDatabase.QueryRowContext(ctx, `
 		SELECT
 			tidal_id,
 			youtube_music_id,
@@ -283,7 +276,7 @@ func (t *tidalHifiClient) FetchUniversalIDs(ctx context.Context, videoID string)
 	}
 
 	labelID := uuid.NewString()
-	_, err = shared_db.StreamDatabase.Exec(`
+	_, err = shared_db.StreamDatabase.ExecContext(ctx, `
 		INSERT INTO "labels" (
 			label_id,
 			isrc,

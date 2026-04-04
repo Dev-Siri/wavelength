@@ -18,7 +18,7 @@ func (a *ArtistService) IsFollowingArtist(
 ) (*artistpb.IsFollowingArtistResponse, error) {
 	var followingCount int
 
-	row := shared_db.Database.QueryRow(`
+	row := shared_db.Database.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM "follows"
 		WHERE artist_browse_id = $1 AND follower_email = $2;
 	`, request.BrowseId, request.FollowerEmail)

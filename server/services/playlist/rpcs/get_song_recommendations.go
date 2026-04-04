@@ -20,7 +20,7 @@ func (p *PlaylistService) GetSongRecommendations(
 	ctx context.Context,
 	request *playlistpb.GetSongRecommendationsRequest,
 ) (*playlistpb.GetSongRecommendationsResponse, error) {
-	rows, err := shared_db.Database.Query(`
+	rows, err := shared_db.Database.QueryContext(ctx, `
 		SELECT
 			video_id
 		FROM "playlist_tracks"

@@ -31,7 +31,7 @@ func (a *AlbumService) IsAlbumLossless(
 		albumTrackIDs = append(albumTrackIDs, albumTrack.VideoId)
 	}
 
-	row := shared_db.StreamDatabase.QueryRow(`
+	row := shared_db.StreamDatabase.QueryRowContext(ctx, `
 		SELECT COUNT(*)
 		FILTER (WHERE is_lossless_available IS NOT NULL) = $2
 		FROM "stream_metadata"

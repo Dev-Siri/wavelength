@@ -16,7 +16,7 @@ func (a *AlbumService) GetSavedAlbums(
 	ctx context.Context,
 	request *albumpb.GetSavedAlbumsRequest,
 ) (*albumpb.GetSavedAlbumsResponse, error) {
-	rows, err := shared_db.Database.Query(`
+	rows, err := shared_db.Database.QueryContext(ctx, `
 		SELECT
 			saver_email,
 			album_id,

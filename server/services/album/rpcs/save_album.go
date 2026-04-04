@@ -19,7 +19,7 @@ func (a *AlbumService) SaveAlbum(
 	ctx context.Context,
 	request *albumpb.SaveAlbumRequest,
 ) (*albumpb.SaveAlbumResponse, error) {
-	row := shared_db.Database.QueryRow(`
+	row := shared_db.Database.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM "saved_albums"
 		WHERE album_id = $1 AND saver_email = $2;
 	`, request.AlbumId, request.SaverEmail)
@@ -32,7 +32,7 @@ func (a *AlbumService) SaveAlbum(
 
 	isSaved := saveCount > 0
 	if isSaved {
-		_, err := shared_db.Database.Exec(`
+		_, err := shared_db.Database.ExecContext(ctx, `
 			DELETE FROM "saved_albums"
 			WHERE album_id = $1 AND saver_email = $2;
 		`, request.AlbumId, request.SaverEmail)
@@ -65,7 +65,7 @@ func (a *AlbumService) SaveAlbum(
 	}
 
 	saveID := uuid.NewString()
-	_, err = shared_db.Database.Exec(`
+	_, err = shared_db.Database.ExecContext(ctx, `
 			INSERT INTO "saved_albums" (
 				save_id,
 				saver_email,

@@ -20,7 +20,7 @@ func (p *PlaylistService) CreatePlaylist(
 ) (*emptypb.Empty, error) {
 	playlistId := uuid.NewString()
 
-	_, err := shared_db.Database.Exec(`
+	_, err := shared_db.Database.ExecContext(ctx, `
 		INSERT INTO playlists (
 			playlist_id,
 			name,

@@ -17,7 +17,7 @@ func (p *PlaylistService) GetPublicPlaylists(
 	ctx context.Context,
 	request *playlistpb.GetPublicPlaylistsRequest,
 ) (*playlistpb.GetPublicPlaylistsResponse, error) {
-	rows, err := shared_db.Database.Query(`
+	rows, err := shared_db.Database.QueryContext(ctx, `
 		SELECT
 			p.playlist_id,
 			p.name,

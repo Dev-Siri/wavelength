@@ -24,7 +24,7 @@ func (p *PlaylistService) GetPlaylistTracks(
 	var err error
 
 	if request.Query == nil {
-		rows, err = shared_db.Database.Query(`
+		rows, err = shared_db.Database.QueryContext(ctx, `
         SELECT
             pt.playlist_track_id,
             pt.title,
@@ -46,7 +46,7 @@ func (p *PlaylistService) GetPlaylistTracks(
         WHERE pt.playlist_id = $1;
     `, request.PlaylistId)
 	} else {
-		rows, err = shared_db.Database.Query(`
+		rows, err = shared_db.Database.QueryContext(ctx, `
         SELECT
             pt.playlist_track_id,
             pt.title,

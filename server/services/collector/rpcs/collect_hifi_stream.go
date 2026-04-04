@@ -183,7 +183,7 @@ func (c *CollectorService) CollectHifiStream(
 		}
 	}
 
-	tx, err := shared_db.Database.BeginTx(ctx, nil)
+	tx, err := shared_db.StreamDatabase.BeginTx(ctx, nil)
 	if err != nil {
 		logging.Logger.Error("Transaction open failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Transaction open failed.")
@@ -191,7 +191,7 @@ func (c *CollectorService) CollectHifiStream(
 
 	defer tx.Rollback()
 
-	_, err = tx.Exec(`
+	_, err = tx.ExecContext(ctx, `
 		UPDATE "stream_metadata"
 		SET is_hifi_available = TRUE
 		WHERE video_id = $1;
@@ -210,7 +210,7 @@ func (c *CollectorService) CollectHifiStream(
 			bitType = types.LosslessBitType24Bit
 		}
 
-		_, err = tx.Exec(`
+		_, err = tx.ExecContext(ctx, `
 		UPDATE "stream_metadata"
 		SET is_lossless_available = $2
 		WHERE video_id = $1;

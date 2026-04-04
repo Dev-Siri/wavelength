@@ -39,7 +39,7 @@ func (p *PlaylistService) RearrangePlaylistTracks(
 	defer stmt.Close()
 
 	for _, pos := range request.Updates {
-		if _, err := stmt.Exec(pos.NewPos, request.PlaylistId, pos.PlaylistTrackId); err != nil {
+		if _, err := stmt.ExecContext(ctx, pos.NewPos, request.PlaylistId, pos.PlaylistTrackId); err != nil {
 			logging.Logger.Error("Playlist positions update failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Playlist positions update failed.")
 		}

@@ -1,6 +1,7 @@
 package spotify
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -117,7 +118,7 @@ func (c *MusicFetchClient) LookupAppleMusicURLByISRC(isrc string) (string, error
 }
 
 // Ensure Stream database initialization before call.
-func (c *MusicFetchClient) FetchAppleMusicURL(albumID, isrc string) (string, error) {
+func (c *MusicFetchClient) FetchAppleMusicURL(ctx context.Context, albumID, isrc string) (string, error) {
 	if shared_db.StreamDatabase == nil {
 		return "", errors.New("Stream database not initialized.")
 	}
@@ -128,7 +129,7 @@ func (c *MusicFetchClient) FetchAppleMusicURL(albumID, isrc string) (string, err
 	}
 
 	appleMusicURLID := uuid.NewString()
-	_, err = shared_db.StreamDatabase.Exec(`
+	_, err = shared_db.StreamDatabase.ExecContext(ctx, `
 		INSERT INTO "apple_music_urls" (
 			apple_music_url_id,
 			album_id,

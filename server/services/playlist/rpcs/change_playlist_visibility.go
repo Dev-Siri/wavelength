@@ -17,7 +17,7 @@ func (p *PlaylistService) ChangePlaylistVisibility(
 	ctx context.Context,
 	request *playlistpb.ChangePlaylistVisibilityRequest,
 ) (*emptypb.Empty, error) {
-	row := shared_db.Database.QueryRow(`
+	row := shared_db.Database.QueryRowContext(ctx, `
 		SELECT author_google_email FROM playlists
 		WHERE playlist_id = $1
 		LIMIT 1;
@@ -37,7 +37,7 @@ func (p *PlaylistService) ChangePlaylistVisibility(
 		return nil, status.Error(codes.PermissionDenied, "Visibility change cannot be performed because the authorized user is not the author of the playlist.")
 	}
 
-	rows, err := shared_db.Database.Query(`
+	rows, err := shared_db.Database.QueryContext(ctx, `
 		SELECT is_public FROM playlists
 		WHERE playlist_id = $1;
 	`, request.PlaylistId)
@@ -56,7 +56,7 @@ func (p *PlaylistService) ChangePlaylistVisibility(
 		}
 	}
 
-	_, err = shared_db.Database.Exec(`
+	_, err = shared_db.Database.ExecContext(ctx, `
 		UPDATE playlists
 		SET is_public = $1
 		WHERE playlist_id = $2;

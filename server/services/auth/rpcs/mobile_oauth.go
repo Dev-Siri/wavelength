@@ -28,7 +28,7 @@ func (a *AuthService) MobileOAuth(
 		return nil, status.Error(codes.Internal, "Google user info fetch failed.")
 	}
 
-	userID, err := saveUser(userInfo)
+	userID, err := saveUser(ctx, userInfo)
 	if err != nil {
 		logging.Logger.Error("User save failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "User save failed.")

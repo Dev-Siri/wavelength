@@ -20,7 +20,7 @@ func (a *ArtistService) CreateAuthoredTrackArtist(
 ) (*emptypb.Empty, error) {
 	var existingArtistsCount int
 
-	row := shared_db.Database.QueryRow(`
+	row := shared_db.Database.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM "artists"
 		WHERE browse_id = $1 AND authored_track_id = $2;
 	`, request.BrowseId, request.AuthoredTrackId)
@@ -37,7 +37,7 @@ func (a *ArtistService) CreateAuthoredTrackArtist(
 
 	artistId := uuid.NewString()
 
-	_, err := shared_db.Database.Exec(`
+	_, err := shared_db.Database.ExecContext(ctx, `
 		INSERT INTO "artists" (
 			artist_id,
 			browse_id,

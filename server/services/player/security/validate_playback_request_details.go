@@ -1,7 +1,6 @@
 package security
 
 import (
-	"errors"
 	"time"
 
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
@@ -11,6 +10,12 @@ import (
 )
 
 func ValidatePlaybackRequestDetails(ctx *fiber.Ctx, clientDetails *TokenClientDetails, authUser *shared_models.AuthUser) error {
+	select {
+	case <-ctx.Context().Done():
+		return ctx.Context().Err()
+	default:
+	}
+
 	videoID := ctx.Params("videoId")
 	if videoID == "" {
 		logging.Logger.Error("Missing videoId.")
@@ -19,7 +24,7 @@ func ValidatePlaybackRequestDetails(ctx *fiber.Ctx, clientDetails *TokenClientDe
 
 	if time.Now().Unix() > clientDetails.Expiration {
 		logging.Logger.Warn("Token expired.", zap.Any("clientDetails", clientDetails))
-		return errors.New("Something doesn't look right.")
+		return fiber.NewError(fiber.StatusBadRequest, "Something doesn't look right.")
 	}
 
 	if clientDetails.VideoID != videoID {
@@ -27,7 +32,7 @@ func ValidatePlaybackRequestDetails(ctx *fiber.Ctx, clientDetails *TokenClientDe
 			zap.String("expected", clientDetails.VideoID),
 			zap.String("actual", videoID),
 		)
-		return errors.New("Something doesn't look right.")
+		return fiber.NewError(fiber.StatusBadRequest, "Something doesn't look right.")
 	}
 
 	if clientDetails.Email != authUser.Email {
@@ -35,7 +40,7 @@ func ValidatePlaybackRequestDetails(ctx *fiber.Ctx, clientDetails *TokenClientDe
 			zap.String("expected", clientDetails.Email),
 			zap.String("actual", authUser.Email),
 		)
-		return errors.New("Something doesn't look right.")
+		return fiber.NewError(fiber.StatusBadRequest, "Something doesn't look right.")
 	}
 
 	requestIP := ctx.IP()
@@ -44,7 +49,7 @@ func ValidatePlaybackRequestDetails(ctx *fiber.Ctx, clientDetails *TokenClientDe
 			zap.String("expected", clientDetails.IP),
 			zap.String("actual", requestIP),
 		)
-		return errors.New("Something doesn't look right.")
+		return fiber.NewError(fiber.StatusBadRequest, "Something doesn't look right.")
 	}
 
 	return nil

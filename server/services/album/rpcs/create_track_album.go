@@ -20,7 +20,7 @@ func (s *AlbumService) CreateTrackAlbum(
 ) (*emptypb.Empty, error) {
 	var existingAlbumsCount int
 
-	row := shared_db.Database.QueryRow(`
+	row := shared_db.Database.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM "albums"
 		WHERE browse_id = $1 AND track_id = $2;
 	`, request.BrowseId, request.TrackId)
@@ -37,7 +37,7 @@ func (s *AlbumService) CreateTrackAlbum(
 
 	albumId := uuid.NewString()
 
-	_, err := shared_db.Database.Exec(`
+	_, err := shared_db.Database.ExecContext(ctx, `
 		INSERT INTO "albums" (
 			album_id,
 			browse_id,

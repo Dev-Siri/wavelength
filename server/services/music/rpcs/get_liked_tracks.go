@@ -20,7 +20,7 @@ func (m *MusicService) GetLikedTracks(
 	ctx context.Context,
 	request *musicpb.GetLikedTracksRequest,
 ) (*musicpb.GetLikedTracksResponse, error) {
-	rows, err := shared_db.Database.Query(`
+	rows, err := shared_db.Database.QueryContext(ctx, `
 		SELECT
 			l.like_id,
 			l.email,

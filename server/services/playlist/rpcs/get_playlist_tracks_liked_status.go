@@ -15,7 +15,7 @@ func (p *PlaylistService) GetPlaylistTracksLikedStatus(
 	ctx context.Context,
 	request *playlistpb.GetPlaylistTracksLikedStatusRequest,
 ) (*playlistpb.GetPlaylistTracksLikedStatusResponse, error) {
-	rows, err := shared_db.Database.Query(`
+	rows, err := shared_db.Database.QueryContext(ctx, `
 		SELECT 
 			pt.video_id,
 			(l.video_id IS NOT NULL) AS is_liked

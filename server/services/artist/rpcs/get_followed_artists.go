@@ -17,7 +17,7 @@ func (a *ArtistService) GetFollowedArtists(
 	ctx context.Context,
 	request *artistpb.GetFollowedArtistsRequest,
 ) (*artistpb.GetFollowedArtistsResponse, error) {
-	rows, err := shared_db.Database.Query(`
+	rows, err := shared_db.Database.QueryContext(ctx, `
 		SELECT
 			follow_id,
 			follower_email,

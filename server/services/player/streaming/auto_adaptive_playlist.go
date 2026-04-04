@@ -42,7 +42,13 @@ func ConstructAutoMasterPlaylistResponse(
 
 func ConstructHifiAutoHlsPlaylistResponse(ctx *fiber.Ctx, clientDetails *security.TokenClientDetails, m3u8PlaylistURL, streamPartName string) error {
 	ctx.Type("application/vnd.apple.mpegurl")
-	response, err := http.Get(m3u8PlaylistURL)
+	request, err := http.NewRequestWithContext(ctx.Context(), http.MethodGet, m3u8PlaylistURL, nil)
+	if err != nil {
+		logging.Logger.Error("Playlist request formatiom failed.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Something went wrong.")
+	}
+
+	response, err := http.DefaultClient.Do(request)
 	if err != nil {
 		logging.Logger.Error("Playlist fetch failed.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Playlist fetch failed.")
@@ -52,6 +58,10 @@ func ConstructHifiAutoHlsPlaylistResponse(ctx *fiber.Ctx, clientDetails *securit
 	scanner := bufio.NewScanner(response.Body)
 
 	for scanner.Scan() {
+		if err := ctx.Context().Err(); err != nil {
+			return err
+		}
+
 		line := scanner.Text()
 
 		if line == "" || strings.HasPrefix(line, "#") {
@@ -88,6 +98,7 @@ func ConstructHifiAutoHlsPlaylistResponse(ctx *fiber.Ctx, clientDetails *securit
 				return fiber.NewError(fiber.StatusInternalServerError, "Playlist fetch failed.")
 			}
 			ctx.WriteString(signedURL + "\n")
+			continue
 		}
 
 		if streamPartName == AutoBasePlaylistName {
@@ -97,6 +108,7 @@ func ConstructHifiAutoHlsPlaylistResponse(ctx *fiber.Ctx, clientDetails *securit
 				return fiber.NewError(fiber.StatusInternalServerError, "Playlist fetch failed.")
 			}
 			ctx.WriteString(signedURL + "\n")
+			continue
 		}
 
 		if streamPartName == AutoTopPlaylistName {
@@ -106,6 +118,7 @@ func ConstructHifiAutoHlsPlaylistResponse(ctx *fiber.Ctx, clientDetails *securit
 				return fiber.NewError(fiber.StatusInternalServerError, "Playlist fetch failed.")
 			}
 			ctx.WriteString(signedURL + "\n")
+			continue
 		}
 
 		ctx.WriteString(line + "\n")
@@ -114,18 +127,27 @@ func ConstructHifiAutoHlsPlaylistResponse(ctx *fiber.Ctx, clientDetails *securit
 	return nil
 }
 
-func hifiAutoStreamingHandler(streamPartName, isrc, videoID string) (string, error) {
+func hifiAutoStreamingHandler(ctx *fiber.Ctx, streamPartName, isrc, videoID string) (string, error) {
 	if streamPartName == AutoStandardPlaylistName {
+		if err := ctx.Context().Err(); err != nil {
+			return "", err
+		}
 		logging.Logger.Debug("Master playlist requested Adaptive (Opus/AAC ~128kbps)")
 		return shared_db.GenerateAdaptiveURL(videoID, "index.m3u8")
 	}
 
 	if streamPartName == AutoBasePlaylistName {
+		if err := ctx.Context().Err(); err != nil {
+			return "", err
+		}
 		logging.Logger.Debug("Master playlist requested High Quality (AAC 256kbps)")
 		return shared_db.GenerateBaseHifiURL(isrc, "index.m3u8")
 	}
 
 	if streamPartName == AutoTopPlaylistName {
+		if err := ctx.Context().Err(); err != nil {
+			return "", err
+		}
 		logging.Logger.Debug("Master playlist requested Hi-Fi (AAC 320kbps)")
 		return shared_db.GenerateTopHifiURL(isrc, "index.m3u8")
 	}

@@ -25,7 +25,7 @@ func (a *AlbumService) GetAlbumLiveCover(
 	ctx context.Context,
 	request *albumpb.GetAlbumLiveCoverRequest,
 ) (*albumpb.GetAlbumLiveCoverResponse, error) {
-	appleMusicURL, err := fetchStoredAppleMusicURL(request.AlbumId)
+	appleMusicURL, err := fetchStoredAppleMusicURL(ctx, request.AlbumId)
 	if err != nil {
 		logging.Logger.Error("Stored Apple Music URL fetch failed.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Stored Apple Music URL fetch failed.")
@@ -39,7 +39,7 @@ func (a *AlbumService) GetAlbumLiveCover(
 			return nil, status.Error(codes.Internal, "Universal ID fetch failed.")
 		}
 
-		appleMusicURL, err = spotify.MusicFetch.FetchAppleMusicURL(request.AlbumId, universalIDs.ISRC)
+		appleMusicURL, err = spotify.MusicFetch.FetchAppleMusicURL(ctx, request.AlbumId, universalIDs.ISRC)
 		if err != nil {
 			logging.Logger.Error("Apple Music URL fetch failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Apple Music URL fetch failed.")
@@ -89,8 +89,8 @@ func (a *AlbumService) GetAlbumLiveCover(
 	}, nil
 }
 
-func fetchStoredAppleMusicURL(albumID string) (string, error) {
-	row := shared_db.StreamDatabase.QueryRow(`
+func fetchStoredAppleMusicURL(ctx context.Context, albumID string) (string, error) {
+	row := shared_db.StreamDatabase.QueryRowContext(ctx, `
 		SELECT apple_music_url FROM "apple_music_urls"
 		WHERE album_id = $1;
 	`, albumID)

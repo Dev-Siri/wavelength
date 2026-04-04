@@ -1,6 +1,7 @@
 package collector_controllers
 
 import (
+	"context"
 	"database/sql"
 
 	"github.com/Dev-Siri/wavelength/server/proto/collectorpb"
@@ -18,7 +19,7 @@ func CollectStream(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Video ID is required.")
 	}
 
-	isInDatabase, err := isStreamAlreadyInDatabase(videoID)
+	isInDatabase, err := isStreamAlreadyInDatabase(ctx.Context(), videoID)
 	if err != nil {
 		logging.Logger.Error("Stream existence check failed.", zap.Error(err))
 		return err
@@ -34,7 +35,7 @@ func CollectStream(ctx *fiber.Ctx) error {
 		}
 	}
 
-	isHifiInDatabase, err := isHifiStreamAlreadyInDatabase(videoID)
+	isHifiInDatabase, err := isHifiStreamAlreadyInDatabase(ctx.Context(), videoID)
 	if err != nil {
 		logging.Logger.Error("Hi-Fi Stream existence check failed.", zap.Error(err))
 		return err
@@ -53,8 +54,8 @@ func CollectStream(ctx *fiber.Ctx) error {
 	return shared_models.Success(ctx.Status(fiber.StatusAccepted), "Recorded.")
 }
 
-func isStreamAlreadyInDatabase(videoID string) (bool, error) {
-	row := shared_db.StreamDatabase.QueryRow(`
+func isStreamAlreadyInDatabase(ctx context.Context, videoID string) (bool, error) {
+	row := shared_db.StreamDatabase.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM "stream_metadata"
 		WHERE video_id = $1;
 	`, videoID)
@@ -71,8 +72,8 @@ func isStreamAlreadyInDatabase(videoID string) (bool, error) {
 	return streamCount > 0, nil
 }
 
-func isHifiStreamAlreadyInDatabase(videoID string) (bool, error) {
-	row := shared_db.StreamDatabase.QueryRow(`
+func isHifiStreamAlreadyInDatabase(ctx context.Context, videoID string) (bool, error) {
+	row := shared_db.StreamDatabase.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM "stream_metadata"
 		WHERE video_id = $1 AND is_hifi_available = TRUE;
 	`, videoID)

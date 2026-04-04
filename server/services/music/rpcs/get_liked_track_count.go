@@ -18,7 +18,7 @@ func (m *MusicService) GetLikedTrackCount(
 ) (*musicpb.GetLikedTrackCountResponse, error) {
 	var likeCount int
 
-	row := shared_db.Database.QueryRow(`
+	row := shared_db.Database.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM "likes"
 		WHERE email = $1;
 	`, request.LikerEmail)

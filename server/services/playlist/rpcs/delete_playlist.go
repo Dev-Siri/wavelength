@@ -17,7 +17,7 @@ func (p *PlaylistService) DeletePlaylist(
 	ctx context.Context,
 	request *playlistpb.DeletePlaylistRequest,
 ) (*emptypb.Empty, error) {
-	row := shared_db.Database.QueryRow(`
+	row := shared_db.Database.QueryRowContext(ctx, `
 		SELECT author_google_email FROM playlists
 		WHERE playlist_id = $1
 		LIMIT 1;
@@ -37,7 +37,7 @@ func (p *PlaylistService) DeletePlaylist(
 		return nil, status.Error(codes.PermissionDenied, "Deletion operation cannot be performed because the authorized user is not the author of the playlist.")
 	}
 
-	_, err := shared_db.Database.Exec(`
+	_, err := shared_db.Database.ExecContext(ctx, `
 		DELETE FROM playlists
 		WHERE playlist_id = $1;
 	`, request.PlaylistId)

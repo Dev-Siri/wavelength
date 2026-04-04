@@ -15,7 +15,7 @@ func (a *AlbumService) IsAlbumSaved(
 	ctx context.Context,
 	request *albumpb.IsAlbumSavedRequest,
 ) (*albumpb.IsAlbumSavedResponse, error) {
-	row := shared_db.Database.QueryRow(`
+	row := shared_db.Database.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM "saved_albums"
 		WHERE album_id = $1 AND saver_email = $2;
 	`, request.AlbumId, request.SaverEmail)
