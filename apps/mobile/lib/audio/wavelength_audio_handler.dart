@@ -16,6 +16,7 @@ import "package:wavelength/audio/local_hls_server.dart";
 import "package:wavelength/audio/music_context_queue.dart";
 import "package:wavelength/audio/queueable_music.dart";
 import "package:wavelength/audio/stream_resolver.dart";
+import "package:wavelength/bloc/auth/auth_bloc.dart";
 
 class TrackChangeEvent {
   final PlayableStreamMetadata? metadata;
@@ -31,6 +32,7 @@ class WavelengthAudioHandler extends BaseAudioHandler {
   final LocalHlsServer _localHlsServer = LocalHlsServer();
 
   late StreamResolver _streamResolver;
+  late FlutterSecureStorage _secureStorage;
 
   List<int> _shuffledIndices = [];
   LoopMode _loopMode = LoopMode.off;
@@ -87,6 +89,7 @@ class WavelengthAudioHandler extends BaseAudioHandler {
 
   WavelengthAudioHandler(FlutterSecureStorage secureStorage) {
     _streamResolver = StreamResolver(secureStorage);
+    _secureStorage = secureStorage;
     _init();
   }
 
@@ -120,6 +123,8 @@ class WavelengthAudioHandler extends BaseAudioHandler {
           StreamRepo.recordStream(
             track: _musicContextQueue.queue[_playingNowIndex!],
             type: StreamRecordType.play30s,
+            authToken:
+                await _secureStorage.read(key: AuthBloc.authTokenKey) ?? "",
           ),
         );
         _is30sReported = true;
@@ -349,6 +354,7 @@ class WavelengthAudioHandler extends BaseAudioHandler {
       StreamRepo.recordStream(
         track: queueableMusic,
         type: StreamRecordType.playStart,
+        authToken: await _secureStorage.read(key: AuthBloc.authTokenKey) ?? "",
       ),
     );
 

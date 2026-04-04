@@ -106,16 +106,23 @@ export async function reportStream({
   track: QueueableMusic;
   type: "skipFast" | "play30s" | "playStart";
 }) {
+  const authHeaders: Record<string, string> = userStore.authToken
+    ? {
+        Authorization: `Bearer ${userStore.authToken}`,
+      }
+    : {};
+
   try {
-    await fetch(`${dev ? PUBLIC_DEV_BACKEND_URL : PUBLIC_BACKEND_URL}/streams/record`, {
+    await fetch(`${dev ? PUBLIC_DEV_PLAYER_URL : PUBLIC_PLAYER_URL}/player/record`, {
       method: "POST",
       keepalive: true,
       headers: {
+        ...authHeaders,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         type,
-        timestamp: new Date().toISOString(),
+        timestamp: Date.now(),
         track,
       }),
     });

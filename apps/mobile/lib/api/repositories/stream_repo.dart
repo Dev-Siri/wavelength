@@ -103,16 +103,20 @@ class StreamRepo {
   static Future<void> recordStream({
     required QueueableMusic track,
     required StreamRecordType type,
+    required String authToken,
   }) async {
     try {
       await http.post(
-        Uri.parse("$apiGatewayUrl/streams/record"),
+        Uri.parse("$playerGatewayUrl/player/record"),
         body: jsonEncode({
           "type": type.name,
-          "timestamp": DateTime.now().toUtc().toIso8601String(),
+          "timestamp": DateTime.now().millisecondsSinceEpoch,
           "track": track.toJson(),
         }),
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $authToken",
+        },
       );
     } catch (_) {
       // Analytics collection so failure is fine to be left ignored.
