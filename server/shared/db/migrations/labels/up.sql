@@ -5,7 +5,6 @@ CREATE TABLE IF NOT EXISTS "labels" (
   artist VARCHAR(255) NOT NULL,
   is_explicit BOOLEAN NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  dolby_audio_id VARCHAR(30) NULL,
   tidal_id VARCHAR(30) NOT NULL,
   youtube_music_id VARCHAR(11) NOT NULL
 );

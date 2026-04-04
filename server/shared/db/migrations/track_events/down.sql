@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS "track_events";
+DROP TYPE IF EXISTS event_type RESTRICT;

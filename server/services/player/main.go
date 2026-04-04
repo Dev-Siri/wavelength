@@ -58,6 +58,18 @@ func main() {
 		}()
 	}
 
+	if err := shared_db.ConnectAnalyticsDatabase(); err != nil {
+		logging.Logger.Error("Failed to initialize Postgres connection.", zap.Error(err))
+	}
+
+	if shared_db.AnalyticsDatabase != nil {
+		defer func() {
+			if err := shared_db.AnalyticsDatabase.Close(); err != nil {
+				logging.Logger.Fatal("Failed to close database connection.", zap.Error(err))
+			}
+		}()
+	}
+
 	if err := shared_db.InitRedis(); err != nil {
 		logging.Logger.Error("Failed to initialize Redis connection.", zap.Error(err))
 	}

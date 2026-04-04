@@ -43,7 +43,8 @@ func (a *ArtistService) CreateAuthoredTrackArtist(
 			browse_id,
 			authored_track_id,
 			title
-		) VALUES ( $1, $2, $3, $4 );
+		) VALUES ( $1, $2, $3, $4 )
+		ON CONFLICT DO NOTHING;
 	`, artistId, request.BrowseId, request.AuthoredTrackId, request.Title)
 	if err != nil {
 		logging.Logger.Error("Authored track artist creation failed.", zap.Error(err))
