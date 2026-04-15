@@ -1,5 +1,7 @@
 use dashmap::DashMap;
 use std::{env, sync::Arc};
+#[cfg(any(target_os = "linux", windows))]
+use tauri_plugin_deep_link::DeepLinkExt;
 
 use tauri::{tray::TrayIconBuilder, Manager};
 
@@ -32,6 +34,11 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_cors_fetch::init())
         .setup(|app| {
+            #[cfg(any(target_os = "linux", windows))]
+            {
+                app.deep_link().register_all()?;
+            }
+
             let tydle = youtube::init_extractor(app.path().cache_dir()?)?;
 
             app.manage(Mutex::new(AppState {

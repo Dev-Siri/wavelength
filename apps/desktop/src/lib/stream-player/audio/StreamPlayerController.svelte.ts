@@ -44,6 +44,7 @@ export default class StreamPlayerController {
   public currentStream = $state<LoadedStream | null>(null);
 
   private lastCreatedAt: Date | null = null;
+  private loadId = 0;
   private didReport30sStream = false;
   private isLoadingTrack = false;
 
@@ -126,6 +127,11 @@ export default class StreamPlayerController {
   };
 
   private handleLoaded = async (event: PlayerEvent<"loaded">) => {
+    // Ignore stale load events
+    const currentLoadId = this.loadId;
+
+    if (currentLoadId !== this.loadId) return;
+
     if (event.detail.stream) {
       this.currentStream = event.detail.stream;
     } else {
@@ -194,20 +200,26 @@ export default class StreamPlayerController {
     if (this.isLoadingTrack) return;
 
     this.isLoadingTrack = true;
+    const currentLoadId = ++this.loadId;
 
     reportStream({ track, type: "playStart" });
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
     this.lastCreatedAt = new Date();
-    this.queue.playingNow = track;
-    this.currentTime = 0;
-    this.duration = 0;
-    this.didReport30sStream = false;
 
     if (context) {
       this.queue.loadContext(context);
     }
     try {
+      // Optimistically update UI immediately
+      this.queue.playingNow = track;
+      this.currentTime = 0;
+      this.duration = 0;
+      this.didReport30sStream = false;
+
       await this.streamPlayer.load(track.videoId, { startingSeconds, videoType: track.videoType });
+
+      // Ignore outdated loads
+      if (currentLoadId !== this.loadId) return;
     } catch {
       /* */
     } finally {
