@@ -6,7 +6,7 @@ import {
   PUBLIC_PLAYER_URL,
 } from "$env/static/public";
 
-import type { QueueableMusic } from "$lib/stream-player/MusicQueue.svelte";
+import type { QueueableMusic } from "$lib/stream-player/queue/MusicQueue";
 import type { z } from "zod";
 
 import { WAVELENGTH_PLATFORM_KEY } from "$lib/constants/keys";
@@ -99,7 +99,7 @@ export async function reportErrorToBackend({ error, source }: { error: unknown; 
   });
 }
 
-export async function reportStream({
+export function reportStream({
   track,
   type,
 }: {
@@ -113,7 +113,7 @@ export async function reportStream({
     : {};
 
   try {
-    await fetch(`${dev ? PUBLIC_DEV_PLAYER_URL : PUBLIC_PLAYER_URL}/player/record`, {
+    void fetch(`${dev ? PUBLIC_DEV_PLAYER_URL : PUBLIC_PLAYER_URL}/player/record`, {
       method: "POST",
       keepalive: true,
       headers: {

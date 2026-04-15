@@ -350,4 +350,42 @@ class TrackRepo {
       return ApiResponseError(message: errorString);
     }
   }
+
+  static Future<ApiResponse<List<Track>>> fetchRecentlyPlayedTracks({
+    required String authToken,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$apiGatewayUrl/music/home/recents"),
+        headers: {"Authorization": "Bearer $authToken"},
+      );
+      final decodedResponse = await compute<String, ApiResponse<List<Track>>>((
+        stringResponse,
+      ) {
+        final decodedJson = jsonDecode(stringResponse);
+        final isSuccessful = decodedJson["success"] as bool;
+
+        if (isSuccessful) {
+          final tracks = decodedJson["data"]["tracks"] as List?;
+
+          return ApiResponseSuccess(
+            data:
+                tracks?.map((final track) => Track.fromJson(track)).toList() ??
+                [],
+          );
+        }
+
+        return ApiResponseError(message: decodedJson["message"] as String);
+      }, response.body);
+
+      return decodedResponse;
+    } catch (e) {
+      final errorString = e.toString();
+      DiagnosticsRepo.reportError(
+        error: errorString,
+        source: "TrackRepo.fetchRecentlyPlayedTracks",
+      );
+      return ApiResponseError(message: errorString);
+    }
+  }
 }

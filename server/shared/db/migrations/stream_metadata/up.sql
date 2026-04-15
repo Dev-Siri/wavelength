@@ -8,5 +8,6 @@ CREATE TABLE IF NOT EXISTS "stream_metadata" (
   -- Hi-fi refers to the existence of 256kbps (AAC) or 320kpbs (AAC) streams.
   is_hifi_available BOOLEAN DEFAULT FALSE,
   is_lossless_available VARCHAR(6) NULL,
+  sample_rate INTEGER DEFAULT 44100,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Playlist, PlaylistTrack } from "$lib/schemas/playlist";
-  import type { MusicPlaylistContextSource } from "$lib/stream-player/MusicQueue.svelte";
+  import type { MusicPlaylistContextSource } from "$lib/stream-player/queue/MusicQueue";
 
   import TrackItem from "../track/Track.svelte";
 

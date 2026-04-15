@@ -33,7 +33,8 @@
         }
       ]
     },
-    "os:default"
+    "os:default",
+    "deep-link:default"
   ],
   "remote": {
     "urls": [

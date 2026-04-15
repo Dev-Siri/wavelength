@@ -27,10 +27,16 @@ pub struct Settings {
     pub show_stats: bool,
     #[serde(default = "default_playback_quality", rename = "playbackQuality")]
     pub playback_quality: PlaybackQuality,
+    #[serde(default = "default_true", rename = "discordMode")]
+    pub discord_mode: bool,
 }
 
 fn default_false() -> bool {
     false
+}
+
+fn default_true() -> bool {
+    true
 }
 
 fn default_playback_quality() -> PlaybackQuality {

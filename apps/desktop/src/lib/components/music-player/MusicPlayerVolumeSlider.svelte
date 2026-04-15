@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Volume2Icon, VolumeOffIcon } from "@lucide/svelte";
 
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
 
   import { buttonVariants } from "../ui/button";
   import { Slider } from "../ui/slider";

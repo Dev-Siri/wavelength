@@ -26,7 +26,7 @@ import "package:wavelength/bloc/playlist_length/playlist_length_state.dart";
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_bloc.dart";
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_event.dart";
 import "package:wavelength/bloc/playlist_theme_color/playlist_theme_color_state.dart";
-import "package:wavelength/audio_manager.dart";
+import "package:wavelength/audio/audio_manager.dart";
 import "package:wavelength/screens/edit_playlist.dart";
 import "package:wavelength/utils/toaster.dart";
 import "package:wavelength/widgets/brand_cover_image.dart";
@@ -325,7 +325,6 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Toaster {
                             if (_playlistTrackDownloadedCount !=
                                 state.songs.length)
                               AmplIconButton(
-                                padding: EdgeInsets.zero,
                                 onPressed: () =>
                                     _downloadAllTracks(state.songs),
                                 icon: const Icon(

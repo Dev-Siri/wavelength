@@ -22,7 +22,7 @@
   @import "../../../tailwind.config.ts";
 
   .playing .bar {
-    @apply inline-block h-full w-[10%] mx-[2%] bg-white;
+    @apply inline-block h-full w-[25%] mx-[2%] bg-white;
     animation: wobble 1.2s infinite;
     animation-timing-function: cubic-bezier(0.4, 0.2, 0.6, 0.8);
     animation-fill-mode: both;

@@ -8,7 +8,7 @@ import "package:wavelength/api/repositories/diagnostics_repo.dart";
 import "package:wavelength/api/repositories/stream_repo.dart";
 import "package:wavelength/audio/queueable_music.dart";
 import "package:wavelength/bloc/auth/auth_bloc.dart";
-import "package:wavelength/audio_manager.dart";
+import "package:wavelength/audio/audio_manager.dart";
 import "package:wavelength/constants.dart";
 import "package:wavelength/settings_manager.dart";
 import "package:wavelength/src/rust/api/tydle_caller.dart" as tydle_caller;

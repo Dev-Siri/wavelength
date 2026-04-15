@@ -5,7 +5,7 @@ export const musicTrackSchema = z.object({
   title: z.string(),
   thumbnail: z.string(),
   duration: z.string(),
-  isExplicit: z.boolean(),
+  isExplicit: z.boolean().optional(),
   artists: z.array(
     z.object({
       title: z.string(),

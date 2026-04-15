@@ -102,8 +102,8 @@ class _TrackLikeButtonState extends State<TrackLikeButton> {
   @override
   Widget build(BuildContext context) {
     return AmplIconButton(
-      padding: EdgeInsets.zero,
       onPressed: _likeTrack,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       disabled: _isLoading,
       icon: Icon(
         _isLiked ? Icons.favorite : Icons.favorite_outline_outlined,

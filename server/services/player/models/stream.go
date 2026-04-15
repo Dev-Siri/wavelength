@@ -10,6 +10,7 @@ type StreamMetadata struct {
 	DurationSeconds     float64                `json:"durationSeconds"`
 	IsHifiAvailable     bool                   `json:"isHifiAvailable"`
 	IsLosslessAvailable *types.LosslessBitType `json:"isLosslessAvailable"`
+	SampleRate          int                    `json:"sampleRate"`
 }
 
 type StreamSourceResponse struct {

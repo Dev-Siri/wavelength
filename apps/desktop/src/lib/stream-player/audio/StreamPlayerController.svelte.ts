@@ -1,15 +1,17 @@
 import { isTauri } from "@tauri-apps/api/core";
 import { z } from "zod";
 
-import type { StreamMetadata } from "$lib/schemas/stream";
-import type { MusicPlaylistContextSource, QueueableMusic } from "./MusicQueue.svelte";
-import type { PlayerEvent, StreamPlayer } from "./StreamPlayer";
+import type { MusicPlaylistContextSource, QueueableMusic } from "../queue/MusicQueue";
+import type { LoadedStream, PlayerEvent, StreamPlayer } from "./StreamPlayer";
 
 import { localStorageKeys } from "$lib/constants/keys";
+import { clearDrpc, updateDrpcActivity } from "$lib/ipc/drpc";
 import { prefetchTrack } from "$lib/ipc/youtube";
+import musicInterfaceStore from "$lib/stores/musicInterface.svelte";
+import settingsStore from "$lib/stores/settings.svelte";
 import { punctuatify } from "$lib/utils/format";
 import { reportStream, streamClient } from "$lib/utils/query-client";
-import LocalMusicQueue from "./LocalMusicQueue.svelte";
+import LocalMusicQueue from "../queue/LocalMusicQueue.svelte";
 
 const SIX_HOURS_MS = 6 * 60 * 60 * 1000;
 
@@ -27,17 +29,23 @@ export default class StreamPlayerController {
   public duration = $state(0);
   /** The duration (in seconds) consumed. */
   public currentTime = $state(0);
+  /** The duration (in seconds) that is ready for playback. */
+  public bufferedTime = $state(0);
   /** Percentage representing how much the StreamPlayer has completed of the stream. */
   public progress = $derived.by(() => {
     if (!this.duration) return 0;
     return (this.currentTime / this.duration) * 100;
   });
+  public bufferedProgress = $derived.by(() => {
+    if (!this.duration) return 0;
+    return (this.bufferedTime / this.duration) * 100;
+  });
   public isMuted = $state(false);
-  public streamMetadata = $state<StreamMetadata | null>(null);
-  public outputSinkId = $state<string>("");
+  public currentStream = $state<LoadedStream | null>(null);
 
   private lastCreatedAt: Date | null = null;
   private didReport30sStream = false;
+  private isLoadingTrack = false;
 
   public constructor(
     private streamPlayer: StreamPlayer,
@@ -48,6 +56,9 @@ export default class StreamPlayerController {
   }
 
   private handleOnPause = async () => {
+    if (isTauri() && musicInterfaceStore.isDrpcConnected && settingsStore.settings.discordMode) {
+      await clearDrpc();
+    }
     this.isPlaying = false;
     navigator.mediaSession.playbackState = "paused";
   };
@@ -60,10 +71,25 @@ export default class StreamPlayerController {
       this.lastCreatedAt && now.getTime() - this.lastCreatedAt.getTime() > SIX_HOURS_MS;
     if (isExpired) await this.reload();
 
-    const totalDuration = await this.streamPlayer.getDuration();
+    const totalDuration = this.streamPlayer.getDuration();
     this.duration = totalDuration;
     this.isPlaying = true;
     navigator.mediaSession.playbackState = "playing";
+
+    if (
+      musicInterfaceStore.isDrpcConnected &&
+      this.queue.playingNow &&
+      settingsStore.settings.discordMode &&
+      isTauri()
+    ) {
+      await updateDrpcActivity({
+        state: punctuatify(this.queue.playingNow.artists.map(artist => artist.title)),
+        details: this.queue.playingNow.title,
+        currentTime: this.currentTime,
+        totalTime: totalDuration,
+        thumbnail: this.queue.playingNow.thumbnail,
+      });
+    }
   };
 
   private handleTimeUpdate = async (event: PlayerEvent<"timeupdate">) => {
@@ -75,7 +101,7 @@ export default class StreamPlayerController {
     // To fix it, we assume extra seconds of length here, which when exceeded by the stream would mean that the
     // stream is definitely of the wrong length and we should use the duration provided in the music metadata instead.
     const INCORRECT_THRESHOLD = 15;
-    const { duration, currentTime } = event.detail;
+    const { duration, currentTime, bufferedTime } = event.detail;
 
     const providedLength = Number(this.queue.playingNow.duration ?? 0);
     const isProbablyWrongLength = duration + INCORRECT_THRESHOLD > providedLength;
@@ -91,6 +117,7 @@ export default class StreamPlayerController {
     }
 
     this.currentTime = currentTime;
+    this.bufferedTime = bufferedTime;
 
     if (currentTime >= 30 && !this.didReport30sStream) {
       reportStream({ track: this.queue.playingNow, type: "play30s" });
@@ -99,20 +126,19 @@ export default class StreamPlayerController {
   };
 
   private handleLoaded = async (event: PlayerEvent<"loaded">) => {
-    if (event.detail.metadata) {
-      this.streamMetadata = event.detail.metadata;
+    if (event.detail.stream) {
+      this.currentStream = event.detail.stream;
     } else {
-      this.streamMetadata = null;
+      this.currentStream = null;
     }
   };
 
   private handleOnEnded = async () => {
-    if (this.queue.repeatMode === "one") return this.play();
+    if (this.queue.repeatMode === "one") return await this.streamPlayer.play();
 
     this.currentTime = 0;
     if (!this.queue?.playingNow) return;
 
-    await this.pause();
     const nextTrack = this.queue.pickNext();
     if (nextTrack) await this.load(nextTrack);
   };
@@ -165,6 +191,10 @@ export default class StreamPlayerController {
     context?: MusicPlaylistContextSource,
     startingSeconds?: number,
   ) {
+    if (this.isLoadingTrack) return;
+
+    this.isLoadingTrack = true;
+
     reportStream({ track, type: "playStart" });
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
     this.lastCreatedAt = new Date();
@@ -176,14 +206,22 @@ export default class StreamPlayerController {
     if (context) {
       this.queue.loadContext(context);
     }
-    await this.streamPlayer.load(track.videoId, { startingSeconds, videoType: track.videoType });
+    try {
+      await this.streamPlayer.load(track.videoId, { startingSeconds, videoType: track.videoType });
+    } catch {
+      /* */
+    } finally {
+      this.isLoadingTrack = false;
+    }
 
     const { title, thumbnail, artists, album } = track;
+
+    const formattedArtists = punctuatify(artists.map(artist => artist.title) ?? []);
 
     navigator.mediaSession.metadata = new MediaMetadata({
       title,
       artwork: thumbnail ? [{ src: thumbnail }] : [],
-      artist: punctuatify(artists.map(artist => artist.title) ?? []),
+      artist: formattedArtists,
       album: album?.title,
     });
 
@@ -220,9 +258,25 @@ export default class StreamPlayerController {
     if (this.progress === 100) {
       await this.seek(0);
       this.currentTime = 0;
+      this.didReport30sStream = false;
     }
 
     await this.streamPlayer.play();
+    if (
+      musicInterfaceStore.isDrpcConnected &&
+      this.queue.playingNow &&
+      settingsStore.settings.discordMode &&
+      isTauri()
+    ) {
+      await clearDrpc();
+      await updateDrpcActivity({
+        state: punctuatify(this.queue.playingNow.artists.map(artist => artist.title)),
+        details: this.queue.playingNow.title,
+        currentTime: this.currentTime,
+        totalTime: this.duration,
+        thumbnail: this.queue.playingNow.thumbnail,
+      });
+    }
   }
 
   async pause() {
@@ -231,10 +285,24 @@ export default class StreamPlayerController {
 
   async seek(to: number) {
     await this.streamPlayer.seek(to);
+    if (
+      musicInterfaceStore.isDrpcConnected &&
+      this.queue.playingNow &&
+      settingsStore.settings.discordMode &&
+      isTauri()
+    ) {
+      await updateDrpcActivity({
+        state: punctuatify(this.queue.playingNow.artists.map(artist => artist.title)),
+        details: this.queue.playingNow.title,
+        currentTime: !to ? to : this.currentTime,
+        totalTime: this.duration,
+        thumbnail: this.queue.playingNow.thumbnail,
+      });
+    }
   }
 
   async setVolume(newVolume: number) {
-    await this.streamPlayer.setVolume(newVolume);
+    this.streamPlayer.setVolume(newVolume);
     this.volume = newVolume;
     localStorage.setItem(localStorageKeys.volume, newVolume.toString());
   }

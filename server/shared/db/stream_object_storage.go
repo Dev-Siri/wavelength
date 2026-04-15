@@ -15,8 +15,8 @@ const (
 	BaseHifiStreamsBucketName = "spotify-streamable-256"
 	TopHifiStreamsBucketName  = "spotify-streamable-320"
 	LosslessStreamBucketName  = "universal-lossless"
-	playlistExpiration        = time.Hour * 6
-	streamChunkExpiration     = time.Minute * 5
+	playlistExpiration        = time.Minute * 3
+	streamChunkExpiration     = time.Hour * 6
 )
 
 var Store *storage.Client

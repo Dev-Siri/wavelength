@@ -10,17 +10,17 @@ COPY . .
 ENV CGO_ENABLED=0
 RUN go build -v -trimpath -ldflags=-s -ldflags=-w -buildvcs=false -o /usr/local/bin/gateway /usr/src/app/services/gateway
 
-FROM debian:bookworm-slim
+FROM scratch
 
-WORKDIR /app
+COPY --from=builder /usr/local/bin/gateway /gateway
+COPY --from=builder /usr/src/app/services/gateway/static /static
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
-RUN apt update && apt install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
-
-COPY --from=builder /usr/local/bin/gateway /usr/local/bin/gateway
-COPY --from=builder /usr/src/app/services/gateway/static /app/static
-
-ENV STATIC_DIR=/app/static
+USER 65532:65532
 
 EXPOSE 8080
 
-ENTRYPOINT [ "/usr/local/bin/gateway" ]
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+ENV STATIC_DIR=/static
+
+ENTRYPOINT [ "/gateway" ]

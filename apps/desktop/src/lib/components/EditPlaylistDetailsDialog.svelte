@@ -1,7 +1,8 @@
 <script lang="ts">
+  import { dev } from "$app/environment";
+  import { PUBLIC_BACKEND_URL, PUBLIC_DEV_BACKEND_URL } from "$env/static/public";
   import { LoaderCircleIcon, PencilIcon } from "@lucide/svelte";
   import { createMutation, useQueryClient } from "@tanstack/svelte-query";
-  import { UploadButton } from "@uploadthing/svelte";
   import { toast } from "svelte-sonner";
   import { z } from "zod";
 
@@ -9,7 +10,6 @@
 
   import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";
   import { backendClient } from "$lib/utils/query-client.js";
-  import { createUploader } from "$lib/utils/uploadthing.js";
 
   import { Button } from "./ui/button";
   import * as Dialog from "./ui/dialog";
@@ -18,26 +18,41 @@
 
   const { initialPlaylist }: { initialPlaylist: Playlist } = $props();
 
+  let selectedCoverFile = $state<File | null>(null);
   let playlistTitle = $state(initialPlaylist.name);
-  let playlistCoverImage = $state(initialPlaylist.coverImage);
 
   const queryClient = useQueryClient();
-  const uploader = createUploader("imageUploader", {
-    onClientUploadComplete(res) {
-      playlistCoverImage = res[0].ufsUrl;
-    },
-  });
 
   const playlistUpdateMutation = createMutation(() => ({
     mutationKey: svelteMutationKeys.updatePlaylist(initialPlaylist.playlistId),
-    mutationFn: () =>
-      backendClient(`/playlists/playlist/${initialPlaylist.playlistId}`, z.string(), {
+    retry: 3,
+    async mutationFn() {
+      let uploadCover = initialPlaylist.coverImage;
+
+      if (selectedCoverFile) {
+        const res = await fetch(
+          `${dev ? PUBLIC_DEV_BACKEND_URL : PUBLIC_BACKEND_URL}/image/manual-upload`,
+          {
+            method: "POST",
+            body: selectedCoverFile,
+            headers: {
+              "Content-Type": selectedCoverFile.type || "application/octet-stream",
+            },
+          },
+        );
+
+        const uploadedFile = await res.json();
+        uploadCover = uploadedFile.data.url;
+      }
+
+      return backendClient(`/playlists/playlist/${initialPlaylist.playlistId}`, z.string(), {
         method: "PUT",
         body: {
           name: playlistTitle,
-          coverImage: playlistCoverImage,
+          coverImage: uploadCover,
         },
-      }),
+      });
+    },
     onError: () => toast.error("Failed to update playlist details."),
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: svelteQueryKeys.userPlaylists });
@@ -45,6 +60,7 @@
         queryKey: svelteQueryKeys.playlist(initialPlaylist.playlistId),
       });
       document.querySelector<HTMLButtonElement>("#close-dialog > [data-dialog-close]")?.click();
+      selectedCoverFile = null;
     },
   }));
 
@@ -55,9 +71,20 @@
     playlistUpdateMutation.mutate();
   }
 
-  // Peak engineering right here.
-  const callFilePicker = () =>
-    document.querySelector<HTMLInputElement>("#upload-button > div > label > input")?.click();
+  function handleFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Only images are allowed as playlist covers.");
+      input.value = "";
+      return;
+    }
+
+    selectedCoverFile = file;
+  }
 </script>
 
 <Dialog.Content>
@@ -68,32 +95,36 @@
         <Dialog.Close></Dialog.Close>
       </div>
     </Dialog.Header>
-    <div class="flex py-3 gap-6 mt-2">
+    <div class="flex gap-6 -mt-4">
       <div class="relative group flex w-1/2 flex-col gap-2 items-center justify-center">
-        <div
-          class="absolute cursor-pointer -mt-18 group-hover:flex hidden gap-4 bg-black/30 w-full duration-200 flex-col items-center h-full select-none justify-center"
-          role="button"
-          tabindex="0"
-          onkeydown={callFilePicker}
-          onclick={callFilePicker}
+        <label
+          for="coverUpload"
+          class="absolute bg-black/30 gap-2 inset-0 group-hover:flex hidden flex-col items-center justify-center transition-all cursor-pointer"
         >
-          <PencilIcon size={50} />
+          <PencilIcon size={35} />
           <p class="text-sm">Change photo</p>
-        </div>
-        {#if playlistCoverImage}
+        </label>
+        <input
+          type="file"
+          id="coverUpload"
+          name="coverUpload"
+          accept="image/*"
+          class="hidden"
+          onchange={handleFileChange}
+        />
+        {#if initialPlaylist.coverImage || selectedCoverFile}
           <img
-            src={playlistCoverImage}
+            src={selectedCoverFile
+              ? URL.createObjectURL(selectedCoverFile)
+              : initialPlaylist.coverImage}
             alt="Cover for Playlist"
             height={256}
             width={256}
-            class="rounded-2xl aspect-square object-cover"
+            class="rounded-sm aspect-square object-cover"
           />
         {:else}
-          <div class="rounded-2xl aspect-square h-full w-full bg-muted"></div>
+          <div class="rounded-sm aspect-square h-full w-full bg-muted"></div>
         {/if}
-        <div class="opacity-0 select-none cursor-default" id="upload-button">
-          <UploadButton {uploader} />
-        </div>
       </div>
       <div class="flex w-1/2 flex-col gap-2">
         <Label for="name">Title</Label>

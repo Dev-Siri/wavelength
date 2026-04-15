@@ -66,7 +66,6 @@ class _PlaylistVisibilityToggleState extends State<PlaylistVisibilityToggle>
 
         return AmplIconButton(
           color: Colors.grey.shade800,
-          padding: EdgeInsets.zero,
           onPressed: () => _toggleVisibilityPlaylist(state.authToken),
           disabled: _isLoading,
           icon: Icon(

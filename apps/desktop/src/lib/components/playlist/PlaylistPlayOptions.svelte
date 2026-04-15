@@ -5,9 +5,9 @@
   import type {
     MusicPlaylistContextSource,
     QueueableMusic,
-  } from "$lib/stream-player/MusicQueue.svelte";
+  } from "$lib/stream-player/queue/MusicQueue";
 
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
   import { reportErrorToBackend } from "$lib/utils/query-client";
   import { shuffleStartIndex } from "$lib/utils/shuffle";
 

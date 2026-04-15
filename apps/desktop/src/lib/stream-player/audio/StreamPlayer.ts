@@ -1,5 +1,5 @@
 import type { PlaylistVideoType } from "$lib/schemas/playlist";
-import type { StreamMetadata } from "$lib/schemas/stream";
+import type { Stream } from "$lib/schemas/stream";
 
 /** Shared API to interact with the stream player. */
 export abstract class StreamPlayer extends EventTarget {
@@ -17,10 +17,11 @@ export abstract class StreamPlayer extends EventTarget {
   abstract mute(): Promise<void>;
   abstract unMute(): Promise<void>;
   abstract seek(to: number): Promise<void>;
-  abstract getDuration(): Promise<number>;
-  abstract getCurrentTime(): Promise<number>;
+  abstract getDuration(): number;
+  abstract getCurrentTime(): number;
+  abstract getBufferedTime(): number;
   /** @param newVolume Volume of the stream in the range 0.00 to 1.00 */
-  abstract setVolume(newVolume: number): Promise<void>;
+  abstract setVolume(newVolume: number): void;
 
   // Some people call this polymorphism.
   createEvent<K extends PlayerEventName>(
@@ -49,15 +50,24 @@ export abstract class StreamPlayer extends EventTarget {
 }
 
 export interface StreamPlayerEventMap {
-  loaded: { metadata?: StreamMetadata | null };
+  loaded: { stream?: LoadedStream | null };
   playing: void;
   paused: void;
   ended: void;
   timeupdate: {
     duration: number;
+    bufferedTime: number;
     currentTime: number;
   };
 }
 
 export type PlayerEventName = keyof StreamPlayerEventMap;
 export type PlayerEvent<K extends PlayerEventName> = CustomEvent<StreamPlayerEventMap[K]>;
+
+export interface LoadedStream extends Stream {
+  source: {
+    name: string;
+    sampleRate: number;
+    sourceType: "wavelength" | "youtube";
+  };
+}

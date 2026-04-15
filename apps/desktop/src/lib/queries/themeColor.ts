@@ -1,7 +1,7 @@
 import { get, set } from "idb-keyval";
 
 import { svelteQueryKeys } from "$lib/constants/keys";
-import { themeColorSchema } from "$lib/schemas/theme-color";
+import { themeColorSchema } from "$lib/schemas/image";
 import { backendClient } from "$lib/utils/query-client";
 import { createQuery } from "@tanstack/svelte-query";
 

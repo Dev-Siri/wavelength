@@ -3,7 +3,7 @@
 
   import type { Artist } from "$lib/schemas/artist";
   import type { PlaylistVideoType } from "$lib/schemas/playlist";
-  import type { MusicPlaylistContextSource } from "$lib/stream-player/MusicQueue.svelte";
+  import type { MusicPlaylistContextSource } from "$lib/stream-player/queue/MusicQueue";
 
   import PlaylistPlayOptions from "$lib/components/playlist/PlaylistPlayOptions.svelte";
   import Track from "$lib/components/track/Track.svelte";

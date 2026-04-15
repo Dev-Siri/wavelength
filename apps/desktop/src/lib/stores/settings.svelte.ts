@@ -2,7 +2,7 @@ import type { Settings } from "$lib/schemas/settings";
 
 import { defaultSettings } from "$lib/constants/settings";
 import { setSettings } from "$lib/ipc/settingsManager";
-import { musicPlayer } from "$lib/stream-player/musicPlayer";
+import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
 
 class SettingsStore {
   settings = $state<Settings>(defaultSettings);

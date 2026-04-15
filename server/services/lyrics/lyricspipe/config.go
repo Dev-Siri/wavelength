@@ -5,6 +5,7 @@ const (
 	geniusWorkerURL        = "https://fetch-genius.samidy.workers.dev/"
 	cacheServerURL         = "https://lyrics-api.binimum.org"
 	directKpoeServerURL    = "https://lyricsplus.binimum.org/v2/lyrics/get"
+	amVersion              = "1.1.4"
 )
 
 var kpoeServers = []string{

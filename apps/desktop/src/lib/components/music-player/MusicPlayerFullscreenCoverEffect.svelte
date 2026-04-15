@@ -1,7 +1,7 @@
 <script lang="ts">
   import { blur } from "svelte/transition";
 
-  import type { ThemeColor } from "$lib/schemas/theme-color";
+  import type { ThemeColor } from "$lib/schemas/image";
 
   const { coverColors }: { coverColors: ThemeColor[] } = $props();
 

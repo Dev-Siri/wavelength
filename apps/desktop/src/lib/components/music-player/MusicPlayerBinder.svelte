@@ -1,25 +1,18 @@
 <script lang="ts">
-  import { isTauri } from "@tauri-apps/api/core";
-
-  import { bindPlayerToApp, musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { setupEventListeners } from "$lib/stream-player/audio/eventListeners";
+  import { bindPlayerToApp, musicPlayer } from "$lib/stream-player/audio/musicPlayer";
 
   let nativePlayer: HTMLAudioElement;
-  let webEmbedPlayer: HTMLDivElement | undefined = $state(undefined);
 
   $effect(() => {
-    const dispose = bindPlayerToApp({
-      native: nativePlayer,
-      webEmbed: webEmbedPlayer,
-    });
+    bindPlayerToApp(nativePlayer);
+    const dispose = setupEventListeners();
 
     return () => {
-      dispose();
       musicPlayer.dispose();
+      dispose();
     };
   });
 </script>
 
 <audio class="hidden" bind:this={nativePlayer}></audio>
-{#if !isTauri()}
-  <div class="hidden" bind:this={webEmbedPlayer}></div>
-{/if}

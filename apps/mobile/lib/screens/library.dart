@@ -61,15 +61,18 @@ class _LibraryScreenState extends State<LibraryScreen> {
               BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
                   if (state is AuthStateUnauthorized) {
-                    return const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Please login to view your library and create playlists.",
-                        ),
-                        SizedBox(height: 15),
-                        GoogleLoginButton(),
-                      ],
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Login to view your library and create playlists.",
+                          ),
+                          SizedBox(height: 15),
+                          GoogleLoginButton(),
+                        ],
+                      ),
                     );
                   }
 

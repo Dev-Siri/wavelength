@@ -4,13 +4,17 @@ export interface SettingDescriptionOption {
   title: string;
   description: string;
   settingKey: SettingKey;
+  webHint?: string;
 }
 
 export const defaultSettings = {
   disableMusicVideoPreview: true,
   showStats: true,
   playbackQuality: "standard",
+  discordMode: true,
 } as const;
+
+export const desktopOnlySettings: SettingKey[] = ["discordMode", "playbackQuality"];
 
 export const displaySettings = [
   {
@@ -18,13 +22,20 @@ export const displaySettings = [
     description: "Entirely disable showing music video previews in the lyrics panel.",
     settingKey: "disableMusicVideoPreview",
   },
+  {
+    title: "Discord Mode.",
+    description: "Broadcast your listening activity to Discord.",
+    settingKey: "discordMode",
+    webHint: "Install the Desktop app to share your WavLen listening activity on Discord.",
+  },
 ] satisfies SettingDescriptionOption[];
 
 export const playbackSettings = [
   {
-    title: "Preferred playback quality.",
-    description: "Use selected quality when available. Higher qualities may require more data.",
+    title: "Audio quality.",
+    description: "Higher qualities require more data.",
     settingKey: "playbackQuality",
+    webHint: "The Desktop app allows more quality options including Lossless.",
   },
 ] satisfies SettingDescriptionOption[];
 
@@ -43,7 +54,7 @@ export const playbackQualities = [
   },
   {
     key: "hifiBase",
-    uiText: "High (256kbps)",
+    uiText: "High Quality (256kbps)",
   },
   {
     key: "hifiTop",
@@ -51,15 +62,15 @@ export const playbackQualities = [
   },
   {
     key: "lossless",
-    uiText: "Lossless (16-bit/44.1kHz, max 24-bit)",
+    uiText: "Lossless (up to 24-bit/192kHz)",
   },
 ] as const;
 
 export const playbackQualityMap = {
   standard: "Standard (~128kbps)",
-  hifiBase: "High (256kbps)",
+  hifiBase: "High Quality (256kbps)",
   hifiTop: "Hi-Fi (320kbps)",
-  lossless: "Lossless (16-bit/44.1kHz, max 24-bit)",
+  lossless: "Lossless (up to 24-bit/192kHz)",
 } as const;
 
 export const playbackQualityBitrateMap = {
@@ -68,3 +79,6 @@ export const playbackQualityBitrateMap = {
   hifiTop: 320,
   lossless: "lossless",
 } as const;
+
+export type PlaybackQualityBitrateMap = typeof playbackQualityBitrateMap;
+export type PlaybackQualityBitrate = PlaybackQualityBitrateMap[keyof PlaybackQualityBitrateMap];

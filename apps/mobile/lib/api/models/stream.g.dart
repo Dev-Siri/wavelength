@@ -24,13 +24,14 @@ class HlsStreamMetadataAdapter extends TypeAdapter<HlsStreamMetadata> {
       durationSeconds: fields[4] as double,
       isHifiAvailable: fields[5] as bool,
       isLosslessAvailable: fields[6] as LosslessAvailability?,
+      sampleRate: fields[7] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, HlsStreamMetadata obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.streamId)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class HlsStreamMetadataAdapter extends TypeAdapter<HlsStreamMetadata> {
       ..writeByte(5)
       ..write(obj.isHifiAvailable)
       ..writeByte(6)
-      ..write(obj.isLosslessAvailable);
+      ..write(obj.isLosslessAvailable)
+      ..writeByte(7)
+      ..write(obj.sampleRate);
   }
 
   @override

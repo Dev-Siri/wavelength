@@ -4,9 +4,7 @@ use anyhow::{anyhow, bail};
 use serde::{Deserialize, Serialize};
 use tauri::{Result, State};
 use tokio::sync::Mutex;
-use tydle::{
-    Codec, DiskCacheStore, Extract, Filterable, Tydle, TydleOptions, VideoId, YtStreamSource,
-};
+use tydle::{DiskCacheStore, Extract, Filterable, Tydle, TydleOptions, VideoId, YtStreamSource};
 
 use crate::{cache::CachedStream, AppState};
 
@@ -16,9 +14,7 @@ type TydleInstance = Tydle<DiskCacheStore, DiskCacheStore>;
 pub struct StreamMetadata {
     pub bitrate: f64,
     pub ext: String,
-    pub codec: Codec,
-    pub video_id: String,
-    pub source: String,
+    pub codec: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -71,9 +67,11 @@ async fn fetch_highest_bitrate_audio_stream(
     let stream_metadata = StreamMetadata {
         bitrate: yt_stream.tbr,
         ext: yt_stream.ext.as_str().to_owned(),
-        codec: yt_stream.codec,
-        video_id: video_id.to_owned(),
-        source: "YouTube (tydle)".to_owned(),
+        codec: yt_stream
+            .codec
+            .acodec
+            .unwrap_or("unknown".into())
+            .to_owned(),
     };
 
     let YtStreamSource::URL(source) = yt_stream.source else {
@@ -110,16 +108,16 @@ pub async fn fetch_highest_bitrate_audio_stream_url(
 }
 
 #[tauri::command]
-pub async fn fetch_highest_bitrate_video_stream_url(
+pub async fn fetch_highest_quality_video_stream_url(
     state: State<'_, Mutex<AppState>>,
     video_id: &str,
-) -> Result<Option<Stream>> {
+) -> Result<Option<String>> {
     let state = state.lock().await;
     let cache_key = format!("{}-preview", video_id);
 
     if let Some(cached_source) = state.stream_url_cache.get(&cache_key) {
         if cached_source.is_valid() {
-            return Ok(Some(cached_source.stream.clone()));
+            return Ok(Some(cached_source.stream.url.clone()));
         }
     }
 
@@ -151,9 +149,11 @@ pub async fn fetch_highest_bitrate_video_stream_url(
     let stream_metadata = StreamMetadata {
         bitrate: yt_stream.tbr,
         ext: yt_stream.ext.as_str().to_owned(),
-        codec: yt_stream.codec,
-        video_id: video_id.to_owned(),
-        source: "YouTube (tydle)".to_owned(),
+        codec: yt_stream
+            .codec
+            .acodec
+            .unwrap_or("unknown".into())
+            .to_owned(),
     };
 
     let YtStreamSource::URL(source) = yt_stream.source else {
@@ -169,7 +169,7 @@ pub async fn fetch_highest_bitrate_video_stream_url(
         .stream_url_cache
         .insert(cache_key, CachedStream::new(stream.clone()));
 
-    Ok(Some(stream))
+    Ok(Some(stream.url))
 }
 
 #[tauri::command]

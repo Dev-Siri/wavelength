@@ -3,15 +3,19 @@
   import { QueryClient } from "@tanstack/svelte-query";
   import { PersistQueryClientProvider } from "@tanstack/svelte-query-persist-client";
   import { isTauri } from "@tauri-apps/api/core";
+  import { getCurrent, onOpenUrl } from "@tauri-apps/plugin-deep-link";
   import { Pane, Splitpanes } from "svelte-splitpanes";
   import { pwaInfo } from "virtual:pwa-info";
 
+  import type { UnlistenFn } from "@tauri-apps/api/event";
   import type { Snippet } from "svelte";
 
+  import { setupDeeplinkUrlActions } from "$lib/ipc/deeplinks";
   import { getSettings } from "$lib/ipc/settingsManager";
   import connectivityStore from "$lib/stores/connectivity.svelte";
   import musicInterfaceStore from "$lib/stores/musicInterface.svelte.js";
   import settingsStore from "$lib/stores/settings.svelte";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
   import { createIDBPersister } from "$lib/utils/cache";
 
   import BackgroundDownloadManager from "$lib/components/BackgroundDownloadManager.svelte";
@@ -104,6 +108,22 @@
       : sizes.sidebar.maxSize;
   });
 
+  $effect(() => {
+    let unlisten: UnlistenFn;
+
+    async function handleDeeplinking() {
+      const initial = await getCurrent();
+      if (initial?.length) {
+        await setupDeeplinkUrlActions(initial);
+      }
+
+      unlisten = await onOpenUrl(setupDeeplinkUrlActions);
+    }
+
+    handleDeeplinking();
+    return () => unlisten();
+  });
+
   function toggleSidebar() {
     if (musicInterfaceStore.isMusicQueueVisible) return;
     isSidebarCollapsed = !isSidebarCollapsed;
@@ -158,9 +178,12 @@
             </Pane>
           </Splitpanes>
           <div
-            class="flex flex-col justify-end items-center w-full absolute bottom-0 {musicInterfaceStore.isPlayerFullscreen
+            class="flex flex-col justify-end items-center w-full absolute bottom-0 {musicInterfaceStore.isPlayerFullscreen &&
+            musicPlayer.queue.playingNow
               ? ''
-              : 'py-2 px-3'} {musicInterfaceStore.visiblePanel ? 'h-full' : ''}"
+              : 'py-2 px-3'} {musicInterfaceStore.visiblePanel && musicPlayer.queue.playingNow
+              ? 'h-full'
+              : ''}"
           >
             <MusicPlayer />
           </div>

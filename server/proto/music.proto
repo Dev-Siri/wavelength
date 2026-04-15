@@ -19,6 +19,7 @@ service MusicService {
   rpc SearchMusicTracks(SearchMusicTracksRequest) returns (SearchMusicTracksResponse);
   rpc SearchYouTubeVideos(SearchYouTubeVideosRequest) returns (SearchYouTubeVideosResponse);
   rpc GetUpNext(GetUpNextRequest) returns (GetUpNextResponse);
+  rpc GetRecentlyPlayed(GetRecentlyPlayedRequest) returns (GetRecentlyPlayedResponse);
 }
 
 message LikeTrackRequest {
@@ -148,5 +149,13 @@ message GetUpNextRequest {
 }
 
 message GetUpNextResponse {
+  repeated common.Track tracks = 1;
+}
+
+message GetRecentlyPlayedRequest {
+  string email = 1;
+}
+
+message GetRecentlyPlayedResponse {
   repeated common.Track tracks = 1;
 }

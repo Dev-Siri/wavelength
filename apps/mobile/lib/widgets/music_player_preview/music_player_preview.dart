@@ -156,7 +156,12 @@ class _MusicPlayerPreviewState extends State<MusicPlayerPreview> {
                             ? const SizedBox.shrink()
                             : state is! MusicPlayerTrackPlayingNowState
                             ? Padding(
-                                padding: const EdgeInsets.all(6),
+                                padding: const EdgeInsets.only(
+                                  left: 6,
+                                  right: 15,
+                                  bottom: 6,
+                                  top: 6,
+                                ),
                                 child: Row(
                                   children: [
                                     AspectRatio(

@@ -5,7 +5,7 @@
 
   import type { MusicTrack } from "$lib/schemas/music-track";
 
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
   import { reportErrorToBackend } from "$lib/utils/query-client";
 
   import ArtistLink from "../artist/ArtistLink.svelte";

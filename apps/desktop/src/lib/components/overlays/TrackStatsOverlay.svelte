@@ -2,7 +2,7 @@
   import { CirclePlayIcon, HeartIcon } from "@lucide/svelte";
 
   import useMusicTrackStatsQuery from "$lib/queries/musicStats";
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
   import { compactify } from "$lib/utils/format";
 
   import HifiBadge from "../HifiBadge.svelte";

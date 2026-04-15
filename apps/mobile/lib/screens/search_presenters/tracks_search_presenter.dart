@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:wavelength/api/models/enums/video_type.dart";
+import "package:wavelength/audio/queueable_music.dart";
 import "package:wavelength/bloc/search/tracks/tracks_bloc.dart";
 import "package:wavelength/bloc/search/tracks/tracks_state.dart";
 import "package:wavelength/widgets/dialogs/error_message_dialog.dart";
@@ -69,7 +71,22 @@ class TracksSearchPresenter extends StatelessWidget {
             for (final track in state.tracks.skip(1))
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
-                child: TrackTile(sourceLabel: null, track: track),
+                child: TrackTile(
+                  sourceLabel: null,
+                  track: track,
+                  tracks: [
+                    QueueableMusic(
+                      videoId: track.videoId,
+                      title: track.title,
+                      thumbnail: track.thumbnail,
+                      duration: track.duration,
+                      artists: track.artists,
+                      album: track.album,
+                      videoType: VideoType.track,
+                      isExplicit: track.isExplicit,
+                    ),
+                  ],
+                ),
               ),
           ],
         );

@@ -8,13 +8,15 @@
     lyricsSchema,
     romanizedLyricsSchema,
     translatedLyricsSchema,
+    type Lyrics,
     type LyricsLine,
   } from "$lib/schemas/lyric";
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
   import { arraysEqual } from "$lib/utils/arrays";
   import { punctuatify } from "$lib/utils/format";
   import { backendClient, reportErrorToBackend } from "$lib/utils/query-client";
 
+  import { del, get, set } from "idb-keyval";
   import LyricsContent from "./LyricsContent.svelte";
 
   let lyricsContainer: HTMLDivElement;
@@ -221,6 +223,11 @@
     }
   }
 
+  interface CachedLyrics {
+    lyrics: Lyrics;
+    expiration: number;
+  }
+
   async function fetchLyrics() {
     isLoading = true;
     lyrics = null;
@@ -228,6 +235,29 @@
 
     if (!musicPlayer.queue.playingNow) return;
     const { title, artists, album, duration, videoId } = musicPlayer.queue.playingNow;
+
+    const CACHE_KEY = `cached_lyrics_${videoId}`;
+    const EXPIRATION_MS = 32 * 60 * 60 * 1000; // 32 hours
+
+    try {
+      const cached = await get<CachedLyrics>(CACHE_KEY);
+      if (
+        cached &&
+        cached.lyrics &&
+        Array.isArray(cached.lyrics.lines) &&
+        Date.now() < cached.expiration
+      ) {
+        lyrics = cached.lyrics.lines;
+        lyricsSource = cached.lyrics.source;
+        await onLyricsLoaded();
+        isLoading = false;
+        return;
+      } else if (cached) {
+        await del(CACHE_KEY);
+      }
+    } catch {
+      // ignore cache read errors
+    }
 
     try {
       const lyricsResponse = await backendClient(`/lyrics/${videoId}`, lyricsSchema, {
@@ -241,6 +271,16 @@
 
       lyrics = lyricsResponse.lines;
       lyricsSource = lyricsResponse.source;
+
+      try {
+        const cacheData: CachedLyrics = {
+          lyrics: lyricsResponse,
+          expiration: Date.now() + EXPIRATION_MS,
+        };
+        await set(CACHE_KEY, cacheData);
+      } catch {
+        // ignore cache write errors
+      }
 
       await onLyricsLoaded();
     } catch {
@@ -321,6 +361,8 @@
     if (showTranslation) {
       await applyTranslation();
     }
+
+    onTimeChanged(0, musicPlayer.currentTime);
   }
 
   function findActiveLineIndices(time: number) {

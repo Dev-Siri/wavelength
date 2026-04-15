@@ -105,7 +105,7 @@ class App extends StatelessWidget {
         //
         BlocProvider(create: (_) => DownloadBloc(_secureStorage)),
         BlocProvider(create: (_) => AppBottomSheetBloc()),
-        BlocProvider(create: (_) => QuickPicksBloc()),
+        BlocProvider(create: (_) => QuickPicksBloc(_secureStorage)),
         BlocProvider(create: (_) => LocationBloc()),
         BlocProvider(create: (_) => LibraryBloc()),
         BlocProvider(create: (_) => LikeCountBloc()),

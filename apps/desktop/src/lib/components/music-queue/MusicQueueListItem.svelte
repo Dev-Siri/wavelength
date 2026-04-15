@@ -3,9 +3,9 @@
   import { toast } from "svelte-sonner";
   import { fly } from "svelte/transition";
 
-  import type { QueueableMusic } from "$lib/stream-player/MusicQueue.svelte";
+  import type { QueueableMusic } from "$lib/stream-player/queue/MusicQueue";
 
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
   import { reportErrorToBackend } from "$lib/utils/query-client";
 
   import ArtistLink from "../artist/ArtistLink.svelte";

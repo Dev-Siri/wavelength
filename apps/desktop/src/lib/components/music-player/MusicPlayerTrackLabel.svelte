@@ -4,7 +4,7 @@
   import useUserPlaylistsQuery from "$lib/queries/userPlaylists";
   import musicInterfaceStore from "$lib/stores/musicInterface.svelte";
   import userStore from "$lib/stores/user.svelte";
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
 
   import { blur } from "svelte/transition";
   import AlbumLink from "../album/AlbumLink.svelte";
@@ -86,7 +86,7 @@
     <span
       class="select-none text-[11px] font-semibold bg-gradient-to-r transition-all from-white via-gray-300 to-white bg-[length:200%_100%] bg-clip-text text-transparent animate-shimmer {musicPlayer
         .queue.playingNow.videoType !== 'VIDEO_TYPE_UVIDEO' &&
-      (musicPlayer.streamMetadata?.bitrate ?? 0) >= 1_200_000
+      (musicPlayer.currentStream?.metadata?.bitrate ?? 0) >= 1_200_000
         ? 'opacity-100'
         : 'opacity-0'}"
     >

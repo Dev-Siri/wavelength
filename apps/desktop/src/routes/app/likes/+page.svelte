@@ -2,7 +2,7 @@
   import { ClockIcon, HeartIcon, HeartPlusIcon } from "@lucide/svelte";
   import { fly } from "svelte/transition";
 
-  import type { MusicPlaylistContextSource } from "$lib/stream-player/MusicQueue.svelte";
+  import type { MusicPlaylistContextSource } from "$lib/stream-player/queue/MusicQueue";
 
   import useLikesQuery from "$lib/queries/likes";
   import useLikesPlaylengthQuery from "$lib/queries/likesPlaylength";

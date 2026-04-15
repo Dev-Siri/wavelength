@@ -13,6 +13,7 @@ export const svelteQueryKeys = {
   followedArtists: ["followed-artists"],
   region: ["region"],
   quickPicks: ["quick-picks"],
+  recentlyPlayed: ["recently-played"],
   likes: ["likes"],
   likesLength: ["likes-length"],
   likeCount: ["like-count"],

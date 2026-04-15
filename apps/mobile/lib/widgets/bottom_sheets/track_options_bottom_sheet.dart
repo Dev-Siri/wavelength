@@ -21,7 +21,7 @@ import "package:wavelength/bloc/downloaded_tracks/downloaded_tracks_bloc.dart";
 import "package:wavelength/bloc/downloaded_tracks/downloaded_tracks_event.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/library/library_state.dart";
-import "package:wavelength/audio_manager.dart";
+import "package:wavelength/audio/audio_manager.dart";
 import "package:wavelength/constants.dart";
 import "package:wavelength/utils/toaster.dart";
 import "package:wavelength/widgets/ui/amplitude.dart";

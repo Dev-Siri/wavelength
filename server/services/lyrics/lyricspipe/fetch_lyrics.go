@@ -22,13 +22,33 @@ func FetchLyrics(
 	}
 
 	if len(collectedSources) == 0 {
-		results, err := fetchLyricsFromTidal(
+		result, err := fetchLyricsFromTidal(
 			nTitle,
 			nArtist,
 			isrc,
 		)
-		if err == nil && len(results) > 0 {
-			collectedSources = append(collectedSources, results...)
+		if err == nil && result != nil {
+			collectedSources = append(collectedSources, *result)
+		}
+	}
+
+	if len(collectedSources) == 0 {
+		result, err := fetchLrclibLyrics(
+			nTitle,
+			nArtist,
+		)
+		if err == nil && result != nil {
+			collectedSources = append(collectedSources, *result)
+		}
+	}
+
+	if len(collectedSources) == 0 {
+		result, err := fetchLyricsFromGenius(
+			nTitle,
+			nArtist,
+		)
+		if err == nil && result != nil {
+			collectedSources = append(collectedSources, *result)
 		}
 	}
 

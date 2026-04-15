@@ -96,7 +96,7 @@ class _WifiStreamingQualitySettingState
         onPressed: () =>
             _updatePreferredStreamingQuality(StreamingQuality.lossless),
         title: "Lossless",
-        description: "FLAC up to 24-bit/44.1KHz",
+        description: "FLAC up to 24-bit/192kHz",
         modifier: _getSelectedBadge(StreamingQuality.lossless),
       ),
     ];

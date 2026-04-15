@@ -9,6 +9,7 @@ const (
 	AuthCodeKey               RedisKey = "oauth:code"
 	PlayerTokenKey            RedisKey = "token:sign"
 	PlayerSignatureKey        RedisKey = "player:sign"
+	HomeRecentlyPlayedKey     RedisKey = "home:recently_played"
 )
 
 func (k RedisKey) K(id string) string {

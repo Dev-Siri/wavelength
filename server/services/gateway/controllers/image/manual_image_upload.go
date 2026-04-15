@@ -21,7 +21,7 @@ import (
 const uploadThingApiURL = "https://api.uploadthing.com"
 
 func ManualImageUpload(ctx *fiber.Ctx) error {
-	imageBytes := ctx.Body()
+	imageBytes := ctx.BodyRaw()
 	imageSize := len(imageBytes)
 	imageType := ctx.Get("Content-Type")
 
@@ -74,7 +74,6 @@ func ManualImageUpload(ctx *fiber.Ctx) error {
 	var uploadThingResponse models.UploadThingResponse
 
 	bodyBytes, err := io.ReadAll(uploadFilesResponse.Body)
-
 	if err != nil {
 		logging.Logger.Error("Upload response read failed.", zap.Error(err))
 		return fiber.NewError(fiber.StatusInternalServerError, "Upload response read failed.")
@@ -98,39 +97,45 @@ func ManualImageUpload(ctx *fiber.Ctx) error {
 	fileWriter, err := writer.CreateFormFile("file", filepath.Base(generatedFileName))
 
 	if err != nil {
-		return err
+		logging.Logger.Error("Image upload failed.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Image upload failed.")
 	}
 
 	if _, err = fileWriter.Write(imageBytes); err != nil {
-		return err
+		logging.Logger.Error("Image upload failed.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Image upload failed.")
 	}
 
 	if err = writer.Close(); err != nil {
-		return err
+		logging.Logger.Error("Image upload failed.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Image upload failed.")
 	}
 
 	req, err := http.NewRequest("POST", data.Url, &formBuffer)
 	if err != nil {
-		return err
+		logging.Logger.Error("Image upload failed.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Image upload failed.")
 	}
 
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 
 	client := &http.Client{}
-	resp, err := client.Do(req)
+	response, err := client.Do(req)
 	if err != nil {
-		return err
+		logging.Logger.Error("Image upload failed.", zap.Error(err))
+		return fiber.NewError(fiber.StatusInternalServerError, "Image upload failed.")
 	}
-	defer resp.Body.Close()
+	defer response.Body.Close()
 
-	if resp.StatusCode != http.StatusNoContent {
+	if response.StatusCode != http.StatusNoContent {
 		return fiber.NewError(fiber.StatusInternalServerError, "An error occured while uploading the image.")
 	}
 
-	ctx.Status(fiber.StatusCreated)
-	return shared_models.Success(ctx, models.UploadThingManualFileUploadResponse{
-		Url:  data.Url,
-		Key:  data.Key,
-		Name: data.FileName,
-	})
+	return shared_models.Success(
+		ctx.Status(fiber.StatusCreated),
+		models.UploadThingManualFileUploadResponse{
+			Url:  data.FileUrl,
+			Key:  data.Key,
+			Name: data.FileName,
+		})
 }

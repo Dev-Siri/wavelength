@@ -90,10 +90,11 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
                         color: Color.fromRGBO(color.r, color.g, color.b, 1),
                       ),
                     ),
-                  BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
-                    child: Container(color: Colors.transparent),
-                  ),
+                  if (_presentedScreen == PlayingNowPresenter.lyrics)
+                    BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
+                      child: Container(color: Colors.transparent),
+                    ),
                   Opacity(
                     opacity:
                         isPlayingNow &&
@@ -179,8 +180,7 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
                       ),
                     ),
                   ),
-                  if (state is CoverEffectColorsSuccessState &&
-                      _presentedScreen == PlayingNowPresenter.preview)
+                  if (_presentedScreen == PlayingNowPresenter.preview)
                     SizedBox.expand(
                       child: IgnorePointer(
                         child: BlurInAnimation(

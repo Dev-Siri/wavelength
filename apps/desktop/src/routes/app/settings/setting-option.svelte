@@ -3,6 +3,7 @@
   import { platform } from "@tauri-apps/plugin-os";
 
   import {
+    desktopOnlySettings,
     playbackQualities,
     playbackQualityMap,
     type SettingDescriptionOption,
@@ -14,18 +15,20 @@
   import { Switch } from "$lib/components/ui/switch";
 
   const { setting }: { setting: SettingDescriptionOption } = $props();
-  const { title, description, settingKey } = setting;
+  const { title, description, settingKey, webHint } = setting;
 
   const isMac = isTauri() && platform() === "macos";
 
   let value = $state(settingsStore.settings.playbackQuality);
-  // disabled={value === "lossless"}
 </script>
 
 <div class="flex items-center justify-between p-4">
   <div>
     <p class="text-lg font-semibold">{title}</p>
     <p class="text-sm text-muted-foreground">{description}</p>
+    {#if webHint && !isTauri()}
+      <p class="text-xs mt-0.5 text-blue-500">{webHint}</p>
+    {/if}
   </div>
   {#if settingKey === "playbackQuality"}
     {#if isMac}
@@ -34,7 +37,7 @@
         onchange={() => settingsStore.updateSettings({ playbackQuality: value })}
       >
         {#each playbackQualities as { key, uiText } (key)}
-          <NativeSelect.Option value={key}>
+          <NativeSelect.Option value={key} disabled={!isTauri()}>
             {uiText}
           </NativeSelect.Option>
         {/each}
@@ -43,13 +46,14 @@
       <Select.Root
         type="single"
         bind:value
+        disabled={!isTauri()}
         onValueChange={newValue =>
           settingsStore.updateSettings({
             playbackQuality: newValue as typeof settingsStore.settings.playbackQuality,
           })}
       >
         <Select.Trigger>
-          {playbackQualityMap[value]}
+          {isTauri() ? playbackQualityMap[value] : playbackQualityMap["hifiTop"]}
         </Select.Trigger>
         <Select.Content>
           {#each playbackQualities as { key, uiText } (key)}
@@ -64,6 +68,7 @@
     <Switch
       checked={settingsStore.settings[settingKey] as boolean}
       onCheckedChange={isChecked => settingsStore.updateSettings({ [settingKey]: isChecked })}
+      disabled={desktopOnlySettings.includes(settingKey) && !isTauri()}
     />
   {/if}
 </div>

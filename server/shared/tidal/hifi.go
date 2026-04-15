@@ -71,6 +71,7 @@ type TrackResponse struct {
 	AudioQuality     AudioQuality `json:"audioQuality"`
 	ManifestMimeType string       `json:"manifestMimeType"`
 	Manifest         string       `json:"manifest"`
+	SampleRate       int          `json:"sampleRate"`
 }
 
 type universalIDCollection struct {

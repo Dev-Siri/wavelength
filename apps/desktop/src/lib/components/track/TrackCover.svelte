@@ -1,7 +1,7 @@
 <script lang="ts">
   import { PlayIcon } from "@lucide/svelte";
 
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
 
   import Image from "../Image.svelte";
   import NowPlayingAnimation from "../NowPlayingAnimation.svelte";

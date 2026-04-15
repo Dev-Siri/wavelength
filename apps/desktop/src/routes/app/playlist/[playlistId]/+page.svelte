@@ -4,7 +4,7 @@
   import { isTauri } from "@tauri-apps/api/core";
   import { fly } from "svelte/transition";
 
-  import type { MusicPlaylistContextSource } from "$lib/stream-player/MusicQueue.svelte";
+  import type { MusicPlaylistContextSource } from "$lib/stream-player/queue/MusicQueue";
 
   import usePlaylistQuery from "$lib/queries/playlist.svelte";
   import usePlaylistPlaylengthQuery from "$lib/queries/playlistPlaylength";
@@ -81,7 +81,9 @@
       </div>
     {:else if playlistQuery.isSuccess}
       {@const { playlist } = playlistQuery.data}
-      <EditPlaylistDetailsDialog initialPlaylist={playlist} />
+      {#key playlist}
+        <EditPlaylistDetailsDialog initialPlaylist={playlist} />
+      {/key}
       <div class="relative w-full p-4 h-fit pb-[20%] rounded-2xl">
         <PlaylistThemeGradient {playlistCover} />
         <div class="relative flex gap-4">

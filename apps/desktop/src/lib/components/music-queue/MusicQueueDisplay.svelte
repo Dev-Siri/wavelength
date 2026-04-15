@@ -2,7 +2,7 @@
   import { XIcon } from "@lucide/svelte";
 
   import musicInterfaceStore from "$lib/stores/musicInterface.svelte";
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
   import cn from "$lib/utils/cn";
 
   import Button from "../ui/button/button.svelte";

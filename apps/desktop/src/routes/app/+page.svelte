@@ -4,9 +4,11 @@
   import useRegionQuery from "$lib/queries/region";
 
   import ArtistCard from "$lib/components/artist/ArtistCard.svelte";
+  import Logo from "$lib/components/Logo.svelte";
   import QuickPickCard from "$lib/components/QuickPickCard.svelte";
   import QuickPickCardSkeleton from "$lib/components/skeletons/QuickPickCardSkeleton.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
+  import useRecentlyPlayedQuery from "$lib/queries/recentlyPlayed";
 
   let isFollowingListCollapsed = $state(true);
 
@@ -15,6 +17,7 @@
   const quickPicksQuery = $derived(
     useQuickPicksQuery(regionQuery.isSuccess ? regionQuery.data : "US"),
   );
+  const recentlyPlayed = useRecentlyPlayedQuery();
 </script>
 
 <div class="p-6 bg-secondary/30 h-screen w-full pb-[20%] overflow-auto">
@@ -41,18 +44,35 @@
       </Button>
     </div>
   {/if}
+  {#if recentlyPlayed.data?.tracks}
+    <h2 class="text-xl font-semibold select-none">Recently Played</h2>
+    <div class="flex gap-4 overflow-x-auto scrollbar-hidden h-64 my-4">
+      {#each recentlyPlayed.data.tracks as track (track.videoId)}
+        <QuickPickCard quickPick={track} nonGrid />
+      {/each}
+    </div>
+  {/if}
   <h3 class="text-xl font-semibold select-none">Popular Picks</h3>
-  <div
-    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 w-full gap-12 px-2.5"
-  >
-    {#if quickPicksQuery.isLoading}
+  {#if quickPicksQuery.isLoading}
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 w-full gap-12 px-2.5"
+    >
       {#each new Array(10)}
         <QuickPickCardSkeleton />
       {/each}
-    {:else if quickPicksQuery.isSuccess}
+    </div>
+  {:else if quickPicksQuery.data?.quickPicks}
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 w-full gap-12 px-2.5"
+    >
       {#each quickPicksQuery.data.quickPicks as quickPick (quickPick.videoId)}
         <QuickPickCard {quickPick} />
       {/each}
-    {/if}
-  </div>
+    </div>
+  {:else}
+    <div class="flex flex-col h-1/2 w-full items-center justify-center">
+      <Logo class="scale-200" />
+      <p class="text-lg mt-8">Popular picks are being refreshed.</p>
+    </div>
+  {/if}
 </div>

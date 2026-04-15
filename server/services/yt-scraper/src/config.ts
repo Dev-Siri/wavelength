@@ -8,6 +8,8 @@ export const DEFAULT_CLIENT = "US";
 const envConfig = z.object({
   PORT: z.string().nullish(),
   ADDR: z.string().nullish(),
+  UPSTASH_REDIS_REST_URL: z.string(),
+  UPSTASH_REDIS_REST_TOKEN: z.string(),
 });
 
 export const env = envConfig.parse(process.env);

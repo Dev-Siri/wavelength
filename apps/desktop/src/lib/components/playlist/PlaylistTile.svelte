@@ -17,7 +17,7 @@
   import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";
   import usePlaylistTracksQuery from "$lib/queries/playlistTracks";
   import musicInterfaceStore from "$lib/stores/musicInterface.svelte";
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
   import { backendClient, reportErrorToBackend } from "$lib/utils/query-client";
   import { shuffleStartIndex } from "$lib/utils/shuffle";
 

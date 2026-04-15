@@ -1,26 +1,37 @@
 import * as grpc from "@grpc/grpc-js";
+import { ClientType, YTNodes } from "youtubei.js";
 
+import type { Track } from "@/gen/proto/common.js";
 import type {
   GetTrackInfoRequest,
   GetTrackInfoResponse,
 } from "@/gen/proto/yt_scraper.js";
 
-import type { Track } from "@/gen/proto/common.js";
-import { getYtClient } from "@/innertube.js";
+import { getYtMusicClient } from "@/innertube.js";
+import { redis } from "@/redis/client.js";
 import { createErrorResponse } from "@/response.js";
 import { getHighestQualityThumbnail } from "@/utils/thumbnail.js";
-import { YTNodes } from "youtubei.js";
 
 export default async function getTrackInfo(
   call: grpc.ServerUnaryCall<GetTrackInfoRequest, GetTrackInfoResponse>,
   callback: grpc.sendUnaryData<GetTrackInfoResponse>,
 ) {
+  const cacheKey = `trackInfo:${call.request.videoId}`;
+
   try {
-    const yt = await getYtClient();
+    const cachedTrack = await redis.json.get<Track>(cacheKey);
+    if (cachedTrack) {
+      return callback(null, { track: cachedTrack });
+    }
+
+    const music = await getYtMusicClient(undefined, {
+      client_type: ClientType.ANDROID_VR,
+    });
     const {
-      basic_info: { title = "", channel },
-    } = await yt.getInfo(call.request.videoId);
-    const channelName = channel?.name ?? "";
+      basic_info: { title = "", author },
+    } = await music.getInfo(call.request.videoId);
+
+    const channelName = author ?? "";
 
     console.debug("Basic Details.", { title, channelName });
     let query = "";
@@ -31,26 +42,17 @@ export default async function getTrackInfo(
     }
 
     console.debug("Query", { query });
-    const { contents } = await yt.music.search(query, {
+    const { songs } = await music.search(query, {
       type: "song",
     });
 
-    const searchedSongs = contents?.filter((section) => {
-      try {
-        const musicShelf = section.as(YTNodes.MusicShelf);
-        return musicShelf.title.text?.toLowerCase() === "songs";
-      } catch {
-        return false;
-      }
-    })?.[0]?.contents;
-
-    if (!searchedSongs) {
+    if (!songs) {
       return callback(
         createErrorResponse("YouTube Music search returned an empty response."),
       );
     }
 
-    const matchingSong = searchedSongs.find((song) => {
+    let matchingSong = songs.contents.find((song) => {
       try {
         return (
           song.as(YTNodes.MusicResponsiveListItem).id === call.request.videoId
@@ -59,6 +61,20 @@ export default async function getTrackInfo(
         return false;
       }
     });
+
+    if (!matchingSong) {
+      matchingSong = songs.contents.find((song) => {
+        try {
+          const listItem = song.as(YTNodes.MusicResponsiveListItem);
+          return (
+            listItem.title === title &&
+            listItem.artists?.[0]?.name === channelName
+          );
+        } catch {
+          return false;
+        }
+      });
+    }
 
     if (!matchingSong)
       return callback(createErrorResponse("No matching song found."));
@@ -99,6 +115,7 @@ export default async function getTrackInfo(
       }),
     } satisfies Track;
 
+    redis.json.set(cacheKey, "$", track);
     return callback(null, { track });
   } catch (error) {
     console.error("Basic track information fetch failed: ", error);

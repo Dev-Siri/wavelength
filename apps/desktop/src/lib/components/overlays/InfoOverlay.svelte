@@ -9,7 +9,7 @@
   import connectivityStore from "$lib/stores/connectivity.svelte";
   import musicInterfaceStore from "$lib/stores/musicInterface.svelte";
   import settingsStore from "$lib/stores/settings.svelte";
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
   import { punctuatify } from "$lib/utils/format";
 
   import { getUpscaledAlbumUrl } from "$lib/utils/url";

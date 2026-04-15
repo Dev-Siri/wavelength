@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:lucide_icons_flutter/lucide_icons.dart";
+import "package:flutter_svg/flutter_svg.dart";
+import "package:vector_graphics/vector_graphics_compat.dart";
 import "package:wavelength/audio/wavelength_audio_handler.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_bloc.dart";
 import "package:wavelength/bloc/music_player/music_player_playstate/music_player_playstate_event.dart";
@@ -12,33 +13,25 @@ class MusicPlayerControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          AmplButton(
-            minWidth: 0,
-            borderRadius: BorderRadius.circular(100),
-            padding: const EdgeInsets.all(14),
-            onPressed: () =>
-                context.read<WavelengthAudioHandler>().skipToPrevious(),
-            child: const Icon(
-              LucideIcons.skipBack,
-              color: Colors.white,
-              size: 22,
-            ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        AmplIconButton(
+          onPressed: () =>
+              context.read<WavelengthAudioHandler>().skipToPrevious(),
+          icon: const SvgPicture(
+            AssetBytesLoader("assets/vectors/icons/skip-back.svg.vec"),
+            height: 40,
+            width: 40,
           ),
-          const SizedBox(width: 25),
-          AmplButton(
-            minWidth: 0,
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(100),
-            padding: const EdgeInsets.all(18),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: AmplIconButton(
             onPressed: () => context.read<MusicPlayerPlaystateBloc>().add(
               MusicPlayerPlaystateToggleEvent(),
             ),
-            child:
+            icon:
                 BlocBuilder<
                   MusicPlayerPlaystateBloc,
                   MusicPlayerPlaystateState
@@ -46,29 +39,28 @@ class MusicPlayerControls extends StatelessWidget {
                   builder: (context, state) {
                     final isPaused = state is MusicPlayerPlaystatePausedState;
 
-                    return Icon(
-                      isPaused ? LucideIcons.play : LucideIcons.pause,
-                      color: Colors.black,
-                      size: 24,
+                    return SvgPicture(
+                      AssetBytesLoader(
+                        isPaused
+                            ? "assets/vectors/icons/play.svg.vec"
+                            : "assets/vectors/icons/pause.svg.vec",
+                      ),
+                      height: 60,
+                      width: 60,
                     );
                   },
                 ),
           ),
-          const SizedBox(width: 25),
-          AmplButton(
-            minWidth: 0,
-            padding: const EdgeInsets.all(14),
-            borderRadius: BorderRadius.circular(100),
-            onPressed: () =>
-                context.read<WavelengthAudioHandler>().skipToNext(),
-            child: const Icon(
-              LucideIcons.skipForward,
-              color: Colors.white,
-              size: 22,
-            ),
+        ),
+        AmplIconButton(
+          onPressed: () => context.read<WavelengthAudioHandler>().skipToNext(),
+          icon: const SvgPicture(
+            AssetBytesLoader("assets/vectors/icons/skip-forward.svg.vec"),
+            height: 40,
+            width: 40,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

@@ -4,7 +4,7 @@
   import { z } from "zod";
 
   import type { Playlist, PlaylistTrack, PlaylistTrackLikedStatus } from "$lib/schemas/playlist";
-  import type { MusicPlaylistContextSource } from "$lib/stream-player/MusicQueue.svelte";
+  import type { MusicPlaylistContextSource } from "$lib/stream-player/queue/MusicQueue";
 
   import { svelteMutationKeys } from "$lib/constants/keys";
   import { backendClient } from "$lib/utils/query-client.js";

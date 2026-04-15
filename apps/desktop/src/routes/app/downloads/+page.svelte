@@ -3,7 +3,7 @@
   import { isTauri } from "@tauri-apps/api/core";
   import { listen } from "@tauri-apps/api/event";
 
-  import type { MusicPlaylistContextSource } from "$lib/stream-player/MusicQueue.svelte";
+  import type { MusicPlaylistContextSource } from "$lib/stream-player/queue/MusicQueue";
 
   import { DOWNLOAD_EVENTS } from "$lib/constants/tauri";
   import useDownloadsQuery from "$lib/queries/downloads";

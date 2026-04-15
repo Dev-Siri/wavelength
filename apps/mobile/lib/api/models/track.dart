@@ -42,7 +42,7 @@ class Track {
           .map((artist) => EmbeddedArtist.fromJson(artist))
           .toList(),
       duration: int.parse(json["duration"]),
-      isExplicit: json["isExplicit"] as bool,
+      isExplicit: (json["isExplicit"] as bool?) ?? false,
       album: album != null ? EmbeddedAlbum.fromJson(album) : null,
     );
   }

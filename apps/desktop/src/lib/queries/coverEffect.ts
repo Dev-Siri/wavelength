@@ -2,7 +2,7 @@ import { createQuery } from "@tanstack/svelte-query";
 import { get, set } from "idb-keyval";
 
 import { svelteQueryKeys } from "$lib/constants/keys";
-import { coverEffectSchema } from "$lib/schemas/theme-color";
+import { coverEffectSchema } from "$lib/schemas/image";
 import { backendClient } from "$lib/utils/query-client";
 
 export interface CoverEffectQueryOptions {

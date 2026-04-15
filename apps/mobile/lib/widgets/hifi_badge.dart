@@ -25,7 +25,7 @@ class HifiBadge extends StatelessWidget {
         bit = "16-bit";
       }
 
-      return "$bit/44.1kHz FLAC";
+      return "$bit/${(metadata.sampleRate / 1000).toStringAsFixed(1).replaceFirst(".0", "")}kHz FLAC";
     } else if (metadata.bitrate == 256000) {
       return "256kb/s AAC • 44.1kHz";
     } else if (metadata.bitrate == 320000) {
@@ -131,26 +131,28 @@ class HifiBadge extends StatelessWidget {
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
                       "λ",
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 12,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 6),
                     ShimmerAnimation(
                       child: Text(
                         streamMetadata.metadata.bitrate >= 1200000
                             ? "Hi-Fi Lossless"
                             : streamMetadata.metadata.bitrate == 320000
                             ? "Hi-Fi Audio"
-                            : "HD Audio",
+                            : "High Quality",
                         style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w800,
                           color: Colors.white,
                         ),
                       ),

@@ -33,9 +33,11 @@
   import { musicTrackDurationSchema } from "$lib/schemas/track-length";
   import downloadStore from "$lib/stores/download.svelte";
   import userStore from "$lib/stores/user.svelte";
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
+  import { punctuatify } from "$lib/utils/format";
   import { backendClient } from "$lib/utils/query-client.js";
 
+  import Image from "../Image.svelte";
   import * as ContextMenu from "../ui/context-menu";
   import * as DropdownMenu from "../ui/dropdown-menu";
 
@@ -102,6 +104,21 @@
   const Menu = $derived(ui === "dropdown" ? DropdownMenu : ContextMenu);
 </script>
 
+<Menu.Item class="gap-4">
+  <Image
+    src={music.thumbnail}
+    alt="{music.title}'s Cover'"
+    height={40}
+    width={40}
+    class="rounded-md aspect-square object-cover"
+  />
+  <div>
+    <p class="text-sm font-semibold">{music.title}</p>
+    <p class="text-[10px] text-muted-foreground">
+      {punctuatify(music.artists.map(artist => artist.title))}
+    </p>
+  </div>
+</Menu.Item>
 {#if isTauri()}
   <Menu.Item onclick={downloadTrack}>
     {#await isDownloaded(music.videoId) then isDownloaded}
@@ -141,6 +158,17 @@
       <Menu.SubContent>
         {#each userPlaylistsQuery.data.playlists as playlist (`add-to-${playlist.playlistId}`)}
           <Menu.Item onclick={() => playlistsAddMutation.mutate(playlist.playlistId)}>
+            {#if playlist.coverImage}
+              <Image
+                src={playlist.coverImage}
+                alt="{playlist.name}'s Cover'"
+                height={20}
+                width={20}
+                class="rounded-sm aspect-square object-cover"
+              />
+            {:else}
+              <div class="h-5 w-5 rounded-sm aspect-square bg-muted"></div>
+            {/if}
             {playlist.name}
           </Menu.Item>
         {/each}

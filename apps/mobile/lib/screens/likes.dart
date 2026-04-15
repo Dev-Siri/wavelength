@@ -23,7 +23,7 @@ import "package:wavelength/bloc/likes/liked_tracks_playlength/liked_tracks_playl
 import "package:wavelength/bloc/likes/liked_tracks_playlength/liked_tracks_playlength_event.dart";
 import "package:wavelength/bloc/likes/liked_tracks_playlength/liked_tracks_playlength_state.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
-import "package:wavelength/audio_manager.dart";
+import "package:wavelength/audio/audio_manager.dart";
 import "package:wavelength/utils/toaster.dart";
 import "package:wavelength/widgets/loading_indicator.dart";
 import "package:wavelength/widgets/music_player_preview/music_player_preview.dart";

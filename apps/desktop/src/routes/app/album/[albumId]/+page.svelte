@@ -1,13 +1,13 @@
 <script lang="ts">
   import { resolve } from "$app/paths";
   import { page } from "$app/state";
-  import { ClockIcon, CopyIcon, HashIcon, ShareIcon } from "@lucide/svelte";
+  import { ClockIcon, CopyIcon, EllipsisIcon, HashIcon } from "@lucide/svelte";
   import { isTauri } from "@tauri-apps/api/core";
   import { toast } from "svelte-sonner";
   import { fly } from "svelte/transition";
 
   import type { PlaylistVideoType } from "$lib/schemas/playlist";
-  import type { MusicPlaylistContextSource } from "$lib/stream-player/MusicQueue.svelte";
+  import type { MusicPlaylistContextSource } from "$lib/stream-player/queue/MusicQueue";
 
   import { buttonVariants } from "$lib/components/ui/button/button.svelte";
   import { BASE_URL } from "$lib/constants/utils";
@@ -20,6 +20,7 @@
   import AlbumLiveCover from "$lib/components/album/AlbumLiveCover.svelte";
   import AlbumTrackTile from "$lib/components/album/AlbumTrackTile.svelte";
   import Image from "$lib/components/Image.svelte";
+  import OpenInDesktopAppOption from "$lib/components/OpenInDesktopAppOption.svelte";
   import PlaylistPlayOptions from "$lib/components/playlist/PlaylistPlayOptions.svelte";
   import PlaylistThemeGradient from "$lib/components/playlist/PlaylistThemeGradient.svelte";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
@@ -153,13 +154,14 @@
           <PlaylistPlayOptions tracks={albumTracks} {context} />
           <DropdownMenu.Root>
             <DropdownMenu.Trigger class={buttonVariants({ variant: "ghost", size: "icon" })}>
-              <ShareIcon />
+              <EllipsisIcon />
             </DropdownMenu.Trigger>
             <DropdownMenu.Content>
               <DropdownMenu.Item onclick={copyAlbumLink}>
                 <CopyIcon />
                 Copy link to Album
               </DropdownMenu.Item>
+              <OpenInDesktopAppOption link="wavlen://album/{albumId}" />
             </DropdownMenu.Content>
           </DropdownMenu.Root>
           <SaveButton {albumId} />

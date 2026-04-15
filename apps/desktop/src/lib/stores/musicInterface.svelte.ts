@@ -6,6 +6,7 @@ class MusicInterfaceStore {
   visiblePanel = $state<MusicInfoPanels | null>(null);
   isMusicQueueVisible = $state(false);
   isPlayerFullscreen = $state(false);
+  isDrpcConnected = $state(false);
 
   switchPanels() {
     if (musicInterfaceStore.visiblePanel === "lyrics") {

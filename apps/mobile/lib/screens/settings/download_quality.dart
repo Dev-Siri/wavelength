@@ -87,7 +87,7 @@ class _DownloadQualitySettingState extends State<DownloadQualitySetting> {
         onPressed: () =>
             _updatePreferredDownloadQuality(DownloadQuality.lossless),
         title: "Lossless",
-        description: "FLAC up to 24-bit/44.1KHz",
+        description: "FLAC up to 24-bit/192kHz",
         modifier: _getSelectedBadge(DownloadQuality.lossless),
       ),
     ];

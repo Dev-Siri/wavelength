@@ -10,14 +10,15 @@ COPY . .
 ENV CGO_ENABLED=0
 RUN go build -v -trimpath -ldflags=-s -ldflags=-w -buildvcs=false -o /usr/local/bin/music /usr/src/app/services/music
 
-FROM debian:bookworm-slim
+FROM scratch
 
-WORKDIR /app
+COPY --from=builder /usr/local/bin/music /music
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
-RUN apt update && apt install -y --no-install-recommends ca-certificates
-
-COPY --from=builder /usr/local/bin/music /usr/local/bin/music
+USER 65532:65532
 
 EXPOSE 8080
 
-ENTRYPOINT [ "/usr/local/bin/music" ]
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+
+ENTRYPOINT [ "/music" ]

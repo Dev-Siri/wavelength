@@ -10,12 +10,15 @@ COPY . .
 ENV CGO_ENABLED=0
 RUN go build -v -trimpath -ldflags=-s -ldflags=-w -buildvcs=false -o /usr/local/bin/playlist /usr/src/app/services/playlist
 
-FROM debian:bookworm-slim
+FROM scratch
 
-WORKDIR /app
+COPY --from=builder /usr/local/bin/playlist /playlist
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
-COPY --from=builder /usr/local/bin/playlist /usr/local/bin/playlist
+USER 65532:65532
 
 EXPOSE 8080
 
-ENTRYPOINT [ "/usr/local/bin/playlist" ]
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+
+ENTRYPOINT [ "/playlist" ]

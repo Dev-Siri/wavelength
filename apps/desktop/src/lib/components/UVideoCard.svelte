@@ -9,7 +9,7 @@
   import { svelteMutationKeys, svelteQueryKeys } from "$lib/constants/keys";
   import { musicTrackDurationSchema } from "$lib/schemas/track-length";
   import userStore from "$lib/stores/user.svelte";
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
   import { backendClient, reportErrorToBackend } from "$lib/utils/query-client.js";
 
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";

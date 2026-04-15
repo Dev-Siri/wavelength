@@ -4,28 +4,40 @@
   import { fade } from "svelte/transition";
 
   import type { EmbeddedAlbum } from "$lib/schemas/embedded";
-  import type { QuickPick } from "$lib/schemas/quick-picks-response";
+  import type { QuickPick } from "$lib/schemas/home";
 
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
   import { reportErrorToBackend } from "$lib/utils/query-client";
+  import { getUpscaledAlbumUrl } from "$lib/utils/url";
 
   import Button from "$lib/components/ui/button/button.svelte";
   import * as Tooltip from "$lib/components/ui/tooltip";
   import Image from "./Image.svelte";
 
-  const { quickPick }: { quickPick: QuickPick } = $props();
+  const {
+    quickPick,
+    nonGrid,
+  }: {
+    quickPick: QuickPick & {
+      duration?: string;
+    };
+    nonGrid?: boolean;
+  } = $props();
 
   let isHoveringCard = $state(false);
 
   async function playSong() {
     try {
-      await musicPlayer.load({
-        ...quickPick,
-        duration: "",
-        // Brilliant TypeScript.
-        album: quickPick.album as EmbeddedAlbum | undefined,
-        videoType: "VIDEO_TYPE_TRACK",
-      });
+      await musicPlayer.load(
+        {
+          ...quickPick,
+          duration: quickPick.duration ?? "",
+          // Brilliant TypeScript.
+          album: quickPick.album as EmbeddedAlbum | undefined,
+          videoType: "VIDEO_TYPE_TRACK",
+        },
+        { type: "none" },
+      );
     } catch (error) {
       toast.error(`Playback ${error}`);
       await reportErrorToBackend({
@@ -37,7 +49,7 @@
 </script>
 
 <div
-  class="h-48 flex flex-col py-2 mb-[20%] items-center cursor-pointer group"
+  class="h-48 flex flex-col py-2 {nonGrid ? '' : 'mb-[20%]'} items-center cursor-pointer group"
   tabindex={0}
   role="button"
   onclick={playSong}
@@ -49,7 +61,7 @@
     <div class="h-full w-full aspect-square rounded-2xl relative inline-block">
       {#key quickPick.thumbnail}
         <Image
-          src={quickPick.thumbnail}
+          src={getUpscaledAlbumUrl(quickPick.thumbnail)}
           alt="Thumbnail"
           height={192}
           width={192}

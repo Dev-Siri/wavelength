@@ -1,12 +1,6 @@
 <script lang="ts">
   import { resolve } from "$app/paths";
-  import {
-    ChevronLeftIcon,
-    ChevronRightIcon,
-    DownloadIcon,
-    HouseIcon,
-    SettingsIcon,
-  } from "@lucide/svelte";
+  import { ChevronLeftIcon, ChevronRightIcon, DownloadIcon, HouseIcon } from "@lucide/svelte";
   import { isTauri } from "@tauri-apps/api/core";
 
   import userStore from "$lib/stores/user.svelte.js";
@@ -72,15 +66,6 @@
         {#if !isTauri()}
           <p class="text-md">Install App</p>
         {/if}
-      </Button>
-      <Button
-        href="/app/settings"
-        class="rounded-full"
-        title="Settings"
-        variant="ghost"
-        size="icon"
-      >
-        <SettingsIcon />
       </Button>
       <UserProfileIcon />
     </div>

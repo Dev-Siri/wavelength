@@ -1,6 +1,8 @@
 <script lang="ts">
   import { page } from "$app/state";
   import { PUBLIC_BACKEND_URL } from "$env/static/public";
+  import { openUrl } from "$lib/utils/url";
+  import { isTauri } from "@tauri-apps/api/core";
   import { z } from "zod";
 
   import { localStorageKeys } from "$lib/constants/keys";
@@ -15,7 +17,7 @@
 
   $effect(() => {
     async function consumeAuthToken() {
-      if (!authCode || userStore.authToken) return;
+      if (!authCode || userStore.authToken || isTauri()) return;
       const { authToken } = await backendClient(
         "/auth/token/consume",
         z.object({ authToken: z.string() }),
@@ -43,8 +45,16 @@
     consumeAuthToken();
   });
 
-  const handleSignIn = () =>
-    (location.href = `${PUBLIC_BACKEND_URL}/auth/login/google?redirectUri=${location.href}`);
+  async function handleSignIn() {
+    const redirectUri = isTauri() ? "wavlen://authCallback" : location.href;
+    const authUrl = `${PUBLIC_BACKEND_URL}/auth/login/google?redirectUri=${redirectUri}`;
+    if (isTauri()) {
+      await openUrl(authUrl);
+      return;
+    }
+
+    location.href = authUrl;
+  }
 </script>
 
 <Button onclick={handleSignIn} class="gap-1">

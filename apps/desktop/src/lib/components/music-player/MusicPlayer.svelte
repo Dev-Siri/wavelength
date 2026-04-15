@@ -4,7 +4,7 @@
   import useCoverEffectQuery from "$lib/queries/coverEffect";
   import useThemeColorQuery from "$lib/queries/themeColor";
   import musicInterfaceStore from "$lib/stores/musicInterface.svelte";
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
 
   import MusicQueueDisplay from "../music-queue/MusicQueueDisplay.svelte";
   import InfoOverlay from "../overlays/InfoOverlay.svelte";
@@ -44,16 +44,19 @@
     return `rgb(${r}, ${g}, ${b}, 0.7)`;
   });
 
-  const visiblePanelStyles = $derived(musicInterfaceStore.visiblePanel ? "h-full" : "h-fit");
+  const visiblePanelStyles = $derived(
+    musicInterfaceStore.visiblePanel && musicPlayer.queue.playingNow ? "h-full" : "h-fit",
+  );
 </script>
 
 <div
-  class="flex flex-col justify-between bg-primary-foreground backdrop-blur-sm overflow-hidden transition-all w-full max-h-full z-9999 {visiblePanelStyles} {musicInterfaceStore.isPlayerFullscreen
+  class="flex flex-col justify-between bg-primary-foreground backdrop-blur-sm overflow-hidden transition-all w-full max-h-full z-9999 {visiblePanelStyles} {musicInterfaceStore.isPlayerFullscreen &&
+  musicPlayer.queue.playingNow
     ? ''
     : 'rounded-xl'}"
   style="background-color: {themeColor};"
 >
-  {#if musicInterfaceStore.isPlayerFullscreen}
+  {#if musicInterfaceStore.isPlayerFullscreen && musicPlayer.queue.playingNow}
     <div class="absolute inset-0 bg-black/40 pointer-events-none"></div>
     {#if coverEffectQuery.data?.colors}
       <MusicPlayerFullscreenCoverEffect coverColors={coverEffectQuery.data.colors} />

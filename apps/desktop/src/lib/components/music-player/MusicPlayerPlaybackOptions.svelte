@@ -2,10 +2,11 @@
   import { Columns3Icon, MaximizeIcon, MicVocalIcon } from "@lucide/svelte";
 
   import musicInterfaceStore from "$lib/stores/musicInterface.svelte";
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
 
   import { buttonVariants } from "../ui/button";
   import * as Tooltip from "../ui/tooltip";
+  import MusicPlayerTrackPlaybackOptionDiscord from "./MusicPlayerTrackPlaybackOptionDiscord.svelte";
   import MusicPlayerTrackPlaybackOptionInfo from "./MusicPlayerTrackPlaybackOptionInfo.svelte";
   import VolumeSlider from "./MusicPlayerVolumeSlider.svelte";
 
@@ -52,6 +53,7 @@
     <p>Lyrics</p>
   </Tooltip.Content>
 </Tooltip.Root>
+<MusicPlayerTrackPlaybackOptionDiscord />
 <VolumeSlider />
 <MusicPlayerTrackPlaybackOptionInfo />
 <Tooltip.Root>

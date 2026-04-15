@@ -11,6 +11,7 @@ func registerMusicRoutes(app *fiber.App) {
 	music := app.Group("/music")
 
 	music.Get("/quick-picks", music_controllers.GetQuickPicks)
+	music.Get("/home/recents", middleware.JwtAuthMiddleware, music_controllers.GetRecentlyPlayed)
 	music.Get("/search", music_controllers.SearchMusicTracks)
 	music.Get("/search/uvideos", music_controllers.SearchYouTubeVideos)
 	music.Get("/music-video-preview", music_controllers.GetMusicVideoPreviewId)

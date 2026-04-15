@@ -1,7 +1,9 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:flutter_svg/svg.dart";
 import "package:glass/glass.dart";
 import "package:lucide_icons_flutter/lucide_icons.dart";
+import "package:vector_graphics/vector_graphics.dart";
 import "package:wavelength/audio/music_context_queue.dart";
 import "package:wavelength/audio/queueable_music.dart";
 import "package:wavelength/audio/wavelength_audio_handler.dart";
@@ -50,10 +52,13 @@ class PlayOptions extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Row(
             children: [
-              Icon(
-                LucideIcons.play,
-                color: glass ? Colors.white : Colors.black,
-                size: 20,
+              SvgPicture(
+                const AssetBytesLoader("assets/vectors/icons/play.svg.vec"),
+                height: 25,
+                width: 25,
+                colorFilter: glass
+                    ? null
+                    : const ColorFilter.mode(Colors.black, BlendMode.srcIn),
               ),
               const SizedBox(width: 10),
               Text(

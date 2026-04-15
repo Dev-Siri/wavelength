@@ -32,6 +32,7 @@ const (
 	MusicService_SearchMusicTracks_FullMethodName         = "/music.MusicService/SearchMusicTracks"
 	MusicService_SearchYouTubeVideos_FullMethodName       = "/music.MusicService/SearchYouTubeVideos"
 	MusicService_GetUpNext_FullMethodName                 = "/music.MusicService/GetUpNext"
+	MusicService_GetRecentlyPlayed_FullMethodName         = "/music.MusicService/GetRecentlyPlayed"
 )
 
 // MusicServiceClient is the client API for MusicService service.
@@ -51,6 +52,7 @@ type MusicServiceClient interface {
 	SearchMusicTracks(ctx context.Context, in *SearchMusicTracksRequest, opts ...grpc.CallOption) (*SearchMusicTracksResponse, error)
 	SearchYouTubeVideos(ctx context.Context, in *SearchYouTubeVideosRequest, opts ...grpc.CallOption) (*SearchYouTubeVideosResponse, error)
 	GetUpNext(ctx context.Context, in *GetUpNextRequest, opts ...grpc.CallOption) (*GetUpNextResponse, error)
+	GetRecentlyPlayed(ctx context.Context, in *GetRecentlyPlayedRequest, opts ...grpc.CallOption) (*GetRecentlyPlayedResponse, error)
 }
 
 type musicServiceClient struct {
@@ -191,6 +193,16 @@ func (c *musicServiceClient) GetUpNext(ctx context.Context, in *GetUpNextRequest
 	return out, nil
 }
 
+func (c *musicServiceClient) GetRecentlyPlayed(ctx context.Context, in *GetRecentlyPlayedRequest, opts ...grpc.CallOption) (*GetRecentlyPlayedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetRecentlyPlayedResponse)
+	err := c.cc.Invoke(ctx, MusicService_GetRecentlyPlayed_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MusicServiceServer is the server API for MusicService service.
 // All implementations must embed UnimplementedMusicServiceServer
 // for forward compatibility.
@@ -208,6 +220,7 @@ type MusicServiceServer interface {
 	SearchMusicTracks(context.Context, *SearchMusicTracksRequest) (*SearchMusicTracksResponse, error)
 	SearchYouTubeVideos(context.Context, *SearchYouTubeVideosRequest) (*SearchYouTubeVideosResponse, error)
 	GetUpNext(context.Context, *GetUpNextRequest) (*GetUpNextResponse, error)
+	GetRecentlyPlayed(context.Context, *GetRecentlyPlayedRequest) (*GetRecentlyPlayedResponse, error)
 	mustEmbedUnimplementedMusicServiceServer()
 }
 
@@ -256,6 +269,9 @@ func (UnimplementedMusicServiceServer) SearchYouTubeVideos(context.Context, *Sea
 }
 func (UnimplementedMusicServiceServer) GetUpNext(context.Context, *GetUpNextRequest) (*GetUpNextResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetUpNext not implemented")
+}
+func (UnimplementedMusicServiceServer) GetRecentlyPlayed(context.Context, *GetRecentlyPlayedRequest) (*GetRecentlyPlayedResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetRecentlyPlayed not implemented")
 }
 func (UnimplementedMusicServiceServer) mustEmbedUnimplementedMusicServiceServer() {}
 func (UnimplementedMusicServiceServer) testEmbeddedByValue()                      {}
@@ -512,6 +528,24 @@ func _MusicService_GetUpNext_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MusicService_GetRecentlyPlayed_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRecentlyPlayedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MusicServiceServer).GetRecentlyPlayed(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MusicService_GetRecentlyPlayed_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MusicServiceServer).GetRecentlyPlayed(ctx, req.(*GetRecentlyPlayedRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MusicService_ServiceDesc is the grpc.ServiceDesc for MusicService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -570,6 +604,10 @@ var MusicService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUpNext",
 			Handler:    _MusicService_GetUpNext_Handler,
+		},
+		{
+			MethodName: "GetRecentlyPlayed",
+			Handler:    _MusicService_GetRecentlyPlayed_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

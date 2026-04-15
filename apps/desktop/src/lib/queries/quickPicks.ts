@@ -1,7 +1,7 @@
 import { createQuery } from "@tanstack/svelte-query";
 
 import { svelteQueryKeys } from "$lib/constants/keys";
-import { quickPicksResponseSchema } from "$lib/schemas/quick-picks-response";
+import { quickPicksResponseSchema } from "$lib/schemas/home";
 import { backendClient } from "$lib/utils/query-client";
 
 export default function useQuickPicksQuery(regionCode: string) {

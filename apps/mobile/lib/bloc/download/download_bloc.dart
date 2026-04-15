@@ -5,7 +5,7 @@ import "package:hive/hive.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "package:wavelength/bloc/download/download_event.dart";
 import "package:wavelength/bloc/download/download_state.dart";
-import "package:wavelength/audio_manager.dart";
+import "package:wavelength/audio/audio_manager.dart";
 import "package:wavelength/constants.dart";
 
 class DownloadBloc extends Bloc<DownloadEvent, DownloadState> {

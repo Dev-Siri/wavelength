@@ -1,4 +1,4 @@
-import type { QueueableMusic } from "$lib/stream-player/MusicQueue.svelte";
+import type { QueueableMusic } from "$lib/stream-player/queue/MusicQueue";
 
 /** Fisher-Yates shuffle implementation. */
 export function shuffle(tracks: QueueableMusic[]) {

@@ -134,7 +134,8 @@ func fetchStreamMetadata(ctx context.Context, videoID string, preferredQuality t
 			container,
 			duration_seconds,
 			is_hifi_available,
-			is_lossless_available
+			is_lossless_available,
+			sample_rate
 		FROM "stream_metadata"
 		WHERE video_id = $1;
 	`, videoID)
@@ -147,6 +148,7 @@ func fetchStreamMetadata(ctx context.Context, videoID string, preferredQuality t
 		&metadata.DurationSeconds,
 		&metadata.IsHifiAvailable,
 		&losslessAvailable,
+		&metadata.SampleRate,
 	); err != nil {
 		return nil, err
 	}

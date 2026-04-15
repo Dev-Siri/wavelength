@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
+  import { resolve } from "$app/paths";
+
   import { localStorageKeys } from "$lib/constants/keys";
   import userStore from "$lib/stores/user.svelte.js";
 
@@ -29,6 +32,9 @@
       </div>
     </DropdownMenu.Trigger>
     <DropdownMenu.Content>
+      <DropdownMenu.Item onclick={() => goto(resolve("/app/settings"))} class="pr-40"
+        >Settings</DropdownMenu.Item
+      >
       <DropdownMenu.Item onclick={handleSignout} class="pr-40">Log out</DropdownMenu.Item>
     </DropdownMenu.Content>
   </DropdownMenu.Root>

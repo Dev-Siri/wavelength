@@ -1,8 +1,9 @@
 import "package:cached_network_image/cached_network_image.dart";
+import "package:flutter_svg/svg.dart";
 import "package:text_scroll/text_scroll.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:lucide_icons_flutter/lucide_icons.dart";
+import "package:vector_graphics/vector_graphics_compat.dart";
 import "package:wavelength/audio/audio_device_service.dart";
 import "package:wavelength/audio/queueable_music.dart";
 import "package:wavelength/bloc/audio_device/audio_device_bloc.dart";
@@ -134,12 +135,9 @@ class MusicPlayerPreviewBody extends StatelessWidget {
               },
             ),
           ),
-          Transform.translate(
-            offset: const Offset(10, 0),
-            child: const ConnectedOutputDeviceLabel(),
-          ),
+          const ConnectedOutputDeviceLabel(),
           Padding(
-            padding: const EdgeInsets.only(right: 5),
+            padding: const EdgeInsets.only(right: 8),
             child:
                 BlocBuilder<
                   MusicPlayerPlaystateBloc,
@@ -150,13 +148,17 @@ class MusicPlayerPreviewBody extends StatelessWidget {
                         state is MusicPlayerPlaystatePlayingState;
 
                     return AmplIconButton(
-                      padding: EdgeInsets.zero,
                       onPressed: () => context
                           .read<MusicPlayerPlaystateBloc>()
                           .add(MusicPlayerPlaystateToggleEvent()),
-                      icon: Icon(
-                        isMusicPlaying ? LucideIcons.pause : LucideIcons.play,
-                        color: Colors.white,
+                      icon: SvgPicture(
+                        AssetBytesLoader(
+                          isMusicPlaying
+                              ? "assets/vectors/icons/pause.svg.vec"
+                              : "assets/vectors/icons/play.svg.vec",
+                        ),
+                        height: 25,
+                        width: 25,
                       ),
                     );
                   },

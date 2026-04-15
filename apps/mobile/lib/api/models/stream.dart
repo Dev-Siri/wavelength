@@ -19,6 +19,8 @@ class HlsStreamMetadata {
   final bool isHifiAvailable;
   @HiveField(6)
   final LosslessAvailability? isLosslessAvailable;
+  @HiveField(7)
+  final int sampleRate;
 
   const HlsStreamMetadata({
     required this.streamId,
@@ -28,6 +30,7 @@ class HlsStreamMetadata {
     required this.durationSeconds,
     required this.isHifiAvailable,
     required this.isLosslessAvailable,
+    required this.sampleRate,
   });
 
   factory HlsStreamMetadata.fromJson(Map<String, dynamic> json) {
@@ -40,6 +43,7 @@ class HlsStreamMetadata {
       container: json["container"] as String,
       durationSeconds: (json["durationSeconds"] as num).toDouble(),
       isHifiAvailable: (json["isHifiAvailable"] as bool?) ?? false,
+      sampleRate: json["sampleRate"] as int,
       isLosslessAvailable: isLosslessAvailable == null
           ? null
           : isLosslessAvailable == "24-bit"

@@ -8,7 +8,7 @@ import "package:shared_preferences/shared_preferences.dart";
 import "package:wavelength/audio/stream_resolver.dart";
 import "package:wavelength/bloc/location/location_bloc.dart";
 import "package:wavelength/bloc/location/location_state.dart";
-import "package:wavelength/audio_manager.dart";
+import "package:wavelength/audio/audio_manager.dart";
 import "package:wavelength/constants.dart";
 import "package:wavelength/settings_manager.dart";
 import "package:wavelength/utils/format.dart";

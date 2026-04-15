@@ -3,6 +3,7 @@ package playlist_rpcs
 import (
 	"context"
 	"strconv"
+	"strings"
 
 	"github.com/Dev-Siri/wavelength/server/proto/playlistpb"
 	shared_db "github.com/Dev-Siri/wavelength/server/shared/db"
@@ -45,14 +46,14 @@ func (p *PlaylistService) EditPlaylist(
 
 	query := "UPDATE playlists SET " +
 		func() string {
-			s := ""
+			var s strings.Builder
 			for i, c := range setClauses {
 				if i > 0 {
-					s += ", "
+					s.WriteString(", ")
 				}
-				s += c
+				s.WriteString(c)
 			}
-			return s
+			return s.String()
 		}() +
 		" WHERE playlist_id = $" + strconv.Itoa(argPos)
 

@@ -78,7 +78,7 @@ class AudioDeviceService {
 
       return AudioDevice.fromMap(map);
     } catch (e) {
-      return const AudioDevice(name: "Error", type: AudioDeviceType.unknown);
+      return const AudioDevice(name: "Error", type: AudioDeviceType.speaker);
     }
   }
 

@@ -12,7 +12,7 @@ import type {
   MusicRepeatMode,
   PickDirection,
   QueueableMusic,
-} from "./MusicQueue.svelte";
+} from "./MusicQueue";
 
 export default class LocalMusicQueue implements MusicQueue {
   public playingNow?: QueueableMusic | null = $state(null);
@@ -217,7 +217,7 @@ export default class LocalMusicQueue implements MusicQueue {
       }));
 
       const seen = new Set<string>();
-      const merged = [...existing, ...incoming];
+      const merged = [...this.queue, ...this.readyContextQueue, ...existing, ...incoming];
 
       const queue = merged.filter(track => {
         if (seen.has(track.videoId)) return false;

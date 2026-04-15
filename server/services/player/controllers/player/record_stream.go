@@ -47,10 +47,19 @@ func RecordStream(ctx *fiber.Ctx) error {
 			artistText.WriteString("|")
 		}
 
-		duration, err := strconv.Atoi(streamRecord.Track.Duration)
-		if err != nil {
-			logging.Logger.Error("Duration parse failed.", zap.Error(err))
-			return fiber.NewError(fiber.StatusInternalServerError, "Duration parse failed.")
+		var duration int
+		switch v := streamRecord.Track.Duration.(type) {
+		case string:
+			duration, err = strconv.Atoi(v)
+			if err != nil {
+				logging.Logger.Error("Duration parse failed.", zap.Error(err))
+				return fiber.NewError(fiber.StatusInternalServerError, "Duration parse failed.")
+			}
+		case float64:
+			duration = int(v)
+		default:
+			logging.Logger.Error("Invalid duration type.", zap.Any("type", v))
+			return fiber.NewError(fiber.StatusBadRequest, "Invalid duration type.")
 		}
 
 		videoType, err := parseVideoType(streamRecord.Track.VideoType)

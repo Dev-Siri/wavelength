@@ -25,7 +25,7 @@ type tidalLyricsData struct {
 
 func fetchLyricsFromTidal(
 	title, artist string, isrc *string,
-) ([]YouLyPlusLyricsResult, error) {
+) (*YouLyPlusLyricsResult, error) {
 	serversToTry := shuffleAndPick(tidalServers, 2)
 	for _, base := range serversToTry {
 		var normalizedBase string
@@ -129,11 +129,9 @@ func fetchLyricsFromTidal(
 		}
 
 		lyricsResponse.Body.Close()
-		return []YouLyPlusLyricsResult{
-			{
-				Source: "Tidal (" + provider + ")",
-				Lines:  lines,
-			},
+		return &YouLyPlusLyricsResult{
+			Source: "Tidal (" + provider + ")",
+			Lines:  lines,
 		}, nil
 	}
 

@@ -2,7 +2,26 @@
 
 <img src="./images/brand.png" />
 
-Wavelength is a cross-platform music app that picks up from YouTube Music to serve an ad-free music-streaming experience while allowing you to download songs offline, along with the option for a complete offline experience.
+Wavelength is a cross-platform music app that picks up from YouTube Music to serve an ad-free music-streaming experience while allowing you to download songs offline, while also allowing you to listen to certain songs in higher qualities, ranging from `128kbps Opus/AAC` all the way up to `Lossless FLAC (24-bit/44.1kHz)`.
+
+## Feature Highlights
+
+- Entirety of YouTube Music's catalog, completely ad-free.
+- Include normal YouTube Videos in your playlists in-case a certain track/remix is unavailable on normal streaming services.
+- High Quality Audio: up-to `320kbps AAC`
+- Hi-Res Lossless Audio: Available up-to `24-bit/192kHz FLAC`
+- Downloads & offline playback.
+- Download supported songs in up to Hi-Res Lossless.
+- Discord Mode (Rich Presence, Desktop-only)
+- Apple Music-like live album covers.
+- UI polish alike Apple Music in many ways.
+- Word-synced/Line-synced lyrics with Apple Music-like animations.
+
+## Source
+
+Wavelength gets songs from YouTube and Tidal. However, the primary source is Wavelength's own store. In-case a song is not available on Wavelength's catalog, your phone or desktop runs an extractor on your side called [tydle](https://github.com/Dev-Siri/tydle) that extracts the song from YouTube on your device, and starts playback immediately. In the background, Wavelength sends a request to a server that collects the Song's stream from YouTube and stores it in Wavelength's own Google Cloud Storage bucket as HLS. The collector also collects the Lossless version of the stream, which itself is stored in Wavelength's store, and is also reencoded to `256kbps AAC` and `320kbps AAC` for adaptive streaming on Mobile.
+
+Wavelength always prioritizes streaming natively (from Wavelength's servers) rather than redirecting to a Tidal URL or proxying `yt-dlp`. For this reason, the web version might just be kind of, because if a song is unavailable on Wavelength's catalog, playback on web will wait until it gets collected. However, the problem doesn't exist for Desktop/Mobile because tydle is available.
 
 ## Getting Started
 
@@ -12,7 +31,7 @@ Clone the project.
 $ git clone https://github.com/Dev-Siri/wavelength
 ```
 
-> NOTE: Each of these applications have their .env.example (with the server having .env.docker too), make sure you fill these variables before running them.
+> NOTE: Each of these applications have their .env.example, make sure you fill these variables before running them.
 
 ## Desktop
 

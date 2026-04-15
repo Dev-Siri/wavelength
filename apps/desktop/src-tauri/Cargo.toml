@@ -21,9 +21,9 @@ tauri-build = { version = "2.5.3", features = [] }
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 log = "0.4"
-tauri = { version = "2.9.5", features = ["tray-icon"] }
+tauri = { version = "2.9.5", features = ["tray-icon", "devtools"] }
 tauri-plugin-log = "2"
-tydle = "0.1.14"
+tydle = "0.1.15"
 tokio = { version = "1.49.0", features = ["full"] }
 reqwest = { version = "0.13.1", features = ["stream"] }
 anyhow = "1.0.100"
@@ -38,6 +38,10 @@ tokio-util = "0.7.18"
 tauri-plugin-cors-fetch = "5.0.0"
 futures-util = "0.3.32"
 tauri-plugin-os = "2"
+discord-rich-presence = "1.1.0"
+once_cell = "1"
+chrono = "0.4.44"
+tauri-plugin-deep-link = "2"
 
 [profile.release]
 # Copied from the docs: https://v2.tauri.app/concept/size

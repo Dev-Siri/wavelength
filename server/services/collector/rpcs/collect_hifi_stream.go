@@ -37,6 +37,7 @@ func (c *CollectorService) CollectHifiStream(
 		zap.Int("manifestLength", len(hifiManifest.Data.Manifest)),
 		zap.String("manifestMimeType", hifiManifest.Data.ManifestMimeType),
 		zap.String("audioQuality", string(hifiManifest.Data.AudioQuality)),
+		zap.Int("sampleRate", hifiManifest.Data.SampleRate),
 	)
 
 	downloadedLosslessFilePath, err := mediapipe.DownloadHighResAudio(&hifiManifest.Data)
@@ -212,9 +213,9 @@ func (c *CollectorService) CollectHifiStream(
 
 		_, err = tx.ExecContext(ctx, `
 		UPDATE "stream_metadata"
-		SET is_lossless_available = $2
+		SET is_lossless_available = $2, sample_rate = $3
 		WHERE video_id = $1;
-	`, request.VideoId, bitType)
+	`, request.VideoId, bitType, hifiManifest.Data.SampleRate)
 		if err != nil {
 			logging.Logger.Error("Stream metadata lossless availability update failed.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Stream metadata lossless availability update failed.")

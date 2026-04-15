@@ -3,10 +3,10 @@
   import { toast } from "svelte-sonner";
 
   import type { MusicTrack } from "$lib/schemas/music-track";
-  import type { MusicPlaylistContextSource } from "$lib/stream-player/MusicQueue.svelte";
+  import type { MusicPlaylistContextSource } from "$lib/stream-player/queue/MusicQueue";
 
   import userStore from "$lib/stores/user.svelte";
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
   import { reportErrorToBackend } from "$lib/utils/query-client";
 
   import ArtistLink from "../artist/ArtistLink.svelte";

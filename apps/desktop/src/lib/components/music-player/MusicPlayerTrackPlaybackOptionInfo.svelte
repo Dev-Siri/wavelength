@@ -2,7 +2,7 @@
   import { InfoIcon } from "@lucide/svelte";
 
   import settingsStore from "$lib/stores/settings.svelte";
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
   import { compactify } from "$lib/utils/format";
 
   import { buttonVariants } from "../ui/button";
@@ -14,12 +14,23 @@
     return ` (${codec.charAt(0).toUpperCase()}${codec.slice(1)})`;
   }
 
-  function getReadableBitrate(bitrate: number, ext: string) {
-    if (bitrate === 1_411_000) return `1,411kb/s • 16-bit • 44.1kHz (Hi-Fi Lossless, FLAC)`;
-    if (bitrate === 1_520_000) return `1,520kb/s • 24-bit • 44.1kHz (Hi-Fi Lossless, FLAC)`;
+  function getReadableBitrate({
+    bitrate,
+    ext,
+    sampleRate,
+  }: {
+    bitrate: number;
+    ext: string;
+    sampleRate: number;
+  }) {
+    if (bitrate === 1_520_000) {
+      const formattedRate = (sampleRate / 1000).toFixed(1).replace(".0", "");
+      return `1,520kb/s • 24-bit • ${formattedRate}kHz\nHi-Fi Lossless (FLAC)`;
+    }
+    if (bitrate === 1_411_000) return `1,411kb/s • 16-bit • 44.1kHz\nHi-Fi Lossless (FLAC)`;
     if (bitrate === 128) return `128kb/s (${ext.toUpperCase()})`;
-    if (bitrate === 320_000) return `320kb/s • 44.1kHz (Hi-Fi ${ext.toUpperCase()})`;
-    if (bitrate === 256_000) return `256kb/s • 44.1kHz (High Quality, ${ext.toUpperCase()})`;
+    if (bitrate === 320_000) return `320kb/s • 44.1kHz\nHi-Fi (${ext.toUpperCase()})`;
+    if (bitrate === 256_000) return `256kb/s • 44.1kHz\nHigh Quality (${ext.toUpperCase()})`;
     return `${compactify(bitrate)}kb/s (${ext.toUpperCase()})`;
   }
 </script>
@@ -29,28 +40,29 @@
     <HoverCard.Trigger
       class={buttonVariants({
         variant: "ghost",
-        class: `w-fit px-3 ml-1 rounded-full ${musicPlayer.streamMetadata ? "" : "opacity-50 cursor-default hover:bg-transparent"}`,
+        class: `w-fit px-3 rounded-full ${musicPlayer.currentStream?.metadata ? "" : "opacity-50 cursor-default hover:bg-transparent"}`,
       })}
     >
-      <InfoIcon size={20} class="text-primary {musicPlayer.streamMetadata ? '' : 'opacity-50'}" />
+      <InfoIcon
+        size={20}
+        class="text-primary {musicPlayer.currentStream?.metadata ? '' : 'opacity-50'}"
+      />
     </HoverCard.Trigger>
-    <HoverCard.Content class="z-9999 w-full {musicPlayer.streamMetadata ? '' : 'hidden'}">
-      {#if musicPlayer.streamMetadata}
-        {@const { bitrate, codec, ext, source } = musicPlayer.streamMetadata}
+    <HoverCard.Content class="z-9999 w-full {musicPlayer.currentStream?.metadata ? '' : 'hidden'}">
+      {#if musicPlayer.currentStream?.metadata}
+        {@const {
+          metadata: { bitrate, codec, ext },
+          source: { sampleRate, name },
+        } = musicPlayer.currentStream}
         <span class="text-xl mb-2 font-semibold select-none">Stream</span>
         <p>
-          <code>
-            {getReadableBitrate(bitrate, ext)}{getReadableCodec(codec.acodec ?? "none")}
+          <code class="whitespace-pre-line">
+            {getReadableBitrate({ bitrate, ext, sampleRate })}{getReadableCodec(codec)}
           </code>
         </p>
         <p>
-          <code>source: {source}</code>
+          <code class="whitespace-pre-line">from {name}</code>
         </p>
-        {#if source.includes("Wavelength")}
-          <p>
-            <code>security: stream token (exp: 6 hours)</code>
-          </p>
-        {/if}
       {/if}
     </HoverCard.Content>
   </HoverCard.Root>

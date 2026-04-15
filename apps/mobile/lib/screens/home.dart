@@ -4,6 +4,8 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_svg/flutter_svg.dart";
 import "package:vector_graphics/vector_graphics.dart";
+import "package:wavelength/api/models/enums/video_type.dart";
+import "package:wavelength/audio/queueable_music.dart";
 import "package:wavelength/bloc/library/library_bloc.dart";
 import "package:wavelength/bloc/library/library_state.dart";
 import "package:wavelength/bloc/location/location_bloc.dart";
@@ -15,6 +17,7 @@ import "package:wavelength/widgets/dialogs/error_message_dialog.dart";
 import "package:wavelength/widgets/artist/followed_artists_carousel.dart";
 import "package:wavelength/widgets/quick_pick_song_card.dart";
 import "package:wavelength/widgets/skeletons/quick_pick_song_card_skeleton.dart";
+import "package:wavelength/widgets/track/track_tile.dart";
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -73,6 +76,57 @@ class HomeScreen extends StatelessWidget {
                       );
                     },
                   ),
+                ),
+                BlocBuilder<QuickPicksBloc, QuickPicksState>(
+                  builder: (context, state) {
+                    if (state is! QuickPicksSuccessState ||
+                        state.recentlyPlayed.isEmpty) {
+                      return const SliverToBoxAdapter(child: SizedBox.shrink());
+                    }
+
+                    return SliverToBoxAdapter(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(
+                              left: 10,
+                              top: 5,
+                              bottom: 10,
+                            ),
+                            child: Text(
+                              "Recently played",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          ...state.recentlyPlayed.map(
+                            (track) => Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: TrackTile(
+                                track: track,
+                                tracks: [
+                                  QueueableMusic(
+                                    videoId: track.videoId,
+                                    title: track.title,
+                                    thumbnail: track.thumbnail,
+                                    duration: track.duration,
+                                    artists: track.artists,
+                                    album: track.album,
+                                    videoType: VideoType.track,
+                                    isExplicit: track.isExplicit,
+                                  ),
+                                ],
+                                sourceLabel: "Recently Played",
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
                 SliverToBoxAdapter(
                   child: Column(

@@ -86,7 +86,7 @@ class AlbumTrackTile extends StatelessWidget {
         ? [album.artist]
         : track.artists;
     return AmplButton(
-      padding: EdgeInsets.zero,
+      padding: const EdgeInsets.only(left: 5, right: 10),
       onPressed: () => _playTrack(context),
       onLongPress: () => _openPlaylistOptions(context),
       child: Container(
@@ -95,7 +95,6 @@ class AlbumTrackTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(width: 5),
             BlocBuilder<MusicPlayerTrackBloc, MusicPlayerTrackState>(
               builder: (context, state) {
                 final isThisTrackPlaying =
@@ -162,7 +161,6 @@ class AlbumTrackTile extends StatelessWidget {
                     color: Colors.grey.shade600,
                   ),
                 ),
-                const SizedBox(width: 10),
               ],
             ),
           ],

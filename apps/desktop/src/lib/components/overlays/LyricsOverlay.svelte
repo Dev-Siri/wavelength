@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
 
   import LyricsList from "../lyrics/LyricsList.svelte";
 </script>

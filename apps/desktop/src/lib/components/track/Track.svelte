@@ -4,10 +4,10 @@
 
   import type { MusicTrack } from "$lib/schemas/music-track";
   import type { Playlist, PlaylistVideoType } from "$lib/schemas/playlist";
-  import type { MusicPlaylistContextSource } from "$lib/stream-player/MusicQueue.svelte";
+  import type { MusicPlaylistContextSource } from "$lib/stream-player/queue/MusicQueue";
 
   import userStore from "$lib/stores/user.svelte";
-  import { musicPlayer } from "$lib/stream-player/musicPlayer";
+  import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
   import { reportErrorToBackend } from "$lib/utils/query-client";
 
   import AlbumLink from "../album/AlbumLink.svelte";
@@ -100,7 +100,7 @@
       >
         <div class="flex items-center gap-2 {showAlbum && music.album ? 'w-1/3' : 'w-2/3'}">
           <TrackCover {...music} />
-          <div class="flex flex-col gap-2 w-fit justify-center mt-2">
+          <div class="flex flex-col gap-2 w-fit justify-center">
             <p class="leading-none text-base line-clamp-1 w-full font-semibold">{music.title}</p>
             <p class="text-sm text-muted-foreground leading-none">
               {#if music.isExplicit}

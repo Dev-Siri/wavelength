@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ChevronDownIcon, PlayIcon, SkipBackIcon, SkipForwardIcon } from "@lucide/svelte";
-  import { Rive } from "@rive-app/canvas";
+  import rive from "@rive-app/canvas";
 
   import wvlenDesktopUsage from "$lib/assets/wvlen-desktop-usage.png";
   import wvlenMobileUsage from "$lib/assets/wvlen-mobile-usage.png";
@@ -19,7 +19,7 @@
   let marqueeRef: HTMLDivElement;
   let waveCanvas: HTMLCanvasElement;
 
-  let riveInstance: Rive;
+  let riveInstance: rive.Rive;
 
   $effect(() => {
     async function createAnimations() {
@@ -87,7 +87,7 @@
         });
       }
 
-      riveInstance = new Rive({
+      riveInstance = new rive.Rive({
         src: "/rive/wave.riv",
         canvas: waveCanvas,
         autoplay: true,
