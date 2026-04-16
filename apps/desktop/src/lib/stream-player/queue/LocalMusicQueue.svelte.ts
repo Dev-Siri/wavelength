@@ -1,9 +1,9 @@
 /* eslint-disable svelte/prefer-svelte-reactivity */
 import { automixTracksResponse } from "$lib/schemas/music-track";
-import type { PlaylistVideoType } from "$lib/schemas/playlist";
 import { backendClient, reportErrorToBackend } from "$lib/utils/query-client";
 import { shuffle } from "$lib/utils/shuffle";
 
+import type { PlaylistVideoType } from "$lib/schemas/playlist";
 import type {
   AutomixContext,
   MusicPlaylistContext,
@@ -22,7 +22,7 @@ export default class LocalMusicQueue implements MusicQueue {
   /**
    * The source from where the queue will continuously pick from
    * In case of different sources, the operation to get the tracks for each will also
-   * be different. By default
+   * be different.
    */
   private playlistContext = $state<MusicPlaylistContext>({
     source: { type: "none" },
@@ -217,10 +217,15 @@ export default class LocalMusicQueue implements MusicQueue {
       }));
 
       const seen = new Set<string>();
-      const merged = [...this.queue, ...this.readyContextQueue, ...existing, ...incoming];
+      const merged = [...existing, ...incoming];
+
+      const contextIds = new Set(this.readyContextQueue.map(t => t.videoId));
+      const queueIds = new Set(this.queue.map(t => t.videoId));
 
       const queue = merged.filter(track => {
         if (seen.has(track.videoId)) return false;
+        if (contextIds.has(track.videoId)) return false;
+        if (queueIds.has(track.videoId)) return false;
 
         seen.add(track.videoId);
         return true;
