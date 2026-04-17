@@ -7,6 +7,7 @@ import (
 	"github.com/Dev-Siri/wavelength/server/proto/collectorpb"
 	"github.com/Dev-Siri/wavelength/server/shared/clients"
 	shared_db "github.com/Dev-Siri/wavelength/server/shared/db"
+	shared_env "github.com/Dev-Siri/wavelength/server/shared/env"
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
 	shared_models "github.com/Dev-Siri/wavelength/server/shared/models"
 	"github.com/gofiber/fiber/v2"
@@ -35,20 +36,24 @@ func CollectStream(ctx *fiber.Ctx) error {
 		}
 	}
 
-	isHifiInDatabase, err := isHifiStreamAlreadyInDatabase(ctx.Context(), videoID)
-	if err != nil {
-		logging.Logger.Error("Hi-Fi Stream existence check failed.", zap.Error(err))
-		return err
-	}
-
-	if !isHifiInDatabase {
-		_, err := clients.CollectorClient.CollectHifiStream(ctx.Context(), &collectorpb.CollectHifiStreamRequest{
-			VideoId: videoID,
-		})
+	if shared_env.FeatureFlags.LosslessCollectionEnabled {
+		isHifiInDatabase, err := isHifiStreamAlreadyInDatabase(ctx.Context(), videoID)
 		if err != nil {
-			logging.Logger.Error("CollectorClient: 'CollectHifiStream' errored.", zap.Error(err))
-			return fiber.NewError(fiber.StatusInternalServerError, "Hi-fi stream extract failed.")
+			logging.Logger.Error("Hi-Fi Stream existence check failed.", zap.Error(err))
+			return err
 		}
+
+		if !isHifiInDatabase {
+			_, err := clients.CollectorClient.CollectHifiStream(ctx.Context(), &collectorpb.CollectHifiStreamRequest{
+				VideoId: videoID,
+			})
+			if err != nil {
+				logging.Logger.Error("CollectorClient: 'CollectHifiStream' errored.", zap.Error(err))
+				return fiber.NewError(fiber.StatusInternalServerError, "Hi-fi stream extract failed.")
+			}
+		}
+	} else {
+		logging.Logger.Warn("`FeatureFlags.LosslessCollectionEnabled` is disabled. Skipping collection.")
 	}
 
 	return shared_models.Success(ctx.Status(fiber.StatusAccepted), "Recorded.")
