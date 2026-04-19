@@ -14,7 +14,14 @@ export async function getSettings() {
       await set(IDB_SETTINGS_KEY, savedSettings);
     }
 
-    return settingsSchema.parse(savedSettings);
+    const parsedBrowserSettings = settingsSchema.safeParse(savedSettings);
+    if (parsedBrowserSettings.success) {
+      return parsedBrowserSettings.data;
+    }
+
+    savedSettings = defaultSettings;
+    await set(IDB_SETTINGS_KEY, savedSettings);
+    return savedSettings as typeof defaultSettings;
   }
 
   const settings = await invoke("get_settings");

@@ -24,13 +24,18 @@ func StreamPlayback(ctx *fiber.Ctx) error {
 	token := ctx.Params("token")
 	if token == "" {
 		logging.Logger.Error("Missing token.")
-		return fiber.NewError(fiber.StatusUnauthorized, "Something doesn't look right.")
+		return fiber.NewError(fiber.StatusUnauthorized, "Access denied.")
+	}
+
+	if !security.IsSurfaceUntrustedClientCheckPassing(ctx) {
+		logging.Logger.Error("Untrusted client attempted access.")
+		return fiber.NewError(fiber.StatusBadRequest, "Access denied.")
 	}
 
 	streamPartName := ctx.Params("part")
 	if !security.IsRequestObjectResourceNameValid(streamPartName) {
 		logging.Logger.Error("Access of unexpected resource.")
-		return fiber.NewError(fiber.StatusBadRequest, "Something doesn't look right.")
+		return fiber.NewError(fiber.StatusBadRequest, "Access denied.")
 	}
 
 	if err := ctx.Context().Err(); err != nil {
@@ -40,11 +45,11 @@ func StreamPlayback(ctx *fiber.Ctx) error {
 	clientDetails, err := security.FetchIPFromRedisToken(ctx.Context(), token)
 	if err != nil {
 		logging.Logger.Error("Client-check failed.", zap.Error(err))
-		return fiber.NewError(fiber.StatusInternalServerError, "Something doesn't look right.")
+		return fiber.NewError(fiber.StatusInternalServerError, "Access denied.")
 	}
 
 	if err := security.ValidatePlaybackRequestDetails(ctx, clientDetails, &authUser); err != nil {
-		return fiber.NewError(fiber.StatusUnauthorized, "Something doesn't look right.")
+		return fiber.NewError(fiber.StatusUnauthorized, "Access denied.")
 	}
 
 	if clientDetails.PreferredQuality == types.PreferredQualityAuto &&

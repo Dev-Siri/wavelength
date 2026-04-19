@@ -1,5 +1,6 @@
 <script lang="ts">
   import { isTauri } from "@tauri-apps/api/core";
+  import { onMount } from "svelte";
 
   import type { PlayerEvent } from "$lib/stream-player/audio/StreamPlayer";
 
@@ -14,7 +15,7 @@
 
   const previewPlayer = VideoStreamPlayerFactory.create();
 
-  $effect(() => {
+  onMount(() => {
     async function loadPreviewPlayer() {
       bindPreviewPlayer(previewPlayer, {
         native: musicVideoPreviewNative ?? undefined,
@@ -33,7 +34,7 @@
     return () => previewPlayer.dispose();
   });
 
-  $effect(() => {
+  onMount(() => {
     function audioSeekSyncListener(event: PlayerEvent<"timeupdate">) {
       previewPlayer.sync(event.detail.currentTime);
     }

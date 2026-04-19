@@ -9,6 +9,7 @@
 
   import AlbumCard from "$lib/components/album/AlbumCard.svelte";
   import Image from "$lib/components/Image.svelte";
+  import PlaylistTrackListHeader from "$lib/components/playlist-track-list/PlaylistTrackListHeader.svelte";
   import PlaylistPlayOptions from "$lib/components/playlist/PlaylistPlayOptions.svelte";
   import Track from "$lib/components/track/Track.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
@@ -67,13 +68,20 @@
 </script>
 
 <div class="h-full w-full overflow-x-hidden pb-[20%]">
-  <div class="flex items-center gap-2 justify-between px-4 mb-2">
+  <div class="flex flex-col gap-2 px-4 my-4">
     <span class="text-xl font-semibold">Most popular from {artist.title}</span>
     <PlaylistPlayOptions {context} tracks={artistTopSongsQueueable} />
   </div>
   <div id="popular-music-sliced-5" class="px-2">
-    {#each artist.topSongs.slice(0, 6) as music (music.videoId)}
-      <Track {context} {music} playCount={music.playCount} toggle={{ type: "add" }} />
+    <PlaylistTrackListHeader />
+    {#each artist.topSongs.slice(0, 6) as music, i (music.videoId)}
+      <Track
+        {context}
+        {music}
+        playCount={music.playCount}
+        toggle={{ type: "add" }}
+        positionInList={i + 1}
+      />
     {/each}
     <div class="w-full flex justify-center">
       <Button variant="ghost" onclick={showPopular}>

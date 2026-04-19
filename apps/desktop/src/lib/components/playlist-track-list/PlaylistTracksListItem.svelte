@@ -2,7 +2,7 @@
   import type { Playlist, PlaylistTrack } from "$lib/schemas/playlist";
   import type { MusicPlaylistContextSource } from "$lib/stream-player/queue/MusicQueue";
 
-  import TrackItem from "../track/Track.svelte";
+  import Track from "../track/Track.svelte";
 
   const {
     isRearrangingList,
@@ -10,15 +10,23 @@
     music,
     playlist,
     isPreLiked,
+    index,
   }: {
     isRearrangingList: boolean;
     context: MusicPlaylistContextSource;
     music: PlaylistTrack;
     playlist: Playlist;
     isPreLiked?: boolean;
+    index: number;
   } = $props();
 </script>
 
-<div class="w-full {isRearrangingList ? 'pointer-events-none' : ''}">
-  <TrackItem {isPreLiked} {music} toggle={{ type: "remove", from: playlist }} {context} />
+<div class={isRearrangingList ? "pointer-events-none select-none" : ""}>
+  <Track
+    {isPreLiked}
+    {music}
+    toggle={{ type: "remove", from: playlist }}
+    {context}
+    positionInList={index + 1}
+  />
 </div>

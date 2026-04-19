@@ -1,7 +1,7 @@
 <script lang="ts">
   import { resolve } from "$app/paths";
   import { page } from "$app/state";
-  import { ClockIcon, CopyIcon, EllipsisIcon, HashIcon } from "@lucide/svelte";
+  import { CopyIcon, EllipsisIcon } from "@lucide/svelte";
   import { isTauri } from "@tauri-apps/api/core";
   import { toast } from "svelte-sonner";
   import { fly } from "svelte/transition";
@@ -21,6 +21,7 @@
   import AlbumTrackTile from "$lib/components/album/AlbumTrackTile.svelte";
   import Image from "$lib/components/Image.svelte";
   import OpenInDesktopAppOption from "$lib/components/OpenInDesktopAppOption.svelte";
+  import PlaylistTrackListHeader from "$lib/components/playlist-track-list/PlaylistTrackListHeader.svelte";
   import PlaylistPlayOptions from "$lib/components/playlist/PlaylistPlayOptions.svelte";
   import PlaylistThemeGradient from "$lib/components/playlist/PlaylistThemeGradient.svelte";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
@@ -169,16 +170,7 @@
       </div>
     </div>
     <div class="mt-4">
-      <header class="flex items-center select-none text-muted-foreground">
-        <section class="flex items-center gap-12 w-2/3 ml-6">
-          <HashIcon size={14} />
-          <p class="text-sm">Title</p>
-        </section>
-        <section class="flex justify-center w-1/3">
-          <ClockIcon size={14} class="mr-8" />
-        </section>
-      </header>
-      <div class="bg-secondary h-[1px] w-full my-2.5 rounded-full"></div>
+      <PlaylistTrackListHeader albumColShown={false} />
       {#each albumTracks as music (music.videoId)}
         <AlbumTrackTile {music} {context} />
       {/each}

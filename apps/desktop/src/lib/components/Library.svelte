@@ -24,7 +24,7 @@
 </script>
 
 <div
-  class="h-full w-full overflow-y-auto scrollbar-hidden {isCollapsed ? 'pb-[200%]' : 'pb-[45%]'}"
+  class="h-full w-full overflow-y-auto scrollbar-hidden {isCollapsed ? 'pb-[300%]' : 'pb-[45%]'}"
 >
   {#if playlistsQuery.isLoading || followedArtistsQuery.isLoading}
     <p class="text-center mt-40 font-semibold text-muted-foreground cursor-default">

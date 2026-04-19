@@ -6,21 +6,35 @@
   import Image from "../Image.svelte";
   import NowPlayingAnimation from "../NowPlayingAnimation.svelte";
 
-  const { videoId, thumbnail }: { videoId: string; thumbnail: string } = $props();
+  const {
+    videoId,
+    thumbnail,
+    onClick,
+    positionExists,
+  }: { videoId: string; thumbnail: string; onClick?: () => void; positionExists?: boolean } =
+    $props();
 
   const isTrackPlaying = $derived(musicPlayer.queue.playingNow?.videoId === videoId);
-  const coverVisibility = $derived(isTrackPlaying ? "opacity-40" : "group-hover:opacity-40");
+  const coverVisibility = $derived(
+    isTrackPlaying && !positionExists ? "opacity-40" : "group-hover:opacity-40",
+  );
 </script>
 
 <div
-  class="flex flex-col aspect-square items-center justify-center relative h-14 w-14 duration-200"
+  role="button"
+  tabindex="0"
+  onclick={() => !positionExists && onClick?.()}
+  onkeydown={e => (e.key === "Enter" || e.key === "Space") && !positionExists && onClick?.()}
+  class="flex flex-col aspect-square items-center justify-center relative h-11 w-11 duration-200"
 >
-  {#if isTrackPlaying}
-    <div class="absolute z-50">
-      <NowPlayingAnimation />
-    </div>
-  {:else}
-    <PlayIcon class="absolute hidden group-hover:block z-50" size={18} fill="white" />
+  {#if !positionExists}
+    {#if isTrackPlaying}
+      <div class="absolute z-50">
+        <NowPlayingAnimation />
+      </div>
+    {:else}
+      <PlayIcon class="absolute hidden group-hover:block z-50" size={18} fill="white" />
+    {/if}
   {/if}
   {#key thumbnail}
     <Image

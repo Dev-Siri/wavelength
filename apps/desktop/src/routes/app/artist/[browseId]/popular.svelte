@@ -5,6 +5,7 @@
   import type { PlaylistVideoType } from "$lib/schemas/playlist";
   import type { MusicPlaylistContextSource } from "$lib/stream-player/queue/MusicQueue";
 
+  import PlaylistTrackListHeader from "$lib/components/playlist-track-list/PlaylistTrackListHeader.svelte";
   import PlaylistPlayOptions from "$lib/components/playlist/PlaylistPlayOptions.svelte";
   import Track from "$lib/components/track/Track.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
@@ -25,13 +26,20 @@
   } satisfies MusicPlaylistContextSource);
 </script>
 
-<div class="flex items-center gap-2 justify-between px-2 mb-2">
+<div class="flex flex-col gap-2 px-2 my-4">
   <span class="text-xl font-semibold">Most popular from {artist.title}</span>
   <PlaylistPlayOptions {context} tracks={artistTopSongsQueueable} />
 </div>
 <div class="pb-[20%]">
-  {#each artist.topSongs as music (music.videoId)}
-    <Track {context} {music} playCount={music.playCount} toggle={{ type: "add" }} />
+  <PlaylistTrackListHeader />
+  {#each artist.topSongs as music, i (music.videoId)}
+    <Track
+      {context}
+      {music}
+      playCount={music.playCount}
+      toggle={{ type: "add" }}
+      positionInList={i + 1}
+    />
   {/each}
   <div class="w-full flex justify-center">
     <Button variant="ghost" onclick={showHome}>

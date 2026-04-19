@@ -23,6 +23,9 @@
   import TrackDirectAdd from "./TrackDirectAdd.svelte";
   import TrackDuration from "./TrackDuration.svelte";
   import TrackLikeButton from "./TrackLikeButton.svelte";
+  import TrackPositionNumber from "./TrackPositionNumber.svelte";
+
+  let isSelected = $state(false);
 
   const {
     music,
@@ -30,6 +33,7 @@
     playCount,
     context,
     showAlbum = true,
+    positionInList,
     isPreLiked,
   }: {
     music: MusicTrack & { videoType?: PlaylistVideoType };
@@ -37,6 +41,7 @@
     playCount?: string;
     showAlbum?: boolean;
     isPreLiked?: boolean;
+    positionInList?: number;
     toggle:
       | PlaylistToggle
       | {
@@ -46,6 +51,10 @@
   } = $props();
 
   async function playSong() {
+    if (musicPlayer.queue.playingNow?.videoId === music.videoId) {
+      return musicPlayer.play();
+    }
+
     try {
       await musicPlayer.load(
         {
@@ -92,17 +101,28 @@
         />
       </DropdownMenu.Content>
       <div
-        tabindex={0}
+        class="flex rounded-md justify-between items-center duration-200 p-1.5 gap-2 hover:bg-muted/70 w-full pr-4 group select-none {isSelected
+          ? 'bg-muted/70'
+          : ''}"
         role="button"
-        onclick={playSong}
-        onkeydown={e => (e.key === "Enter" || e.key === "Space") && playSong()}
-        class="flex rounded-md justify-between items-center duration-200 p-1.5 gap-2 hover:bg-muted/70 w-full pr-4 group cursor-pointer"
+        onfocus={() => (isSelected = true)}
+        onblur={() => (isSelected = false)}
+        onkeydown={e => (e.key === "Enter" || e.key === " ") && playSong()}
+        ondblclick={playSong}
+        tabindex={isSelected ? 0 : -1}
       >
         <div class="flex items-center gap-2 {showAlbum && music.album ? 'w-1/3' : 'w-2/3'}">
-          <TrackCover {...music} />
+          {#if positionInList}
+            <TrackPositionNumber
+              onClick={playSong}
+              position={positionInList}
+              videoId={music.videoId}
+            />
+          {/if}
+          <TrackCover {...music} onClick={playSong} positionExists={!!positionInList} />
           <div class="flex flex-col gap-2 w-fit justify-center">
-            <p class="leading-none text-base line-clamp-1 w-full font-semibold">{music.title}</p>
-            <p class="text-sm text-muted-foreground leading-none">
+            <p class="leading-none text-sm line-clamp-1 w-full font-semibold">{music.title}</p>
+            <p class="text-xs text-muted-foreground leading-none">
               {#if music.isExplicit}
                 <ExplicitIndicator />
               {/if}

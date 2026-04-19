@@ -1,5 +1,6 @@
 <script lang="ts">
   import { useQueryClient } from "@tanstack/svelte-query";
+  import { isTauri } from "@tauri-apps/api/core";
 
   import type { Snippet } from "svelte";
 
@@ -34,7 +35,7 @@
       queryClient.invalidateQueries({ queryKey: svelteQueryKeys.downloads });
     }
 
-    if (downloadStore.currentDownload) handleDownload();
+    if (downloadStore.currentDownload && isTauri()) handleDownload();
   });
 </script>
 

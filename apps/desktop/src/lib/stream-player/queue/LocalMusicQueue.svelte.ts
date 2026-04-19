@@ -289,7 +289,10 @@ export default class LocalMusicQueue implements MusicQueue {
     const queueStartIndex = position === "next" ? 0 : this.readyContextQueue.length - 1;
     const pickIndex = isAtEdge ? queueStartIndex : positionedTrack;
 
-    if (this.repeatMode === "all" || (position === "next" && !isAtEdge)) {
+    const allowNext = position === "next" && !isAtEdge;
+    const allowPrevious = position === "previous" && !isAtEdge;
+
+    if (this.repeatMode === "all" || allowNext || allowPrevious) {
       return this.readyContextQueue[pickIndex];
     }
   }

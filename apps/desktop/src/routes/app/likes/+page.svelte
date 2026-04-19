@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ClockIcon, HeartIcon, HeartPlusIcon } from "@lucide/svelte";
+  import { HeartIcon, HeartPlusIcon } from "@lucide/svelte";
   import { fly } from "svelte/transition";
 
   import type { MusicPlaylistContextSource } from "$lib/stream-player/queue/MusicQueue";
@@ -9,9 +9,10 @@
   import userStore from "$lib/stores/user.svelte.js";
 
   import Image from "$lib/components/Image.svelte";
+  import PlaylistTrackListHeader from "$lib/components/playlist-track-list/PlaylistTrackListHeader.svelte";
   import PlaylistLength from "$lib/components/playlist/PlaylistLength.svelte";
   import PlaylistPlayOptions from "$lib/components/playlist/PlaylistPlayOptions.svelte";
-  import TrackItem from "$lib/components/track/Track.svelte";
+  import Track from "$lib/components/track/Track.svelte";
   import { Button } from "$lib/components/ui/button";
   import Spinner from "$lib/components/ui/spinner/spinner.svelte";
 
@@ -22,6 +23,7 @@
     sourceName: "Liked Songs",
     type: "likes",
     email: userStore.user?.email ?? "",
+    offlineTracks: likedTracksQuery.data?.likedTracks ?? [],
   } satisfies MusicPlaylistContextSource);
 
   const likedTracks = $derived.by(() => {
@@ -90,22 +92,17 @@
           </div>
         {:else if likedTracksQuery.isSuccess}
           {#if likedTracks.length}
-            <header class="flex items-center select-none text-muted-foreground">
-              <section class="flex pl-16 items-center gap-10 w-1/3">
-                <p class="text-sm">Title</p>
-              </section>
-              <section class="flex justify-center w-1/3">
-                <p class="text-sm">Album</p>
-              </section>
-              <section class="flex justify-center w-1/3">
-                <ClockIcon size={14} class="mr-6" />
-              </section>
-            </header>
-            <div class="bg-secondary h-[1px] w-full my-2.5 rounded-full"></div>
+            <PlaylistTrackListHeader />
             <div class="mt-2 overflow-x-hidden pb-[80%] md:pb-[40%] lg:pb-[20%]">
               {#key likedTracks}
-                {#each likedTracks as likedTrack (likedTrack.videoId)}
-                  <TrackItem isPreLiked music={likedTrack} toggle={{ type: "add" }} {context} />
+                {#each likedTracks as likedTrack, i (likedTrack.videoId)}
+                  <Track
+                    isPreLiked
+                    music={likedTrack}
+                    toggle={{ type: "add" }}
+                    {context}
+                    positionInList={i + 1}
+                  />
                 {/each}
               {/key}
             </div>

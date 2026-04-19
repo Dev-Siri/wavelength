@@ -52,13 +52,13 @@
   const defaultSizes: PaneSizes = $derived({
     sidebar: {
       minSize: 20,
-      size: musicInterfaceStore.isMusicQueueVisible ? 20 : 25,
-      maxSize: musicInterfaceStore.isMusicQueueVisible ? 20 : 30,
+      size: 25,
+      maxSize: 25,
     },
     queue: {
-      maxSize: 30,
-      size: musicInterfaceStore.isMusicQueueVisible ? 30 : 0,
-      minSize: 20,
+      maxSize: musicInterfaceStore.isMusicQueueVisible ? 20 : 0,
+      size: musicInterfaceStore.isMusicQueueVisible ? 20 : 0,
+      minSize: musicInterfaceStore.isMusicQueueVisible ? 20 : 0,
     },
     content: 80,
   });
@@ -75,7 +75,7 @@
   }
 
   let sizes = $derived(screenSize ? calculateSidebarSize(screenSize) : defaultSizes);
-  let isSidebarCollapsed = $derived(musicInterfaceStore.isMusicQueueVisible);
+  let isSidebarCollapsed = $state(false);
 
   $effect(() => {
     const preventRightClick = (e: MouseEvent) => e.preventDefault();
@@ -103,13 +103,11 @@
   });
 
   $effect(() => {
-    sidebarWidth = musicInterfaceStore.isMusicQueueVisible
-      ? sizes.sidebar.minSize
-      : sizes.sidebar.maxSize;
+    sidebarWidth = isSidebarCollapsed ? sizes.sidebar.minSize : sizes.sidebar.maxSize;
   });
 
   $effect(() => {
-    let unlisten: UnlistenFn;
+    let unlisten: UnlistenFn | null = null;
 
     async function handleDeeplinking() {
       const initial = await getCurrent();
@@ -120,12 +118,11 @@
       unlisten = await onOpenUrl(setupDeeplinkUrlActions);
     }
 
-    handleDeeplinking();
-    return () => unlisten();
+    if (isTauri()) handleDeeplinking();
+    return () => unlisten?.();
   });
 
   function toggleSidebar() {
-    if (musicInterfaceStore.isMusicQueueVisible) return;
     isSidebarCollapsed = !isSidebarCollapsed;
   }
 

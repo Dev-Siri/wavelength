@@ -17,6 +17,7 @@
   import HifiBadge from "../HifiBadge.svelte";
   import Image from "../Image.svelte";
   import MusicPlayerControls from "../music-player/MusicPlayerControls.svelte";
+  import MusicPlayerProgressBar from "../music-player/MusicPlayerProgressBar.svelte";
   import MusicVideoPreview from "../MusicVideoPreview.svelte";
   import { Button } from "../ui/button";
   import TrackStatsOverlay from "./TrackStatsOverlay.svelte";
@@ -99,7 +100,6 @@
       </div>
       {#if musicInterfaceStore.isPlayerFullscreen}
         <div class="flex flex-col gap-2 w-[500px] pt-4 select-none">
-          <MusicPlayerControls />
           <div class="flex flex-col gap-4">
             <div>
               <p class="font-semibold">{title}</p>
@@ -112,10 +112,12 @@
                 {/if}
               </p>
             </div>
-            <div class="flex items-center justify-center">
-              <HifiBadge />
-            </div>
           </div>
+          <MusicPlayerProgressBar />
+          <div class="flex items-center -mt-1 mb-2 justify-center">
+            <HifiBadge />
+          </div>
+          <MusicPlayerControls />
         </div>
       {:else}
         <TrackStatsOverlay />

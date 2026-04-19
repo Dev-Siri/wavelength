@@ -12,16 +12,16 @@
 
 {#if bitrate && bitrate >= 256_000}
   <div
-    class="relative flex items-center select-none justify-center z-10 text-white gap-2 w-fit bg-white/10 backdrop-blur-xl border border-white/15 rounded-full py-0.5 px-3.5 metal-badge"
+    class="relative flex items-center select-none justify-center z-10 text-white gap-2 w-fit bg-white/10 backdrop-blur-xl border border-white/15 rounded-full py-px px-3.5 metal-badge"
     role="presentation"
     onmouseenter={() => (isHoveringBadge = true)}
     onmouseleave={() => (isHoveringBadge = false)}
   >
-    <Logo class="text-xs font-medium" />
+    <Logo class="text-[10px] mt-px font-medium" />
     {#key isHoveringBadge}
       <span
         in:blur
-        class="text-[10px] tracking-wide font-medium text-center text-secondary-foreground/90 mt-0.5"
+        class="text-[8px] tracking-wide font-medium text-center text-secondary-foreground/90 mt-0.5"
       >
         {#if isHoveringBadge}
           {#if bitrate === 1_520_000}

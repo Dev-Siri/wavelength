@@ -5,6 +5,10 @@ export function getUpscaledAlbumUrl(albumUrl: string) {
   return albumUrl.replace("h120-", "h768-").replace("w120-", "w768-");
 }
 
+export function getUpscaledArtistThumbnailUrl(albumUrl: string) {
+  return albumUrl.replace("h120-", "h512-").replace("w120-", "w512-");
+}
+
 export async function openUrl(url: string) {
   if (isTauri()) {
     return await openUrlNative(url);

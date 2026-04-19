@@ -19,12 +19,12 @@ func ValidatePlaybackRequestDetails(ctx *fiber.Ctx, clientDetails *TokenClientDe
 	videoID := ctx.Params("videoId")
 	if videoID == "" {
 		logging.Logger.Error("Missing videoId.")
-		return fiber.NewError(fiber.StatusBadRequest, "Something doesn't look right.")
+		return fiber.NewError(fiber.StatusBadRequest, "Access denied.")
 	}
 
 	if time.Now().Unix() > clientDetails.Expiration {
 		logging.Logger.Warn("Token expired.", zap.Any("clientDetails", clientDetails))
-		return fiber.NewError(fiber.StatusBadRequest, "Something doesn't look right.")
+		return fiber.NewError(fiber.StatusBadRequest, "Access denied.")
 	}
 
 	if clientDetails.VideoID != videoID {
@@ -32,7 +32,7 @@ func ValidatePlaybackRequestDetails(ctx *fiber.Ctx, clientDetails *TokenClientDe
 			zap.String("expected", clientDetails.VideoID),
 			zap.String("actual", videoID),
 		)
-		return fiber.NewError(fiber.StatusBadRequest, "Something doesn't look right.")
+		return fiber.NewError(fiber.StatusBadRequest, "Access denied.")
 	}
 
 	if clientDetails.Email != authUser.Email {
@@ -40,7 +40,7 @@ func ValidatePlaybackRequestDetails(ctx *fiber.Ctx, clientDetails *TokenClientDe
 			zap.String("expected", clientDetails.Email),
 			zap.String("actual", authUser.Email),
 		)
-		return fiber.NewError(fiber.StatusBadRequest, "Something doesn't look right.")
+		return fiber.NewError(fiber.StatusBadRequest, "Access denied.")
 	}
 
 	requestIP := ctx.IP()
@@ -49,7 +49,7 @@ func ValidatePlaybackRequestDetails(ctx *fiber.Ctx, clientDetails *TokenClientDe
 			zap.String("expected", clientDetails.IP),
 			zap.String("actual", requestIP),
 		)
-		return fiber.NewError(fiber.StatusBadRequest, "Something doesn't look right.")
+		return fiber.NewError(fiber.StatusBadRequest, "Access denied.")
 	}
 
 	return nil

@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
+  import { resolve } from "$app/paths";
   import { ChevronDownIcon, PlayIcon, SkipBackIcon, SkipForwardIcon } from "@lucide/svelte";
   import rive from "@rive-app/canvas";
+  import { isTauri } from "@tauri-apps/api/core";
 
   import wvlenDesktopUsage from "$lib/assets/wvlen-desktop-usage.png";
   import wvlenMobileUsage from "$lib/assets/wvlen-mobile-usage.png";
@@ -22,6 +25,8 @@
   let riveInstance: rive.Rive;
 
   $effect(() => {
+    if (isTauri()) goto(resolve("/app"));
+
     async function createAnimations() {
       // @ts-expect-error GSAP's types don't work with dist/ imports
       const ScrollTriggerModule = await import("gsap/dist/ScrollTrigger");

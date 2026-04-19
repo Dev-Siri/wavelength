@@ -26,7 +26,7 @@
       <section class="flex items-center gap-10 w-1/3">
         <Tooltip.Root>
           <Tooltip.Trigger
-            class="cursor-pointer p-1.5 rounded-full duration-200"
+            class="cursor-pointer p-1.5 pl-4.5 rounded-full duration-200"
             onclick={() => (isRearrangingList = !isRearrangingList)}
           >
             <HashIcon size={14} />

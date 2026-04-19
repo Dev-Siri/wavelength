@@ -2,6 +2,7 @@
   // See https://github.com/binimum/apple-music-web-components/blob/main/src/AmLyrics.ts
   // All sub-components have also been sourced from apple-music-web-components.
   /* eslint-disable svelte/prefer-svelte-reactivity */
+  import { del, get, set } from "idb-keyval";
 
   import { INSTRUMENTAL_THRESHOLD_MS } from "$lib/constants/lyrics";
   import {
@@ -16,7 +17,6 @@
   import { punctuatify } from "$lib/utils/format";
   import { backendClient, reportErrorToBackend } from "$lib/utils/query-client";
 
-  import { del, get, set } from "idb-keyval";
   import LyricsContent from "./LyricsContent.svelte";
 
   let lyricsContainer: HTMLDivElement;

@@ -71,18 +71,20 @@
           {music}
           {isRearrangingList}
           {context}
+          index={i}
         />
       </SortableList.Item>
     {/each}
   </SortableList.Root>
 {:else}
-  {#each items as music (`${music.videoId}-${music.title}`)}
+  {#each items as music, index (`${music.videoId}-${music.title}`)}
     <PlaylistTracksListItem
       isPreLiked={likedStatus[music.videoId] ?? false}
       {playlist}
       {music}
       {isRearrangingList}
       {context}
+      {index}
     />
   {/each}
 {/if}

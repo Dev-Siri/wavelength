@@ -1,50 +1,30 @@
 <script lang="ts">
   import useTrackSearch from "$lib/queries/trackSearch";
 
-  import TopSearchResult from "$lib/components/search/TopSearchResult.svelte";
+  import PlaylistTrackListHeader from "$lib/components/playlist-track-list/PlaylistTrackListHeader.svelte";
   import TrackSkeleton from "$lib/components/skeletons/TrackSkeleton.svelte";
-  import TrackItem from "$lib/components/track/Track.svelte";
-  import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
+  import Track from "$lib/components/track/Track.svelte";
 
   const { q }: { q: string } = $props();
 
   const trackSearchQuery = $derived(useTrackSearch(q));
 </script>
 
-{#if trackSearchQuery.isLoading}
-  <div class="w-2/3">
-    <h2 class="text-xl font-semibold select-none mb-2">Top Result</h2>
-    <div class="w-full bg-muted bg-opacity-40 rounded-2xl pt-4 pb-6 pl-4">
-      <Skeleton class="rounded-lg h-28 w-28" />
-      <Skeleton class="w-4/5 h-4 mt-8" />
-      <Skeleton class="w-2/5 h-3 mt-2" />
-    </div>
-    <div class="w-full bg-muted bg-opacity-40 rounded-2xl mt-2 pt-4 pb-6 pl-4">
-      <Skeleton class="rounded-lg h-28 w-28" />
-      <Skeleton class="w-4/5 h-4 mt-8" />
-      <Skeleton class="w-2/5 h-3 mt-2" />
-    </div>
-  </div>
-  <div class="w-2/3">
-    <h2 class="text-xl font-semibold select-none mb-2">Songs</h2>
+<div class="h-full w-full">
+  <PlaylistTrackListHeader albumColShown={false} />
+  {#if trackSearchQuery.isLoading}
     {#each new Array(8)}
       <TrackSkeleton />
     {/each}
-  </div>
-{:else if trackSearchQuery.isSuccess && trackSearchQuery.data.tracks}
-  {@const topResults = trackSearchQuery.data.tracks.slice(0, 2)}
-  <div class="h-full w-1/2">
-    <h2 class="text-xl font-semibold select-none mb-2">Top Results</h2>
-    {#each topResults as topResult (topResult.videoId)}
-      <div class="mt-2">
-        <TopSearchResult {topResult} />
-      </div>
+  {:else if trackSearchQuery.isSuccess && trackSearchQuery.data.tracks}
+    {#each trackSearchQuery.data.tracks as music, i (music.videoId)}
+      <Track
+        showAlbum={false}
+        context={{ type: "none" }}
+        {music}
+        toggle={{ type: "add" }}
+        positionInList={i + 1}
+      />
     {/each}
-  </div>
-  <div class="h-full w-1/2">
-    <h2 class="text-xl font-semibold select-none mb-2">Songs</h2>
-    {#each trackSearchQuery.data.tracks.slice(3) as music (music.videoId)}
-      <TrackItem showAlbum={false} context={{ type: "none" }} {music} toggle={{ type: "add" }} />
-    {/each}
-  </div>
-{/if}
+  {/if}
+</div>

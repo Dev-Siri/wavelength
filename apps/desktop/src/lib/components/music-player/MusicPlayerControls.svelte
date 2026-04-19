@@ -13,7 +13,6 @@
   import { musicPlayer } from "$lib/stream-player/audio/musicPlayer";
 
   import * as Tooltip from "../ui/tooltip";
-  import MusicPlayerProgressBar from "./MusicPlayerProgressBar.svelte";
 </script>
 
 <div class="flex w-full gap-8 items-center justify-center">
@@ -111,4 +110,3 @@
     </Tooltip.Content>
   </Tooltip.Root>
 </div>
-<MusicPlayerProgressBar />

@@ -76,6 +76,26 @@ export default async function getTrackInfo(
       });
     }
 
+    if (!matchingSong) {
+      console.debug("Retrying search with videoId.");
+      const fallbackSearch = await music.search(call.request.videoId, {
+        type: "song",
+      });
+
+      if (fallbackSearch.songs) {
+        matchingSong = fallbackSearch.songs.contents.find((song) => {
+          try {
+            return (
+              song.as(YTNodes.MusicResponsiveListItem).id ===
+              call.request.videoId
+            );
+          } catch {
+            return false;
+          }
+        });
+      }
+    }
+
     if (!matchingSong)
       return callback(createErrorResponse("No matching song found."));
 

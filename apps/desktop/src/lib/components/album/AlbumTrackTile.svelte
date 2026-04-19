@@ -11,10 +11,10 @@
 
   import ArtistLink from "../artist/ArtistLink.svelte";
   import ExplicitIndicator from "../ExplicitIndicator.svelte";
-  import NowPlayingAnimation from "../NowPlayingAnimation.svelte";
   import PlaylistToggleOptions from "../playlist/PlaylistToggleOptions.svelte";
   import TrackDuration from "../track/TrackDuration.svelte";
   import TrackLikeButton from "../track/TrackLikeButton.svelte";
+  import TrackPositionNumber from "../track/TrackPositionNumber.svelte";
   import { buttonVariants } from "../ui/button";
   import * as DropdownMenu from "../ui/dropdown-menu";
 
@@ -27,10 +27,14 @@
   } = $props();
 
   async function playSong() {
+    if (musicPlayer.queue.playingNow?.videoId === music.videoId) {
+      return musicPlayer.play();
+    }
+
     try {
       await musicPlayer.load({ ...music, videoType: "VIDEO_TYPE_TRACK" }, context);
     } catch (error) {
-      toast.error(`Playback ${error}`);
+      toast.error(`Playback Error: ${error}`);
       await reportErrorToBackend({
         error,
         source: "AlbumTrackTile: playSong()",
@@ -41,27 +45,19 @@
 
 <DropdownMenu.Root>
   <div
-    class="flex rounded-2xl justify-between items-center duration-200 border-b border-border p-1.5 gap-2 hover:bg-muted/70 w-full pr-4 group cursor-pointer"
-    tabindex={0}
-    role="button"
-    onclick={playSong}
-    onkeydown={e => (e.key === "Enter" || e.key === "Space") && playSong()}
+    class="flex rounded-md justify-between items-center duration-200 border-b border-border p-1.5 gap-2 hover:bg-muted/70 w-full pr-4 group"
   >
     <div class="flex h-full items-center">
-      <div class="grid place-items-center aspect-square text-center h-full">
-        {#if musicPlayer.queue.playingNow?.videoId === music.videoId}
-          <div class="scale-90 pl-5 pr-3">
-            <NowPlayingAnimation height={20} width={20} />
-          </div>
-        {:else}
-          <p class="text-muted-foreground font-semibold h-5 px-6">{music.positionInAlbum}</p>
-        {/if}
-      </div>
+      <TrackPositionNumber
+        onClick={playSong}
+        position={music.positionInAlbum}
+        videoId={music.videoId}
+      />
       <div class="flex flex-col gap-2 w-fit justify-center mt-2 ml-2">
         <div class="flex items-center gap-2 w-full">
-          <p class="leading-none text-base line-clamp-1 w-full font-semibold">{music.title}</p>
+          <p class="leading-none text-sm line-clamp-1 w-full font-semibold">{music.title}</p>
         </div>
-        <div class="flex gap-2 items-center">
+        <div class="flex gap-2 text-xs items-center">
           {#if music.isExplicit}
             <ExplicitIndicator />
           {/if}

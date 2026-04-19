@@ -1,8 +1,7 @@
 <script lang="ts">
   import { isTauri } from "@tauri-apps/api/core";
   import { listen, type UnlistenFn } from "@tauri-apps/api/event";
-
-  import type { Snippet } from "svelte";
+  import { onMount, type Snippet } from "svelte";
 
   import { SETTINGS_EVENTS } from "$lib/constants/tauri";
   import { getSettings } from "$lib/ipc/settingsManager";
@@ -10,7 +9,7 @@
 
   const { children }: { children: Snippet } = $props();
 
-  $effect(() => {
+  onMount(() => {
     async function fetchInitialSettings() {
       settingsStore.settings = await getSettings();
     }
@@ -18,7 +17,7 @@
     fetchInitialSettings();
   });
 
-  $effect(() => {
+  onMount(() => {
     let unlisten: UnlistenFn | null = null;
     async function handleSettingsUpdate() {
       if (!isTauri()) return;

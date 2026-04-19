@@ -1,4 +1,5 @@
 <script lang="ts">
+  // TODO: To be reworked.
   import { EllipsisIcon, PlayIcon } from "@lucide/svelte";
   import { toast } from "svelte-sonner";
   import { fly } from "svelte/transition";

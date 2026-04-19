@@ -159,6 +159,7 @@ export default class WebPlayer extends StreamPlayer {
       this.playerElement.volume = this.targetVolume;
     }
 
+    this.playerElement.pause();
     this.playerElement.autoplay = true;
 
     const downloadedStreamUrl = await StreamResolver.fetchDownload(videoId);

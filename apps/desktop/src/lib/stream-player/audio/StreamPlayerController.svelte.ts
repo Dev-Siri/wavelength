@@ -105,7 +105,9 @@ export default class StreamPlayerController {
     const { duration, currentTime, bufferedTime } = event.detail;
 
     const providedLength = Number(this.queue.playingNow.duration ?? 0);
-    const isProbablyWrongLength = duration + INCORRECT_THRESHOLD > providedLength;
+    const isProbablyWrongLength =
+      duration + INCORRECT_THRESHOLD > providedLength ||
+      Math.abs(duration - INCORRECT_THRESHOLD) < providedLength;
 
     if (isProbablyWrongLength) {
       this.duration = providedLength;

@@ -3,7 +3,7 @@
 </script>
 
 <div class="flex w-full gap-2 p-2">
-  <Skeleton class="rounded-md h-14 w-15 aspect-square" />
+  <Skeleton class="rounded-md h-11 w-12 aspect-square" />
   <div class="flex flex-col gap-2 w-full mt-2">
     <Skeleton class="w-4/5 rounded-full h-2" />
     <Skeleton class="w-3/5 rounded-full h-2" />

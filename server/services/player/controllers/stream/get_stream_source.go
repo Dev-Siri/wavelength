@@ -55,7 +55,7 @@ func GetStreamSource(ctx *fiber.Ctx) error {
 	headers := ctx.GetReqHeaders()
 	if !security.IsRequestWithBasicTrustHeaders(headers) {
 		logging.Logger.Error("Basic trust headers not satisfied", zap.Any("headers", headers))
-		return fiber.NewError(fiber.StatusUnauthorized, "Something doesn't look right.")
+		return fiber.NewError(fiber.StatusUnauthorized, "Access denied.")
 	}
 
 	select {

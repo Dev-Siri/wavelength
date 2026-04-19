@@ -24,7 +24,7 @@ import (
 
 type tidalHifiClient struct{}
 
-const instanceURL = "https://singapore-1.monochrome.tf"
+const instanceURL = "https://tidal-api.binimum.org"
 
 var Hifi = newTidalHifiClient()
 
@@ -92,6 +92,7 @@ func (*tidalHifiClient) GetLosslessManifest(tidalID string) (*tidalResponse[Trac
 
 	request.URL.RawQuery = queryParams.Encode()
 
+	browserifyRequest(request)
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
 		return nil, err
@@ -127,6 +128,7 @@ func (*tidalHifiClient) GetTrackUniversalIDs(track *commonpb.Track) (*universalI
 	queryParams.Set("s", track.Title+" "+utils.FormatAndJoinArtists(track.Artists))
 	request.URL.RawQuery = queryParams.Encode()
 
+	browserifyRequest(request)
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
 		return nil, err
@@ -139,10 +141,17 @@ func (*tidalHifiClient) GetTrackUniversalIDs(track *commonpb.Track) (*universalI
 	}
 
 	type candidate struct {
-		stereoID *string
-		isrc     string
-		hasAlbum bool
+		stereoID             *string
+		isrc                 string
+		hasAlbum             bool
+		hasExplicitnessMatch bool
 	}
+
+	featuredArtists := extractFeaturedArtists(track.Title)
+
+	allArtists := make([]*commonpb.EmbeddedArtist, 0, len(track.Artists)+len(featuredArtists))
+	allArtists = append(allArtists, track.Artists...)
+	allArtists = append(allArtists, featuredArtists...)
 
 	// Group items by ISRC so stereo + dolby variants of the same
 	// recording are merged into one candidate.
@@ -153,7 +162,8 @@ func (*tidalHifiClient) GetTrackUniversalIDs(track *commonpb.Track) (*universalI
 		durationApproximatelyMatches := math.Abs(float64(int(track.Duration)-item.Duration)) <= 2
 
 		titleMatches := strings.EqualFold(item.Title, track.Title)
-		artistMatches := hasAtLeastOneArtistMatch(item.Artists, track.Artists)
+
+		artistMatches := hasAtLeastOneArtistMatch(item.Artists, allArtists)
 		albumMatches := strings.EqualFold(item.Album.Title, track.Album.Title)
 
 		logging.Logger.Debug("Evaluating item.",
@@ -165,7 +175,11 @@ func (*tidalHifiClient) GetTrackUniversalIDs(track *commonpb.Track) (*universalI
 			zap.Bool("durationApproximatelyMatches", durationApproximatelyMatches),
 		)
 
-		if !artistMatches || (len(track.Artists) == 1 && !titleMatches) || !explicitnessMatches || !durationApproximatelyMatches {
+		if track.IsExplicit != nil && *track.IsExplicit && !item.Explicit {
+			continue
+		}
+
+		if !artistMatches || (len(allArtists) == 1 && !titleMatches) || !durationApproximatelyMatches {
 			continue
 		}
 
@@ -178,6 +192,10 @@ func (*tidalHifiClient) GetTrackUniversalIDs(track *commonpb.Track) (*universalI
 
 		if albumMatches {
 			c.hasAlbum = true
+		}
+
+		if explicitnessMatches {
+			c.hasExplicitnessMatch = true
 		}
 
 		id := strconv.Itoa(item.ID)
@@ -199,6 +217,9 @@ func (*tidalHifiClient) GetTrackUniversalIDs(track *commonpb.Track) (*universalI
 		}
 		score := 0
 		if c.hasAlbum {
+			score += 1
+		}
+		if c.hasExplicitnessMatch {
 			score += 1
 		}
 		if c.stereoID != nil {
@@ -308,4 +329,78 @@ func hasAtLeastOneArtistMatch(
 		}
 	}
 	return false
+}
+
+func extractFeaturedArtists(title string) []*commonpb.EmbeddedArtist {
+	lower := strings.ToLower(title)
+
+	markers := []string{"feat.", "ft.", "featuring"}
+	var idx = -1
+
+	for _, m := range markers {
+		if i := strings.Index(lower, m); i != -1 {
+			idx = i + len(m)
+			break
+		}
+	}
+
+	if idx == -1 {
+		return nil
+	}
+
+	featPart := title[idx:]
+
+	if end := strings.IndexAny(featPart, ")"); end != -1 {
+		featPart = featPart[:end]
+	}
+
+	featPart = strings.TrimSpace(featPart)
+
+	featPart = strings.ReplaceAll(featPart, " & ", "|")
+	featPart = strings.ReplaceAll(featPart, " and ", "|")
+	featPart = strings.ReplaceAll(featPart, " And ", "|")
+
+	primaryParts := strings.Split(featPart, "|")
+
+	var rawArtists []string
+	for _, part := range primaryParts {
+		part = strings.TrimSpace(part)
+
+		subParts := strings.SplitSeq(part, ",")
+		for sp := range subParts {
+			rawArtists = append(rawArtists, sp)
+		}
+	}
+
+	var cleaned []string
+	for _, a := range rawArtists {
+		name := strings.TrimSpace(a)
+		if name != "" {
+			cleaned = append(cleaned, name)
+		}
+	}
+
+	var result []*commonpb.EmbeddedArtist
+	for i := 0; i < len(cleaned); i++ {
+		if i < len(cleaned)-1 {
+			next := cleaned[i+1]
+
+			// as in "Tyler, The Creator"
+			if strings.EqualFold(next, "The Creator") {
+				result = append(result, &commonpb.EmbeddedArtist{
+					BrowseId: "FEATURED",
+					Title:    cleaned[i] + ", " + next,
+				})
+				i++
+				continue
+			}
+		}
+
+		result = append(result, &commonpb.EmbeddedArtist{
+			BrowseId: "FEATURED",
+			Title:    cleaned[i],
+		})
+	}
+
+	return result
 }

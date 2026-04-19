@@ -113,7 +113,7 @@
     class="rounded-md aspect-square object-cover"
   />
   <div>
-    <p class="text-sm font-semibold">{music.title}</p>
+    <p class="text-sm font-semibold mr-20">{music.title}</p>
     <p class="text-[10px] text-muted-foreground">
       {punctuatify(music.artists.map(artist => artist.title))}
     </p>
