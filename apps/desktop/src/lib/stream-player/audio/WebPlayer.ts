@@ -181,16 +181,8 @@ export default class WebPlayer extends StreamPlayer {
       this.playerElement.currentTime = startingSeconds ?? 0;
     }
 
-    await new Promise<void>(resolve => {
-      if (!this.playerElement) return;
+    this.playerElement.play();
 
-      const onCanPlay = () => {
-        this.playerElement?.removeEventListener("canplay", onCanPlay);
-        resolve();
-      };
-
-      this.playerElement.addEventListener("canplay", onCanPlay);
-    });
     this.dispatchEvent(this.createEvent("loaded", { stream: loadedStream }));
   }
 
