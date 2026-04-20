@@ -16,6 +16,8 @@ export default [
       globals: {
         ...globals.browser,
         ...globals.node,
+        cast: "readonly",
+        chrome: "readonly",
       },
     },
   },

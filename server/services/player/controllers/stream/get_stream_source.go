@@ -3,6 +3,7 @@ package stream_controllers
 import (
 	"context"
 	"database/sql"
+	"net/http"
 	"strings"
 
 	"github.com/Dev-Siri/wavelength/server/services/player/models"
@@ -52,11 +53,14 @@ func GetStreamSource(ctx *fiber.Ctx) error {
 	preferredQualityQuery := ctx.Query("preferredQuality")
 	preferredQuality := types.NewPreferredQualityOrDefault(preferredQualityQuery)
 
-	headers := ctx.GetReqHeaders()
+	headers := http.Header(ctx.GetReqHeaders())
 	if !security.IsRequestWithBasicTrustHeaders(headers) {
 		logging.Logger.Error("Basic trust headers not satisfied", zap.Any("headers", headers))
 		return fiber.NewError(fiber.StatusUnauthorized, "Access denied.")
 	}
+
+	clientHeader := headers.Get(security.ClientHeaderName)
+	client := strings.ToUpper(strings.TrimSpace(clientHeader))
 
 	select {
 	case <-ctx.Context().Done():
@@ -88,6 +92,7 @@ func GetStreamSource(ctx *fiber.Ctx) error {
 		videoID,
 		isrc,
 		authUser.Email,
+		client,
 		preferredQuality,
 		streamMetadata.IsHifiAvailable,
 		streamMetadata.IsLosslessAvailable,

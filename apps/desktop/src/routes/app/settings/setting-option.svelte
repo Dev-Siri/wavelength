@@ -20,6 +20,7 @@
   const isMac = isTauri() && platform() === "macos";
 
   let value = $state(settingsStore.settings.playbackQuality);
+  let castValue = $state(settingsStore.settings.castAudioQuality ?? "standard");
 </script>
 
 <div class="flex items-center justify-between p-4">
@@ -34,10 +35,17 @@
     {#if isMac}
       <NativeSelect.Root
         bind:value
-        onchange={() => settingsStore.updateSettings({ playbackQuality: value })}
+        onchange={() =>
+          settingsStore.updateSettings({
+            // @ts-expect-error conditionally defined.
+            [settingKey]: settingKey === "castAudioQuality" ? castValue : value,
+          })}
       >
         {#each playbackQualities as { key, uiText } (key)}
-          <NativeSelect.Option value={key} disabled={!isTauri()}>
+          <NativeSelect.Option
+            value={key}
+            disabled={!isTauri() && settingKey === "playbackQuality"}
+          >
             {uiText}
           </NativeSelect.Option>
         {/each}
@@ -46,14 +54,59 @@
       <Select.Root
         type="single"
         bind:value
-        disabled={!isTauri()}
+        disabled={!isTauri() && settingKey === "playbackQuality"}
         onValueChange={newValue =>
           settingsStore.updateSettings({
-            playbackQuality: newValue as typeof settingsStore.settings.playbackQuality,
+            [settingKey]: newValue as typeof settingsStore.settings.playbackQuality,
           })}
       >
         <Select.Trigger>
-          {isTauri() ? playbackQualityMap[value] : playbackQualityMap["hifiTop"]}
+          {isTauri() ||
+          // @ts-expect-error conditionally defined.
+          settingKey === "castAudioQuality"
+            ? playbackQualityMap[
+                // @ts-expect-error conditionally defined.
+                settingKey === "castAudioQuality" ? castValue : value
+              ]
+            : playbackQualityMap["hifiTop"]}
+        </Select.Trigger>
+        <Select.Content>
+          {#each playbackQualities as { key, uiText } (key)}
+            <Select.Item value={key}>
+              {uiText}
+            </Select.Item>
+          {/each}
+        </Select.Content>
+      </Select.Root>
+    {/if}
+  {:else if settingKey === "castAudioQuality" && !isTauri()}
+    {#if isMac}
+      <NativeSelect.Root
+        bind:value={castValue}
+        onchange={() =>
+          settingsStore.updateSettings({
+            castAudioQuality: castValue,
+          })}
+      >
+        {#each playbackQualities as { key, uiText } (key)}
+          <NativeSelect.Option value={key}>
+            {uiText}
+          </NativeSelect.Option>
+        {/each}
+      </NativeSelect.Root>
+    {:else}
+      <Select.Root
+        type="single"
+        bind:value={castValue}
+        onValueChange={newValue => {
+          castValue = newValue as typeof castValue;
+          settingsStore.updateSettings({
+            castAudioQuality: castValue,
+          });
+        }}
+      >
+        <Select.Trigger>
+          {playbackQualityMap[castValue]}
         </Select.Trigger>
         <Select.Content>
           {#each playbackQualities as { key, uiText } (key)}
@@ -66,7 +119,7 @@
     {/if}
   {:else}
     <Switch
-      checked={settingsStore.settings[settingKey] as boolean}
+      checked={settingKey !== "castAudioQuality" && (settingsStore.settings[settingKey] as boolean)}
       onCheckedChange={isChecked => settingsStore.updateSettings({ [settingKey]: isChecked })}
       disabled={desktopOnlySettings.includes(settingKey) && !isTauri()}
     />

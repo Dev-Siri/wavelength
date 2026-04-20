@@ -18,6 +18,8 @@ export abstract class StreamPlayer extends EventTarget {
   abstract unMute(): Promise<void>;
   abstract seek(to: number): Promise<void>;
   abstract getDuration(): number;
+  abstract setCastingState(enabled: boolean): void;
+  abstract stopCasting(): void;
   abstract getCurrentTime(): number;
   abstract getBufferedTime(): number;
   /** @param newVolume Volume of the stream in the range 0.00 to 1.00 */

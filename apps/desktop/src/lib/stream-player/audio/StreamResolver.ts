@@ -14,16 +14,29 @@ import {
   playabilityStatusResponseSchema,
   playabilityStatusSchema,
 } from "$lib/schemas/stream";
+import settingsStore from "$lib/stores/settings.svelte";
 import { streamClient } from "$lib/utils/query-client";
 import StreamResolverCache from "./StreamResolverCache";
 
 const streamResolverCache = new StreamResolverCache();
 
+type WavelengthClientType = "WEB" | "TV_CAST";
+
 export default class StreamResolver {
-  public static async fetch(videoId: string, videoType: PlaylistVideoType): Promise<LoadedStream> {
+  public static async fetch(
+    videoId: string,
+    videoType: PlaylistVideoType,
+    { client }: Partial<{ client: WavelengthClientType }> = { client: "WEB" },
+  ): Promise<LoadedStream> {
     const settings = await getSettings();
     // Always prefer 320kbps (Compressed) streaming on the web.
-    const preferredQuality = isTauri() ? playbackQualityBitrateMap[settings.playbackQuality] : 320;
+    const preferredQuality = isTauri()
+      ? playbackQualityBitrateMap[settings.playbackQuality]
+      : client === "TV_CAST"
+        ? playbackQualityBitrateMap[settingsStore.settings["castAudioQuality"] ?? "standard"]
+        : 320;
+
+    console.log(preferredQuality);
 
     const cachedStream = await streamResolverCache.getCachedUrl(videoId, preferredQuality);
 
@@ -49,7 +62,12 @@ export default class StreamResolver {
       metadata: { bitrate, codec, container, sampleRate },
     } = await streamClient(`/streams/${videoId}`, hlsStreamSourceSchema, {
       searchParams: { preferredQuality },
+      headers: {
+        "X-Wavelength-Client": client,
+      },
     });
+
+    console.log(source);
 
     const loadedStream: LoadedStream = {
       url: source,

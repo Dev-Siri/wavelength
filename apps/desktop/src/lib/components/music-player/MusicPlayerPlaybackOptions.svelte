@@ -6,6 +6,7 @@
 
   import { buttonVariants } from "../ui/button";
   import * as Tooltip from "../ui/tooltip";
+  import MusicPlayerTrackPlaybackOptionCast from "./MusicPlayerTrackPlaybackOptionCast.svelte";
   import MusicPlayerTrackPlaybackOptionDiscord from "./MusicPlayerTrackPlaybackOptionDiscord.svelte";
   import MusicPlayerTrackPlaybackOptionInfo from "./MusicPlayerTrackPlaybackOptionInfo.svelte";
   import VolumeSlider from "./MusicPlayerVolumeSlider.svelte";
@@ -54,8 +55,11 @@
   </Tooltip.Content>
 </Tooltip.Root>
 <MusicPlayerTrackPlaybackOptionDiscord />
+<MusicPlayerTrackPlaybackOptionCast />
 <VolumeSlider />
-<MusicPlayerTrackPlaybackOptionInfo />
+<div class="ml-2">
+  <MusicPlayerTrackPlaybackOptionInfo />
+</div>
 <Tooltip.Root>
   <Tooltip.Trigger
     class={buttonVariants({

@@ -21,6 +21,8 @@ const (
 )
 
 type TokenClientDetails struct {
+	// Expected client to validate with User-Agent later.
+	ClientType string `json:"clientType"`
 	// Whether Hi-Fi stream is available.
 	IsHifi bool `json:"isHifi"`
 	// Whether lossless stream is available.
@@ -42,7 +44,7 @@ type TokenClientDetails struct {
 }
 
 func GenerateRedisToken(
-	ctx context.Context, clientIP, videoID, isrc, email string,
+	ctx context.Context, clientIP, videoID, isrc, email, clientType string,
 	preferredQuality types.PreferredQuality, isHifi bool, isLossless *types.LosslessBitType,
 ) (string, error) {
 	generate, err := nanoid.Custom(tokenAlphabet, tokenLength)
@@ -59,6 +61,7 @@ func GenerateRedisToken(
 		Email:            email,
 		IsHifi:           isHifi,
 		IsLossless:       isLossless,
+		ClientType:       clientType,
 		PreferredQuality: preferredQuality,
 	}
 

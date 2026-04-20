@@ -12,6 +12,7 @@ export const defaultSettings = {
   showStats: true,
   playbackQuality: "standard",
   discordMode: true,
+  castAudioQuality: "standard",
 } as const;
 
 export const desktopOnlySettings: SettingKey[] = ["discordMode", "playbackQuality"];
@@ -36,6 +37,11 @@ export const playbackSettings = [
     description: "Higher qualities require more data.",
     settingKey: "playbackQuality",
     webHint: "The Desktop app allows more quality options including Lossless.",
+  },
+  {
+    title: "Chromecast audio quality.",
+    description: "Control streaming quality on your TV.",
+    settingKey: "castAudioQuality",
   },
 ] satisfies SettingDescriptionOption[];
 

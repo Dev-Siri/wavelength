@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	clientHeaderName   = "X-Wavelength-Client"
+	ClientHeaderName   = "X-Wavelength-Client"
 	clientReferrerSite = "https://mavelength.vercel.app"
 )
 
@@ -15,10 +15,11 @@ var allowedClients = []string{
 	"WEB",
 	"ANDROID",
 	"IOS",
+	"TV_CAST",
 }
 
 func IsRequestWithBasicTrustHeaders(headers http.Header) bool {
-	headerValues := headers.Values(clientHeaderName)
+	headerValues := headers.Values(ClientHeaderName)
 	if len(headerValues) != 1 {
 		return false
 	}
@@ -39,7 +40,7 @@ func IsRequestWithBasicTrustHeaders(headers http.Header) bool {
 func isRequestWithValidReferrerHeaders(client string, headers http.Header) bool {
 	referrerHeader := headers.Get("X-Referer")
 
-	if client == "WEB" {
+	if client == "WEB" || client == "TV_CAST" {
 		return strings.HasPrefix(referrerHeader, clientReferrerSite)
 	}
 
@@ -49,7 +50,7 @@ func isRequestWithValidReferrerHeaders(client string, headers http.Header) bool 
 func isRequestWithValidFetchHeaders(client string, headers http.Header) bool {
 	fetchSite := headers.Get("X-Sec-Fetch-Site")
 
-	if client == "WEB" {
+	if client == "WEB" || client == "TV_CAST" {
 		return fetchSite == "cross-site" ||
 			fetchSite == "same-site" ||
 			fetchSite == "same-origin"

@@ -93,7 +93,7 @@
           <MusicPlayerControls />
           <MusicPlayerProgressBar />
         </section>
-        <section class="flex items-center justify-end pr-10 h-full gap-1 w-1/3 md:pl-[5%]">
+        <section class="flex items-center justify-end pr-4 h-full gap-1 w-1/3 md:pl-[5%]">
           <MusicPlayerPlaybackOptions />
         </section>
       {:else}

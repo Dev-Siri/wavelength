@@ -23,6 +23,10 @@ export default class WebPlayer extends StreamPlayer {
   private playerElement?: HTMLMediaElement | null;
   private hls?: Hls | null;
   private targetVolume = 1;
+  // Chromecast fields
+  private castPlayer?: cast.framework.RemotePlayer;
+  private castController?: cast.framework.RemotePlayerController;
+  private isCasting = false;
 
   private playerWarn() {
     console.warn("Player not initialized. Did you forget to call .attach()?");
@@ -88,6 +92,22 @@ export default class WebPlayer extends StreamPlayer {
     }
 
     this.forwardEvents();
+
+    // Chromecast remote player initialization
+    if (typeof window !== "undefined" && window.cast) {
+      this.castPlayer = new cast.framework.RemotePlayer();
+      this.castController = new cast.framework.RemotePlayerController(this.castPlayer);
+
+      this.castController.addEventListener(cast.framework.RemotePlayerEventType.ANY_CHANGE, () => {
+        this.dispatchEvent(
+          this.createEvent("timeupdate", {
+            currentTime: this.castPlayer?.currentTime ?? 0,
+            duration: this.castPlayer?.duration ?? 0,
+            bufferedTime: this.castPlayer?.currentTime ?? 0,
+          }),
+        );
+      });
+    }
   }
 
   async dispose() {
@@ -189,6 +209,11 @@ export default class WebPlayer extends StreamPlayer {
   async pause() {
     if (!this.playerElement) return this.playerWarn();
 
+    if (this.isCasting && this.castController) {
+      this.castController.playOrPause();
+      return;
+    }
+
     if (!document.hidden && this.playerElement.currentTime > 2) {
       await this.fadeVolume(0);
     }
@@ -197,6 +222,10 @@ export default class WebPlayer extends StreamPlayer {
 
   async play() {
     if (!this.playerElement) return this.playerWarn();
+    if (this.isCasting && this.castController) {
+      this.castController.playOrPause();
+      return;
+    }
 
     try {
       const shouldFade = !document.hidden && this.playerElement.currentTime > 2;
@@ -220,6 +249,12 @@ export default class WebPlayer extends StreamPlayer {
 
   async seek(to: number) {
     if (!this.playerElement) return this.playerWarn();
+
+    if (this.isCasting && this.castPlayer && this.castController) {
+      this.castPlayer.currentTime = to;
+      this.castController.seek();
+      return;
+    }
 
     this.playerElement.currentTime = to;
     const duration = this.getDuration();
@@ -266,7 +301,23 @@ export default class WebPlayer extends StreamPlayer {
   setVolume(newVolume: number) {
     if (!this.playerElement) return this.playerWarn();
 
+    if (this.isCasting && this.castPlayer && this.castController) {
+      this.castPlayer.volumeLevel = newVolume;
+      this.castController.setVolumeLevel();
+      return;
+    }
+
     this.targetVolume = newVolume;
     this.playerElement.volume = newVolume;
+  }
+
+  setCastingState(enabled: boolean) {
+    this.isCasting = enabled;
+  }
+
+  stopCasting() {
+    const session = cast.framework.CastContext.getInstance().getCurrentSession();
+    session?.endSession(true);
+    this.isCasting = false;
   }
 }

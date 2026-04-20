@@ -143,8 +143,8 @@ function createQueryClient(
     queryClient<T>(baseUrl, endpoint, dataSchema, {
       ...options,
       headers: {
-        ...options.headers,
         ...defaultHeaders,
+        ...options.headers,
       },
     });
 }

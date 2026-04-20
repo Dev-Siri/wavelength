@@ -1,9 +1,12 @@
 import { z } from "zod";
 
+const audioQualitySchema = z.enum(["standard", "hifiBase", "hifiTop", "lossless"]);
+
 export const settingsSchema = z.object({
   disableMusicVideoPreview: z.boolean(),
   showStats: z.boolean(),
-  playbackQuality: z.enum(["standard", "hifiBase", "hifiTop", "lossless"]),
+  playbackQuality: audioQualitySchema,
+  castAudioQuality: audioQualitySchema.optional(),
   discordMode: z.boolean(),
 });
 

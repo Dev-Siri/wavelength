@@ -6,8 +6,20 @@ import (
 	"github.com/Dev-Siri/wavelength/server/shared/logging"
 	shared_models "github.com/Dev-Siri/wavelength/server/shared/models"
 	"github.com/gofiber/fiber/v2"
+	"github.com/slipros/devicedetector"
 	"go.uber.org/zap"
 )
+
+var dd *devicedetector.DeviceDetector
+
+func init() {
+	deviceDetector, err := devicedetector.NewDeviceDetector()
+	if err != nil {
+		logging.Logger.Fatal("Device detector initialization failed.", zap.Error(err))
+	}
+
+	dd = deviceDetector
+}
 
 func ValidatePlaybackRequestDetails(ctx *fiber.Ctx, clientDetails *TokenClientDetails, authUser *shared_models.AuthUser) error {
 	select {
@@ -43,13 +55,26 @@ func ValidatePlaybackRequestDetails(ctx *fiber.Ctx, clientDetails *TokenClientDe
 		return fiber.NewError(fiber.StatusBadRequest, "Access denied.")
 	}
 
-	requestIP := ctx.IP()
-	if clientDetails.IP != requestIP {
-		logging.Logger.Warn("Client IP mismatch.",
-			zap.String("expected", clientDetails.IP),
-			zap.String("actual", requestIP),
-		)
-		return fiber.NewError(fiber.StatusBadRequest, "Access denied.")
+	if clientDetails.ClientType != "TV_CAST" {
+		requestIP := ctx.IP()
+		if clientDetails.IP != requestIP {
+			logging.Logger.Warn("Client IP mismatch.",
+				zap.String("expected", clientDetails.IP),
+				zap.String("actual", requestIP),
+			)
+			return fiber.NewError(fiber.StatusBadRequest, "Access denied.")
+		}
+	} else {
+		userAgent := ctx.Get(fiber.HeaderUserAgent)
+		device := dd.Parse(userAgent)
+
+		if device.Type != "tv" {
+			logging.Logger.Warn("Client Type mismatch.",
+				zap.String("expected", "tv"),
+				zap.String("actual", device.Type),
+			)
+			return fiber.NewError(fiber.StatusBadRequest, "Access denied.")
+		}
 	}
 
 	return nil
