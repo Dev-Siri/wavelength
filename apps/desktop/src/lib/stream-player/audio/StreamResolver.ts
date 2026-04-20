@@ -36,8 +36,6 @@ export default class StreamResolver {
         ? playbackQualityBitrateMap[settingsStore.settings["castAudioQuality"] ?? "standard"]
         : 320;
 
-    console.log(preferredQuality);
-
     const cachedStream = await streamResolverCache.getCachedUrl(videoId, preferredQuality);
 
     if (cachedStream) return cachedStream;
@@ -66,8 +64,6 @@ export default class StreamResolver {
         "X-Wavelength-Client": client,
       },
     });
-
-    console.log(source);
 
     const loadedStream: LoadedStream = {
       url: source,
