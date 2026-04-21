@@ -102,7 +102,7 @@ export default class StreamPlayerController {
     // To fix it, we assume extra seconds of length here, which when exceeded by the stream would mean that the
     // stream is definitely of the wrong length and we should use the duration provided in the music metadata instead.
     const INCORRECT_THRESHOLD = 15;
-    const { duration, currentTime, bufferedTime } = event.detail;
+    const { duration, currentTime } = event.detail;
 
     const providedLength = Number(this.queue.playingNow.duration ?? 0);
     const isProbablyWrongLength =
@@ -120,7 +120,6 @@ export default class StreamPlayerController {
     }
 
     this.currentTime = currentTime;
-    this.bufferedTime = bufferedTime;
 
     if (currentTime >= 30 && !this.didReport30sStream) {
       reportStream({ track: this.queue.playingNow, type: "play30s" });
@@ -151,12 +150,18 @@ export default class StreamPlayerController {
     if (nextTrack) await this.load(nextTrack);
   };
 
+  private handleVolumeChange = (e: PlayerEvent<"volumechange">) => (this.volume = e.detail.volume);
+
+  private handleMuteChange = (e: PlayerEvent<"mutechange">) => (this.isMuted = e.detail.muted);
+
   private attachEventListeners() {
     this.streamPlayer.on("playing", this.handleOnPlay);
     this.streamPlayer.on("paused", this.handleOnPause);
     this.streamPlayer.on("ended", this.handleOnEnded);
     this.streamPlayer.on("timeupdate", this.handleTimeUpdate);
     this.streamPlayer.on("loaded", this.handleLoaded);
+    this.streamPlayer.on("volumechange", this.handleVolumeChange);
+    this.streamPlayer.on("mutechange", this.handleMuteChange);
   }
 
   private async syncPlayerSettings() {
@@ -192,6 +197,8 @@ export default class StreamPlayerController {
     this.streamPlayer.off("ended", this.handleOnEnded);
     this.streamPlayer.off("timeupdate", this.handleTimeUpdate);
     this.streamPlayer.off("loaded", this.handleLoaded);
+    this.streamPlayer.off("volumechange", this.handleVolumeChange);
+    this.streamPlayer.off("mutechange", this.handleMuteChange);
   }
 
   async load(

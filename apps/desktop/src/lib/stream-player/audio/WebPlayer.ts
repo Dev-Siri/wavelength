@@ -36,7 +36,6 @@ export default class WebPlayer extends StreamPlayer {
   private pausedHandler = () => this.dispatchEvent(this.createEvent("paused"));
   private endedHandler = () => this.dispatchEvent(this.createEvent("ended"));
   private timeUpdateHandler = () => {
-    const bufferedTime = this.getBufferedTime();
     const currentTime = this.getCurrentTime();
     const duration = this.getDuration();
 
@@ -44,7 +43,6 @@ export default class WebPlayer extends StreamPlayer {
       this.createEvent("timeupdate", {
         currentTime,
         duration,
-        bufferedTime,
       }),
     );
   };
@@ -78,6 +76,79 @@ export default class WebPlayer extends StreamPlayer {
     });
   }
 
+  private setupCastListeners() {
+    if (!this.castController || !this.castPlayer) return;
+
+    this.castController.addEventListener(
+      window.cast.framework.RemotePlayerEventType.IS_CONNECTED_CHANGED,
+      () => {
+        const connected = this.castPlayer?.isConnected ?? false;
+
+        this.isCasting = connected;
+
+        this.dispatchEvent(this.createEvent(connected ? "castConnected" : "castDisconnected"));
+      },
+    );
+
+    this.castController.addEventListener(
+      window.cast.framework.RemotePlayerEventType.IS_PAUSED_CHANGED,
+      () => {
+        const isPaused = this.castPlayer?.isPaused;
+
+        this.dispatchEvent(this.createEvent(isPaused ? "paused" : "playing"));
+
+        // Emit one final sync when paused
+        if (isPaused) {
+          this.dispatchEvent(
+            this.createEvent("timeupdate", {
+              currentTime: this.castPlayer?.currentTime ?? 0,
+              duration: this.castPlayer?.duration ?? 0,
+            }),
+          );
+        }
+      },
+    );
+
+    this.castController.addEventListener(
+      window.cast.framework.RemotePlayerEventType.VOLUME_LEVEL_CHANGED,
+      () => {
+        const volume = this.castPlayer?.volumeLevel ?? 1;
+        this.dispatchEvent(
+          this.createEvent("volumechange", {
+            volume,
+          }),
+        );
+      },
+    );
+
+    this.castController.addEventListener(
+      window.cast.framework.RemotePlayerEventType.IS_MUTED_CHANGED,
+      () => {
+        const muted = this.castPlayer?.isMuted ?? false;
+        this.dispatchEvent(
+          this.createEvent("mutechange", {
+            muted,
+          }),
+        );
+      },
+    );
+
+    this.castController.addEventListener(
+      window.cast.framework.RemotePlayerEventType.CURRENT_TIME_CHANGED,
+      () => {
+        // Prevent timeupdate spam while paused
+        if (this.castPlayer?.isPaused) return;
+
+        this.dispatchEvent(
+          this.createEvent("timeupdate", {
+            currentTime: this.castPlayer?.currentTime ?? 0,
+            duration: this.castPlayer?.duration ?? 0,
+          }),
+        );
+      },
+    );
+  }
+
   async attach(
     /** The element where the `WebPlayer` will attach to with all event-listeners. */
     playerElement?: HTMLMediaElement,
@@ -98,15 +169,7 @@ export default class WebPlayer extends StreamPlayer {
       this.castPlayer = new cast.framework.RemotePlayer();
       this.castController = new cast.framework.RemotePlayerController(this.castPlayer);
 
-      this.castController.addEventListener(cast.framework.RemotePlayerEventType.ANY_CHANGE, () => {
-        this.dispatchEvent(
-          this.createEvent("timeupdate", {
-            currentTime: this.castPlayer?.currentTime ?? 0,
-            duration: this.castPlayer?.duration ?? 0,
-            bufferedTime: this.castPlayer?.currentTime ?? 0,
-          }),
-        );
-      });
+      this.setupCastListeners();
     }
   }
 
@@ -211,6 +274,7 @@ export default class WebPlayer extends StreamPlayer {
 
     if (this.isCasting && this.castController) {
       this.castController.playOrPause();
+      this.dispatchEvent(this.createEvent("paused"));
       return;
     }
 
@@ -224,6 +288,7 @@ export default class WebPlayer extends StreamPlayer {
     if (!this.playerElement) return this.playerWarn();
     if (this.isCasting && this.castController) {
       this.castController.playOrPause();
+      this.dispatchEvent(this.createEvent("playing"));
       return;
     }
 
@@ -258,13 +323,11 @@ export default class WebPlayer extends StreamPlayer {
 
     this.playerElement.currentTime = to;
     const duration = this.getDuration();
-    const bufferedTime = this.getBufferedTime();
 
     this.dispatchEvent(
       this.createEvent("timeupdate", {
         currentTime: to,
         duration,
-        bufferedTime,
       }),
     );
   }
@@ -273,6 +336,10 @@ export default class WebPlayer extends StreamPlayer {
     if (!this.playerElement) {
       this.playerWarn();
       return 0;
+    }
+
+    if (this.isCasting && this.castPlayer) {
+      return this.castPlayer.currentTime ?? 0;
     }
 
     const time = this.playerElement.currentTime;
@@ -285,17 +352,12 @@ export default class WebPlayer extends StreamPlayer {
       return 0;
     }
 
+    if (this.isCasting && this.castPlayer) {
+      return this.castPlayer.duration ?? 0;
+    }
+
     const duration = this.playerElement.duration;
     return isNaN(duration) || !isFinite(duration) ? 0 : duration;
-  }
-
-  getBufferedTime() {
-    if (!this.playerElement) return 0;
-
-    const buffered = this.playerElement.buffered;
-    if (!buffered.length) return 0;
-
-    return buffered.end(buffered.length - 1);
   }
 
   setVolume(newVolume: number) {

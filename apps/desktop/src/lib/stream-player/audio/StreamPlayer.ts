@@ -21,7 +21,6 @@ export abstract class StreamPlayer extends EventTarget {
   abstract setCastingState(enabled: boolean): void;
   abstract stopCasting(): void;
   abstract getCurrentTime(): number;
-  abstract getBufferedTime(): number;
   /** @param newVolume Volume of the stream in the range 0.00 to 1.00 */
   abstract setVolume(newVolume: number): void;
 
@@ -56,9 +55,12 @@ export interface StreamPlayerEventMap {
   playing: void;
   paused: void;
   ended: void;
+  castConnected: void;
+  castDisconnected: void;
+  volumechange: { volume: number };
+  mutechange: { muted: boolean };
   timeupdate: {
     duration: number;
-    bufferedTime: number;
     currentTime: number;
   };
 }

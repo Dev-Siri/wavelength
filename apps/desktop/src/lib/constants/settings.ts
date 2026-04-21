@@ -5,6 +5,7 @@ export interface SettingDescriptionOption {
   description: string;
   settingKey: SettingKey;
   webHint?: string;
+  desktopHint?: string;
 }
 
 export const defaultSettings = {
@@ -42,6 +43,7 @@ export const playbackSettings = [
     title: "Chromecast audio quality.",
     description: "Control streaming quality on your TV.",
     settingKey: "castAudioQuality",
+    desktopHint: "Chromecast is only supported on the web.",
   },
 ] satisfies SettingDescriptionOption[];
 

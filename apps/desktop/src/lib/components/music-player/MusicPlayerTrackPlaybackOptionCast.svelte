@@ -13,7 +13,10 @@
   async function castToDevice() {
     if (!musicPlayer.queue.playingNow) return;
 
-    const context = cast.framework.CastContext.getInstance();
+    // Stop playback directly before handing over control to TV.
+    await musicPlayerStreamDevice.pause();
+
+    const context = window.cast.framework.CastContext.getInstance();
     const session = context.getCurrentSession();
 
     if (!session) return;
@@ -40,15 +43,7 @@
     metadata.title = title;
     metadata.songName = title;
     metadata.artist = `${punctuatify(artists.map(artist => artist.title))}  ${
-      bitrate >= 1_200_000
-        ? source.sampleRate > 48000
-          ? "•  Hi-Res Lossless"
-          : "•  Lossless"
-        : bitrate === 320_000
-          ? "•  Hi-Fi Audio"
-          : bitrate === 256_000
-            ? "•  High Quality"
-            : ""
+      bitrate === 320_000 ? "•  Hi-Fi" : bitrate === 256_000 ? "•  High Quality" : ""
     }`;
     metadata.images = [mediaImage];
 
@@ -78,7 +73,7 @@
 
   onMount(() => {
     function createCastContext() {
-      if (!cast) return;
+      if (!window.cast) return;
 
       const context = cast.framework.CastContext.getInstance();
 

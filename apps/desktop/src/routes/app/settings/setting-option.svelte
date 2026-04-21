@@ -15,7 +15,7 @@
   import { Switch } from "$lib/components/ui/switch";
 
   const { setting }: { setting: SettingDescriptionOption } = $props();
-  const { title, description, settingKey, webHint } = setting;
+  const { title, description, settingKey, webHint, desktopHint } = setting;
 
   const isMac = isTauri() && platform() === "macos";
 
@@ -27,7 +27,9 @@
   <div>
     <p class="text-lg font-semibold">{title}</p>
     <p class="text-sm text-muted-foreground">{description}</p>
-    {#if webHint && !isTauri()}
+    {#if isTauri() && desktopHint}
+      <p class="text-xs mt-0.5 text-blue-500">{desktopHint}</p>
+    {:else if !isTauri() && webHint}
       <p class="text-xs mt-0.5 text-blue-500">{webHint}</p>
     {/if}
   </div>
@@ -79,47 +81,32 @@
         </Select.Content>
       </Select.Root>
     {/if}
-  {:else if settingKey === "castAudioQuality" && !isTauri()}
-    {#if isMac}
-      <NativeSelect.Root
-        bind:value={castValue}
-        onchange={() =>
-          settingsStore.updateSettings({
-            castAudioQuality: castValue,
-          })}
-      >
-        {#each playbackQualities as { key, uiText } (key)}
-          <NativeSelect.Option value={key}>
+  {:else if settingKey === "castAudioQuality"}
+    <Select.Root
+      type="single"
+      disabled={isTauri()}
+      bind:value={castValue}
+      onValueChange={newValue => {
+        castValue = newValue as typeof castValue;
+        settingsStore.updateSettings({
+          castAudioQuality: castValue,
+        });
+      }}
+    >
+      <Select.Trigger>
+        {playbackQualityMap[castValue]}
+      </Select.Trigger>
+      <Select.Content>
+        {#each playbackQualities.slice(0, 3) as { key, uiText } (key)}
+          <Select.Item value={key}>
             {uiText}
-          </NativeSelect.Option>
+          </Select.Item>
         {/each}
-      </NativeSelect.Root>
-    {:else}
-      <Select.Root
-        type="single"
-        bind:value={castValue}
-        onValueChange={newValue => {
-          castValue = newValue as typeof castValue;
-          settingsStore.updateSettings({
-            castAudioQuality: castValue,
-          });
-        }}
-      >
-        <Select.Trigger>
-          {playbackQualityMap[castValue]}
-        </Select.Trigger>
-        <Select.Content>
-          {#each playbackQualities as { key, uiText } (key)}
-            <Select.Item value={key}>
-              {uiText}
-            </Select.Item>
-          {/each}
-        </Select.Content>
-      </Select.Root>
-    {/if}
+      </Select.Content>
+    </Select.Root>
   {:else}
     <Switch
-      checked={settingKey !== "castAudioQuality" && (settingsStore.settings[settingKey] as boolean)}
+      checked={settingsStore.settings[settingKey] as boolean}
       onCheckedChange={isChecked => settingsStore.updateSettings({ [settingKey]: isChecked })}
       disabled={desktopOnlySettings.includes(settingKey) && !isTauri()}
     />

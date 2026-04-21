@@ -1,7 +1,16 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+
   import { advancedSettings, displaySettings, playbackSettings } from "$lib/constants/settings";
 
+  import { getSettings } from "$lib/ipc/settingsManager";
+  import settingsStore from "$lib/stores/settings.svelte";
+
   import SettingOption from "./setting-option.svelte";
+
+  onMount(async () => {
+    settingsStore.settings = await getSettings();
+  });
 </script>
 
 <div class="flex flex-col gap-2 h-full w-full select-none overflow-y-auto pb-[20%] bg-black p-4">
