@@ -21,6 +21,10 @@ class GoogleCast {
     this.setupPlayer();
 
     context.start(options);
+
+    context.addCustomMessageListener("urn:x-cast:wavelength", (event) => {
+      console.log("test message received", event.data);
+    });
   }
 
   private handleMediaStatusEvent = ({ mediaStatus }: MediaStatusEvent) => {
