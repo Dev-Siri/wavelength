@@ -56,7 +56,9 @@ class GoogleCast {
     const playerManager =
       cast.framework.CastReceiverContext.getInstance().getPlayerManager();
     playerManager.setMediaPlaybackInfoHandler(
-      (loadRequestData, playbackConfig) => {},
+      (loadRequestData, playbackConfig) => {
+        return playbackConfig;
+      },
     );
 
     playerManager.addEventListener(
