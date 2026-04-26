@@ -1,15 +1,10 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
   import { fade } from "svelte/transition";
 
   import { googleCast } from "./lib/googleCast.svelte";
 
   import MusicPlayer from "./lib/components/MusicPlayer.svelte";
   import TooltipProvider from "./lib/components/ui/tooltip/tooltip-provider.svelte";
-
-  onDestroy(() => {
-    googleCast.dispose();
-  });
 </script>
 
 <TooltipProvider>
