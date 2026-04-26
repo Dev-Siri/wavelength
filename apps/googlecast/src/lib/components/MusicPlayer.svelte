@@ -1,13 +1,16 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
 
-  import { googleCast } from "../googleCast.svelte";
+  import { getApplicationCastContext } from "../../lib/context/googleCastContext";
 
   import MusicPlayerControls from "./MusicPlayerControls.svelte";
   import ReceiverHeader from "./ReceiverHeader.svelte";
+  import Spinner from "./ui/spinner/spinner.svelte";
+
+  const googleCast = getApplicationCastContext();
 </script>
 
-{#if googleCast.track}
+{#if googleCast?.track}
   <div
     in:fade
     id="wavlen-streaming-client"
@@ -43,5 +46,21 @@
     <div class="flex flex-col h-1/4 justify-center">
       <MusicPlayerControls />
     </div>
+  </div>
+{:else}
+  <div
+    in:fade
+    class="h-full w-full gap-32 flex flex-col items-center justify-center"
+  >
+    <p class="text-9xl font-black">λ</p>
+    {#if googleCast?.status?.type === "error"}
+      <p class="text-4xl font-bold mt-4 text-red-400">
+        {googleCast?.status.message ?? "An unexpected error occured."}
+      </p>
+    {:else if googleCast?.status?.type === "loading"}
+      <Spinner class="size-14" />
+    {:else}
+      <p class="text-5xl font-bold">Play something from your device.</p>
+    {/if}
   </div>
 {/if}

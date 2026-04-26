@@ -25,6 +25,7 @@
   "dependencies": {
     "@lucide/svelte": "^1.11.0",
     "bits-ui": "^2.18.0",
+    "hls.js": "^1.6.16",
     "tailwind-merge": "^3.5.0",
     "zod": "^4.3.6"
   }

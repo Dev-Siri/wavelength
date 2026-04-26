@@ -15,11 +15,7 @@
     "checkJs": true,
     "moduleDetection": "force",
     "rootDir": "./src",
-    "composite": true,
-    "paths": {
-      "$lib": ["./src/lib"],
-      "$lib/*": ["./src/lib/*"]
-    }
+    "composite": true
   },
   "include": ["src/**/*.ts", "src/cast.d.ts", "src/**/*.js", "src/**/*.svelte"]
 }
