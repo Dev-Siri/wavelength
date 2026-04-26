@@ -1,0 +1,31 @@
+{
+  "name": "googlecast",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^7.0.0",
+    "@tailwindcss/vite": "^4.2.4",
+    "@tsconfig/svelte": "^5.0.8",
+    "@types/chromecast-caf-receiver": "^6.0.26",
+    "@types/node": "^24.12.2",
+    "svelte": "^5.55.4",
+    "svelte-check": "^4.4.6",
+    "tailwindcss": "^4.2.4",
+    "tailwindcss-animate": "^1.0.7",
+    "typescript": "~6.0.2",
+    "vite": "^8.0.10"
+  },
+  "dependencies": {
+    "@lucide/svelte": "^1.11.0",
+    "bits-ui": "^2.18.0",
+    "tailwind-merge": "^3.5.0",
+    "zod": "^4.3.6"
+  }
+}

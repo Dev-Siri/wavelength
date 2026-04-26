@@ -1,0 +1,106 @@
+import type { z } from "zod";
+
+import { PROD_URL } from "../constants/url";
+import { apiResponseSchema, type ApiResponse } from "../schemas/apiResponse";
+
+type Method =
+  | "GET"
+  | "POST"
+  | "PUT"
+  | "DELETE"
+  | "OPTIONS"
+  | "HEAD"
+  | "TRACE"
+  | "CONNECT"
+  | "PATCH";
+
+interface Options {
+  method: Method;
+  body: Record<string, unknown> | object;
+  searchParams: Record<string, unknown>;
+  authToken: string;
+  headers: Record<string, unknown>;
+}
+
+async function queryClient<T extends z.ZodTypeAny>(
+  baseUrl: string,
+  endpoint: string,
+  dataSchema: T,
+  {
+    method = "GET",
+    body,
+    searchParams,
+    headers,
+    authToken,
+  }: Partial<Options> = {},
+): Promise<z.infer<T>> {
+  const url = new URL(endpoint, baseUrl);
+
+  const authHeaders: Record<string, string> = authToken
+    ? {
+        Authorization: `Bearer ${authToken}`,
+      }
+    : {};
+
+  const requestHeaders: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...authHeaders,
+    ...headers,
+  };
+
+  if (searchParams)
+    Object.keys(searchParams).forEach(
+      (searchParamKey) =>
+        searchParams[searchParamKey] &&
+        url.searchParams.set(
+          searchParamKey,
+          String(searchParams[searchParamKey]),
+        ),
+    );
+
+  const opts = {
+    method,
+    body: JSON.stringify(body),
+    headers: requestHeaders,
+  };
+
+  const response = await fetch(url, opts);
+
+  if (!response.headers.get("Content-Type")?.includes("application/json"))
+    throw new Error("Response does not follow the app's spec to use JSON.");
+
+  const jsonResponse = await response.json();
+  const validatedResponse = apiResponseSchema(dataSchema).parse(
+    jsonResponse,
+  ) as ApiResponse<T>;
+
+  if (!validatedResponse.success) throw new Error(validatedResponse.message);
+
+  return validatedResponse.data;
+}
+
+function createQueryClient(
+  baseUrl: string,
+  { defaultHeaders }: { defaultHeaders?: Record<string, unknown> } = {},
+) {
+  return async <T extends z.ZodTypeAny>(
+    endpoint: string,
+    dataSchema: T,
+    options: Partial<Options> = {},
+  ) =>
+    queryClient<T>(baseUrl, endpoint, dataSchema, {
+      ...options,
+      headers: {
+        ...defaultHeaders,
+        ...options.headers,
+      },
+    });
+}
+
+export const streamClient = createQueryClient(import.meta.env.VITE_PLAYER_URL, {
+  defaultHeaders: {
+    "X-Wavelength-Client": "TV_CAST",
+    "X-Sec-Fetch-Site": "cross-site",
+    "X-Referer": PROD_URL,
+  },
+});
