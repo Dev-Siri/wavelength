@@ -3,9 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  base: process.env.VITE_DEV
-    ? undefined
-    : "https://wavelength-googlecast.vercel.app",
+  base: "./",
   plugins: [svelte(), tailwindcss()],
   resolve: {
     tsconfigPaths: true,
